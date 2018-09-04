@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.timers;
 
 import java.util.Collections;
 
-public class NullTimer extends BaseTimer {
+public class NullTimer implements Timer {
 
     @Override
     protected void initialize() {

@@ -10,7 +10,7 @@ public interface TimerConstants {
 
     int CLOSE_THRESHOLD = 167;
 
-    Duration NULL_TIME_SPAN = Duration.ofMillis(-999);
+    long NULL_TIME_SPAN = -999;
 
-    Duration INFINITE_TIME_SPAN = Duration.ofMillis(-99);
+    long INFINITE_TIME_SPAN = -99;
 }

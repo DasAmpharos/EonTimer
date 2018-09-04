@@ -10,7 +10,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.time.Duration;
 
-public class VariableTargetFrameTimer extends BaseTimer implements VariableTimer {
+public class VariableTargetFrameTimer implements VariableTimer, Timer {
 
     private final IntegerProperty targetFrame;
 

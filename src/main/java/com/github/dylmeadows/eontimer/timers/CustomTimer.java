@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.timers;
 
-public class CustomTimer extends BaseTimer {
+public class CustomTimer implements Timer {
 
     @Override
     public int getMinutesBeforeTarget() {
