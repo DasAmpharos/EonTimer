@@ -1,8 +1,8 @@
 package com.github.dylmeadows.eontimer.ui.settings.timer;
 
-import com.github.dylmeadows.eontimer.reference.Console;
+import com.github.dylmeadows.eontimer.model.Console;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;

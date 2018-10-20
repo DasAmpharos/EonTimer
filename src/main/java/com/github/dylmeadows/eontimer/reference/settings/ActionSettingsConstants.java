@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.reference.settings;
 
-import com.github.dylmeadows.eontimer.reference.ActionMode;
-import com.github.dylmeadows.eontimer.reference.resources.SoundResource;
+import com.github.dylmeadows.eontimer.model.ActionMode;
+import com.github.dylmeadows.eontimer.model.resources.SoundResource;
 import javafx.scene.paint.Color;
 
 public interface ActionSettingsConstants {

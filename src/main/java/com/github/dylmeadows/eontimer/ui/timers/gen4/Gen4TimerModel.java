@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen4;
 
-import com.github.dylmeadows.eontimer.CalibrationHelper;
-import com.github.dylmeadows.eontimer.reference.Gen4TimerMode;
+import com.github.dylmeadows.eontimer.util.Calibrations;
+import com.github.dylmeadows.eontimer.model.Gen4TimerMode;
 import com.github.dylmeadows.eontimer.reference.timer.Gen4TimerConstants;
 import com.github.dylmeadows.eontimer.ui.timers.TimerModel;
 import javafx.beans.binding.Bindings;
@@ -34,7 +34,7 @@ public class Gen4TimerModel extends TimerModel implements Gen4TimerConstants {
     }
 
     private int calculateCalibration() {
-        return CalibrationHelper.createCalibration(
+        return Calibrations.createCalibration(
                 getCalibratedDelay(),
                 getCalibratedSecond(),
                 getConsole());

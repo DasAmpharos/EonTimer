@@ -3,7 +3,7 @@ package com.github.dylmeadows.eontimer.ui.settings;
 import com.github.dylmeadows.eontimer.ui.settings.action.ActionSettingsView;
 import com.github.dylmeadows.eontimer.ui.settings.theme.ThemeSettingsView;
 import com.github.dylmeadows.eontimer.ui.settings.timer.TimerSettingsView;
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import javafx.geometry.Insets;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;

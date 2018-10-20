@@ -1,14 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.settings.action;
 
-import com.github.dylmeadows.common.javafx.BindableController;
-
-public class ActionSettingsController extends BindableController<ActionSettingsModel, ActionSettingsView> {
+public class ActionSettingsController {
 
     public ActionSettingsController(ActionSettingsModel model, ActionSettingsView view) {
-        super(model, view, true);
     }
 
-    @Override
     protected void bind(ActionSettingsModel model, ActionSettingsView view) {
         view.modeProperty().bindBidirectional(model.modeProperty());
         view.colorProperty().bindBidirectional(model.colorProperty());
@@ -17,7 +13,6 @@ public class ActionSettingsController extends BindableController<ActionSettingsM
         view.countProperty().bindBidirectional(model.countProperty());
     }
 
-    @Override
     protected void unbind(ActionSettingsModel model, ActionSettingsView view) {
         view.modeProperty().unbindBidirectional(model.modeProperty());
         view.colorProperty().unbindBidirectional(model.colorProperty());

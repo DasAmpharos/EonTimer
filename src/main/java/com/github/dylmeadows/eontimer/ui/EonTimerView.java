@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import com.github.dylmeadows.eontimer.ui.settings.EonTimerSettingsView;
 import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerView;
 import com.github.dylmeadows.eontimer.ui.timers.gen3.Gen3TimerView;
@@ -24,9 +24,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import org.springframework.stereotype.Component;
 
 import java.util.ResourceBundle;
 
+@Component
 public class EonTimerView extends GridPane {
 
     private final BooleanProperty tabDisable;

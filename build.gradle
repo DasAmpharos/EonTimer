@@ -24,17 +24,18 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/log4j/log4j
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    // https://mvnrepository.com/artifact/org.hildan.fxgson/fx-gson
-    compile group: 'org.hildan.fxgson', name: 'fx-gson', version: '3.1.0'
-    // https://mvnrepository.com/artifact/de.jensd/fontawesomefx
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.0.5.RELEASE'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.7'
+
+    compile group: 'io.reactivex.rxjava2', name: 'rxjavafx', version: '2.2.2'
     compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
-    // https://mvnrepository.com/artifact/junit/junit
+    
+    compile group: 'com.google.guava', name: 'guava', version: '19.0'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
+    compileOnly group: 'org.jetbrains', name: 'annotations', version: '16.0.3'
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    // https://mvnrepository.com/artifact/org.testfx/testfx-core
     testCompile group: 'org.testfx', name: 'testfx-core', version: '4.0.13-alpha'
-    // https://mvnrepository.com/artifact/org.testfx/testfx-junit
     testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.13-alpha'
 }
 

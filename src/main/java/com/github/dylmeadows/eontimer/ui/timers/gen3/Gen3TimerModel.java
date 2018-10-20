@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen3;
 
-import com.github.dylmeadows.eontimer.reference.Gen3TimerMode;
+import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
 import com.github.dylmeadows.eontimer.reference.timer.Gen3TimerConstants;
 import com.github.dylmeadows.eontimer.ui.timers.TimerModel;
 import javafx.beans.property.IntegerProperty;

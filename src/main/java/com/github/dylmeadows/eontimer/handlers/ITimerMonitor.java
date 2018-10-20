@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.handlers;
 
-import com.github.dylmeadows.eontimer.timers.Timer;
+import com.github.dylmeadows.eontimer.model.timers.Timer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 

@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.reference.timer;
 
-import com.github.dylmeadows.eontimer.reference.Gen5TimerMode;
+import com.github.dylmeadows.eontimer.model.Gen5TimerMode;
 
 public interface Gen5TimerConstants {
 

@@ -1,10 +1,9 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen3;
 
-import com.github.dylmeadows.common.javafx.View;
 import com.github.dylmeadows.common.javafx.node.GridPaneLayout;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.common.util.ResourceBundles;
-import com.github.dylmeadows.eontimer.reference.Gen3TimerMode;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -23,7 +22,7 @@ import javafx.scene.layout.RowConstraints;
 
 import java.util.ResourceBundle;
 
-public class Gen3TimerView extends GridPane implements View {
+public class Gen3TimerView extends GridPane {
 
     public Gen3TimerView() {
         initComponents();

@@ -1,6 +1,6 @@
 package com.github.dylmeadows.common.javafx.node;
 
-import com.github.dylmeadows.common.lang.Maths;
+import com.google.common.primitives.Ints;
 import com.sun.javafx.binding.BidirectionalBinding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -11,18 +11,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class IntField extends TextField {
 
     private IntegerProperty value;
-
     private BooleanProperty showValueInPrompt;
 
-    private static final String INTEGER_REGEX = "^-?\\d*$";
-
-    private static final Pattern INTEGER_PATTERN = Pattern.compile(INTEGER_REGEX);
-
+    private static final Pattern INTEGER_PATTERN = Pattern.compile("^-?\\d*$");
     private static final String STYLE_CLASS = "int-field";
 
     public IntField() {
@@ -38,8 +35,7 @@ public class IntField extends TextField {
         // add "int-field" style class
         getStyleClass().add(STYLE_CLASS);
 
-        BidirectionalBinding.bind(textProperty(), this.value,
-                new IntFieldStringConverter());
+        BidirectionalBinding.bind(textProperty(), this.value, new IntFieldStringConverter());
         promptTextProperty().bind(Bindings.createStringBinding(
                 this::computePromptText, this.value, this.showValueInPrompt));
     }
@@ -77,6 +73,7 @@ public class IntField extends TextField {
     }
 
     class IntFieldStringConverter extends StringConverter<Number> {
+
         @Override
         public String toString(Number object) {
             return object.toString();
@@ -84,7 +81,8 @@ public class IntField extends TextField {
 
         @Override
         public Integer fromString(String string) {
-            return (Maths.isInteger(string)) ? Integer.parseInt(string) : getValue();
+            return Optional.ofNullable(Ints.tryParse(string))
+                    .orElse(getValue());
         }
     }
 }

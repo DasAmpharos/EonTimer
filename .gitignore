@@ -1,0 +1,10 @@
+# gradle
+.gradle/
+build/
+
+# intellij
+.idea/
+out/
+*.iml
+
+*.log

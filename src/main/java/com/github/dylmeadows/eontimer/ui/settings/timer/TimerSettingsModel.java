@@ -1,15 +1,14 @@
 package com.github.dylmeadows.eontimer.ui.settings.timer;
 
-import com.github.dylmeadows.eontimer.reference.Console;
+import com.github.dylmeadows.eontimer.model.Console;
 import com.github.dylmeadows.eontimer.reference.settings.TimerSettingsConstants;
-import com.github.dylmeadows.common.javafx.Model;
 import javafx.beans.property.*;
 
 /**
  * Settings related to timer specific configuration. Binds to
  * {@link TimerSettingsView}.
  */
-public class TimerSettingsModel extends Model implements TimerSettingsConstants {
+public class TimerSettingsModel implements TimerSettingsConstants {
 
     /**
      * TODO: come back to this property

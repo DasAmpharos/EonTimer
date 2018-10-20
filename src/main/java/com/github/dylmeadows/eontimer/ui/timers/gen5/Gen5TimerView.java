@@ -1,10 +1,9 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen5;
 
-import com.github.dylmeadows.common.javafx.View;
 import com.github.dylmeadows.common.javafx.node.GridPaneLayout;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.common.util.ResourceBundles;
-import com.github.dylmeadows.eontimer.reference.Gen5TimerMode;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.model.Gen5TimerMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -23,7 +22,7 @@ import javafx.scene.layout.RowConstraints;
 
 import java.util.ResourceBundle;
 
-public class Gen5TimerView extends GridPane implements View {
+public class Gen5TimerView extends GridPane {
 
     public Gen5TimerView() {
         initComponents();
@@ -539,7 +538,7 @@ public class Gen5TimerView extends GridPane implements View {
                         case ENTRALINK:
                             entralinkLayout.apply(timerPropertyPane);
                             break;
-                        case ENTRALINK_PLUS:
+                        case ENHANCED_ENTRALINK:
                             entralinkPlusLayout.apply(timerPropertyPane);
                             break;
                     }
@@ -641,7 +640,7 @@ public class Gen5TimerView extends GridPane implements View {
                     case ENTRALINK:
                         entralinkLayout.apply(timerUpdatePane);
                         break;
-                    case ENTRALINK_PLUS:
+                    case ENHANCED_ENTRALINK:
                         entralinkPlusLayout.apply(timerUpdatePane);
                         break;
                 }

@@ -1,19 +1,11 @@
 package com.github.dylmeadows.eontimer.handlers;
 
 import com.github.dylmeadows.eontimer.reference.settings.TimerSettingsConstants;
-import com.github.dylmeadows.eontimer.reference.timer.TimerConstants;
-import com.github.dylmeadows.eontimer.timers.NullTimer;
-import com.github.dylmeadows.eontimer.timers.Timer;
-import com.github.dylmeadows.eontimer.timers.VariableTimer;
-import javafx.application.Platform;
+import com.github.dylmeadows.eontimer.model.timers.Timer;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Contains the underlying {@link Timer} implementation that the TimerMonitor
@@ -24,40 +16,109 @@ import java.util.concurrent.TimeUnit;
  * timer.
  */
 public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, TimerChangeListener {
+    // TODO: refactor
 
-    /**
+    @Override
+    public void run() {
+
+    }
+
+    @Override
+    public void cancel() {
+
+    }
+
+    @Override
+    public void addListener(TimerLifecycleListener listener) {
+
+    }
+
+    @Override
+    public void addListener(TimerStageLifecycleListener listener) {
+
+    }
+
+    @Override
+    public void clearListeners() {
+
+    }
+
+    @Override
+    public List<TimerLifecycleListener> getLifecycleListeners() {
+        return null;
+    }
+
+    @Override
+    public List<TimerStageLifecycleListener> getStageLifecycleListeners() {
+        return null;
+    }
+
+    @Override
+    public Timer getTimer() {
+        return null;
+    }
+
+    @Override
+    public ObjectProperty<Timer> timerProperty() {
+        return null;
+    }
+
+    @Override
+    public void setTimer(Timer timer) {
+
+    }
+
+    @Override
+    public boolean isRunning() {
+        return false;
+    }
+
+    @Override
+    public ReadOnlyBooleanProperty runningProperty() {
+        return null;
+    }
+
+    @Override
+    public void onTimerChange(ObservableValue<? extends Timer> observable, Timer oldValue, Timer newValue) {
+
+    }
+
+
+
+    /*
+    *//**
      * Underlying timer implementation to run and monitor for events.
-     */
+     *//*
     private final ObjectProperty<Timer> timer;
 
-    /**
+    *//**
      * List of registered {@link TimerLifecycleListener}s.
-     */
+     *//*
     private final List<TimerLifecycleListener> lifecycle;
 
-    /**
+    *//**
      * List of registered {@link TimerStageLifecycleListener}s.
-     */
+     *//*
     private final List<TimerStageLifecycleListener> stageLifecycle;
 
-    /**
+    *//**
      * How much time (in ms) should elapse between timer run cycles.
-     */
+     *//*
     private final IntegerProperty refreshInterval;
 
-    /**
+    *//**
      * Timer running state.
-     */
+     *//*
     private final ReadOnlyBooleanWrapper running;
 
-    /**
+    *//**
      * Thread used to run the timer implementation.
-     */
+     *//*
     private Thread thread;
 
-    /**
+    *//**
      * Creates a new TimerMonitor.
-     */
+     *//*
     public TimerMonitor() {
         this.timer = new SimpleObjectProperty<>(new NullTimer());
         this.timer.addListener(this::onTimerChange);
@@ -67,9 +128,9 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
         this.stageLifecycle = new ArrayList<>();
     }
 
-    /**
+    *//**
      * Runs the underlying timer implementation on a separate thread if the timer is not already running.
-     */
+     *//*
     @Override
     public void run() {
         if (thread == null || !thread.isAlive()) {
@@ -92,11 +153,11 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
         }
     }
 
-    /**
+    *//**
      * Runs the given stage until the stage has ended.
      *
      * @param stageIndex the stage to run
-     */
+     *//*
     private void runStage(int stageIndex) throws InterruptedException {
         LocalDateTime now = LocalDateTime.now();
 
@@ -124,9 +185,9 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
             listener.onStageEnd(stage);
     }
 
-    /**
+    *//**
      * Stops the timer if it is running and notifies the registered handlers.
-     */
+     *//*
     @Override
     public void cancel() {
         if (isRunning()) {
@@ -141,12 +202,12 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
         }
     }
 
-    /**
+    *//**
      * Gets if the timer is running.
      *
      * @return true if thread has been instantiated and is alive
      * @see Thread#isAlive()
-     */
+     *//*
     @Override
     public boolean isRunning() {
         return running.get();
@@ -174,9 +235,9 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
         stageLifecycle.add(handler);
     }
 
-    /**
+    *//**
      * Removes all registered handlers.
-     */
+     *//*
     @Override
     public void clearListeners() {
         lifecycle.clear();
@@ -199,9 +260,9 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
         return stageLifecycle;
     }
 
-    /**
+    *//**
      * @return see {@link #timer}
-     */
+     *//*
     @Override
     public Timer getTimer() {
         return timer.get();
@@ -212,32 +273,32 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
         return timer;
     }
 
-    /**
+    *//**
      * @param timer see {@link #timer}
-     */
+     *//*
     @Override
     public void setTimer(Timer timer) {
         this.timer.set(timer);
     }
 
-    /**
+    *//**
      * @return see {@link #refreshInterval}
-     */
+     *//*
     public int getRefreshInterval() {
         return refreshInterval.get();
     }
 
-    /**
+    *//**
      * @return see {@link #refreshInterval}
-     */
+     *//*
     public IntegerProperty refreshIntervalProperty() {
         return refreshInterval;
     }
 
-    /**
+    *//**
      * @param refreshInterval see {@link #refreshInterval}
-     */
+     *//*
     public void setRefreshInterval(int refreshInterval) {
         this.refreshInterval.set(refreshInterval);
-    }
+    }*/
 }

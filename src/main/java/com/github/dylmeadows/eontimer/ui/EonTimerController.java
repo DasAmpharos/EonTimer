@@ -1,15 +1,11 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.common.javafx.BindableController;
-import com.github.dylmeadows.common.javafx.ModelChangeListener;
-import com.github.dylmeadows.common.javafx.ViewChangeListener;
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import com.github.dylmeadows.eontimer.handlers.*;
 import com.github.dylmeadows.eontimer.handlers.actions.SoundAction;
 import com.github.dylmeadows.eontimer.handlers.actions.VisualAction;
-import com.github.dylmeadows.eontimer.reference.ActionMode;
+import com.github.dylmeadows.eontimer.model.ActionMode;
 import com.github.dylmeadows.eontimer.ui.settings.EonTimerSettingsController;
-import com.github.dylmeadows.eontimer.ui.settings.action.ActionSettingsModel;
 import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerController;
 import com.github.dylmeadows.eontimer.ui.timers.gen3.Gen3TimerController;
 import com.github.dylmeadows.eontimer.ui.timers.gen4.Gen4TimerController;
@@ -20,18 +16,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Dialog;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ResourceBundle;
 
-public class EonTimerController extends BindableController<EonTimerModel, EonTimerView> implements
-        ModelChangeListener<EonTimerModel>,
-        ViewChangeListener<EonTimerView> {
+public class EonTimerController {
 
     private final TimerMonitor monitor;
     private final ActionHandler actionHandler;
     private final VisualAction visualAction;
     private final SoundAction soundAction;
-    private final DisplayHandler displayHandler;
+    // TODO: refactor
+    /*private final DisplayHandler displayHandler;*/
 
     private final Gen5TimerController gen5TimerController;
     private final Gen4TimerController gen4TimerController;
@@ -48,8 +44,8 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
     private final ChangeListener<EonTimerView.TimerType> timerTypeChangeListener;
     private final StringBinding timerBtnTextBinding;
 
+    @Autowired
     public EonTimerController(EonTimerModel model, EonTimerView view) {
-        super(model, view, false);
         // ===== monitor =====
         monitor = new TimerMonitor();
         // ===== actionHandler =====
@@ -60,9 +56,10 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
         // ===== soundAction =====
         soundAction = new SoundAction();
         // ===== displayHandler =====
-        displayHandler = new DisplayHandler(monitor);
-        monitor.addListener((TimerLifecycleListener) displayHandler);
-        monitor.addListener((TimerStageLifecycleListener) displayHandler);
+        // TODO: refactor
+        /*displayHandler = new DisplayHandler(monitor);*/
+        /*monitor.addListener((TimerLifecycleListener) displayHandler);
+        monitor.addListener((TimerStageLifecycleListener) displayHandler);*/
 
         gen5TimerController = new Gen5TimerController(model.getGen5TimerModel(), view.getGen5TimerView());
         gen5TimerController.allFieldsDisableProperty().bind(monitor.runningProperty());
@@ -96,14 +93,14 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
         timerBtnTextBinding = Bindings.createStringBinding(this::computeTimerBtnText,
                 monitor.runningProperty());
 
-        modelProperty().addListener(this::onModelChange);
-        viewProperty().addListener(this::onViewChange);
+        /*modelProperty().addListener(this::onModelChange);
+        viewProperty().addListener(this::onViewChange);*/
         bind(model, view);
     }
 
-    @Override
     protected void bind(EonTimerModel model, EonTimerView view) {
-        model.getEonTimerSettingsModel().getActionSettingsModel().modeProperty().addListener(actionModeChangeListener);
+        // TODO: refactor
+        /*model.getEonTimerSettingsModel().getActionSettingsModel().modeProperty().addListener(actionModeChangeListener);
         monitor.refreshIntervalProperty().bind(model.getEonTimerSettingsModel().getTimerSettingsModel().refreshIntervalProperty());
         actionHandler.intervalProperty().bind(model.getEonTimerSettingsModel().getActionSettingsModel().intervalProperty());
         actionHandler.countProperty().bind(model.getEonTimerSettingsModel().getActionSettingsModel().countProperty());
@@ -133,12 +130,12 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
         view.setTimerBtnOnAction(this::onTimerBtnAction);
 
         refreshActionMode();
-        refreshTimerType();
+        refreshTimerType();*/
     }
 
-    @Override
     protected void unbind(EonTimerModel model, EonTimerView view) {
-        model.getEonTimerSettingsModel().getActionSettingsModel().modeProperty().removeListener(actionModeChangeListener);
+        // TODO: refactor
+        /*model.getEonTimerSettingsModel().getActionSettingsModel().modeProperty().removeListener(actionModeChangeListener);
         monitor.refreshIntervalProperty().unbind();
         actionHandler.intervalProperty().unbind();
         actionHandler.countProperty().unbind();
@@ -157,27 +154,25 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
         view.setSettingsBtnOnAction(null);
         view.updateBtnDisableProperty().unbind();
         view.setUpdateBtnOnAction(null);
-        view.setTimerBtnOnAction(null);
+        view.setTimerBtnOnAction(null);*/
     }
 
-    @Override
     public void onModelChange(ObservableValue<? extends EonTimerModel> observable, EonTimerModel oldModel, EonTimerModel newModel) {
-        super.onModelChange(observable, oldModel, newModel);
+        /*super.onModelChange(observable, oldModel, newModel);
         gen5TimerController.setModel(newModel.getGen5TimerModel());
         gen4TimerController.setModel(newModel.getGen4TimerModel());
         gen3TimerController.setModel(newModel.getGen3TimerModel());
         customTimerController.setModel(newModel.getCustomTimerModel());
-        eonTimerSettingsController.setModel(newModel.getEonTimerSettingsModel());
+        eonTimerSettingsController.setModel(newModel.getEonTimerSettingsModel());*/
     }
 
-    @Override
     public void onViewChange(ObservableValue<? extends EonTimerView> observable, EonTimerView oldView, EonTimerView newView) {
-        super.onViewChange(observable, oldView, newView);
+        /*super.onViewChange(observable, oldView, newView);
         gen5TimerController.setView(newView.getGen5TimerView());
         gen4TimerController.setView(newView.getGen4TimerView());
         gen3TimerController.setView(newView.getGen3TimerView());
         customTimerController.setView(newView.getCustomTimerView());
-        eonTimerSettingsController.setView(newView.getEonTimerSettingsView());
+        eonTimerSettingsController.setView(newView.getEonTimerSettingsView());*/
     }
 
     private String computeTimerBtnText() {
@@ -191,12 +186,12 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
         Dialog dialog = new Dialog();
         ResourceBundle bundle = ResourceBundles.getBundle(EonTimerView.class);
         dialog.setTitle(bundle.getString("EonTimerView.eonTimerSettingsView.title"));
-        dialog.setDialogPane(getView().getEonTimerSettingsView());
+//        dialog.setDialogPane(getView().getEonTimerSettingsView());
         dialog.showAndWait();
     }
 
     private void onUpdateBtnAction(ActionEvent e) {
-        switch (getView().getTimerType()) {
+        /*switch (getView().getTimerType()) {
             case GEN5:
                 gen5TimerController.calibrate();
                 break;
@@ -206,7 +201,7 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
             case GEN3:
                 gen3TimerController.calibrate();
                 break;
-        }
+        }*/
     }
 
     private void onTimerBtnAction(ActionEvent e) {
@@ -225,8 +220,8 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
     }
 
     private void refreshActionMode() {
-        ActionSettingsModel actionSettingsModel = getModel().getEonTimerSettingsModel().getActionSettingsModel();
-        onActionModeChange(actionSettingsModel.modeProperty(), null, actionSettingsModel.getMode());
+        /*ActionSettingsModel actionSettingsModel = getModel().getEonTimerSettingsModel().getActionSettingsModel();
+        onActionModeChange(actionSettingsModel.modeProperty(), null, actionSettingsModel.getMode());*/
     }
 
     private void onTimerTypeChange(ObservableValue<? extends EonTimerView.TimerType> observable, EonTimerView.TimerType oldType, EonTimerView.TimerType newType) {
@@ -248,6 +243,6 @@ public class EonTimerController extends BindableController<EonTimerModel, EonTim
     }
 
     private void refreshTimerType() {
-        onTimerTypeChange(getView().timerTypeProperty(), null, getView().getTimerType());
+//        onTimerTypeChange(getView().timerTypeProperty(), null, getView().getTimerType());
     }
 }

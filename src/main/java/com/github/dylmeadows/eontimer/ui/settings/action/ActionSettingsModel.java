@@ -1,9 +1,8 @@
 package com.github.dylmeadows.eontimer.ui.settings.action;
 
-import com.github.dylmeadows.common.javafx.Model;
 import com.github.dylmeadows.eontimer.handlers.ActionHandler;
-import com.github.dylmeadows.eontimer.reference.ActionMode;
-import com.github.dylmeadows.eontimer.reference.resources.SoundResource;
+import com.github.dylmeadows.eontimer.model.ActionMode;
+import com.github.dylmeadows.eontimer.model.resources.SoundResource;
 import com.github.dylmeadows.eontimer.reference.settings.ActionSettingsConstants;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -16,7 +15,7 @@ import javafx.scene.paint.Color;
  * Settings related to timer action specific configuration. Binds to
  * {@link ActionSettingsView}.
  */
-public class ActionSettingsModel extends Model implements ActionSettingsConstants {
+public class ActionSettingsModel implements ActionSettingsConstants {
 
     /**
      * See {@link com.github.dylmeadows.eontimer.ui.EonTimerController#onActionModeChange(ObservableValue, ActionMode, ActionMode)}

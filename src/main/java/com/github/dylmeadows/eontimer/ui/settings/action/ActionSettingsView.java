@@ -1,9 +1,9 @@
 package com.github.dylmeadows.eontimer.ui.settings.action;
 
-import com.github.dylmeadows.eontimer.reference.ActionMode;
-import com.github.dylmeadows.eontimer.reference.resources.SoundResource;
+import com.github.dylmeadows.eontimer.model.ActionMode;
+import com.github.dylmeadows.eontimer.model.resources.SoundResource;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;

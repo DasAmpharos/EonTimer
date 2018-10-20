@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.settings.theme;
 
-import com.github.dylmeadows.eontimer.reference.ThemeBackgroundMode;
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.model.ThemeBackgroundMode;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;

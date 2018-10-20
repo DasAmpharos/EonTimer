@@ -1,10 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers;
 
-import com.github.dylmeadows.common.javafx.BindableController;
-import com.github.dylmeadows.eontimer.HasTimer;
-import com.github.dylmeadows.eontimer.TimerFactory;
-import com.github.dylmeadows.eontimer.timers.Timer;
-import com.github.dylmeadows.eontimer.timers.NullTimer;
+import com.github.dylmeadows.eontimer.model.timers.Timer;
+import com.github.dylmeadows.eontimer.model.timers.NullTimer;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -12,15 +9,13 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Parent;
 
-public abstract class TimerController<M extends TimerModel, V extends Parent> extends BindableController<M, V>
-        implements HasTimer, TimerFactory {
+public abstract class TimerController<M extends TimerModel, V extends Parent> {
 
     private final BooleanProperty allFieldsDisable;
 
     private final ReadOnlyObjectWrapper<Timer> timer;
 
     protected TimerController(M model, V view) {
-        super(model, view, false);
         this.allFieldsDisable = new SimpleBooleanProperty(false);
         this.timer = new ReadOnlyObjectWrapper<>(new NullTimer());
         bind(model, view);
@@ -38,12 +33,10 @@ public abstract class TimerController<M extends TimerModel, V extends Parent> ex
 
     protected abstract ObjectBinding<Timer> createTimerBinding(M model);
 
-    @Override
     public final Timer getTimer() {
         return timer.get();
     }
 
-    @Override
     public final ReadOnlyObjectProperty<Timer> timerProperty() {
         return timer.getReadOnlyProperty();
     }

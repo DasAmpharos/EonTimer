@@ -1,8 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers.custom;
 
-import com.github.dylmeadows.common.javafx.View;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.beans.binding.BooleanBinding;
@@ -21,7 +20,7 @@ import javafx.scene.layout.*;
 import java.time.Duration;
 import java.util.ResourceBundle;
 
-public class CustomTimerView extends GridPane implements View {
+public class CustomTimerView extends GridPane {
 
     public CustomTimerView() {
         initComponents();

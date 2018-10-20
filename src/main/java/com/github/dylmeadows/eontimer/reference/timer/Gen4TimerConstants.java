@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.reference.timer;
 
-import com.github.dylmeadows.eontimer.reference.Gen4TimerMode;
+import com.github.dylmeadows.eontimer.model.Gen4TimerMode;
 
 public interface Gen4TimerConstants {
 

@@ -1,154 +1,162 @@
 package com.github.dylmeadows.common.javafx.node;
 
-import com.github.dylmeadows.common.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.google.common.base.Throwables;
+import io.reactivex.Observable;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.stage.Modality;
+import javafx.scene.control.TextArea;
+import lombok.experimental.UtilityClass;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.Optional;
 
+@UtilityClass
 public class FxOptionPane {
 
-    public static final ButtonType EXIT = new ButtonType("EXIT");
+    public final ButtonType EXIT = new ButtonType("EXIT");
 
-    private static final ButtonType[] DEFAULT_OPTIONS = new ButtonType[]{ButtonType.OK};
+    private final ButtonType DEFAULT_OPTION = ButtonType.OK;
+    private final ButtonType[] DEFAULT_OPTIONS = new ButtonType[]{ButtonType.OK};
+    private final Alert.AlertType DEFAULT_CONFIRM_MESSAGE_TYPE = Alert.AlertType.CONFIRMATION;
+    private final Alert.AlertType DEFAULT_EXCEPTION_MESSAGE_TYPE = Alert.AlertType.ERROR;
 
-    private static final ButtonType DEFAULT_DEFAULT_OPTION = ButtonType.OK;
-
-    private static final Alert.AlertType DEFAULT_CONFIRM_MESSAGE_TYPE = Alert.AlertType.CONFIRMATION;
-
-    private static final Alert.AlertType DEFAULT_EXCEPTION_MESSAGE_TYPE = Alert.AlertType.ERROR;
-
-    public static ButtonType showConfirmDialog(Object message) {
-        return showConfirmDialog(message, null);
+    public Observable<ButtonType> showConfirmDialog(Node content) {
+        return buildAndShow(content, null, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showConfirmDialog(Object message, String title) {
-        return showConfirmDialog(message, title, null);
+    public Observable<ButtonType> showConfirmDialog(Node content, String title) {
+        return buildAndShow(content, title, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showConfirmDialog(Object message, String title, ButtonType[] options) {
-        return showConfirmDialog(message, title, options, null);
+    public Observable<ButtonType> showConfirmDialog(Node content, String title, ButtonType[] options) {
+        return buildAndShow(content, title, options, null, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showConfirmDialog(Object message, String title, ButtonType[] options, ButtonType defaultOption) {
-        return showConfirmDialog(message, title, options, defaultOption, DEFAULT_CONFIRM_MESSAGE_TYPE);
+    public Observable<ButtonType> showConfirmDialog(Node content, String title, ButtonType[] options, ButtonType defaultOption) {
+        return buildAndShow(content, title, options, defaultOption, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showConfirmDialog(Object message, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
-        return showConfirmDialogImpl(message, title, options, defaultOption, messageType);
+    public Observable<ButtonType> showConfirmDialog(Node content, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return buildAndShow(content, title, options, defaultOption, messageType);
     }
 
-    private static ButtonType showConfirmDialogImpl(Object message, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
-        Alert alert = new Alert(messageType);
-        alert.setHeaderText(null);
-        alert.initModality(Modality.APPLICATION_MODAL);
-        if (message instanceof Node) {
-            alert.getDialogPane().setContent((Node) message);
-        } else {
-            alert.setContentText(message.toString());
-        }
-        if (title == null && messageType != null)
-            title = ResourceBundles.getBundle(FxOptionPane.class).getString(messageType.name());
-        alert.setTitle(title);
-        if (options == null && defaultOption == null) {
-            options = DEFAULT_OPTIONS;
-            defaultOption = DEFAULT_DEFAULT_OPTION;
-        }
-        alert.getDialogPane().getButtonTypes().setAll(options);
-        if (options != null) {
-            if (defaultOption != null && alert.getDialogPane().getButtonTypes().contains(defaultOption)) {
-                setDefaultOption(alert, defaultOption);
-            }
-        }
-        return showAndWait(alert, EXIT);
+    public Observable<ButtonType> showConfirmDialog(String content) {
+        return buildAndShow(content, null, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showExceptionDialog(Throwable t) {
-        return showExceptionDialog(t, null);
+    public Observable<ButtonType> showConfirmDialog(String content, String title) {
+        return buildAndShow(content, title, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showExceptionDialog(Throwable t, String title) {
-        return showExceptionDialog(t, title, null);
+    public Observable<ButtonType> showConfirmDialog(String content, String title, ButtonType[] options) {
+        return buildAndShow(content, title, options, null, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showExceptionDialog(Throwable t, String title, ButtonType[] options) {
-        return showExceptionDialog(t, title, options, null);
+    public Observable<ButtonType> showConfirmDialog(String content, String title, ButtonType[] options, ButtonType defaultOption) {
+        return buildAndShow(content, title, options, defaultOption, DEFAULT_CONFIRM_MESSAGE_TYPE);
     }
 
-    public static ButtonType showExceptionDialog(Throwable t, String title, ButtonType[] options, ButtonType defaultOption) {
-        return showExceptionDialog(t, title, options, defaultOption, DEFAULT_EXCEPTION_MESSAGE_TYPE);
+    public Observable<ButtonType> showConfirmDialog(String content, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return buildAndShow(content, title, options, defaultOption, messageType);
     }
 
-    public static ButtonType showExceptionDialog(Throwable t, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
-        return showExceptionDialogImpl(t, title, options, defaultOption, messageType);
+    public Observable<ButtonType> showExceptionDialog(Throwable t) {
+        return buildAndShow(null, t, null, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_EXCEPTION_MESSAGE_TYPE);
     }
 
-    private static ButtonType showExceptionDialogImpl(Throwable t, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
-        Alert alert = new Alert(messageType);
-        alert.setHeaderText(null);
-        alert.initModality(Modality.APPLICATION_MODAL);
-        alert.setContentText(t.getLocalizedMessage());
-        alert.getDialogPane().setExpandableContent(ExceptionTextArea.getTextArea(t));
-        if (title == null && messageType != null)
-            title = ResourceBundles.getBundle(FxOptionPane.class).getString(messageType.name());
-        alert.setTitle(title);
-        if (options == null && defaultOption == null) {
-            options = DEFAULT_OPTIONS;
-            defaultOption = DEFAULT_DEFAULT_OPTION;
-        }
-        alert.getDialogPane().getButtonTypes().setAll(options);
-        if (options != null) {
-            if (defaultOption != null && alert.getDialogPane().getButtonTypes().contains(defaultOption)) {
-                setDefaultOption(alert, defaultOption);
-            }
-        }
-        return showAndWait(alert, EXIT);
+    public Observable<ButtonType> showExceptionDialog(Throwable t, String title) {
+        return buildAndShow(null, t, title, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_EXCEPTION_MESSAGE_TYPE);
     }
 
-    private static void setDefaultOption(Dialog dialog, ButtonType defaultOption) {
-        for (ButtonType option : dialog.getDialogPane().getButtonTypes()) {
-            Button button = (Button) dialog.getDialogPane().lookupButton(option);
-            button.setDefaultButton(option.equals(defaultOption));
-        }
+    public Observable<ButtonType> showExceptionDialog(Throwable t, String title, ButtonType[] options) {
+        return buildAndShow(null, t, title, options, null, DEFAULT_EXCEPTION_MESSAGE_TYPE);
     }
 
-    private static void show(Dialog dialog) {
-        if (Platform.isFxApplicationThread()) {
-            dialog.show();
-        } else {
-            Platform.runLater(dialog::show);
-        }
+    public Observable<ButtonType> showExceptionDialog(Throwable t, String title, ButtonType[] options, ButtonType defaultOption) {
+        return buildAndShow(null, t, title, options, defaultOption, DEFAULT_EXCEPTION_MESSAGE_TYPE);
     }
 
-    private static ButtonType showAndWait(Dialog<ButtonType> dialog, ButtonType defaultValue) {
-        if (Platform.isFxApplicationThread()) {
-            return dialog.showAndWait().orElse(defaultValue);
-        } else {
-            final CountDownLatch latch = new CountDownLatch(1);
-            Task<ButtonType> task = new Task<ButtonType>() {
-                @Override
-                protected ButtonType call() throws Exception {
-                    try {
-                        return dialog.showAndWait().orElse(defaultValue);
-                    } finally {
-                        latch.countDown();
-                    }
-                }
-            };
-            Platform.runLater(task);
+    public Observable<ButtonType> showExceptionDialog(Throwable t, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return buildAndShow(null, t, title, options, defaultOption, messageType);
+    }
 
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-            }
+    public Observable<ButtonType> showExceptionDialog(String message, Throwable t) {
+        return buildAndShow(message, t, null, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_EXCEPTION_MESSAGE_TYPE);
+    }
 
-            return task.getValue();
-        }
+    public Observable<ButtonType> showExceptionDialog(String message, Throwable t, String title) {
+        return buildAndShow(message, t, title, DEFAULT_OPTIONS, DEFAULT_OPTION, DEFAULT_EXCEPTION_MESSAGE_TYPE);
+    }
+
+    public Observable<ButtonType> showExceptionDialog(String message, Throwable t, String title, ButtonType[] options) {
+        return buildAndShow(message, t, title, options, null, DEFAULT_EXCEPTION_MESSAGE_TYPE);
+    }
+
+    public Observable<ButtonType> showExceptionDialog(String message, Throwable t, String title, ButtonType[] options, ButtonType defaultOption) {
+        return buildAndShow(message, t, title, options, defaultOption, DEFAULT_EXCEPTION_MESSAGE_TYPE);
+    }
+
+    public Observable<ButtonType> showExceptionDialog(String message, Throwable t, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return buildAndShow(message, t, title, options, defaultOption, messageType);
+    }
+
+    private Observable<ButtonType> buildAndShow(Node content, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return show(buildAlert(messageType, title, options, defaultOption)
+                .setContent(content)
+                .build());
+    }
+
+    private Observable<ButtonType> buildAndShow(String content, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return show(buildAlert(messageType, title, options, defaultOption)
+                .setContent(content)
+                .build());
+    }
+
+    private Observable<ButtonType> buildAndShow(String content, Throwable t, String title, ButtonType[] options, ButtonType defaultOption, Alert.AlertType messageType) {
+        return show(buildAlert(messageType, title, options, defaultOption)
+                .setContent(Optional.ofNullable(content)
+                        .orElse(t.getLocalizedMessage()))
+                .setExpandableContent(Optional.ofNullable(t)
+                        .map(FxOptionPane::getTextArea)
+                        .orElse(null))
+                .build());
+    }
+
+    private Observable<ButtonType> show(Dialog<ButtonType> dialog) {
+        return Observable.create(emitter -> Platform.runLater(() -> {
+            emitter.onNext(dialog.showAndWait().orElse(EXIT));
+            emitter.onComplete();
+        }));
+    }
+
+    private AlertBuilder buildAlert(Alert.AlertType messageType, String title, ButtonType[] options, ButtonType defaultOption) {
+        return AlertBuilder.newBuilder(messageType)
+                .setTitle(Optional.ofNullable(title)
+                        .orElse(getTitle(messageType)))
+                .setOptions(Optional.ofNullable(options)
+                        .orElse(DEFAULT_OPTIONS))
+                .setDefaultOption(Optional.ofNullable(defaultOption)
+                        .orElse(DEFAULT_OPTION));
+    }
+
+    private String getTitle(Alert.AlertType messageType) {
+        return Optional.ofNullable(messageType)
+                .map(Alert.AlertType::name)
+                .map(FxOptionPane::getResourceString)
+                .orElse(null);
+    }
+
+    private String getResourceString(String key) {
+        return ResourceBundles.getBundle(FxOptionPane.class).getString(key);
+    }
+
+    private TextArea getTextArea(Throwable t) {
+        TextArea area = new TextArea(Throwables.getStackTraceAsString(t));
+        area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        area.setEditable(false);
+        return area;
     }
 }

@@ -1,17 +1,43 @@
 package com.github.dylmeadows.eontimer.handlers;
 
-import com.github.dylmeadows.eontimer.reference.timer.TimerConstants;
-import com.github.dylmeadows.eontimer.timers.Timer;
-import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
-
 import java.time.Duration;
-import java.util.List;
 
 public class DisplayHandler implements TimerLifecycleListener, TimerStageLifecycleListener {
 
-    private ITimerMonitor monitor;
+    // TODO: refactor
+
+    @Override
+    public void onSetup() {
+
+    }
+
+    @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onEnd() {
+
+    }
+
+    @Override
+    public void onStageStart(Duration stage) {
+
+    }
+
+    @Override
+    public void onStageUpdate(Duration stage, Duration remaining) {
+
+    }
+
+    @Override
+    public void onStageEnd(Duration stage) {
+
+    }
+
+
+    /*private ITimerMonitor monitor;
 
     private final ReadOnlyStringWrapper nextStage;
 
@@ -72,14 +98,14 @@ public class DisplayHandler implements TimerLifecycleListener, TimerStageLifecyc
     public void onStageEnd(Duration stage) {
     }
 
-    /**
+    *//**
      * Formats the duration parameter as a string containing the total seconds
      * and milliseconds of the duration.
      *
      * @param duration the value to format
      * @return a {@link String} containing the total seconds and milliseconds
      * left in the duration parameter
-     */
+     *//*
     private String formatTime(Duration duration) {
         if (duration == TimerConstants.NULL_TIME_SPAN)
             return "0:00";
@@ -135,5 +161,5 @@ public class DisplayHandler implements TimerLifecycleListener, TimerStageLifecyc
             Platform.runLater(() -> this.minutesBeforeTarget.set(minutesBeforeTarget));
         else
             this.minutesBeforeTarget.set(minutesBeforeTarget);
-    }
+    }*/
 }

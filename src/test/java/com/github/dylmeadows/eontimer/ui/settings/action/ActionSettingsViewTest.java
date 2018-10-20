@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.ui.settings.action;
 
-import com.github.dylmeadows.eontimer.reference.ActionMode;
+import com.github.dylmeadows.eontimer.model.ActionMode;
 import com.github.dylmeadows.eontimer.reference.settings.ActionSettingsConstants;
 import javafx.application.Platform;
 import javafx.scene.Scene;

@@ -5,23 +5,13 @@ import java.net.URL;
 
 public interface Resource {
 
-    static <T extends Enum<T>> String getKey(T resource) {
-        return String.format("%s.%s", resource.getClass().getSimpleName(), resource.name());
-    }
-
-    default URL getUrl() {
+    default URL get() {
         return Resource.class.getClassLoader().getResource(getPath());
     }
 
-    default InputStream getStream() {
+    default InputStream getAsStream() {
         return Resource.class.getClassLoader().getResourceAsStream(getPath());
     }
 
-    default boolean isDefined() {
-        return getPath() != null && !getPath().isEmpty();
-    }
-
     String getPath();
-
-    String getKey();
 }

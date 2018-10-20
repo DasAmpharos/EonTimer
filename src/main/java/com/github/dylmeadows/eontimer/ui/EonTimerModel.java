@@ -1,7 +1,6 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.common.javafx.Model;
-import com.github.dylmeadows.eontimer.reference.Console;
+import com.github.dylmeadows.eontimer.model.Console;
 import com.github.dylmeadows.eontimer.ui.settings.EonTimerSettingsModel;
 import com.github.dylmeadows.eontimer.ui.settings.timer.TimerSettingsModel;
 import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerModel;
@@ -13,7 +12,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class EonTimerModel extends Model {
+public class EonTimerModel {
 
     private final ObjectProperty<Gen5TimerModel> gen5TimerModel;
     private final ObjectProperty<Gen4TimerModel> gen4TimerModel;

@@ -1,14 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.settings.theme;
 
-import com.github.dylmeadows.common.javafx.BindableController;
-
-public class ThemeSettingsController extends BindableController<ThemeSettingsModel, ThemeSettingsView> {
+public class ThemeSettingsController {
 
     public ThemeSettingsController(ThemeSettingsModel model, ThemeSettingsView view) {
-        super(model, view, true);
     }
 
-    @Override
     protected void bind(ThemeSettingsModel model, ThemeSettingsView view) {
         view.backgroundModeProperty().bindBidirectional(model.backgroundModeProperty());
         view.backgroundColorProperty().bindBidirectional(model.backgroundColorProperty());
@@ -20,7 +16,6 @@ public class ThemeSettingsController extends BindableController<ThemeSettingsMod
         view.accentColorProperty().bindBidirectional(model.accentColorProperty());
     }
 
-    @Override
     protected void unbind(ThemeSettingsModel model, ThemeSettingsView view) {
         view.backgroundModeProperty().unbindBidirectional(model.backgroundModeProperty());
         view.backgroundColorProperty().unbindBidirectional(model.backgroundColorProperty());

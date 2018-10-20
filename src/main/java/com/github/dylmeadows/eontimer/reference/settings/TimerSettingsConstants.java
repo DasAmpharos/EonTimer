@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.reference.settings;
 
-import com.github.dylmeadows.eontimer.reference.Console;
+import com.github.dylmeadows.eontimer.model.Console;
 
 public interface TimerSettingsConstants {
 

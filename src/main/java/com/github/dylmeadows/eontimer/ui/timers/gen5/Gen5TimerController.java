@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen5;
 
-import com.github.dylmeadows.eontimer.CalibrationHelper;
-import com.github.dylmeadows.eontimer.timers.*;
+import com.github.dylmeadows.eontimer.util.Calibrations;
+import com.github.dylmeadows.eontimer.model.timers.*;
 import com.github.dylmeadows.eontimer.ui.timers.TimerController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -12,16 +12,16 @@ public class Gen5TimerController extends TimerController<Gen5TimerModel, Gen5Tim
         super(model, view);
     }
 
-    @Override
     public Timer createTimer() {
-        Gen5TimerModel model = getModel();
+        Gen5TimerModel model = /*getModel();*/ null;
         switch (model.getMode()) {
             case STANDARD:
-                return new SimpleTimer(
+                // TODO: refactor
+                /*return new SimpleTimer(
                         model.getCalculatedCalibration(),
                         model.getTargetSecond(),
                         model.getConsole(),
-                        model.getMinimumLength());
+                        model.getMinimumLength());*/
             case C_GEAR:
                 return new DelayTimer(
                         model.getCalculatedCalibration(),
@@ -37,7 +37,7 @@ public class Gen5TimerController extends TimerController<Gen5TimerModel, Gen5Tim
                         model.getTargetSecond(),
                         model.getConsole(),
                         model.getMinimumLength());
-            case ENTRALINK_PLUS:
+            case ENHANCED_ENTRALINK:
                 return new EnhancedEntralinkTimer(
                         model.getCalculatedCalibration(),
                         model.getCalculatedEntralinkCalibration(),
@@ -118,52 +118,55 @@ public class Gen5TimerController extends TimerController<Gen5TimerModel, Gen5Tim
 
     @Override
     public void calibrate() {
-        switch (getModel().getMode()) {
+        /*switch (getModel().getMode()) {
             case STANDARD: {
-                int temp = SimpleTimer.calibrate((SimpleTimer) getTimer(), getView().getSecondHit());
+                // TODO: refactor
+                *//*int temp = SimpleTimer.calibrate((SimpleTimer) getTimer(), getView().getSecondHit());
                 int calibration = getView().getCalibration() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        CalibrationHelper.convertToDelays(temp, getModel().getConsole()));
-                getView().setCalibration(calibration);
+                        Calibrations.convertToDelays(temp, getModel().getConsole()));
+                getView().setCalibration(calibration);*//*
                 break;
             }
             case C_GEAR: {
                 int temp = DelayTimer.calibrate((DelayTimer) getTimer(), getView().getDelayHit());
                 int calibration = getView().getCalibration() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        CalibrationHelper.convertToDelays(temp, getModel().getConsole()));
+                        Calibrations.convertToDelays(temp, getModel().getConsole()));
                 getView().setCalibration(calibration);
                 break;
             }
             case ENTRALINK: {
-                int temp = SimpleTimer.calibrate((SimpleTimer) getTimer(), getView().getSecondHit());
+                // TODO: refactor
+                *//*int temp = SimpleTimer.calibrate((SimpleTimer) getTimer(), getView().getSecondHit());
                 int calibration = getView().getCalibration() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        CalibrationHelper.convertToDelays(temp, getModel().getConsole()));
+                        Calibrations.convertToDelays(temp, getModel().getConsole()));
                 getView().setCalibration(calibration);
 
                 temp = EntralinkTimer.calibrate((DelayTimer) getTimer(), getView().getDelayHit() - temp);
                 calibration = getView().getEntralinkCalibration() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        CalibrationHelper.convertToDelays(temp, getModel().getConsole()));
-                getView().setEntralinkCalibration(calibration);
+                        Calibrations.convertToDelays(temp, getModel().getConsole()));
+                getView().setEntralinkCalibration(calibration);*//*
                 break;
             }
-            case ENTRALINK_PLUS: {
-                int temp = SimpleTimer.calibrate((SimpleTimer) getTimer(), getView().getSecondHit());
+            case ENHANCED_ENTRALINK: {
+                // TODO: refactor
+                *//*int temp = SimpleTimer.calibrate((SimpleTimer) getTimer(), getView().getSecondHit());
                 int calibration = getView().getCalibration() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        CalibrationHelper.convertToDelays(temp, getModel().getConsole()));
+                        Calibrations.convertToDelays(temp, getModel().getConsole()));
                 getView().setCalibration(calibration);
 
                 temp = EntralinkTimer.calibrate((DelayTimer) getTimer(), getView().getDelayHit() - temp);
                 calibration = getView().getEntralinkCalibration() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        CalibrationHelper.convertToDelays(temp, getModel().getConsole()));
+                        Calibrations.convertToDelays(temp, getModel().getConsole()));
                 getView().setEntralinkCalibration(calibration);
 
                 temp = EnhancedEntralinkTimer.calibrate((EnhancedEntralinkTimer) getTimer(), getView().getActualAdvances());
                 calibration = getView().getFrameCalibration() + temp;
-                getView().setFrameCalibration(calibration);
+                getView().setFrameCalibration(calibration);*//*
                 break;
             }
-        }
-        getView().setSecondHitText("");
+        }*/
+        /*getView().setSecondHitText("");
         getView().setDelayHitText("");
-        getView().setActualAdvancesText("");
+        getView().setActualAdvancesText("");*/
     }
 }

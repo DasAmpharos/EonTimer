@@ -1,9 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.settings.theme;
 
-import com.github.dylmeadows.eontimer.StyleFormatter;
-import com.github.dylmeadows.eontimer.reference.ThemeBackgroundMode;
+import com.github.dylmeadows.eontimer.model.ThemeBackgroundMode;
 import com.github.dylmeadows.eontimer.reference.settings.ThemeSettingsConstants;
-import com.github.dylmeadows.common.javafx.Model;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
@@ -13,7 +11,7 @@ import javafx.scene.paint.Color;
  * Settings related to theme specific configuration. Binds to
  * {@link ThemeSettingsView}.
  */
-public class ThemeSettingsModel extends Model implements ThemeSettingsConstants {
+public class ThemeSettingsModel implements ThemeSettingsConstants {
 
     /**
      * Binds to {@link ThemeSettingsView#backgroundModeField}.
@@ -30,34 +28,14 @@ public class ThemeSettingsModel extends Model implements ThemeSettingsConstants 
      */
     private final StringProperty backgroundImage;
 
-    /**
-     * See {@link StyleFormatter#getThemePanelBase(ThemeSettingsModel)}.
-     * Binds to {@link ThemeSettingsView#panelBaseColorField}.
-     */
     private final ObjectProperty<Color> panelBaseColor;
 
-    /**
-     * See {@link StyleFormatter#getThemePanelTransparentBase(ThemeSettingsModel)}.
-     * Binds to {@link ThemeSettingsView#panelTransparencyField}.
-     */
     private final DoubleProperty panelTransparency;
 
-    /**
-     * See {@link StyleFormatter#getThemeControlBase(ThemeSettingsModel)}.
-     * Binds to {@link ThemeSettingsView#controlBaseColorField}.
-     */
     private final ObjectProperty<Color> controlBaseColor;
 
-    /**
-     * See {@link StyleFormatter#getThemeLabelText(ThemeSettingsModel)}.
-     * Binds to {@link ThemeSettingsView#labelTextColorField}.
-     */
     private final ObjectProperty<Color> labelTextColor;
 
-    /**
-     * See {@link StyleFormatter#getThemeAccent(ThemeSettingsModel)}.
-     * Binds to {@link ThemeSettingsView#accentColorField}.
-     */
     private final ObjectProperty<Color> accentColor;
 
     /**
@@ -83,7 +61,7 @@ public class ThemeSettingsModel extends Model implements ThemeSettingsConstants 
     }
 
     public String toCss() {
-        return StyleFormatter.toCss(this);
+        return "";
     }
 
     /**

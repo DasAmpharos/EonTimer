@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.reference.settings;
 
-import com.github.dylmeadows.eontimer.reference.ThemeBackgroundMode;
+import com.github.dylmeadows.eontimer.model.ThemeBackgroundMode;
 import javafx.scene.paint.Color;
 
 public interface ThemeSettingsConstants {

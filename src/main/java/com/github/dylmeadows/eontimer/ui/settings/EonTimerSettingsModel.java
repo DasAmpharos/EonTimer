@@ -1,11 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.settings;
 
-import com.github.dylmeadows.common.javafx.Model;
 import com.github.dylmeadows.eontimer.ui.settings.action.ActionSettingsModel;
 import com.github.dylmeadows.eontimer.ui.settings.theme.ThemeSettingsModel;
 import com.github.dylmeadows.eontimer.ui.settings.timer.TimerSettingsModel;
 
-public class EonTimerSettingsModel extends Model {
+public class EonTimerSettingsModel {
 
     private ActionSettingsModel actionSettingsModel;
     private TimerSettingsModel timerSettingsModel;
