@@ -1,18 +1,15 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.common.util.LocalizedEnum;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public enum ActionMode implements LocalizedEnum {
-    AUDIO, VISUAL, AV, NONE;
+@Getter
+@RequiredArgsConstructor
+public enum ActionMode implements Option {
+    AUDIO("Audio"),
+    VISUAL("Visual"),
+    AV("A/V"),
+    NONE("None");
 
-    @Override
-    public String getLocalizedValue() {
-        return ResourceBundles.getBundle(ActionMode.class).getString(name());
-    }
-
-    @Override
-    public String toString() {
-        return getLocalizedValue();
-    }
+    private final String text;
 }

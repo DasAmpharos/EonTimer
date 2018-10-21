@@ -23,10 +23,14 @@ public class IntField extends TextField {
     private static final String STYLE_CLASS = "int-field";
 
     public IntField() {
-        this(0);
+        initialize(0);
     }
 
     public IntField(int value) {
+        initialize(value);
+    }
+
+    private void initialize(int value) {
         // initialize properties
         this.value = new SimpleIntegerProperty(value);
         this.showValueInPrompt = new SimpleBooleanProperty(true);
@@ -41,7 +45,7 @@ public class IntField extends TextField {
     }
 
     private TextFormatter.Change validate(TextFormatter.Change change) {
-         return (INTEGER_PATTERN.matcher(change.getControlNewText()).matches()) ? change : null;
+        return (INTEGER_PATTERN.matcher(change.getControlNewText()).matches()) ? change : null;
     }
 
     private String computePromptText() {

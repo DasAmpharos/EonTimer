@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.ui.timers.gen5;
 
 import com.github.dylmeadows.common.javafx.node.GridPaneLayout;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.github.dylmeadows.eontimer.model.Gen5TimerMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -305,7 +305,7 @@ public class Gen5TimerView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(Gen5TimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(Gen5TimerView.class);
         modeLbl = new Label();
         modeField = new ChoiceBox<>();
         scrollPane = new ScrollPane();
@@ -425,10 +425,10 @@ public class Gen5TimerView extends GridPane {
                 }
 
                 // ===== Timer Property Layouts =====
-                GridPaneLayout cGearLayout = new GridPaneLayout(2, 3);
-                GridPaneLayout standardLayout = new GridPaneLayout(2, 2);
-                GridPaneLayout entralinkLayout = new GridPaneLayout(2, 4);
-                GridPaneLayout entralinkPlusLayout = new GridPaneLayout(2, 6);
+                GridPaneLayout cGearLayout = new GridPaneLayout();
+                GridPaneLayout standardLayout = new GridPaneLayout();
+                GridPaneLayout entralinkLayout = new GridPaneLayout();
+                GridPaneLayout entralinkPlusLayout = new GridPaneLayout();
 
                 // ===== calibrationLbl =====
                 calibrationLbl.setText(bundle.getString("Gen5TimerView.calibrationLbl.text"));
@@ -570,10 +570,10 @@ public class Gen5TimerView extends GridPane {
             }
 
             // ===== Timer Update Layouts =====
-            GridPaneLayout cGearLayout = new GridPaneLayout(2, 1);
-            GridPaneLayout standardLayout = new GridPaneLayout(2, 1);
-            GridPaneLayout entralinkLayout = new GridPaneLayout(2, 2);
-            GridPaneLayout entralinkPlusLayout = new GridPaneLayout(2, 3);
+            GridPaneLayout cGearLayout = new GridPaneLayout();
+            GridPaneLayout standardLayout = new GridPaneLayout();
+            GridPaneLayout entralinkLayout = new GridPaneLayout();
+            GridPaneLayout entralinkPlusLayout = new GridPaneLayout();
 
             // ===== secondHitLbl =====
             secondHitLbl.setText(bundle.getString("Gen5TimerView.secondHitLbl.text"));

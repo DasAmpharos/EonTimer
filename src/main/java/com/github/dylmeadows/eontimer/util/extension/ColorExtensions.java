@@ -1,4 +1,4 @@
-package com.github.dylmeadows.eontimer.util;
+package com.github.dylmeadows.eontimer.util.extension;
 
 import com.google.common.collect.Range;
 import javafx.scene.paint.Color;
@@ -9,31 +9,31 @@ import java.util.stream.Stream;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @UtilityClass
-public class Colors {
+public class ColorExtensions {
 
     private final Range<Double> DOUBLE_RANGE = Range.closed(0.0, 1.0);
     private final String INVALID_DOUBLE_MSG = "Color's %s value must be between 0.0 and 1.0";
 
     public String toHex(Color color) {
         return Stream.of(color.getRed(), color.getGreen(), color.getBlue())
-                .map(Colors::toColorInt)
-                .map(Colors::toHexString)
-                .reduce("#", (s1, s2) -> s1 + s2);
+                .map(ColorExtensions::toColorInt)
+                .map(ColorExtensions::toHexString)
+                .reduce("#", StringExtensions::combine);
     }
 
     public String toHexAlpha(Color color) {
         return Stream.of(color.getRed(), color.getGreen(), color.getBlue(), color.getOpacity())
-                .map(Colors::toColorInt)
-                .map(Colors::toHexString)
-                .reduce("#", (s1, s2) -> s1 + s2);
+                .map(ColorExtensions::toColorInt)
+                .map(ColorExtensions::toHexString)
+                .reduce("#", StringExtensions::combine);
     }
 
     public String toHexAlpha(Color color, double alpha) {
         checkArgument(DOUBLE_RANGE.contains(alpha), INVALID_DOUBLE_MSG, "alpha");
         return Stream.of(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-                .map(Colors::toColorInt)
-                .map(Colors::toHexString)
-                .reduce("#", (s1, s2) -> s1 + s2);
+                .map(ColorExtensions::toColorInt)
+                .map(ColorExtensions::toHexString)
+                .reduce("#", StringExtensions::combine);
     }
 
     private String toHexString(int value) {

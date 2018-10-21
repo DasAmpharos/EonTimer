@@ -1,37 +1,21 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.common.util.LocalizedEnum;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import lombok.Getter;
 
-public enum Console implements LocalizedEnum {
-    GBA(59.7271),
-    NDS(59.8261),
-    DSI(59.8261),
-    _3DS(59.8261);
+@Getter
+public enum Console implements Option {
+    GBA("GBA", 59.7271),
+    NDS("NDS", 59.8261),
+    DSI("DSI", 59.8261),
+    _3DS("3DS", 59.8261);
 
+    private final String text;
     private final double fps;
     private final double frameRate;
 
-    Console(double fps) {
+    Console(String text, double fps) {
+        this.text = text;
         this.fps = fps;
         this.frameRate = 1000 / fps;
-    }
-
-    @Override
-    public String getLocalizedValue() {
-        return ResourceBundles.getBundle(Console.class).getString(name());
-    }
-
-    @Override
-    public String toString() {
-        return getLocalizedValue();
-    }
-
-    public double getFps() {
-        return fps;
-    }
-
-    public double getFrameRate() {
-        return frameRate;
     }
 }

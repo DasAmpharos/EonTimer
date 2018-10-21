@@ -3,7 +3,7 @@ package com.github.dylmeadows.eontimer.ui.settings.action;
 import com.github.dylmeadows.eontimer.model.ActionMode;
 import com.github.dylmeadows.eontimer.model.resources.SoundResource;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
@@ -86,7 +86,7 @@ public class ActionSettingsView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(ActionSettingsView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(ActionSettingsView.class);
         modeLbl = new Label();
         modeField = new ChoiceBox<>();
         colorLbl = new Label();

@@ -1,18 +1,15 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.common.util.LocalizedEnum;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public enum ThemeBackgroundMode implements LocalizedEnum {
-    DEFAULT, COLOR, IMAGE;
+@Getter
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+public enum ThemeBackgroundMode implements Option {
+    DEFAULT("Default"),
+    COLOR("Color"),
+    IMAGE("Image");
 
-    @Override
-    public String getLocalizedValue() {
-        return ResourceBundles.getBundle(ThemeBackgroundMode.class).getString(name());
-    }
-
-    @Override
-    public String toString() {
-        return getLocalizedValue();
-    }
+    private final String text;
 }

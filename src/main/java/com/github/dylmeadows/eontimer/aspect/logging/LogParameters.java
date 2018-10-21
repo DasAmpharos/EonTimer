@@ -1,4 +1,4 @@
-package com.github.dylmeadows.eontimer.util.aspect;
+package com.github.dylmeadows.eontimer.aspect.logging;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Trace {
+public @interface LogParameters {
+
+    LoggingMethod loggingMethod() default LoggingMethod.DEBUG;
 }

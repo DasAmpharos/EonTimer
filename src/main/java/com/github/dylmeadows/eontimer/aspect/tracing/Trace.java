@@ -1,6 +1,4 @@
-package com.github.dylmeadows.eontimer.util.aspect;
-
-import org.slf4j.event.Level;
+package com.github.dylmeadows.eontimer.aspect.tracing;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +7,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Log {
-    Level value() default Level.DEBUG;
+public @interface Trace {
+
+    String name() default "";
+
+    boolean unique() default false;
 }

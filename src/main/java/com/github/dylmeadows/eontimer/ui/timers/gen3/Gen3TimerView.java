@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.ui.timers.gen3;
 
 import com.github.dylmeadows.common.javafx.node.GridPaneLayout;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -161,7 +161,7 @@ public class Gen3TimerView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(Gen3TimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(Gen3TimerView.class);
         modeLbl = new Label();
         modeField = new ChoiceBox<>();
         scrollPane = new ScrollPane();
@@ -288,8 +288,8 @@ public class Gen3TimerView extends GridPane {
                 }
 
                 // ===== Timer Property Layout =====
-                GridPaneLayout standardLayout = new GridPaneLayout(2, 3);
-                GridPaneLayout variableTargetLayout = new GridPaneLayout(2, 1);
+                GridPaneLayout standardLayout = new GridPaneLayout();
+                GridPaneLayout variableTargetLayout = new GridPaneLayout();
 
                 // ===== calibrationLbl =====
                 calibrationLbl.setText(bundle.getString("Gen3TimerView.calibrationLbl.text"));

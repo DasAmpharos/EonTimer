@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.ui.settings.timer;
 
 import com.github.dylmeadows.eontimer.model.Console;
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -26,7 +26,7 @@ public class TimerSettingsView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(TimerSettingsView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(TimerSettingsView.class);
         consoleLbl = new Label();
         consoleField = new ChoiceBox<>();
         refreshIntervalLbl = new Label();

@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers.custom;
 
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.beans.binding.BooleanBinding;
@@ -187,7 +187,7 @@ public class CustomTimerView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(CustomTimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(CustomTimerView.class);
         list = new ListView<>();
         listContextMenu = new ContextMenu();
         removeMenuItem = new MenuItem();

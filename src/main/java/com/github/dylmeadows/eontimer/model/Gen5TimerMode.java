@@ -1,18 +1,15 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.common.util.LocalizedEnum;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public enum Gen5TimerMode implements LocalizedEnum {
-    STANDARD, C_GEAR, ENTRALINK, ENHANCED_ENTRALINK;
+@Getter
+@RequiredArgsConstructor
+public enum Gen5TimerMode implements Option {
+    STANDARD("Standard"),
+    C_GEAR("C-Gear"),
+    ENTRALINK("Entralink"),
+    ENHANCED_ENTRALINK("Entralink+");
 
-    @Override
-    public String getLocalizedValue() {
-        return ResourceBundles.getBundle(Gen5TimerMode.class).getString(name());
-    }
-
-    @Override
-    public String toString() {
-        return getLocalizedValue();
-    }
+    private final String text;
 }

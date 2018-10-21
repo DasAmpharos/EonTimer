@@ -1,6 +1,6 @@
 package com.github.dylmeadows.common.javafx.node;
 
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.google.common.base.Throwables;
 import io.reactivex.Observable;
 import javafx.application.Platform;
@@ -120,7 +120,7 @@ public class FxOptionPane {
                 .setContent(Optional.ofNullable(content)
                         .orElse(t.getLocalizedMessage()))
                 .setExpandableContent(Optional.ofNullable(t)
-                        .map(FxOptionPane::getTextArea)
+                        .map(FxOptionPane::getExceptionTextArea)
                         .orElse(null))
                 .build());
     }
@@ -150,10 +150,10 @@ public class FxOptionPane {
     }
 
     private String getResourceString(String key) {
-        return ResourceBundles.getBundle(FxOptionPane.class).getString(key);
+        return ResourceBundleExtensions.getBundle(FxOptionPane.class).getString(key);
     }
 
-    private TextArea getTextArea(Throwable t) {
+    private TextArea getExceptionTextArea(Throwable t) {
         TextArea area = new TextArea(Throwables.getStackTraceAsString(t));
         area.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         area.setEditable(false);

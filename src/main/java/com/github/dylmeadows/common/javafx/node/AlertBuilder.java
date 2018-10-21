@@ -1,6 +1,6 @@
 package com.github.dylmeadows.common.javafx.node;
 
-import com.github.dylmeadows.eontimer.util.Arrays;
+import com.github.dylmeadows.eontimer.util.extension.ArrayExtensions;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -23,23 +23,15 @@ import static java.util.function.Function.identity;
 class AlertBuilder {
 
     private final Alert.AlertType messageType;
-
     private String title;
-
     private Modality modality = Modality.APPLICATION_MODAL;
-
     private String headerText;
-
     @Setter(AccessLevel.NONE)
     private Node contentNode;
-
     @Setter(AccessLevel.NONE)
     private String contentText;
-
     private Node expandableContent;
-
-    private ButtonType[] options = Arrays.of(ButtonType.OK);
-
+    private ButtonType[] options = ArrayExtensions.arrayOf(ButtonType.OK);
     private ButtonType defaultOption = ButtonType.OK;
     
     static AlertBuilder newBuilder(Alert.AlertType messageType) {

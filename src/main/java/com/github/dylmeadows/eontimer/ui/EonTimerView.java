@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.github.dylmeadows.eontimer.ui.settings.EonTimerSettingsView;
 import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerView;
 import com.github.dylmeadows.eontimer.ui.timers.gen3.Gen3TimerView;
@@ -196,7 +196,7 @@ public class EonTimerView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(EonTimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(EonTimerView.class);
         displayPane = new GridPane();
         currentDisplayPane = new AnchorPane();
         currentDisplayStackPane = new StackPane();

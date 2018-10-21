@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.github.dylmeadows.eontimer.handlers.*;
 import com.github.dylmeadows.eontimer.handlers.actions.SoundAction;
 import com.github.dylmeadows.eontimer.handlers.actions.VisualAction;
@@ -176,7 +176,7 @@ public class EonTimerController {
     }
 
     private String computeTimerBtnText() {
-        ResourceBundle bundle = ResourceBundles.getBundle(EonTimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(EonTimerView.class);
         String start = bundle.getString("EonTimerView.timerBtn.text.start");
         String stop = bundle.getString("EonTimerView.timerBtn.text.stop");
         return monitor.isRunning() ? stop : start;
@@ -184,7 +184,7 @@ public class EonTimerController {
 
     private void onSettingsBtnAction(ActionEvent e) {
         Dialog dialog = new Dialog();
-        ResourceBundle bundle = ResourceBundles.getBundle(EonTimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(EonTimerView.class);
         dialog.setTitle(bundle.getString("EonTimerView.eonTimerSettingsView.title"));
 //        dialog.setDialogPane(getView().getEonTimerSettingsView());
         dialog.showAndWait();

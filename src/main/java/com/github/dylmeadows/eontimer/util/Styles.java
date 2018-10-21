@@ -2,6 +2,7 @@ package com.github.dylmeadows.eontimer.util;
 
 import com.github.dylmeadows.eontimer.model.resources.ImageResource;
 import com.github.dylmeadows.eontimer.model.settings.ThemeSettings;
+import com.github.dylmeadows.eontimer.util.extension.ColorExtensions;
 import javafx.scene.paint.Color;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class Styles {
     }
 
     private static String getBackgroundColor(ThemeSettings theme) {
-        return Colors.toHex(theme.getBackgroundColor());
+        return ColorExtensions.toHex(theme.getBackgroundColor());
     }
 
     private static String getDefaultBackgroundImage() {
@@ -72,33 +73,33 @@ public class Styles {
     }
 
     private static String getThemeAccent(ThemeSettings theme) {
-        return Colors.toHex(theme.getAccentColor());
+        return ColorExtensions.toHex(theme.getAccentColor());
     }
 
     private static String getThemeFaintAccent(ThemeSettings theme) {
-        return Colors.toHexAlpha(theme.getAccentColor(), THEME_FAINT_ACCENT_ALPHA);
+        return ColorExtensions.toHexAlpha(theme.getAccentColor(), THEME_FAINT_ACCENT_ALPHA);
     }
 
     private static String getThemePanelBase(ThemeSettings theme) {
-        return Colors.toHex(theme.getPanelBaseColor());
+        return ColorExtensions.toHex(theme.getPanelBaseColor());
     }
 
     private static String getThemePanelTransparentBase(ThemeSettings theme) {
-        return Colors.toHexAlpha(theme.getPanelBaseColor(), theme.getPanelTransparency());
+        return ColorExtensions.toHexAlpha(theme.getPanelBaseColor(), theme.getPanelTransparency());
     }
 
     private static String getThemeControlBase(ThemeSettings theme) {
-        return Colors.toHex(theme.getControlBaseColor());
+        return ColorExtensions.toHex(theme.getControlBaseColor());
     }
 
     private static String getThemeLabelText(ThemeSettings theme) {
-        return Colors.toHex(theme.getLabelTextColor());
+        return ColorExtensions.toHex(theme.getLabelTextColor());
     }
 
     private static String getThemeDefaultButtonBase(ThemeSettings theme) {
         Color color = theme.getAccentColor();
-        color = Colors.deriveSaturation(color, THEME_DEFAULT_BUTTON_BASE_SATURATION_TRANSFORM);
-        color = Colors.deriveBrightness(color, THEME_DEFAULT_BUTTON_BASE_BRIGHTNESS_TRANSFORM);
-        return Colors.toHex(color);
+        color = ColorExtensions.deriveSaturation(color, THEME_DEFAULT_BUTTON_BASE_SATURATION_TRANSFORM);
+        color = ColorExtensions.deriveBrightness(color, THEME_DEFAULT_BUTTON_BASE_BRIGHTNESS_TRANSFORM);
+        return ColorExtensions.toHex(color);
     }
 }

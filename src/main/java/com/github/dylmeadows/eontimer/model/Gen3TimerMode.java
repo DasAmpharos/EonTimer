@@ -1,18 +1,13 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.common.util.LocalizedEnum;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-public enum Gen3TimerMode implements LocalizedEnum {
-    STANDARD, VARIABLE_TARGET;
+@Getter
+@RequiredArgsConstructor
+public enum Gen3TimerMode implements Option {
+    STANDARD("Standard"),
+    VARIABLE_TARGET("Variable Target");
 
-    @Override
-    public String getLocalizedValue() {
-        return ResourceBundles.getBundle(Gen3TimerMode.class).getString(name());
-    }
-
-    @Override
-    public String toString() {
-        return getLocalizedValue();
-    }
+    private final String text;
 }

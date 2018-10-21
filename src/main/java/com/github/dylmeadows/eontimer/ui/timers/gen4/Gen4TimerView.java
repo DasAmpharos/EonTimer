@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen4;
 
 import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.github.dylmeadows.eontimer.model.Gen4TimerMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -184,7 +184,7 @@ public class Gen4TimerView extends GridPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(Gen4TimerView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(Gen4TimerView.class);
         modeLbl = new Label();
         modeField = new ChoiceBox<>();
         scrollPane = new ScrollPane();

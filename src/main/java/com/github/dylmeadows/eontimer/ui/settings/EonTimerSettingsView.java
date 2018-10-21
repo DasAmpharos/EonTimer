@@ -3,7 +3,7 @@ package com.github.dylmeadows.eontimer.ui.settings;
 import com.github.dylmeadows.eontimer.ui.settings.action.ActionSettingsView;
 import com.github.dylmeadows.eontimer.ui.settings.theme.ThemeSettingsView;
 import com.github.dylmeadows.eontimer.ui.settings.timer.TimerSettingsView;
-import com.github.dylmeadows.eontimer.util.ResourceBundles;
+import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import javafx.geometry.Insets;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -31,7 +31,7 @@ public class EonTimerSettingsView extends DialogPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundles.getBundle(EonTimerSettingsView.class);
+        ResourceBundle bundle = ResourceBundleExtensions.getBundle(EonTimerSettingsView.class);
         tabPane = new TabPane();
         actionTab = new Tab();
         actionSettingsView = new ActionSettingsView();
