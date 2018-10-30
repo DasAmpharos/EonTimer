@@ -1,21 +1,13 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen4;
 
-import com.github.dylmeadows.eontimer.util.Calibrations;
-import com.github.dylmeadows.eontimer.model.timers.DelayTimer;
-import com.github.dylmeadows.eontimer.model.timers.Timer;
-import com.github.dylmeadows.eontimer.model.timers.NullTimer;
-import com.github.dylmeadows.eontimer.ui.timers.TimerController;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
+public class Gen4TimerController {
 
-public class Gen4TimerController extends TimerController<Gen4TimerModel, Gen4TimerView> {
-
-    public Gen4TimerController(Gen4TimerModel model, Gen4TimerView view) {
+    /*public Gen4TimerController(Gen4TimerModel model, Gen4TimerView view) {
         super(model, view);
     }
 
     public Timer createTimer() {
-        Gen4TimerModel model = /*getModel();*/ null;
+        Gen4TimerModel model = *//*getModel();*//* null;
         switch (model.getMode()) {
             case STANDARD:
                 return new DelayTimer(
@@ -75,15 +67,15 @@ public class Gen4TimerController extends TimerController<Gen4TimerModel, Gen4Tim
 
     @Override
     public void calibrate() {
-        /*switch (getModel().getMode()) {
+        *//*switch (getModel().getMode()) {
             case STANDARD: {
                 int temp = DelayTimer.calibrate((DelayTimer) getTimer(), getView().getDelayHit());
                 int calibration = getView().getCalibratedDelay() + (getModel().isPrecisionCalibrationMode() ? temp :
-                        Calibrations.convertToDelays(temp, getModel().getConsole()));
+                        CalibrationUtils.convertToDelays(temp, getModel().getConsole()));
                 getView().setCalibratedDelay(calibration);
                 break;
             }
         }
-        getView().setDelayHitText("");*/
-    }
+        getView().setDelayHitText("");*//*
+    }*/
 }

@@ -1,37 +1,12 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
-import com.github.dylmeadows.eontimer.ui.settings.EonTimerSettingsView;
-import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerView;
-import com.github.dylmeadows.eontimer.ui.timers.gen3.Gen3TimerView;
-import com.github.dylmeadows.eontimer.ui.timers.gen4.Gen4TimerView;
-import com.github.dylmeadows.eontimer.ui.timers.gen5.Gen5TimerView;
-import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.VPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
+import javafx.scene.layout.GridPane;
 import org.springframework.stereotype.Component;
-
-import java.util.ResourceBundle;
 
 @Component
 public class EonTimerView extends GridPane {
 
-    private final BooleanProperty tabDisable;
+    /*private final BooleanProperty tabDisable;
 
     private final ReadOnlyObjectWrapper<TimerType> timerType;
 
@@ -435,5 +410,5 @@ public class EonTimerView extends GridPane {
 
     public enum TimerType {
         GEN5, GEN4, GEN3, CUSTOM
-    }
+    }*/
 }

@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.settings.theme;
 
 import com.github.dylmeadows.eontimer.model.ThemeBackgroundMode;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
+import com.github.dylmeadows.java.util.ResourceBundleUtils;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -26,7 +26,7 @@ public class ThemeSettingsView extends ScrollPane {
 
 //    private void onBackgroundImageBtnAction() {
 //        File file = new File(getModel().getBackgroundImage());
-//        ResourceBundle bundle = ResourceBundleExtensions.getBundle(ThemeSettingsView.class);
+//        ResourceBundle bundle = ResourceBundleUtils.getBundle(ThemeSettingsView.class);
 //
 //        FileChooser chooser = new FileChooser();
 //        FileChooser.ExtensionFilter imageExtensionFilter = new FileChooser.ExtensionFilter(
@@ -150,7 +150,7 @@ public class ThemeSettingsView extends ScrollPane {
     }
 
     private void initComponents() {
-        ResourceBundle bundle = ResourceBundleExtensions.getBundle(ThemeSettingsView.class);
+        ResourceBundle bundle = ResourceBundleUtils.getBundle(ThemeSettingsView.class);
         gridPane = new GridPane();
         backgroundModeLbl = new Label();
         backgroundModeField = new ChoiceBox<>();

@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.settings.theme;
 
 import com.github.dylmeadows.eontimer.model.ThemeBackgroundMode;
-import com.github.dylmeadows.eontimer.reference.settings.ThemeSettingsConstants;
+import com.github.dylmeadows.eontimer.model.ThemeSettingsConstants;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;

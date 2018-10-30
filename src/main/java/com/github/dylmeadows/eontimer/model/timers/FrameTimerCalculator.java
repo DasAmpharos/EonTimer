@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.model.timers;
 
-import com.github.dylmeadows.eontimer.util.Calibrations;
+import com.github.dylmeadows.eontimer.util.CalibrationUtils;
 import com.github.dylmeadows.eontimer.model.Console;
 
 public class FrameTimerCalculator implements TimerCalculator<FrameTimer> {
@@ -10,7 +10,7 @@ public class FrameTimerCalculator implements TimerCalculator<FrameTimer> {
         Console placeholder = Console._3DS;
         return new int[]{
                 timer.getPreTimer(),
-                Calibrations.convertToMillis(timer.getTargetFrame(), placeholder) + timer.getCalibration()
+                CalibrationUtils.convertToMillis(timer.getTargetFrame(), placeholder) + timer.getCalibration()
         };
     }
 

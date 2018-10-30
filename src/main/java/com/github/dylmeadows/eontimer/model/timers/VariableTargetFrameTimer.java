@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.model.timers;
 
-import com.github.dylmeadows.eontimer.util.Calibrations;
+import com.github.dylmeadows.eontimer.util.CalibrationUtils;
 import com.github.dylmeadows.eontimer.model.Console;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -28,7 +28,7 @@ public class VariableTargetFrameTimer implements VariableTimer, Timer {
             /*return TimerConstants.INFINITE_TIME_SPAN;*/
             return Duration.ZERO;
         else
-            return Duration.ofMillis(Calibrations.convertToMillis(getTargetFrame(), getConsole()));
+            return Duration.ofMillis(CalibrationUtils.convertToMillis(getTargetFrame(), getConsole()));
     }
 
     protected void initialize() {

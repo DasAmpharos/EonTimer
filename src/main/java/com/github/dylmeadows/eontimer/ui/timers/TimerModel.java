@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers;
 
 import com.github.dylmeadows.eontimer.model.Console;
-import com.github.dylmeadows.eontimer.reference.settings.TimerSettingsConstants;
+import com.github.dylmeadows.eontimer.model.TimerSettingsConstants;
 import javafx.beans.property.*;
 
 public abstract class TimerModel implements TimerSettingsConstants {

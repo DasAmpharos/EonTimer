@@ -1,7 +1,6 @@
 package com.github.dylmeadows.eontimer.model.timers;
 
 import com.github.dylmeadows.eontimer.model.Console;
-import com.github.dylmeadows.eontimer.reference.timer.Gen5TimerConstants;
 
 import java.time.Duration;
 
@@ -47,7 +46,7 @@ public class EnhancedEntralinkTimer extends EntralinkTimer implements Gen5TimerC
 
     public static int calibrate(EnhancedEntralinkTimer timer, int result) {
         // TODO: refactor
-        /*double npcRate = 1.0 / Calibrations.convertToMillis(32, timer.getConsole());
+        /*double npcRate = 1.0 / CalibrationUtils.convertToMillis(32, timer.getConsole());
         return (int) Math.round((timer.getTargetAdvances() - result) / (ENTRALINK_FRAME_RATE + (timer.getNpcCount() * npcRate))) * 1000;*/
         return 0;
     }
@@ -82,7 +81,7 @@ public class EnhancedEntralinkTimer extends EntralinkTimer implements Gen5TimerC
     private Duration calcFrameTime() {
         // TODO: refactor
         /*int advances = getTargetAdvances() - getInitialAdvances();
-        double npcRate = 1.0 / Calibrations.convertToMillis(32, getConsole());
+        double npcRate = 1.0 / CalibrationUtils.convertToMillis(32, getConsole());
         int ms = (int) Math.round((advances) / (ENTRALINK_FRAME_RATE + (getNpcCount() * npcRate))) * 1000 + getFrameCalibration();
         return Duration.ofMillis(ms);*/
         return Duration.ZERO;

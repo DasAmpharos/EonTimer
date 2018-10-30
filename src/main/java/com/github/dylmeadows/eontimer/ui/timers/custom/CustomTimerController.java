@@ -1,22 +1,8 @@
 package com.github.dylmeadows.eontimer.ui.timers.custom;
 
-import com.github.dylmeadows.eontimer.model.timers.CustomTimer;
-import com.github.dylmeadows.eontimer.model.timers.Timer;
-import com.github.dylmeadows.eontimer.ui.timers.TimerController;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.binding.ObjectBinding;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.scene.control.SelectionModel;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+public class CustomTimerController {
 
-import java.time.Duration;
-
-public class CustomTimerController extends TimerController<CustomTimerModel, CustomTimerView> {
-
-    private BooleanBinding valueAddBtnDisableBinding;
+    /*private BooleanBinding valueAddBtnDisableBinding;
     private BooleanBinding valueRemoveBtnDisableBinding;
     private BooleanBinding valueMoveUpBtnDisableBinding;
     private BooleanBinding valueMoveDownBtnDisableBinding;
@@ -38,10 +24,10 @@ public class CustomTimerController extends TimerController<CustomTimerModel, Cus
     public Timer createTimer() {
         CustomTimer timer = new CustomTimer();
         // TODO: refactor
-        /*if (getModel().getStages().isEmpty())
+        *//*if (getModel().getStages().isEmpty())
             timer.getStages().add(TimerConstants.NULL_TIME_SPAN);
         else
-            timer.getStages().addAll(getModel().getStages());*/
+            timer.getStages().addAll(getModel().getStages());*//*
         return timer;
     }
 
@@ -135,24 +121,24 @@ public class CustomTimerController extends TimerController<CustomTimerModel, Cus
     }
 
     private void onAdd() {
-        /*if (!getView().getValueFieldText().isEmpty()) {
+        *//*if (!getView().getValueFieldText().isEmpty()) {
             int value = getView().getValueFieldValue();
             getView().getItems().add(Duration.ofMillis(value));
             getView().setValueFieldText("");
-        }*/
+        }*//*
     }
 
     private void onDelete() {
-        /*SelectionModel<Duration> selectionModel = getView().getSelectionModel();
+        *//*SelectionModel<Duration> selectionModel = getView().getSelectionModel();
         if (selectionModel.getSelectedIndex() != -1) {
             ObservableList<Duration> items = getView().getItems();
             Duration item = selectionModel.getSelectedItem();
             items.remove(item);
-        }*/
+        }*//*
     }
 
     private void onMoveUp() {
-        /*SelectionModel<Duration> selectionModel = getView().getSelectionModel();
+        *//*SelectionModel<Duration> selectionModel = getView().getSelectionModel();
         if (selectionModel.getSelectedIndex() != -1) {
             ObservableList<Duration> items = getView().getItems();
             int selectedIndex = selectionModel.getSelectedIndex();
@@ -160,11 +146,11 @@ public class CustomTimerController extends TimerController<CustomTimerModel, Cus
             items.set(selectedIndex, items.get(selectedIndex - 1));
             items.set(selectedIndex - 1, item);
             selectionModel.select(selectedIndex - 1);
-        }*/
+        }*//*
     }
 
     private void onMoveDown() {
-        /*SelectionModel<Duration> selectionModel = getView().getSelectionModel();
+        *//*SelectionModel<Duration> selectionModel = getView().getSelectionModel();
         if (selectionModel.getSelectedIndex() != -1) {
             ObservableList<Duration> items = getView().getItems();
             int selectedIndex = selectionModel.getSelectedIndex();
@@ -172,7 +158,7 @@ public class CustomTimerController extends TimerController<CustomTimerModel, Cus
             items.set(selectedIndex, items.get(selectedIndex + 1));
             items.set(selectedIndex + 1, item);
             selectionModel.select(selectedIndex + 1);
-        }*/
+        }*//*
     }
 
     private boolean hasSelection() {
@@ -188,5 +174,5 @@ public class CustomTimerController extends TimerController<CustomTimerModel, Cus
     private boolean isSelectedLastIndex() {
 //        return hasSelection() && getView().getSelectionModel().getSelectedIndex() == getView().getItems().size() - 1;
         return false;
-    }
+    }*/
 }

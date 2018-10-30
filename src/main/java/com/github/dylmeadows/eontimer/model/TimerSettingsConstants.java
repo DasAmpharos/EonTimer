@@ -1,0 +1,14 @@
+package com.github.dylmeadows.eontimer.model;
+
+import com.github.dylmeadows.eontimer.model.Console;
+
+public interface TimerSettingsConstants {
+
+    Console DEFAULT_CONSOLE = Console.NDS;
+
+    boolean DEFAULT_PRECISION_CALIBRATION_MODE = false;
+
+    int DEFAULT_REFRESH_INTERVAL = 8;
+
+    int DEFAULT_MINIMUM_LENGTH = 14000;
+}

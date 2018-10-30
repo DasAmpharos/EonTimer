@@ -1,5 +1,6 @@
 package com.github.dylmeadows.common.javafx.node;
 
+import com.github.dylmeadows.javafx.node.IntField;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -197,27 +198,6 @@ public class IntFieldTest extends ApplicationTest {
     public void test_showValueInPromptEnabled_write() {
         clickOn(intField).write(VALID_STRING_1);
         Assert.assertThat(intField.getPromptText(), is(VALID_STRING_1));
-    }
-
-    @Test
-    public void test_showValueInPromptDisabled_setValue() {
-        intField.setShowValueInPrompt(false);
-        intField.setValue(VALID_VALUE_1);
-        Assert.assertThat(intField.getPromptText(), is(""));
-    }
-
-    @Test
-    public void test_showValueInPromptDisabled_setText() {
-        intField.setShowValueInPrompt(false);
-        intField.setText(VALID_STRING_1);
-        Assert.assertThat(intField.getPromptText(), is(""));
-    }
-
-    @Test
-    public void test_showValueInPromptDisabled_write() {
-        intField.setShowValueInPrompt(false);
-        clickOn(intField).write(VALID_STRING_1);
-        Assert.assertThat(intField.getPromptText(), is(""));
     }
 
     private void assertThat(String text, int value) {

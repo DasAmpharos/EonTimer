@@ -1,8 +1,8 @@
 package com.github.dylmeadows.eontimer.model.settings;
 
 import com.github.dylmeadows.eontimer.model.ThemeBackgroundMode;
-import com.github.dylmeadows.eontimer.reference.settings.ThemeSettingsConstants;
-import com.github.dylmeadows.eontimer.util.Styles;
+import com.github.dylmeadows.eontimer.model.ThemeSettingsConstants;
+import com.github.dylmeadows.eontimer.util.StyleUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
@@ -39,7 +39,7 @@ public class ThemeSettings implements ThemeSettingsConstants {
     }
 
     public String toCss() {
-        return Styles.toCss(this);
+        return StyleUtils.toCss(this);
     }
 
     public ThemeBackgroundMode getBackgroundMode() {

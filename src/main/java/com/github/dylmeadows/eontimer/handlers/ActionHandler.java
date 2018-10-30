@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.handlers;
 
 import com.github.dylmeadows.eontimer.handlers.actions.ICountdownAction;
-import com.github.dylmeadows.eontimer.reference.settings.ActionSettingsConstants;
+import com.github.dylmeadows.eontimer.model.ActionSettingsConstants;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 

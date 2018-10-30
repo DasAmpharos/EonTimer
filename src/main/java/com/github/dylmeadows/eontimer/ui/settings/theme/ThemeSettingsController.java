@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.ui.settings.theme;
 
 public class ThemeSettingsController {
 
-    public ThemeSettingsController(ThemeSettingsModel model, ThemeSettingsView view) {
+    /*public ThemeSettingsController(ThemeSettingsModel model, ThemeSettingsView view) {
     }
 
     protected void bind(ThemeSettingsModel model, ThemeSettingsView view) {
@@ -25,5 +25,5 @@ public class ThemeSettingsController {
         view.controlBaseColorProperty().unbindBidirectional(model.controlBaseColorProperty());
         view.labelTextColorProperty().unbindBidirectional(model.labelTextColorProperty());
         view.accentColorProperty().unbindBidirectional(model.accentColorProperty());
-    }
+    }*/
 }

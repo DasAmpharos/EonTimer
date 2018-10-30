@@ -4,10 +4,10 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.concurrent.Task;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import lombok.SneakyThrows;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  * {@link Region}, whose background fill will be altered and to the
  * {@link Color} that it will change to.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class VisualAction implements ICountdownAction {
 
     /**
@@ -54,15 +55,12 @@ public class VisualAction implements ICountdownAction {
      * Momentarily (50ms) alters the background fill.
      */
     @Override
+    @SneakyThrows
     public void action() {
-        service.submit(new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                fill.set(getActiveFill());
-                TimeUnit.MILLISECONDS.sleep(50);
-                fill.set(getDefaultFill());
-                return null;
-            }
+        service.submit(() -> {
+            fill.set(getActiveFill());
+            TimeUnit.MILLISECONDS.sleep(50);
+            fill.set(getDefaultFill());
         });
     }
 

@@ -1,15 +1,8 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen4;
 
-import com.github.dylmeadows.eontimer.util.Calibrations;
-import com.github.dylmeadows.eontimer.model.Gen4TimerMode;
-import com.github.dylmeadows.eontimer.reference.timer.Gen4TimerConstants;
-import com.github.dylmeadows.eontimer.ui.timers.TimerModel;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+public class Gen4TimerModel {
 
-public class Gen4TimerModel extends TimerModel implements Gen4TimerConstants {
-
-    private final ObjectProperty<Gen4TimerMode> mode;
+    /*private final ObjectProperty<Gen4TimerMode> mode;
     private final IntegerProperty calibratedDelay;
     private final IntegerProperty calibratedSecond;
     private final IntegerProperty targetDelay;
@@ -34,7 +27,7 @@ public class Gen4TimerModel extends TimerModel implements Gen4TimerConstants {
     }
 
     private int calculateCalibration() {
-        return Calibrations.createCalibration(
+        return CalibrationUtils.createCalibration(
                 getCalibratedDelay(),
                 getCalibratedSecond(),
                 getConsole());
@@ -118,5 +111,5 @@ public class Gen4TimerModel extends TimerModel implements Gen4TimerConstants {
 
     public void setDelayHit(int delayHit) {
         this.delayHit.set(delayHit);
-    }
+    }*/
 }

@@ -1,27 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.settings.action;
 
-import com.github.dylmeadows.eontimer.model.ActionMode;
-import com.github.dylmeadows.eontimer.model.resources.SoundResource;
-import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.paint.Color;
-
-import java.util.ResourceBundle;
 
 public class ActionSettingsView extends GridPane {
 
-    public ActionSettingsView() {
+    /*public ActionSettingsView() {
         initComponents();
     }
 
@@ -191,5 +174,5 @@ public class ActionSettingsView extends GridPane {
     private Label countLbl;
     private IntField countField;
 
-    // endregion
+    // endregion*/
 }

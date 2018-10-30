@@ -1,30 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen3;
 
-import com.github.dylmeadows.common.javafx.node.GridPaneLayout;
-import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
-import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.VPos;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-
-import java.util.ResourceBundle;
 
 public class Gen3TimerView extends GridPane {
 
-    public Gen3TimerView() {
+    /*public Gen3TimerView() {
         initComponents();
     }
 
@@ -372,5 +352,5 @@ public class Gen3TimerView extends GridPane {
     private Label frameHitLbl;
     private IntField frameHitField;
 
-    // endregion
+    // endregion*/
 }

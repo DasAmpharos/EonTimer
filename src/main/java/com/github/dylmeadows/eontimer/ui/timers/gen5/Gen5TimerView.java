@@ -1,8 +1,5 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen5;
 
-import com.github.dylmeadows.common.javafx.node.GridPaneLayout;
-import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
 import com.github.dylmeadows.eontimer.model.Gen5TimerMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -24,7 +21,7 @@ import java.util.ResourceBundle;
 
 public class Gen5TimerView extends GridPane {
 
-    public Gen5TimerView() {
+    /*public Gen5TimerView() {
         initComponents();
     }
 
@@ -676,5 +673,5 @@ public class Gen5TimerView extends GridPane {
     private Label actualAdvancesLbl;
     private IntField actualAdvancesField;
 
-    // endregion
+    // endregion*/
 }

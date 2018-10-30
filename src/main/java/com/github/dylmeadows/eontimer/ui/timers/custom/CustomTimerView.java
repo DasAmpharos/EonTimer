@@ -1,28 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.timers.custom;
 
-import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
-import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.*;
-
-import java.time.Duration;
-import java.util.ResourceBundle;
+import javafx.scene.layout.GridPane;
 
 public class CustomTimerView extends GridPane {
 
-    public CustomTimerView() {
+    /*public CustomTimerView() {
         initComponents();
     }
 
@@ -303,5 +285,5 @@ public class CustomTimerView extends GridPane {
     private Button valueMoveUpBtn;
     private Button valueMoveDownBtn;
 
-    // endregion
+    // endregion*/
 }

@@ -1,20 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.settings;
 
-import com.github.dylmeadows.eontimer.ui.settings.action.ActionSettingsView;
-import com.github.dylmeadows.eontimer.ui.settings.theme.ThemeSettingsView;
-import com.github.dylmeadows.eontimer.ui.settings.timer.TimerSettingsView;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-
-import java.util.ResourceBundle;
 
 public class EonTimerSettingsView extends DialogPane {
 
-    public EonTimerSettingsView() {
+    /*public EonTimerSettingsView() {
         initComponents();
     }
 
@@ -80,5 +70,5 @@ public class EonTimerSettingsView extends DialogPane {
     private Tab themeTab;
     private ThemeSettingsView themeSettingsView;
 
-    // endregion
+    // endregion*/
 }

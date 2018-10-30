@@ -1,5 +1,6 @@
 package com.github.dylmeadows.eontimer.handlers;
 
+@SuppressWarnings("unused")
 public interface TimerLifecycleListener {
 
     /**

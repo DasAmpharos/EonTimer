@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.handlers;
 
-import com.github.dylmeadows.eontimer.reference.settings.TimerSettingsConstants;
+import com.github.dylmeadows.eontimer.model.TimerSettingsConstants;
 import com.github.dylmeadows.eontimer.model.timers.Timer;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;

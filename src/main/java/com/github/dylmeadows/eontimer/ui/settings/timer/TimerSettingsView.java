@@ -1,27 +1,10 @@
 package com.github.dylmeadows.eontimer.ui.settings.timer;
 
-import com.github.dylmeadows.eontimer.model.Console;
-import com.github.dylmeadows.common.javafx.node.IntField;
-import com.github.dylmeadows.eontimer.util.extension.ResourceBundleExtensions;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-
-import java.util.ResourceBundle;
 
 public class TimerSettingsView extends GridPane {
 
-    public TimerSettingsView() {
+    /*public TimerSettingsView() {
         initComponents();
     }
 
@@ -123,5 +106,5 @@ public class TimerSettingsView extends GridPane {
     private IntField refreshIntervalField;
     private CheckBox precisionCalibrationModeField;
 
-    // endregion
+    // endregion*/
 }

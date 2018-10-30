@@ -1,8 +1,7 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen5;
 
-import com.github.dylmeadows.eontimer.util.Calibrations;
+import com.github.dylmeadows.eontimer.util.CalibrationUtils;
 import com.github.dylmeadows.eontimer.model.Gen5TimerMode;
-import com.github.dylmeadows.eontimer.reference.timer.Gen5TimerConstants;
 import com.github.dylmeadows.eontimer.ui.timers.TimerModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -47,12 +46,12 @@ public class Gen5TimerModel extends TimerModel implements Gen5TimerConstants {
 
     private int calculateCalibration() {
         return isPrecisionCalibrationMode() ? getCalibration() :
-                Calibrations.convertToMillis(getCalibration(), getConsole());
+                CalibrationUtils.convertToMillis(getCalibration(), getConsole());
     }
 
     private int calculateEntralinkCalibration() {
         return isPrecisionCalibrationMode() ? getEntralinkCalibration() :
-                Calibrations.convertToMillis(getEntralinkCalibration(), getConsole());
+                CalibrationUtils.convertToMillis(getEntralinkCalibration(), getConsole());
     }
 
     public Gen5TimerMode getMode() {

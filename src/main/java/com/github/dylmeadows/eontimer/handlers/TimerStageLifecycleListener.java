@@ -2,6 +2,7 @@ package com.github.dylmeadows.eontimer.handlers;
 
 import java.time.Duration;
 
+@SuppressWarnings("unused")
 public interface TimerStageLifecycleListener {
 
     /**

@@ -3,7 +3,7 @@ package com.github.dylmeadows.eontimer.ui.settings.action;
 import com.github.dylmeadows.eontimer.handlers.ActionHandler;
 import com.github.dylmeadows.eontimer.model.ActionMode;
 import com.github.dylmeadows.eontimer.model.resources.SoundResource;
-import com.github.dylmeadows.eontimer.reference.settings.ActionSettingsConstants;
+import com.github.dylmeadows.eontimer.model.ActionSettingsConstants;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;

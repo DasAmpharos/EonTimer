@@ -1,20 +1,8 @@
 package com.github.dylmeadows.eontimer.ui;
 
-import com.github.dylmeadows.eontimer.model.Console;
-import com.github.dylmeadows.eontimer.ui.settings.EonTimerSettingsModel;
-import com.github.dylmeadows.eontimer.ui.settings.timer.TimerSettingsModel;
-import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerModel;
-import com.github.dylmeadows.eontimer.ui.timers.gen3.Gen3TimerModel;
-import com.github.dylmeadows.eontimer.ui.timers.gen4.Gen4TimerModel;
-import com.github.dylmeadows.eontimer.ui.timers.gen5.Gen5TimerModel;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
 public class EonTimerModel {
 
-    private final ObjectProperty<Gen5TimerModel> gen5TimerModel;
+    /*private final ObjectProperty<Gen5TimerModel> gen5TimerModel;
     private final ObjectProperty<Gen4TimerModel> gen4TimerModel;
     private final ObjectProperty<Gen3TimerModel> gen3TimerModel;
     private final ObjectProperty<CustomTimerModel> customTimerModel;
@@ -106,5 +94,5 @@ public class EonTimerModel {
 
     public void setEonTimerSettingsModel(EonTimerSettingsModel eonTimerSettingsModel) {
         this.eonTimerSettingsModel.set(eonTimerSettingsModel);
-    }
+    }*/
 }

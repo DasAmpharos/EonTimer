@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.model.timers;
 
-import com.github.dylmeadows.eontimer.util.Calibrations;
+import com.github.dylmeadows.eontimer.util.CalibrationUtils;
 import com.github.dylmeadows.eontimer.model.Console;
 
 public class FrameTimerCalibrator implements TimerCalibrator<FrameTimer> {
@@ -8,6 +8,6 @@ public class FrameTimerCalibrator implements TimerCalibrator<FrameTimer> {
     public int calibrate(FrameTimer timer, int result) {
         // TODO: get console from settings singleton
         Console placeholder = Console._3DS;
-        return Calibrations.convertToMillis(timer.getTargetFrame() - result, placeholder);
+        return CalibrationUtils.convertToMillis(timer.getTargetFrame() - result, placeholder);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.dylmeadows.eontimer.model;
 
+import com.github.dylmeadows.javafx.util.Option;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

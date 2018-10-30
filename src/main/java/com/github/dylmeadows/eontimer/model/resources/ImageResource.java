@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.model.resources;
 
-import com.github.dylmeadows.common.util.Resource;
+import com.github.dylmeadows.java.io.Resource;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

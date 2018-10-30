@@ -24,8 +24,8 @@ public class DelayTimer extends SimpleTimer {
 
     public static int calibrate(DelayTimer timer, int result) {
         // TODO: refactor
-        /*result = Calibrations.convertToMillis(result, timer.getConsole());
-        int target = Calibrations.convertToMillis(timer.getTargetDelay(), timer.getConsole());
+        /*result = CalibrationUtils.convertToMillis(result, timer.getConsole());
+        int target = CalibrationUtils.convertToMillis(timer.getTargetDelay(), timer.getConsole());
 
         int offset = result - target;
 
@@ -41,12 +41,12 @@ public class DelayTimer extends SimpleTimer {
     protected Duration getStage(int stage) {
         /*switch (stage) {
             case 0:
-                Duration duration = Duration.ofMillis((int) super.getStage(0).toMillis() - Calibrations.convertToMillis(getTargetDelay(), getConsole()));
+                Duration duration = Duration.ofMillis((int) super.getStage(0).toMillis() - CalibrationUtils.convertToMillis(getTargetDelay(), getConsole()));
                 while ((int) duration.toMillis() < getMinimumLength())
                     duration = duration.plus(Duration.ofMinutes(1));
                 return duration;
             case 1:
-                return Duration.ofMillis(Calibrations.convertToMillis(getTargetDelay(), getConsole()) - getCalibration());
+                return Duration.ofMillis(CalibrationUtils.convertToMillis(getTargetDelay(), getConsole()) - getCalibration());
             default:
                 return TimerConstants.NULL_TIME_SPAN;
         }*/

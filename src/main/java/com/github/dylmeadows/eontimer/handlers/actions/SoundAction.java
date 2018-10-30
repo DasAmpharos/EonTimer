@@ -1,10 +1,9 @@
 package com.github.dylmeadows.eontimer.handlers.actions;
 
-import com.github.dylmeadows.common.sound.SoundPlayer;
 
 /**
  * An audio action capable of playing sounds during a timer countdown.
- * Contains an underlying reference to {@link SoundPlayer}, which is the
+ * Contains an underlying reference to {@link //}, which is the
  * mechanism for loading and playing sounds.
  */
 public class SoundAction implements ICountdownAction {
@@ -19,7 +18,7 @@ public class SoundAction implements ICountdownAction {
 
 
     /*
-    *//**
+     *//**
      * Underlying audio loader and player.
      *//*
     private final SoundPlayer player;

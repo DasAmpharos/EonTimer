@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.ui.settings.action;
 
 public class ActionSettingsController {
 
-    public ActionSettingsController(ActionSettingsModel model, ActionSettingsView view) {
+    /*public ActionSettingsController(ActionSettingsModel model, ActionSettingsView view) {
     }
 
     protected void bind(ActionSettingsModel model, ActionSettingsView view) {
@@ -19,5 +19,5 @@ public class ActionSettingsController {
         view.soundProperty().unbindBidirectional(model.soundProperty());
         view.intervalProperty().unbindBidirectional(model.intervalProperty());
         view.countProperty().unbindBidirectional(model.countProperty());
-    }
+    }*/
 }

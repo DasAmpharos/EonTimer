@@ -1,24 +1,16 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen3;
 
-import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
-import com.github.dylmeadows.eontimer.model.timers.NullTimer;
-import com.github.dylmeadows.eontimer.model.timers.Timer;
-import com.github.dylmeadows.eontimer.model.timers.VariableTargetFrameTimer;
-import com.github.dylmeadows.eontimer.ui.timers.TimerController;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
+public class Gen3TimerController {
 
-public class Gen3TimerController extends TimerController<Gen3TimerModel, Gen3TimerView> {
-
-    public Gen3TimerController(Gen3TimerModel model, Gen3TimerView view) {
+    /*public Gen3TimerController(Gen3TimerModel model, Gen3TimerView view) {
         super(model, view);
     }
 
     public Timer createTimer() {
-        Gen3TimerModel model = /*getModel();*/ null;
+        Gen3TimerModel model = *//*getModel();*//* null;
         switch (model.getMode()) {
             // TODO: refactor
-            /*case STANDARD: {
+            *//*case STANDARD: {
                 return new FrameTimer(
                         model.getCalibration(),
                         model.getPreTimer(),
@@ -28,7 +20,7 @@ public class Gen3TimerController extends TimerController<Gen3TimerModel, Gen3Tim
             case VARIABLE_TARGET: {
                 return new VariableTargetFrameTimer(
                         model.getConsole());
-            }*/
+            }*//*
             default:
                 return new NullTimer();
         }
@@ -77,12 +69,12 @@ public class Gen3TimerController extends TimerController<Gen3TimerModel, Gen3Tim
 
     @Override
     public void calibrate() {
-        /*switch (getModel().getMode()) {
+        *//*switch (getModel().getMode()) {
             case STANDARD: {
                 // TODO: refactor
-                *//*int temp = FrameTimer.calibrate((FrameTimer) getTimer(), getView().getFrameHit());
+                *//**//*int temp = FrameTimer.calibrate((FrameTimer) getTimer(), getView().getFrameHit());
                 int calibration = getView().getCalibration() + temp;
-                getView().setCalibration(calibration);*//*
+                getView().setCalibration(calibration);*//**//*
                 break;
             }
             case VARIABLE_TARGET: {
@@ -91,6 +83,6 @@ public class Gen3TimerController extends TimerController<Gen3TimerModel, Gen3Tim
                 break;
             }
         }
-        getView().setFrameHitText("");*/
-    }
+        getView().setFrameHitText("");*//*
+    }*/
 }

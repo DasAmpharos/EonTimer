@@ -2,7 +2,7 @@ package com.github.dylmeadows.eontimer.ui.settings.timer;
 
 public class TimerSettingsController {
 
-    public TimerSettingsController(TimerSettingsModel model, TimerSettingsView view) {
+    /*public TimerSettingsController(TimerSettingsModel model, TimerSettingsView view) {
     }
 
     protected void bind(TimerSettingsModel model, TimerSettingsView view) {
@@ -15,5 +15,5 @@ public class TimerSettingsController {
         view.consoleProperty().unbindBidirectional(model.consoleProperty());
         view.refreshIntervalProperty().unbindBidirectional(model.refreshIntervalProperty());
         view.precisionCalibrationModeProperty().unbindBidirectional(model.precisionCalibrationModeProperty());
-    }
+    }*/
 }

@@ -10,6 +10,7 @@ import java.util.List;
  * Responsible for running the underlying {@link Timer} implementation and
  * notifying registered event handlers of timer events as they occur.
  */
+@SuppressWarnings("unused")
 public interface ITimerMonitor {
 
     /**

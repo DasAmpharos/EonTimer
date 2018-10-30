@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.github.dylmeadows.eontimer.component.timer.Gen3TimerController">
+    <top>
+        <VBox spacing="5.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Mode"/>
+                <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
+            </children>
+        </VBox>
+    </top>
+    <center>
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0"
+              BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+            <children>
+                <VBox fx:id="calibrationFieldSet" spacing="5.0">
+                    <children>
+                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Calibration"/>
+                        <Spinner fx:id="calibrationField" maxHeight="1.7976931348623157E308"
+                                 maxWidth="1.7976931348623157E308"/>
+                    </children>
+                </VBox>
+                <VBox layoutX="20.0" layoutY="20.0" spacing="5.0">
+                    <children>
+                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Pre-Timer"/>
+                        <Spinner fx:id="preTimerField" maxHeight="1.7976931348623157E308"
+                                 maxWidth="1.7976931348623157E308"/>
+                    </children>
+                </VBox>
+                <VBox layoutX="20.0" layoutY="68.0" spacing="5.0">
+                    <children>
+                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                               text="Target Frame"/>
+                        <Spinner fx:id="targetFrameField" maxHeight="1.7976931348623157E308"
+                                 maxWidth="1.7976931348623157E308"/>
+                    </children>
+                </VBox>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="10.0" top="10.0"/>
+            </BorderPane.margin>
+        </VBox>
+    </center>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+    <bottom>
+        <VBox fx:id="frameHitFieldSet" spacing="5.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Frame Hit"/>
+                <Spinner fx:id="frameHitField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
+            </children>
+        </VBox>
+    </bottom>
+</BorderPane>

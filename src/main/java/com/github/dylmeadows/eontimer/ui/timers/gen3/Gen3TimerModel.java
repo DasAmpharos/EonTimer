@@ -1,16 +1,8 @@
 package com.github.dylmeadows.eontimer.ui.timers.gen3;
 
-import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
-import com.github.dylmeadows.eontimer.reference.timer.Gen3TimerConstants;
-import com.github.dylmeadows.eontimer.ui.timers.TimerModel;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+public class Gen3TimerModel {
 
-public class Gen3TimerModel extends TimerModel implements Gen3TimerConstants {
-
-    private final ObjectProperty<Gen3TimerMode> mode;
+    /*private final ObjectProperty<Gen3TimerMode> mode;
     private final IntegerProperty calibration;
     private final IntegerProperty preTimer;
     private final IntegerProperty targetFrame;
@@ -82,5 +74,5 @@ public class Gen3TimerModel extends TimerModel implements Gen3TimerConstants {
 
     public void setFrameHit(int frameHit) {
         this.frameHit.set(frameHit);
-    }
+    }*/
 }
