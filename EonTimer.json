@@ -1,5 +1,12 @@
 {
-  "gen5TimerModel": {
+  "gen3": {
+    "mode": "STANDARD",
+    "calibration": 10,
+    "preTimer": 5000,
+    "targetFrame": 1000
+  },
+  "gen4": {},
+  "gen5": {
     "mode": "STANDARD",
     "calibration": -95,
     "targetDelay": 1200,
@@ -8,44 +15,7 @@
     "frameCalibration": 0,
     "targetAdvances": 100
   },
-  "gen4TimerModel": {
-    "mode": "STANDARD",
-    "calibratedDelay": 500,
-    "calibratedSecond": 14,
-    "targetDelay": 600,
-    "targetSecond": 50
-  },
-  "gen3TimerModel": {
-    "mode": "STANDARD",
-    "calibration": 0,
-    "preTimer": 5000,
-    "targetFrame": 1000
-  },
-  "customTimerModel": {
+  "custom": {
     "stages": []
-  },
-  "eonTimerSettingsModel": {
-    "actionSettingsModel": {
-      "mode": "AUDIO",
-      "color": "#00ffffff",
-      "sound": "BEEP",
-      "interval": 500,
-      "count": 6
-    },
-    "timerSettingsModel": {
-      "console": "NDS",
-      "refreshInterval": 8,
-      "precisionCalibrationMode": false
-    },
-    "themeSettingsModel": {
-      "backgroundMode": "DEFAULT",
-      "backgroundColor": "#63b2c4ff",
-      "backgroundImage": "",
-      "panelBaseColor": "#ffffffff",
-      "panelTransparency": 0.5,
-      "controlBaseColor": "#bfbfbfff",
-      "labelTextColor": "#000000ff",
-      "accentColor": "#039ed3ff"
-    }
   }
 }

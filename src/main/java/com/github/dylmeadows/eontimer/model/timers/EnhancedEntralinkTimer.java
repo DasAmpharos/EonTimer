@@ -4,7 +4,7 @@ import com.github.dylmeadows.eontimer.model.Console;
 
 import java.time.Duration;
 
-public class EnhancedEntralinkTimer extends EntralinkTimer implements Gen5TimerConstants {
+public class EnhancedEntralinkTimer extends EntralinkTimer {
 
     private final int targetAdvances;
 

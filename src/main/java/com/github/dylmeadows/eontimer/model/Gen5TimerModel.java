@@ -1,12 +1,14 @@
-package com.github.dylmeadows.eontimer.ui.timers.gen5;
+package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.eontimer.util.CalibrationUtils;
-import com.github.dylmeadows.eontimer.model.Gen5TimerMode;
-import com.github.dylmeadows.eontimer.ui.timers.TimerModel;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
-public class Gen5TimerModel extends TimerModel implements Gen5TimerConstants {
+import static com.github.dylmeadows.eontimer.model.Gen5TimerConstants.*;
+
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class Gen5TimerModel {
 
     private final ObjectProperty<Gen5TimerMode> mode;
     private final IntegerProperty calibration;
@@ -19,9 +21,6 @@ public class Gen5TimerModel extends TimerModel implements Gen5TimerConstants {
     private final transient IntegerProperty secondHit;
     private final transient IntegerProperty delayHit;
     private final transient IntegerProperty actualAdvances;
-
-    private final transient ReadOnlyIntegerWrapper calculatedCalibration;
-    private final transient ReadOnlyIntegerWrapper calculatedEntralinkCalibration;
 
     public Gen5TimerModel() {
         mode = new SimpleObjectProperty<>(DEFAULT_MODE);
@@ -36,23 +35,23 @@ public class Gen5TimerModel extends TimerModel implements Gen5TimerConstants {
         delayHit = new SimpleIntegerProperty();
         actualAdvances = new SimpleIntegerProperty();
 
-        calculatedCalibration = new ReadOnlyIntegerWrapper();
+        /*calculatedCalibration = new ReadOnlyIntegerWrapper();
         calculatedCalibration.bind(Bindings.createIntegerBinding(this::calculateCalibration,
-                precisionCalibrationModeProperty(), calibration, consoleProperty()));
+            precisionCalibrationModeProperty(), calibration, consoleProperty()));
         calculatedEntralinkCalibration = new ReadOnlyIntegerWrapper();
         calculatedEntralinkCalibration.bind(Bindings.createIntegerBinding(this::calculateEntralinkCalibration,
-                precisionCalibrationModeProperty(), entralinkCalibration, consoleProperty()));
+            precisionCalibrationModeProperty(), entralinkCalibration, consoleProperty()));*/
     }
 
-    private int calculateCalibration() {
+    /*private int calculateCalibration() {
         return isPrecisionCalibrationMode() ? getCalibration() :
-                CalibrationUtils.convertToMillis(getCalibration(), getConsole());
+            CalibrationUtils.convertToMillis(getCalibration(), getConsole());
     }
 
     private int calculateEntralinkCalibration() {
         return isPrecisionCalibrationMode() ? getEntralinkCalibration() :
-                CalibrationUtils.convertToMillis(getEntralinkCalibration(), getConsole());
-    }
+            CalibrationUtils.convertToMillis(getEntralinkCalibration(), getConsole());
+    }*/
 
     public Gen5TimerMode getMode() {
         return mode.get();
@@ -172,21 +171,5 @@ public class Gen5TimerModel extends TimerModel implements Gen5TimerConstants {
 
     public void setActualAdvances(int actualAdvances) {
         this.actualAdvances.set(actualAdvances);
-    }
-
-    public int getCalculatedCalibration() {
-        return calculatedCalibration.get();
-    }
-
-    public ReadOnlyIntegerProperty calculatedCalibrationProperty() {
-        return calculatedCalibration.getReadOnlyProperty();
-    }
-
-    public int getCalculatedEntralinkCalibration() {
-        return calculatedEntralinkCalibration.get();
-    }
-
-    public ReadOnlyIntegerProperty calculatedEntralinkCalibrationProperty() {
-        return calculatedEntralinkCalibration.getReadOnlyProperty();
     }
 }

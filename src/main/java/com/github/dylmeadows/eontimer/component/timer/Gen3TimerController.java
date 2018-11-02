@@ -1,6 +1,7 @@
 package com.github.dylmeadows.eontimer.component.timer;
 
 import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
+import com.github.dylmeadows.eontimer.model.Gen3TimerModel;
 import com.github.dylmeadows.javafx.util.OptionConverter;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
@@ -10,13 +11,17 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.VBox;
 import moe.tristan.easyfxml.api.FxmlController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static com.github.dylmeadows.eontimer.model.Gen3TimerConstants.*;
 import static moe.tristan.easyfxml.util.Nodes.hideAndResizeParentIf;
 
 @Component
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen3TimerController implements FxmlController {
+
+    private final Gen3TimerModel model;
 
     @FXML
     private ChoiceBox<Gen3TimerMode> modeField;
@@ -34,18 +39,19 @@ public class Gen3TimerController implements FxmlController {
     @FXML
     private VBox frameHitFieldSet;
 
-    public static final Gen3TimerMode DEFAULT_MODE = Gen3TimerMode.STANDARD;
-    public static final int DEFAULT_CALIBRATION = 0;
-    public static final int DEFAULT_PRE_TIMER = 5000;
-    public static final int DEFAULT_TARGET_FRAME = 1000;
+    @Autowired
+    public Gen3TimerController(Gen3TimerModel model) {
+        this.model = model;
+    }
 
     @Override
     public void initialize() {
         modeField.setItems(FXCollections.observableArrayList(Gen3TimerMode.values()));
         modeField.setConverter(OptionConverter.forOption(Gen3TimerMode.class));
-        modeField.setValue(DEFAULT_MODE);
+        modeField.valueProperty().bindBidirectional(model.modeProperty());
 
         calibrationField.setValueFactory(createValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, DEFAULT_CALIBRATION));
+        model.calibrationProperty().asObject().bindBidirectional(calibrationField.getValueFactory().valueProperty());
         preTimerField.setValueFactory(createValueFactory(0, Integer.MAX_VALUE, DEFAULT_PRE_TIMER));
         targetFrameField.setValueFactory(createValueFactory(0, Integer.MAX_VALUE, DEFAULT_TARGET_FRAME));
         frameHitField.setValueFactory(createValueFactory(0, Integer.MAX_VALUE));

@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import lombok.SneakyThrows;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,11 +54,13 @@ public class VisualAction implements ICountdownAction {
      * Momentarily (50ms) alters the background fill.
      */
     @Override
-    @SneakyThrows
     public void action() {
         service.submit(() -> {
             fill.set(getActiveFill());
-            TimeUnit.MILLISECONDS.sleep(50);
+            try {
+                TimeUnit.MILLISECONDS.sleep(50);
+            } catch (InterruptedException ignored) {
+            }
             fill.set(getDefaultFill());
         });
     }
