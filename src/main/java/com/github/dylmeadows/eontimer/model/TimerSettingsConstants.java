@@ -1,14 +1,12 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.eontimer.model.Console;
+import lombok.experimental.UtilityClass;
 
-public interface TimerSettingsConstants {
-
-    Console DEFAULT_CONSOLE = Console.NDS;
-
-    boolean DEFAULT_PRECISION_CALIBRATION_MODE = false;
-
-    int DEFAULT_REFRESH_INTERVAL = 8;
-
-    int DEFAULT_MINIMUM_LENGTH = 14000;
+@UtilityClass
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class TimerSettingsConstants {
+    public final Console DEFAULT_CONSOLE = Console.NDS;
+    public final boolean DEFAULT_PRECISION_CALIBRATION_MODE = false;
+    public final int DEFAULT_REFRESH_INTERVAL = 8;
+    public final int DEFAULT_MINIMUM_LENGTH = 14000;
 }

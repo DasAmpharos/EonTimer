@@ -1,18 +1,15 @@
 package com.github.dylmeadows.eontimer.model;
 
-import com.github.dylmeadows.eontimer.model.ActionMode;
-import com.github.dylmeadows.eontimer.model.resources.SoundResource;
+import com.github.dylmeadows.eontimer.model.resource.SoundResource;
 import javafx.scene.paint.Color;
+import lombok.experimental.UtilityClass;
 
-public interface ActionSettingsConstants {
-
-    ActionMode DEFAULT_MODE = ActionMode.AUDIO;
-
-    Color DEFAULT_COLOR = Color.CYAN;
-
-    SoundResource DEFAULT_SOUND = SoundResource.BEEP;
-
-    int DEFAULT_INTERVAL = 500;
-
-    int DEFAULT_COUNT = 6;
+@UtilityClass
+@SuppressWarnings({"unused", "WeakerAccess"})
+public class ActionSettingsConstants {
+    public final ActionMode DEFAULT_MODE = ActionMode.AUDIO;
+    public final Color DEFAULT_COLOR = Color.CYAN;
+    public final SoundResource DEFAULT_SOUND = SoundResource.BEEP;
+    public final int DEFAULT_INTERVAL = 500;
+    public final int DEFAULT_COUNT = 6;
 }

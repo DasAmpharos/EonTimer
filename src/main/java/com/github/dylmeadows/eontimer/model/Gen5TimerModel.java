@@ -10,48 +10,16 @@ import static com.github.dylmeadows.eontimer.model.Gen5TimerConstants.*;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen5TimerModel {
 
-    private final ObjectProperty<Gen5TimerMode> mode;
-    private final IntegerProperty calibration;
-    private final IntegerProperty targetDelay;
-    private final IntegerProperty targetSecond;
-    private final IntegerProperty entralinkCalibration;
-    private final IntegerProperty frameCalibration;
-    private final IntegerProperty targetAdvances;
-
-    private final transient IntegerProperty secondHit;
-    private final transient IntegerProperty delayHit;
-    private final transient IntegerProperty actualAdvances;
-
-    public Gen5TimerModel() {
-        mode = new SimpleObjectProperty<>(DEFAULT_MODE);
-        calibration = new SimpleIntegerProperty(DEFAULT_CALIBRATION);
-        targetDelay = new SimpleIntegerProperty(DEFAULT_TARGET_DELAY);
-        targetSecond = new SimpleIntegerProperty(DEFAULT_TARGET_SECOND);
-        entralinkCalibration = new SimpleIntegerProperty(DEFAULT_ENTRALINK_CALIBRATION);
-        frameCalibration = new SimpleIntegerProperty(DEFAULT_FRAME_CALIBRATION);
-        targetAdvances = new SimpleIntegerProperty(DEFAULT_TARGET_ADVANCES);
-
-        secondHit = new SimpleIntegerProperty();
-        delayHit = new SimpleIntegerProperty();
-        actualAdvances = new SimpleIntegerProperty();
-
-        /*calculatedCalibration = new ReadOnlyIntegerWrapper();
-        calculatedCalibration.bind(Bindings.createIntegerBinding(this::calculateCalibration,
-            precisionCalibrationModeProperty(), calibration, consoleProperty()));
-        calculatedEntralinkCalibration = new ReadOnlyIntegerWrapper();
-        calculatedEntralinkCalibration.bind(Bindings.createIntegerBinding(this::calculateEntralinkCalibration,
-            precisionCalibrationModeProperty(), entralinkCalibration, consoleProperty()));*/
-    }
-
-    /*private int calculateCalibration() {
-        return isPrecisionCalibrationMode() ? getCalibration() :
-            CalibrationUtils.convertToMillis(getCalibration(), getConsole());
-    }
-
-    private int calculateEntralinkCalibration() {
-        return isPrecisionCalibrationMode() ? getEntralinkCalibration() :
-            CalibrationUtils.convertToMillis(getEntralinkCalibration(), getConsole());
-    }*/
+    private final ObjectProperty<Gen5TimerMode> mode = new SimpleObjectProperty<>(DEFAULT_MODE);
+    private final IntegerProperty calibration = new SimpleIntegerProperty(DEFAULT_CALIBRATION);
+    private final IntegerProperty targetDelay = new SimpleIntegerProperty(DEFAULT_TARGET_DELAY);
+    private final IntegerProperty targetSecond = new SimpleIntegerProperty(DEFAULT_TARGET_SECOND);
+    private final IntegerProperty entralinkCalibration = new SimpleIntegerProperty(DEFAULT_ENTRALINK_CALIBRATION);
+    private final IntegerProperty frameCalibration = new SimpleIntegerProperty(DEFAULT_FRAME_CALIBRATION);
+    private final IntegerProperty targetAdvances = new SimpleIntegerProperty(DEFAULT_TARGET_ADVANCES);
+    private final transient IntegerProperty secondHit = new SimpleIntegerProperty();
+    private final transient IntegerProperty delayHit = new SimpleIntegerProperty();
+    private final transient IntegerProperty actualAdvances = new SimpleIntegerProperty();
 
     public Gen5TimerMode getMode() {
         return mode.get();
@@ -173,3 +141,20 @@ public class Gen5TimerModel {
         this.actualAdvances.set(actualAdvances);
     }
 }
+
+//    calculatedCalibration = new ReadOnlyIntegerWrapper();
+//    calculatedCalibration.bind(Bindings.createIntegerBinding(this::calculateCalibration,
+//        precisionCalibrationModeProperty(), calibration, consoleProperty()));
+//    calculatedEntralinkCalibration = new ReadOnlyIntegerWrapper();
+//    calculatedEntralinkCalibration.bind(Bindings.createIntegerBinding(this::calculateEntralinkCalibration,
+//        precisionCalibrationModeProperty(), entralinkCalibration, consoleProperty()));
+//
+//    private int calculateCalibration() {
+//        return isPrecisionCalibrationMode() ? getCalibration() :
+//            CalibrationUtils.convertToMillis(getCalibration(), getConsole());
+//    }
+//
+//    private int calculateEntralinkCalibration() {
+//        return isPrecisionCalibrationMode() ? getEntralinkCalibration() :
+//            CalibrationUtils.convertToMillis(getEntralinkCalibration(), getConsole());
+//    }

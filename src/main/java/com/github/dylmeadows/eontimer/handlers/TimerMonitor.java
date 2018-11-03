@@ -1,8 +1,8 @@
 package com.github.dylmeadows.eontimer.handlers;
 
-import com.github.dylmeadows.eontimer.model.TimerSettingsConstants;
-import com.github.dylmeadows.eontimer.model.timers.Timer;
-import javafx.beans.property.*;
+import com.github.dylmeadows.eontimer.model.timer.Timer;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.value.ObservableValue;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  * between timer run cycles and the {@link Thread} responsible for running the
  * timer.
  */
-public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, TimerChangeListener {
+public class TimerMonitor implements ITimerMonitor, TimerChangeListener {
     // TODO: refactor
 
     @Override
@@ -86,7 +86,7 @@ public class TimerMonitor implements ITimerMonitor, TimerSettingsConstants, Time
 
 
     /*
-    *//**
+     *//**
      * Underlying timer implementation to run and monitor for events.
      *//*
     private final ObjectProperty<Timer> timer;

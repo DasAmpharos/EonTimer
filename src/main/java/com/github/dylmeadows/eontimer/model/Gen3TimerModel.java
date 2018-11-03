@@ -5,24 +5,14 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import static com.github.dylmeadows.eontimer.model.Gen3TimerConstants.*;
-
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen3TimerModel {
 
-    private final ObjectProperty<Gen3TimerMode> mode;
-    private final IntegerProperty calibration;
-    private final IntegerProperty preTimer;
-    private final IntegerProperty targetFrame;
-    private final transient IntegerProperty frameHit;
-
-    public Gen3TimerModel() {
-        mode = new SimpleObjectProperty<>(DEFAULT_MODE);
-        calibration = new SimpleIntegerProperty(DEFAULT_CALIBRATION);
-        preTimer = new SimpleIntegerProperty(DEFAULT_PRE_TIMER);
-        targetFrame = new SimpleIntegerProperty(DEFAULT_TARGET_FRAME);
-        frameHit = new SimpleIntegerProperty();
-    }
+    private final ObjectProperty<Gen3TimerMode> mode = new SimpleObjectProperty<>(Gen3TimerConstants.DEFAULT_MODE);
+    private final IntegerProperty calibration = new SimpleIntegerProperty(Gen3TimerConstants.DEFAULT_CALIBRATION);
+    private final IntegerProperty preTimer = new SimpleIntegerProperty(Gen3TimerConstants.DEFAULT_PRE_TIMER);
+    private final IntegerProperty targetFrame = new SimpleIntegerProperty(Gen3TimerConstants.DEFAULT_TARGET_FRAME);
+    private final transient IntegerProperty frameHit = new SimpleIntegerProperty();
 
     public Gen3TimerMode getMode() {
         return mode.get();

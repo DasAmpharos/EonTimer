@@ -16,7 +16,7 @@ import java.util.List;
  * the registered actions and an int specifying the total number of times to
  * update the registered actions.
  */
-public class ActionHandler implements TimerStageLifecycleListener, ActionSettingsConstants {
+public class ActionHandler implements TimerStageLifecycleListener {
 
     /**
      * Registered actions to propagate updates to when an update is received
@@ -45,7 +45,7 @@ public class ActionHandler implements TimerStageLifecycleListener, ActionSetting
      * and {@link #count} are initialized to default values.
      */
     public ActionHandler() {
-        this(DEFAULT_INTERVAL, DEFAULT_COUNT);
+        this(ActionSettingsConstants.DEFAULT_INTERVAL, ActionSettingsConstants.DEFAULT_COUNT);
     }
 
     /**

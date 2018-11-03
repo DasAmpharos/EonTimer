@@ -1,7 +1,9 @@
 package com.github.dylmeadows.eontimer.component.timer;
 
+import com.github.dylmeadows.eontimer.model.Gen3TimerConstants;
 import com.github.dylmeadows.eontimer.model.Gen3TimerMode;
 import com.github.dylmeadows.eontimer.model.Gen3TimerModel;
+import com.github.dylmeadows.eontimer.util.SpinnerUtils;
 import com.github.dylmeadows.javafx.util.OptionConverter;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
@@ -11,11 +13,9 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.VBox;
 import moe.tristan.easyfxml.api.FxmlController;
+import moe.tristan.easyfxml.util.Nodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static com.github.dylmeadows.eontimer.model.Gen3TimerConstants.*;
-import static moe.tristan.easyfxml.util.Nodes.hideAndResizeParentIf;
 
 @Component
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -40,7 +40,7 @@ public class Gen3TimerController implements FxmlController {
     private VBox frameHitFieldSet;
 
     @Autowired
-    public Gen3TimerController(Gen3TimerModel model) {
+    public Gen3TimerController(final Gen3TimerModel model) {
         this.model = model;
     }
 
@@ -50,22 +50,27 @@ public class Gen3TimerController implements FxmlController {
         modeField.setConverter(OptionConverter.forOption(Gen3TimerMode.class));
         modeField.valueProperty().bindBidirectional(model.modeProperty());
 
-        calibrationField.setValueFactory(createValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, DEFAULT_CALIBRATION));
-        model.calibrationProperty().asObject().bindBidirectional(calibrationField.getValueFactory().valueProperty());
-        preTimerField.setValueFactory(createValueFactory(0, Integer.MAX_VALUE, DEFAULT_PRE_TIMER));
-        targetFrameField.setValueFactory(createValueFactory(0, Integer.MAX_VALUE, DEFAULT_TARGET_FRAME));
-        frameHitField.setValueFactory(createValueFactory(0, Integer.MAX_VALUE));
+        SpinnerValueFactory<Integer> calibrationValueFactory = SpinnerUtils.createValueFactory(
+                Integer.MIN_VALUE, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_CALIBRATION);
+        calibrationValueFactory.valueProperty().bindBidirectional(model.calibrationProperty().asObject());
+        calibrationField.setValueFactory(calibrationValueFactory);
+
+        SpinnerValueFactory<Integer> preTimerValueFactory = SpinnerUtils.createValueFactory(
+                0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_PRE_TIMER);
+        preTimerValueFactory.valueProperty().bindBidirectional(model.preTimerProperty().asObject());
+        preTimerField.setValueFactory(preTimerValueFactory);
+
+        SpinnerValueFactory<Integer> targetFrameValueFactory = SpinnerUtils.createValueFactory(
+                0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_TARGET_FRAME);
+        targetFrameValueFactory.valueProperty().bindBidirectional(model.targetFrameProperty().asObject());
+        targetFrameField.setValueFactory(targetFrameValueFactory);
+
+        SpinnerValueFactory<Integer> frameHitValueFactory = SpinnerUtils.createValueFactory(0, Integer.MAX_VALUE);
+        frameHitValueFactory.valueProperty().bindBidirectional(model.frameHitProperty().asObject());
+        frameHitField.setValueFactory(frameHitValueFactory);
 
         final BooleanBinding isStandardMode = modeField.valueProperty().isEqualTo(Gen3TimerMode.STANDARD);
-        hideAndResizeParentIf(calibrationFieldSet, isStandardMode);
-        hideAndResizeParentIf(frameHitFieldSet, isStandardMode);
-    }
-
-    private SpinnerValueFactory<Integer> createValueFactory(int min, int max) {
-        return new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max);
-    }
-
-    private SpinnerValueFactory<Integer> createValueFactory(int min, int max, int value) {
-        return new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, value);
+        Nodes.hideAndResizeParentIf(calibrationFieldSet, isStandardMode);
+        Nodes.hideAndResizeParentIf(frameHitFieldSet, isStandardMode);
     }
 }

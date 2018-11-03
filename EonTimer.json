@@ -1,9 +1,9 @@
 {
   "gen3": {
     "mode": "STANDARD",
-    "calibration": 10,
+    "calibration": 0,
     "preTimer": 5000,
-    "targetFrame": 1000
+    "targetFrame": 117
   },
   "gen4": {},
   "gen5": {

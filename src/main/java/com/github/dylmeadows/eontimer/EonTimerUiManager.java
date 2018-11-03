@@ -24,6 +24,4 @@ public class EonTimerUiManager extends FxUiManager {
     protected FxmlNode mainComponent() {
         return FxComponents.GEN3_TIMER;
     }
-
-
 }

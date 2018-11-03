@@ -1,9 +1,12 @@
 package com.github.dylmeadows.eontimer.model;
 
 import com.github.dylmeadows.javafx.util.Option;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public enum Console implements Option {
     GBA("GBA", 59.7271),
     NDS("NDS", 59.8261),
@@ -12,11 +15,8 @@ public enum Console implements Option {
 
     private final String text;
     private final double fps;
-    private final double frameRate;
 
-    Console(String text, double fps) {
-        this.text = text;
-        this.fps = fps;
-        this.frameRate = 1000 / fps;
+    public double getFrameRate() {
+        return 1000 / fps;
     }
 }

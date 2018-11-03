@@ -1,10 +1,7 @@
 package com.github.dylmeadows.eontimer.config;
 
-import com.github.dylmeadows.eontimer.model.settings.ApplicationSettings;
-import com.github.dylmeadows.eontimer.ui.timers.custom.CustomTimerModel;
-import com.github.dylmeadows.eontimer.model.Gen3TimerModel;
-import com.github.dylmeadows.eontimer.ui.timers.gen4.Gen4TimerModel;
-import com.github.dylmeadows.eontimer.model.Gen5TimerModel;
+import com.github.dylmeadows.eontimer.model.*;
+import com.github.dylmeadows.eontimer.model.CustomTimerModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.hildan.fxgson.FxGson;
@@ -74,9 +71,24 @@ public class EonTimerConfiguration {
     }
 
     @Bean
+    public ActionSettingsModel actionSettingsModel(ApplicationSettings settings) {
+        return settings.getActionSettings();
+    }
+
+    @Bean
+    public TimerSettingsModel timerSettingsModel(ApplicationSettings settings) {
+        return settings.getTimerSettings();
+    }
+
+    @Bean
+    public ThemeSettingsModel themeSettingsModel(ApplicationSettings settings) {
+        return settings.getThemeSettings();
+    }
+
+    @Bean
     public Gson fxGson(GsonBuilder builder) {
         return FxGson.addFxSupport(builder)
-            .setPrettyPrinting()
-            .create();
+                .setPrettyPrinting()
+                .create();
     }
 }
