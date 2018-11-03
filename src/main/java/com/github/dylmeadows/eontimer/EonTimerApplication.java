@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import java.awt.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
 @SpringBootApplication
-@Import({FxSpringContext.class})
+@Import(FxSpringContext.class)
 public class EonTimerApplication extends FxSpringApplication {
 
     @Override
@@ -20,7 +22,8 @@ public class EonTimerApplication extends FxSpringApplication {
         ApplicationProperties properties = springContext.getBean(ApplicationProperties.class);
         log.info("{} v{}", properties.getName(), properties.getVersion());
         Stream.of("os.name", "os.version", "os.arch", "java.version", "java.vendor", "sun.arch.data.model")
-                .forEach(property -> log.info("{} == {}", property, System.getProperty(property)));
+                .collect(Collectors.toMap(Function.identity(), System::getProperty))
+                .forEach((key, value) -> log.info("{} == {}", key, value));
     }
 
     public static void main(String[] args) {

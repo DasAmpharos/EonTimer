@@ -1,7 +1,13 @@
 package com.github.dylmeadows.eontimer.config;
 
 import com.github.dylmeadows.eontimer.model.*;
-import com.github.dylmeadows.eontimer.model.CustomTimerModel;
+import com.github.dylmeadows.eontimer.model.config.ActionConfigurationModel;
+import com.github.dylmeadows.eontimer.model.config.ThemeConfigurationModel;
+import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
+import com.github.dylmeadows.eontimer.model.timer.CustomTimerModel;
+import com.github.dylmeadows.eontimer.model.timer.Gen3TimerModel;
+import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
+import com.github.dylmeadows.eontimer.model.timer.Gen5TimerModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.hildan.fxgson.FxGson;
@@ -29,7 +35,7 @@ public class EonTimerConfiguration {
     @PreDestroy
     public void destroy() throws IOException {
         Gson gson = context.getBean(Gson.class);
-        ApplicationSettings settings = context.getBean(ApplicationSettings.class);
+        ApplicationModel settings = context.getBean(ApplicationModel.class);
         ApplicationProperties properties = context.getBean(ApplicationProperties.class);
         // persist settings
         String json = gson.toJson(settings);
@@ -38,50 +44,50 @@ public class EonTimerConfiguration {
     }
 
     @Bean
-    public ApplicationSettings settings(@Qualifier("fxGson") Gson gson, ApplicationProperties properties) throws IOException {
-        ApplicationSettings settings;
+    public ApplicationModel settings(@Qualifier("fxGson") Gson gson, ApplicationProperties properties) throws IOException {
+        ApplicationModel settings;
         File file = new File(properties.getName() + ".json");
         if (file.exists()) {
             byte[] bytes = Files.readAllBytes(file.toPath());
-            settings = gson.fromJson(new String(bytes), ApplicationSettings.class);
+            settings = gson.fromJson(new String(bytes), ApplicationModel.class);
         } else {
-            settings = new ApplicationSettings();
+            settings = new ApplicationModel();
         }
         return settings;
     }
 
     @Bean
-    public Gen3TimerModel gen3TimerModel(ApplicationSettings settings) {
+    public Gen3TimerModel gen3TimerModel(ApplicationModel settings) {
         return settings.getGen3();
     }
 
     @Bean
-    public Gen4TimerModel gen4TimerModel(ApplicationSettings settings) {
+    public Gen4TimerModel gen4TimerModel(ApplicationModel settings) {
         return settings.getGen4();
     }
 
     @Bean
-    public Gen5TimerModel gen5TimerModel(ApplicationSettings settings) {
+    public Gen5TimerModel gen5TimerModel(ApplicationModel settings) {
         return settings.getGen5();
     }
 
     @Bean
-    public CustomTimerModel customTimerModel(ApplicationSettings settings) {
+    public CustomTimerModel customTimerModel(ApplicationModel settings) {
         return settings.getCustom();
     }
 
     @Bean
-    public ActionSettingsModel actionSettingsModel(ApplicationSettings settings) {
+    public ActionConfigurationModel actionSettingsModel(ApplicationModel settings) {
         return settings.getActionSettings();
     }
 
     @Bean
-    public TimerSettingsModel timerSettingsModel(ApplicationSettings settings) {
+    public TimerConfigurationModel timerSettingsModel(ApplicationModel settings) {
         return settings.getTimerSettings();
     }
 
     @Bean
-    public ThemeSettingsModel themeSettingsModel(ApplicationSettings settings) {
+    public ThemeConfigurationModel themeSettingsModel(ApplicationModel settings) {
         return settings.getThemeSettings();
     }
 

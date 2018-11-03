@@ -1,6 +1,5 @@
 package com.github.dylmeadows.eontimer;
 
-import com.github.dylmeadows.eontimer.component.FxComponents;
 import com.github.dylmeadows.eontimer.config.ApplicationProperties;
 import moe.tristan.easyfxml.EasyFxml;
 import moe.tristan.easyfxml.api.FxmlNode;
@@ -28,6 +27,6 @@ public class EonTimerUiManager extends FxUiManager {
 
     @Override
     protected FxmlNode mainComponent() {
-        return FxComponents.GEN3_TIMER;
+        return EonTimerComponents.GEN3_TIMER;
     }
 }

@@ -1,7 +1,7 @@
 package com.github.dylmeadows.eontimer.util;
 
+import com.github.dylmeadows.eontimer.model.config.ThemeConfigurationModel;
 import com.github.dylmeadows.eontimer.model.resource.ImageResource;
-import com.github.dylmeadows.eontimer.model.ThemeSettingsModel;
 import com.github.dylmeadows.javafx.scene.paint.ColorUtils;
 import javafx.scene.paint.Color;
 import lombok.experimental.UtilityClass;
@@ -31,7 +31,7 @@ public class StyleUtils {
     private final double THEME_DEFAULT_BUTTON_BASE_BRIGHTNESS_TRANSFORM = 0.4;
     private final String BACKGROUND_IMAGE_SIZE = "cover";
 
-    public String toCss(ThemeSettingsModel theme) {
+    public String toCss(ThemeConfigurationModel theme) {
         Map<String, String> css = new HashMap<>();
         css.put(THEME_ACCENT, getThemeAccent(theme));
         css.put(THEME_FAINT_ACCENT, getThemeFaintAccent(theme));
@@ -62,7 +62,7 @@ public class StyleUtils {
                 .collect(Collectors.joining("; "));
     }
 
-    private String getBackgroundColor(ThemeSettingsModel theme) {
+    private String getBackgroundColor(ThemeConfigurationModel theme) {
         return ColorUtils.toHex(theme.getBackgroundColor());
     }
 
@@ -70,36 +70,36 @@ public class StyleUtils {
         return "url(/" + ImageResource.DEFAULT_BACKGROUND_IMAGE.getPath() + ")";
     }
 
-    private String getBackgroundImage(ThemeSettingsModel theme) {
+    private String getBackgroundImage(ThemeConfigurationModel theme) {
         File file = new File(theme.getBackgroundImage());
         return "url(\"" + file.toURI() + "\")";
     }
 
-    private String getThemeAccent(ThemeSettingsModel theme) {
+    private String getThemeAccent(ThemeConfigurationModel theme) {
         return ColorUtils.toHex(theme.getAccentColor());
     }
 
-    private String getThemeFaintAccent(ThemeSettingsModel theme) {
+    private String getThemeFaintAccent(ThemeConfigurationModel theme) {
         return ColorUtils.toHexAlpha(theme.getAccentColor(), THEME_FAINT_ACCENT_ALPHA);
     }
 
-    private String getThemePanelBase(ThemeSettingsModel theme) {
+    private String getThemePanelBase(ThemeConfigurationModel theme) {
         return ColorUtils.toHex(theme.getPanelBaseColor());
     }
 
-    private String getThemePanelTransparentBase(ThemeSettingsModel theme) {
+    private String getThemePanelTransparentBase(ThemeConfigurationModel theme) {
         return ColorUtils.toHexAlpha(theme.getPanelBaseColor(), theme.getPanelTransparency());
     }
 
-    private String getThemeControlBase(ThemeSettingsModel theme) {
+    private String getThemeControlBase(ThemeConfigurationModel theme) {
         return ColorUtils.toHex(theme.getControlBaseColor());
     }
 
-    private String getThemeLabelText(ThemeSettingsModel theme) {
+    private String getThemeLabelText(ThemeConfigurationModel theme) {
         return ColorUtils.toHex(theme.getLabelTextColor());
     }
 
-    private String getThemeDefaultButtonBase(ThemeSettingsModel theme) {
+    private String getThemeDefaultButtonBase(ThemeConfigurationModel theme) {
         Color color = theme.getAccentColor();
         color = ColorUtils.deriveSaturation(color, THEME_DEFAULT_BUTTON_BASE_SATURATION_TRANSFORM);
         color = ColorUtils.deriveBrightness(color, THEME_DEFAULT_BUTTON_BASE_BRIGHTNESS_TRANSFORM);
