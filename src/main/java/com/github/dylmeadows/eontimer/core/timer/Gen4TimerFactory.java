@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Gen4TimerFactory implements TimerFactory {
@@ -19,15 +20,15 @@ public class Gen4TimerFactory implements TimerFactory {
 
     @Autowired
     public Gen4TimerFactory(
-            final Gen4TimerModel timerModel,
-            final TimerConfigurationModel timerConfig) {
+        final Gen4TimerModel timerModel,
+        final TimerConfigurationModel timerConfig) {
         this.timerModel = timerModel;
         this.timerConfig = timerConfig;
     }
 
     @Override
     public Timer createTimer() {
-        Timer timer = Timer.NULL_TIMER;
+        Timer timer = Timer.EMPTY_TIMER;
         switch (timerModel.getMode()) {
             case STANDARD:
                 timer = new Timer(getStages());
@@ -36,18 +37,18 @@ public class Gen4TimerFactory implements TimerFactory {
         return timer;
     }
 
-    private Stage[] getStages() {
+    private List<Stage> getStages() {
         List<Integer> stages = new ArrayList<>();
         int calibration = CalibrationUtils.createCalibration(
-                timerModel.getCalibratedDelay(),
-                timerModel.getCalibratedSecond(),
-                timerConfig.getConsole());
+            timerModel.getCalibratedDelay(),
+            timerModel.getCalibratedSecond(),
+            timerConfig.getConsole());
         stages.add(normalize(normalize(timerModel.getTargetSecond() * 1000 + calibration + 200)
-                - CalibrationUtils.convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole())));
+            - CalibrationUtils.convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole())));
         stages.add(CalibrationUtils.convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole()) - calibration);
         return stages.stream()
-                .map(Stage::new)
-                .toArray(Stage[]::new);
+            .map(Stage::new)
+            .collect(Collectors.toList());
     }
 
     private int normalize(int stage) {

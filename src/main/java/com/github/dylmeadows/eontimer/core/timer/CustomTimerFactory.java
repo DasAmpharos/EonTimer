@@ -6,6 +6,9 @@ import com.github.dylmeadows.eontimer.model.timer.CustomTimerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class CustomTimerFactory implements TimerFactory {
 
@@ -21,10 +24,10 @@ public class CustomTimerFactory implements TimerFactory {
         return new Timer(getStages());
     }
 
-    private Stage[] getStages() {
+    private List<Stage> getStages() {
         return timerModel.getStages()
-                .stream()
-                .map(Stage::new)
-                .toArray(Stage[]::new);
+            .stream()
+            .map(Stage::new)
+            .collect(Collectors.toList());
     }
 }

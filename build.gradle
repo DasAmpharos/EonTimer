@@ -33,7 +33,7 @@ dependencies {
     compile group: 'org.hildan.fxgson', name: 'fx-gson', version: '3.1.1'
     compile group: 'io.reactivex.rxjava2', name: 'rxjavafx', version: '2.2.2'
     compile group: 'com.github.dylmeadows', name: 'javafx-common', version: '1.0.1'
-    compile group: 'com.github.dylmeadows', name: 'java-common', version: '1.0.5'
+    compile group: 'com.github.dylmeadows', name: 'java-common', version: '1.0.6'
     compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
     
     compile group: 'com.google.guava', name: 'guava', version: '19.0'

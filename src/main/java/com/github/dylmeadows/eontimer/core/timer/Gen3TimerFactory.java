@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Gen3TimerFactory implements TimerFactory {
@@ -19,15 +20,15 @@ public class Gen3TimerFactory implements TimerFactory {
 
     @Autowired
     public Gen3TimerFactory(
-            final Gen3TimerModel timerModel,
-            final TimerConfigurationModel timerConfig) {
+        final Gen3TimerModel timerModel,
+        final TimerConfigurationModel timerConfig) {
         this.timerModel = timerModel;
         this.timerConfig = timerConfig;
     }
 
     @Override
     public Timer createTimer() {
-        Timer timer = Timer.NULL_TIMER;
+        Timer timer = Timer.EMPTY_TIMER;
         switch (timerModel.getMode()) {
             case STANDARD:
                 timer = new Timer(getStages());
@@ -39,12 +40,12 @@ public class Gen3TimerFactory implements TimerFactory {
         return timer;
     }
 
-    private Stage[] getStages() {
+    private List<Stage> getStages() {
         List<Integer> stages = new ArrayList<>();
         stages.add(timerModel.getPreTimer());
         stages.add(CalibrationUtils.convertToMillis(timerModel.getTargetFrame(), timerConfig.getConsole()) + timerModel.getCalibration());
         return stages.stream()
-                .map(Stage::new)
-                .toArray(Stage[]::new);
+            .map(Stage::new)
+            .collect(Collectors.toList());
     }
 }

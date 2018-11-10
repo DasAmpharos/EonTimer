@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ActionHandler implements StageLifeCycleListener {
+public class ActionHandler {
 
     private final ActionConfigurationModel actionSettings;
     private final List<CountdownAction> actions;
@@ -21,17 +21,11 @@ public class ActionHandler implements StageLifeCycleListener {
         this.actions = new ArrayList<>();
     }
 
-    @Override
     public void onStageStart(long stage) {
         long next = actionSettings.getInterval() * (actionSettings.getCount() - 1);
         nextAction = (stage < next && actionSettings.getInterval() != 0) ? stage : next;
     }
 
-    /**
-     * Determines if registered actions require notification. If registered
-     * actions are notified, then {@link #nextAction} is updated.
-     */
-    @Override
     public void onStageUpdate(long stage, long remaining) {
         if (remaining <= nextAction) {
             actions.forEach(CountdownAction::action);
@@ -39,12 +33,6 @@ public class ActionHandler implements StageLifeCycleListener {
         }
     }
 
-    /**
-     * Not implemented.
-     *
-     * @param stage unused
-     */
-    @Override
     public void onStageEnd(long stage) {
     }
 

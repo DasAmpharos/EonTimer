@@ -1,7 +1,6 @@
 package com.github.dylmeadows.eontimer.model;
 
 import com.github.dylmeadows.eontimer.model.config.ActionConfigurationModel;
-import com.github.dylmeadows.eontimer.model.config.ThemeConfigurationModel;
 import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
 import com.github.dylmeadows.eontimer.model.timer.CustomTimerModel;
 import com.github.dylmeadows.eontimer.model.timer.Gen3TimerModel;
@@ -19,5 +18,4 @@ public class ApplicationModel {
 
     private final ActionConfigurationModel actionSettings = new ActionConfigurationModel();
     private final TimerConfigurationModel timerSettings = new TimerConfigurationModel();
-    private final ThemeConfigurationModel themeSettings = new ThemeConfigurationModel();
 }

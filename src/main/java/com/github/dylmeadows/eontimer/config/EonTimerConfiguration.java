@@ -2,7 +2,6 @@ package com.github.dylmeadows.eontimer.config;
 
 import com.github.dylmeadows.eontimer.model.*;
 import com.github.dylmeadows.eontimer.model.config.ActionConfigurationModel;
-import com.github.dylmeadows.eontimer.model.config.ThemeConfigurationModel;
 import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
 import com.github.dylmeadows.eontimer.model.timer.CustomTimerModel;
 import com.github.dylmeadows.eontimer.model.timer.Gen3TimerModel;
@@ -84,11 +83,6 @@ public class EonTimerConfiguration {
     @Bean
     public TimerConfigurationModel timerSettingsModel(ApplicationModel settings) {
         return settings.getTimerSettings();
-    }
-
-    @Bean
-    public ThemeConfigurationModel themeSettingsModel(ApplicationModel settings) {
-        return settings.getThemeSettings();
     }
 
     @Bean
