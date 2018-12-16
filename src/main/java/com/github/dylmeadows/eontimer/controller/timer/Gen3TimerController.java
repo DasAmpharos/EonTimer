@@ -44,25 +44,26 @@ public class Gen3TimerController implements FxmlController {
 
     @Override
     public void initialize() {
+        // Mode
         modeField.setItems(FXCollections.observableArrayList(Gen3TimerMode.values()));
         modeField.setConverter(OptionConverter.forOption(Gen3TimerMode.class));
         modeField.valueProperty().bindBidirectional(model.modeProperty());
-
+        // Calibration
         SpinnerValueFactory<Integer> calibrationValueFactory = SpinnerUtils.createValueFactory(
                 Integer.MIN_VALUE, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_CALIBRATION);
         calibrationValueFactory.valueProperty().bindBidirectional(model.calibrationProperty().asObject());
         calibrationField.setValueFactory(calibrationValueFactory);
-
+        // Pre-Timer
         SpinnerValueFactory<Integer> preTimerValueFactory = SpinnerUtils.createValueFactory(
                 0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_PRE_TIMER);
         preTimerValueFactory.valueProperty().bindBidirectional(model.preTimerProperty().asObject());
         preTimerField.setValueFactory(preTimerValueFactory);
-
+        // Target Frame
         SpinnerValueFactory<Integer> targetFrameValueFactory = SpinnerUtils.createValueFactory(
                 0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_TARGET_FRAME);
         targetFrameValueFactory.valueProperty().bindBidirectional(model.targetFrameProperty().asObject());
         targetFrameField.setValueFactory(targetFrameValueFactory);
-
+        // Frame Hit
         SpinnerValueFactory<Integer> frameHitValueFactory = SpinnerUtils.createValueFactory(0, Integer.MAX_VALUE);
         frameHitValueFactory.valueProperty().bindBidirectional(model.frameHitProperty().asObject());
         frameHitField.setValueFactory(frameHitValueFactory);

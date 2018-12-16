@@ -1,6 +1,6 @@
 package com.github.dylmeadows.eontimer.config;
 
-import com.github.dylmeadows.eontimer.model.*;
+import com.github.dylmeadows.eontimer.model.ApplicationModel;
 import com.github.dylmeadows.eontimer.model.config.ActionConfigurationModel;
 import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
 import com.github.dylmeadows.eontimer.model.timer.CustomTimerModel;
@@ -9,7 +9,6 @@ import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
 import com.github.dylmeadows.eontimer.model.timer.Gen5TimerModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.hildan.fxgson.FxGson;
 import org.springframework.beans.factory.annotation.Autowired;

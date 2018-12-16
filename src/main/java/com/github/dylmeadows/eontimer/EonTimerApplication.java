@@ -30,10 +30,9 @@ public class EonTimerApplication extends FxSpringApplication {
             .forEach((key, value) -> log.info("{} == {}", key, value));
 
         Timer timer = springContext.getBean(Timer.class);
-        timer.setStages(
-            Arrays.asList(
-                new Stage(10000),
-                new Stage(10000)));
+        timer.setStages(Arrays.asList(
+            new Stage(10000),
+            new Stage(10000)));
         TimerRunner runner = springContext.getBean(TimerRunner.class);
         runner.start();
     }

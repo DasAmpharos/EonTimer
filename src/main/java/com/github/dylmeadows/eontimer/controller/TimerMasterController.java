@@ -1,5 +1,7 @@
 package com.github.dylmeadows.eontimer.controller;
 
+import com.github.dylmeadows.eontimer.controller.timer.Gen5TimerController;
+import com.github.dylmeadows.eontimer.core.timer.Gen3TimerFactory;
 import com.github.dylmeadows.eontimer.core.timer.TimerFactory;
 import com.github.dylmeadows.eontimer.model.Timer;
 import io.reactivex.Observable;
@@ -8,9 +10,11 @@ import io.reactivex.rxjavafx.sources.Change;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import lombok.RequiredArgsConstructor;
 import moe.tristan.easyfxml.api.FxmlController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -18,6 +22,7 @@ import java.util.Map;
 
 @Component
 @SuppressWarnings({"unused", "WeakerAccess"})
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TimerMasterController implements FxmlController {
 
     @FXML
@@ -32,41 +37,25 @@ public class TimerMasterController implements FxmlController {
     private TabPane timerTabPane;
 
     private final Timer model;
+    private final ApplicationContext context;
 
-    private final Map<Tab, TimerType> tabTimerTypeMap = new HashMap<>();
-    private final Map<TimerType, TimerFactory> timerFactoryMap = new HashMap<>();
-
-    @Autowired
-    public TimerMasterController(
-        Timer model,
-        @Qualifier("gen3TimerFactory") TimerFactory gen3TimerFactory,
-        @Qualifier("gen4TimerFactory") TimerFactory gen4TimerFactory,
-        @Qualifier("gen5TimerFactory") TimerFactory gen5TimerFactory,
-        @Qualifier("customTimerFactory") TimerFactory customTimerFactory) {
-        this.model = model;
-        timerFactoryMap.put(TimerType.GEN3, gen3TimerFactory);
-        timerFactoryMap.put(TimerType.GEN4, gen4TimerFactory);
-        timerFactoryMap.put(TimerType.GEN5, gen5TimerFactory);
-        timerFactoryMap.put(TimerType.CUSTOM, customTimerFactory);
-    }
+    private final Map<Tab, TimerFactory> timerFactoryMap = new HashMap<>();
 
     @Override
     public void initialize() {
-        tabTimerTypeMap.put(gen3Tab, TimerType.GEN3);
-        tabTimerTypeMap.put(gen4Tab, TimerType.GEN4);
-        tabTimerTypeMap.put(gen5Tab, TimerType.GEN5);
-        tabTimerTypeMap.put(customTab, TimerType.CUSTOM);
+        timerFactoryMap.put(gen3Tab, context.getBean("gen3TimerFactory", TimerFactory.class));
+        timerFactoryMap.put(gen4Tab, context.getBean("gen4TimerFactory", TimerFactory.class));
+        timerFactoryMap.put(gen5Tab, context.getBean("gen5TimerFactory", TimerFactory.class));
+        timerFactoryMap.put(customTab, context.getBean("customTimerFactory", TimerFactory.class));
 
         JavaFxObservable.changesOf(timerTabPane.getSelectionModel().selectedItemProperty())
             .map(Change::getNewVal)
-            .filter(tabTimerTypeMap::containsKey)
+            .filter(timerFactoryMap::containsKey)
             .switchIfEmpty(Observable.error(
-                new IllegalStateException("selected tab does not have an associated TimerType")))
-            .map(tabTimerTypeMap::get)
+                new IllegalStateException("selected tab does not have an associated TimerFactory")))
             .map(timerFactoryMap::get)
             .map(TimerFactory::createTimer)
-            .doOnNext(model::setStages)
-            .subscribe();
+            .subscribe(model::setStages);
     }
 
     enum TimerType {

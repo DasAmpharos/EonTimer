@@ -32,14 +32,14 @@
                                  maxWidth="1.7976931348623157E308"/>
                     </children>
                 </VBox>
-                <VBox layoutX="20.0" layoutY="20.0" spacing="5.0">
+                <VBox fx:id="preTimerFieldSet" layoutX="20.0" layoutY="20.0" spacing="5.0">
                     <children>
                         <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Pre-Timer"/>
                         <Spinner fx:id="preTimerField" maxHeight="1.7976931348623157E308"
                                  maxWidth="1.7976931348623157E308"/>
                     </children>
                 </VBox>
-                <VBox layoutX="20.0" layoutY="68.0" spacing="5.0">
+                <VBox fx:id="targetFrameFieldSet" layoutX="20.0" layoutY="68.0" spacing="5.0">
                     <children>
                         <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                text="Target Frame"/>

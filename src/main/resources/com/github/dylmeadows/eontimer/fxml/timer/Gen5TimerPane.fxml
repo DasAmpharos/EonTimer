@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.github.dylmeadows.eontimer.controller.timer.Gen5TimerController">
+    <top>
+        <VBox fx:id="modeFieldSet" spacing="5.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+                       minWidth="-Infinity" text="Mode"/>
+                <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                           minHeight="-Infinity" minWidth="-Infinity"/>
+            </children>
+        </VBox>
+    </top>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="10.0" top="10.0"/>
+            </BorderPane.margin>
+            <content>
+                <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="253.0"
+                      prefWidth="225.0" spacing="15.0">
+                    <children>
+                        <VBox fx:id="calibrationFieldSet" spacing="5.0">
+                            <children>
+                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                       minHeight="-Infinity" minWidth="-Infinity" text="Calibration"/>
+                                <Spinner fx:id="calibrationField" maxHeight="1.7976931348623157E308"
+                                         maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="targetDelayFieldSet" layoutX="10.0" layoutY="10.0" spacing="5.0">
+                            <children>
+                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                       minHeight="-Infinity" minWidth="-Infinity" text="Target Delay"/>
+                                <Spinner fx:id="targetDelayField" maxHeight="1.7976931348623157E308"
+                                         maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="targetSecondFieldSet" layoutX="10.0" layoutY="58.0" spacing="5.0">
+                            <children>
+                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                       minHeight="-Infinity" minWidth="-Infinity" text="Target Second"/>
+                                <Spinner fx:id="targetSecondField" maxHeight="1.7976931348623157E308"
+                                         maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="entralinkCalibrationFieldSet" layoutX="20.0" layoutY="210.0" spacing="5.0">
+                            <children>
+                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                       minHeight="-Infinity" minWidth="-Infinity" text="Entralink Calibration"/>
+                                <Spinner fx:id="entralinkCalibrationField" maxHeight="1.7976931348623157E308"
+                                         maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="frameCalibrationFieldSet" layoutX="20.0" layoutY="206.0" spacing="5.0">
+                            <children>
+                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                       minHeight="-Infinity" minWidth="-Infinity" text="Frame Calibration"/>
+                                <Spinner fx:id="frameCalibrationField" maxHeight="1.7976931348623157E308"
+                                         maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                            </children>
+                        </VBox>
+                        <VBox fx:id="targetAdvancesFieldSet" layoutX="20.0" layoutY="268.0" spacing="5.0">
+                            <children>
+                                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                       minHeight="-Infinity" minWidth="-Infinity" text="Target Advances"/>
+                                <Spinner fx:id="targetAdvancesField" maxHeight="1.7976931348623157E308"
+                                         maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <VBox spacing="15.0" BorderPane.alignment="CENTER">
+            <children>
+                <VBox fx:id="secondHitFieldSet" spacing="5.0">
+                    <children>
+                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                               minHeight="-Infinity" minWidth="-Infinity" text="Second Hit"/>
+                        <Spinner fx:id="secondHitField" maxHeight="1.7976931348623157E308"
+                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                    </children>
+                </VBox>
+                <VBox fx:id="delayHitFieldSet" layoutX="10.0" layoutY="10.0" spacing="5.0">
+                    <children>
+                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                               minHeight="-Infinity" minWidth="-Infinity" text="Delay Hit"/>
+                        <Spinner fx:id="delayHitField" maxHeight="1.7976931348623157E308"
+                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                    </children>
+                </VBox>
+                <VBox fx:id="actualAdvancesFieldSet" layoutX="10.0" layoutY="57.0" spacing="5.0">
+                    <children>
+                        <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                               minHeight="-Infinity" minWidth="-Infinity" text="Actual Advances"/>
+                        <Spinner fx:id="actualAdvancesField" maxHeight="1.7976931348623157E308"
+                                 maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity"/>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </bottom>
+</BorderPane>

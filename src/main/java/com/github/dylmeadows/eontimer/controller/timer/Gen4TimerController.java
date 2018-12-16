@@ -35,8 +35,10 @@ public class Gen4TimerController implements FxmlController {
 
     @Override
     public void initialize() {
+        // Mode
         modeField.setItems(FXCollections.observableArrayList(Gen4TimerMode.values()));
         modeField.setConverter(OptionConverter.forOption(Gen4TimerMode.class));
         modeField.valueProperty().bindBidirectional(model.modeProperty());
+
     }
 }

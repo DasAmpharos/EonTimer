@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.dylmeadows.eontimer.controller.TimerMasterController">
+    <center>
+        <TabPane fx:id="timerTabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" styleClass="floating" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab fx:id="gen5Tab" text="5">
+                    <content>
+                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                            <fx:include fx:id="gen5Timer" source="timer/Gen5TimerPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="gen4Tab" text="4">
+                    <content>
+                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                            <fx:include fx:id="gen4Timer" source="timer/Gen4TimerPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="gen3Tab" text="3">
+                    <content>
+                        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                            <fx:include fx:id="gen3Timer" source="timer/Gen3TimerPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="customTab" text="C">
+                    <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>

@@ -1,6 +1,7 @@
 package com.github.dylmeadows.eontimer;
 
 import com.github.dylmeadows.eontimer.controller.TimerDisplayController;
+import com.github.dylmeadows.eontimer.controller.TimerMasterController;
 import com.github.dylmeadows.eontimer.controller.timer.CustomTimerController;
 import com.github.dylmeadows.eontimer.controller.timer.Gen3TimerController;
 import com.github.dylmeadows.eontimer.controller.timer.Gen4TimerController;
@@ -18,7 +19,8 @@ public enum EonTimerComponents implements FxmlNode {
     GEN4_TIMER("timer/Gen4TimerPane.fxml", Gen4TimerController.class),
     GEN5_TIMER("timer/Gen5TimerPane.fxml", Gen5TimerController.class),
     CUSTOM_TIMER("timer/CustomTimerPane.fxml", CustomTimerController.class),
-    TIMER_DISPLAY("TimerDisplayPane.fxml", TimerDisplayController.class);
+    TIMER_DISPLAY("TimerDisplayPane.fxml", TimerDisplayController.class),
+    TIMER_MASTER("TimerMasterPane.fxml", TimerMasterController.class);
 
     private final String path;
     private final Class<? extends FxmlController> controllerClass;

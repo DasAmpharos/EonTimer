@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class TimerDisplayController implements FxmlController {
 
     @FXML
