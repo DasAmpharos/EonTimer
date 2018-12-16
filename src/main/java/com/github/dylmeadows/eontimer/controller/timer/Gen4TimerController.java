@@ -1,6 +1,5 @@
 package com.github.dylmeadows.eontimer.controller.timer;
 
-import com.github.dylmeadows.eontimer.model.timer.Gen4TimerConstants;
 import com.github.dylmeadows.eontimer.model.timer.Gen4TimerMode;
 import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
 import com.github.dylmeadows.javafx.util.OptionConverter;
@@ -8,11 +7,14 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Spinner;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import moe.tristan.easyfxml.api.FxmlController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen4TimerController implements FxmlController {
 
@@ -30,11 +32,6 @@ public class Gen4TimerController implements FxmlController {
     private Spinner<Integer> targetSecondField;
     @FXML
     private Spinner<Integer> delayHitField;
-
-    @Autowired
-    public Gen4TimerController(final Gen4TimerModel model) {
-        this.model = model;
-    }
 
     @Override
     public void initialize() {

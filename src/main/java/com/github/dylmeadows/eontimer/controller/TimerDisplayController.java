@@ -8,11 +8,14 @@ import io.reactivex.rxjavafx.schedulers.JavaFxScheduler;
 import io.reactivex.rxjavafx.sources.Change;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import moe.tristan.easyfxml.api.FxmlController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TimerDisplayController implements FxmlController {
 
     @FXML
@@ -26,11 +29,6 @@ public class TimerDisplayController implements FxmlController {
 
     private static final String NULL_TIME_SPAN = "0:00";
     private static final String INFINITE_TIME_SPAN = "?:??";
-
-    @Autowired
-    public TimerDisplayController(final TimerState timerState) {
-        this.timerState = timerState;
-    }
 
     @Override
     public void initialize() {

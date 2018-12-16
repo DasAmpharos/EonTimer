@@ -2,10 +2,8 @@ package com.github.dylmeadows.eontimer;
 
 import com.github.dylmeadows.eontimer.config.ApplicationProperties;
 import com.github.dylmeadows.eontimer.core.TimerRunner;
-import com.github.dylmeadows.eontimer.core.TimerState;
 import com.github.dylmeadows.eontimer.model.Stage;
 import com.github.dylmeadows.eontimer.model.Timer;
-import com.github.dylmeadows.eontimer.model.TimerMasterModel;
 import lombok.extern.slf4j.Slf4j;
 import moe.tristan.easyfxml.spring.application.FxSpringApplication;
 import moe.tristan.easyfxml.spring.application.FxSpringContext;
@@ -28,13 +26,15 @@ public class EonTimerApplication extends FxSpringApplication {
         ApplicationProperties properties = springContext.getBean(ApplicationProperties.class);
         log.info("{} v{}", properties.getName(), properties.getVersion());
         Stream.of("os.name", "os.version", "os.arch", "java.version", "java.vendor", "sun.arch.data.model")
-                .collect(Collectors.toMap(Function.identity(), System::getProperty))
-                .forEach((key, value) -> log.info("{} == {}", key, value));
+            .collect(Collectors.toMap(Function.identity(), System::getProperty))
+            .forEach((key, value) -> log.info("{} == {}", key, value));
+
+        Timer timer = springContext.getBean(Timer.class);
+        timer.setStages(
+            Arrays.asList(
+                new Stage(10000),
+                new Stage(10000)));
         TimerRunner runner = springContext.getBean(TimerRunner.class);
-        TimerMasterModel timerModel = springContext.getBean(TimerMasterModel.class);
-        timerModel.setTimer(new Timer(Arrays.asList(
-            new Stage(10000), new Stage(10000)
-        )));
         runner.start();
     }
 

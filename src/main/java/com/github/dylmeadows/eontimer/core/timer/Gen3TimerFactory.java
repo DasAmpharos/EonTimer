@@ -1,43 +1,36 @@
 package com.github.dylmeadows.eontimer.core.timer;
 
 import com.github.dylmeadows.eontimer.model.Stage;
-import com.github.dylmeadows.eontimer.model.Timer;
 import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
+import com.github.dylmeadows.eontimer.model.timer.Gen3TimerMode;
 import com.github.dylmeadows.eontimer.model.timer.Gen3TimerModel;
 import com.github.dylmeadows.eontimer.util.CalibrationUtils;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class Gen3TimerFactory implements TimerFactory {
 
     private final Gen3TimerModel timerModel;
     private final TimerConfigurationModel timerConfig;
 
-    @Autowired
-    public Gen3TimerFactory(
-        final Gen3TimerModel timerModel,
-        final TimerConfigurationModel timerConfig) {
-        this.timerModel = timerModel;
-        this.timerConfig = timerConfig;
-    }
-
     @Override
-    public Timer createTimer() {
-        Timer timer = Timer.EMPTY_TIMER;
-        switch (timerModel.getMode()) {
-            case STANDARD:
-                timer = new Timer(getStages());
-                break;
+    public List<Stage> createTimer() {
+        if (timerModel.getMode() == Gen3TimerMode.STANDARD) {
+            return getStages();
 //            case VARIABLE_TARGET:
 //                return new VariableTargetFrameTimer(
 //                        model.getConsole());
         }
-        return timer;
+        return Collections.emptyList();
     }
 
     private List<Stage> getStages() {

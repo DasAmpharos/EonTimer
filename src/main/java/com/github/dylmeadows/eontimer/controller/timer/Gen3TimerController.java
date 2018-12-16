@@ -12,12 +12,15 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.VBox;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import moe.tristan.easyfxml.api.FxmlController;
 import moe.tristan.easyfxml.util.Nodes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen3TimerController implements FxmlController {
 
@@ -38,11 +41,6 @@ public class Gen3TimerController implements FxmlController {
     private VBox calibrationFieldSet;
     @FXML
     private VBox frameHitFieldSet;
-
-    @Autowired
-    public Gen3TimerController(final Gen3TimerModel model) {
-        this.model = model;
-    }
 
     @Override
     public void initialize() {

@@ -1,8 +1,17 @@
 package com.github.dylmeadows.eontimer.core;
 
 import com.github.dylmeadows.eontimer.model.Stage;
-import javafx.beans.property.*;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyLongProperty;
+import javafx.beans.property.ReadOnlyLongWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @SuppressWarnings({"unused", "WeakerAccess"})
@@ -35,6 +44,7 @@ public class TimerState {
     }
 
     void setCurrentStage(Stage currentStage) {
+        Objects.requireNonNull(currentStage);
         this.currentStage.set(currentStage);
     }
 
@@ -47,6 +57,7 @@ public class TimerState {
     }
 
     void setNextStage(Stage nextStage) {
+        Objects.requireNonNull(nextStage);
         this.nextStage.set(nextStage);
     }
 

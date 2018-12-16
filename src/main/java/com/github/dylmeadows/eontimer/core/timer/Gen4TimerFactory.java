@@ -1,40 +1,32 @@
 package com.github.dylmeadows.eontimer.core.timer;
 
 import com.github.dylmeadows.eontimer.model.Stage;
-import com.github.dylmeadows.eontimer.model.Timer;
 import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
+import com.github.dylmeadows.eontimer.model.timer.Gen4TimerMode;
 import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
 import com.github.dylmeadows.eontimer.util.CalibrationUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class Gen4TimerFactory implements TimerFactory {
 
     private final Gen4TimerModel timerModel;
     private final TimerConfigurationModel timerConfig;
 
-    @Autowired
-    public Gen4TimerFactory(
-        final Gen4TimerModel timerModel,
-        final TimerConfigurationModel timerConfig) {
-        this.timerModel = timerModel;
-        this.timerConfig = timerConfig;
-    }
-
     @Override
-    public Timer createTimer() {
-        Timer timer = Timer.EMPTY_TIMER;
-        switch (timerModel.getMode()) {
-            case STANDARD:
-                timer = new Timer(getStages());
-                break;
+    public List<Stage> createTimer() {
+        if (timerModel.getMode() == Gen4TimerMode.STANDARD) {
+            return getStages();
         }
-        return timer;
+        return Collections.emptyList();
     }
 
     private List<Stage> getStages() {

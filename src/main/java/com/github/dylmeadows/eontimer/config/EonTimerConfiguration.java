@@ -9,9 +9,12 @@ import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
 import com.github.dylmeadows.eontimer.model.timer.Gen5TimerModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.hildan.fxgson.FxGson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,20 +25,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Configuration
+@EnableConfigurationProperties(ApplicationProperties.class)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EonTimerConfiguration {
 
     private final ApplicationContext context;
-
-    @Autowired
-    public EonTimerConfiguration(ApplicationContext context) {
-        this.context = context;
-    }
+    private final ApplicationProperties properties;
 
     @PreDestroy
     public void destroy() throws IOException {
         Gson gson = context.getBean(Gson.class);
         ApplicationModel settings = context.getBean(ApplicationModel.class);
-        ApplicationProperties properties = context.getBean(ApplicationProperties.class);
         // persist settings
         String json = gson.toJson(settings);
         File file = new File(properties.getName() + ".json");

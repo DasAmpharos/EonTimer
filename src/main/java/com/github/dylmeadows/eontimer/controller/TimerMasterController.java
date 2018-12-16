@@ -2,11 +2,6 @@ package com.github.dylmeadows.eontimer.controller;
 
 import com.github.dylmeadows.eontimer.core.timer.TimerFactory;
 import com.github.dylmeadows.eontimer.model.Timer;
-import com.github.dylmeadows.eontimer.model.TimerMasterModel;
-import com.github.dylmeadows.eontimer.model.timer.CustomTimerModel;
-import com.github.dylmeadows.eontimer.model.timer.Gen3TimerModel;
-import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
-import com.github.dylmeadows.eontimer.model.timer.Gen5TimerModel;
 import io.reactivex.Observable;
 import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import io.reactivex.rxjavafx.sources.Change;
@@ -36,14 +31,14 @@ public class TimerMasterController implements FxmlController {
     @FXML
     private TabPane timerTabPane;
 
-    private final TimerMasterModel model;
+    private final Timer model;
 
     private final Map<Tab, TimerType> tabTimerTypeMap = new HashMap<>();
     private final Map<TimerType, TimerFactory> timerFactoryMap = new HashMap<>();
 
     @Autowired
     public TimerMasterController(
-        TimerMasterModel model,
+        Timer model,
         @Qualifier("gen3TimerFactory") TimerFactory gen3TimerFactory,
         @Qualifier("gen4TimerFactory") TimerFactory gen4TimerFactory,
         @Qualifier("gen5TimerFactory") TimerFactory gen5TimerFactory,
@@ -70,7 +65,7 @@ public class TimerMasterController implements FxmlController {
             .map(tabTimerTypeMap::get)
             .map(timerFactoryMap::get)
             .map(TimerFactory::createTimer)
-            .doOnNext(model::setTimer)
+            .doOnNext(model::setStages)
             .subscribe();
     }
 

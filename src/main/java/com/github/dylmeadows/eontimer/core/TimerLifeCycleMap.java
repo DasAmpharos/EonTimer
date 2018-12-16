@@ -1,13 +1,10 @@
 package com.github.dylmeadows.eontimer.core;
 
-import com.github.dylmeadows.eontimer.model.Timer;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.github.dylmeadows.java.util.function.FunctionalUtils.asConsumer;
 
 @Component
 class TimerLifeCycleMap implements TimerLifeCycleHook {
