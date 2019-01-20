@@ -4,7 +4,7 @@ import com.github.dylmeadows.eontimer.model.Stage;
 import com.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
 import com.github.dylmeadows.eontimer.model.timer.Gen4TimerMode;
 import com.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
-import com.github.dylmeadows.eontimer.util.CalibrationUtils;
+import com.github.dylmeadows.eontimer.app.util.CalibrationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

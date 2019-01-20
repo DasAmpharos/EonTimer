@@ -1,47 +1,46 @@
-group 'com.github.dylmeadows'
-version '2.0.0-beta1'
-
 buildscript {
     repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.3'
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+        classpath "com.github.jengelman.gradle.plugins:shadow:$shadowJarVersion"
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-mainClassName = 'com.github.dylmeadows.EonTimer'
+apply plugin: "java"
+apply plugin: "application"
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
     mavenCentral()
     maven {
-        url 'https://dl.bintray.com/dylmeadows/maven'
+        url "https://dl.bintray.com/dylmeadows/maven"
     }
 }
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.0.6.RELEASE'
+    compile("org.springframework.boot:spring-boot-starter")
 
-    compile group: 'moe.tristan', name: 'easyfxml', version: '1.1.9'
-    compile group: 'org.hildan.fxgson', name: 'fx-gson', version: '3.1.1'
-    compile group: 'io.reactivex.rxjava2', name: 'rxjavafx', version: '2.2.2'
-    compile group: 'com.github.dylmeadows', name: 'javafx-common', version: '1.0.1'
-    compile group: 'com.github.dylmeadows', name: 'java-common', version: '1.0.8'
-    compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
+    compile("moe.tristan:easyfxml:$easyfxmlVersion")
+    compile("org.hildan.fxgson:fx-gson:$fxgsonVersion")
+    compile("io.reactivex.rxjava2:rxjavafx:$rxjavafxVersion")
+    compile("de.jensd:fontawesomefx:$fontawesomefxVersion")
+    compile("com.google.guava:guava:$guavaVersion")
     
-    compile group: 'com.google.guava', name: 'guava', version: '19.0'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
+    compile group: "com.github.dylmeadows", name: "javafx-common", version: "1.0.1"
+    compile group: "com.github.dylmeadows", name: "java-common", version: "1.0.8"
+    
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    testCompile group: 'org.testfx', name: 'testfx-core', version: '4.0.13-alpha'
-    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.13-alpha'
+    testCompile("junit:junit:$junitVersion")
+    testCompile("org.testfx:testfx-core:$testfxVersion")
+    testCompile("org.testfx:testfx-junit:$testfxVersion")
 }
 
 shadowJar {

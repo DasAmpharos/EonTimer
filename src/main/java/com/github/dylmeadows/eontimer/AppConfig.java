@@ -1,4 +1,4 @@
-package com.github.dylmeadows.eontimer.config;
+package com.github.dylmeadows.eontimer;
 
 import com.github.dylmeadows.eontimer.model.ApplicationModel;
 import com.github.dylmeadows.eontimer.model.config.ActionConfigurationModel;
@@ -24,12 +24,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Configuration
-@EnableConfigurationProperties(ApplicationProperties.class)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class EonTimerConfiguration {
-
+@EnableConfigurationProperties(AppProperties.class)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+public class AppConfig {
+    private final AppProperties properties;
     private final ApplicationContext context;
-    private final ApplicationProperties properties;
 
     @PreDestroy
     public void destroy() throws IOException {
@@ -42,16 +41,22 @@ public class EonTimerConfiguration {
     }
 
     @Bean
-    public ApplicationModel settings(@Qualifier("fxGson") Gson gson, ApplicationProperties properties) throws IOException {
-        ApplicationModel settings;
+    public Gson fxGson(GsonBuilder builder) {
+        return FxGson.addFxSupport(builder)
+            .setPrettyPrinting()
+            .create();
+    }
+
+    @Bean
+    public ApplicationModel settings(@Qualifier("fxGson") Gson gson,
+                                     AppProperties properties) throws IOException {
         File file = new File(properties.getName() + ".json");
         if (file.exists()) {
             byte[] bytes = Files.readAllBytes(file.toPath());
-            settings = gson.fromJson(new String(bytes), ApplicationModel.class);
+            return gson.fromJson(new String(bytes), ApplicationModel.class);
         } else {
-            settings = new ApplicationModel();
+            return new ApplicationModel();
         }
-        return settings;
     }
 
     @Bean
@@ -82,12 +87,5 @@ public class EonTimerConfiguration {
     @Bean
     public TimerConfigurationModel timerSettingsModel(ApplicationModel settings) {
         return settings.getTimerSettings();
-    }
-
-    @Bean
-    public Gson fxGson(GsonBuilder builder) {
-        return FxGson.addFxSupport(builder)
-                .setPrettyPrinting()
-                .create();
     }
 }

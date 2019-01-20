@@ -1,4 +1,4 @@
-package com.github.dylmeadows.eontimer.util;
+package com.github.dylmeadows.eontimer.app.util;
 
 import javafx.concurrent.Task;
 import lombok.experimental.UtilityClass;

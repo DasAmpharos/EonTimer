@@ -7,22 +7,24 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.dylmeadows.eontimer.controller.TimerDisplayController">
-   <children>
-      <Label fx:id="currentStageLbl" minHeight="93.0" minWidth="221.0" text="0:00">
-         <font>
-            <Font size="64.0" />
-         </font>
-      </Label>
-      <HBox spacing="5.0">
-         <children>
-            <Label text="Minutes Before Target:" />
-            <Label fx:id="minutesBeforeTargetLbl" text="0" />
-         </children>
-      </HBox>
-      <Label fx:id="nextStageLbl" text="0:00" />
-   </children>
-   <padding>
-      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-   </padding>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0"
+      xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.github.dylmeadows.eontimer.controller.TimerDisplayController">
+    <children>
+        <Label fx:id="currentStageLbl" minHeight="93.0" minWidth="221.0" text="0:00">
+            <font>
+                <Font size="64.0"/>
+            </font>
+        </Label>
+        <HBox spacing="5.0">
+            <children>
+                <Label text="Minutes Before Target:"/>
+                <Label fx:id="minutesBeforeTargetLbl" text="0"/>
+            </children>
+        </HBox>
+        <Label fx:id="nextStageLbl" text="0:00"/>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+    </padding>
 </VBox>

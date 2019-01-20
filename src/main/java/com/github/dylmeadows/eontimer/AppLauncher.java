@@ -1,17 +1,12 @@
 package com.github.dylmeadows.eontimer;
 
-import com.github.dylmeadows.eontimer.config.ApplicationProperties;
-import com.github.dylmeadows.eontimer.core.TimerRunner;
-import com.github.dylmeadows.eontimer.model.Stage;
-import com.github.dylmeadows.eontimer.model.Timer;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import moe.tristan.easyfxml.spring.application.FxSpringApplication;
 import moe.tristan.easyfxml.spring.application.FxSpringContext;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import java.awt.*;
-import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,26 +14,24 @@ import java.util.stream.Stream;
 @Slf4j
 @SpringBootApplication
 @Import(FxSpringContext.class)
-public class EonTimerApplication extends FxSpringApplication {
+public class AppLauncher extends FxSpringApplication {
 
     @Override
     protected void afterSpringInit() {
-        ApplicationProperties properties = springContext.getBean(ApplicationProperties.class);
+        AppProperties properties = springContext.getBean(AppProperties.class);
         log.info("{} v{}", properties.getName(), properties.getVersion());
         Stream.of("os.name", "os.version", "os.arch", "java.version", "java.vendor", "sun.arch.data.model")
             .collect(Collectors.toMap(Function.identity(), System::getProperty))
             .forEach((key, value) -> log.info("{} == {}", key, value));
+    }
 
-        Timer timer = springContext.getBean(Timer.class);
-        timer.setStages(Arrays.asList(
-            new Stage(10000),
-            new Stage(10000)));
-        TimerRunner runner = springContext.getBean(TimerRunner.class);
-        runner.start();
+    @Override
+    public void start(Stage stage) {
+        // TODO: set main scene
+        stage.show();
     }
 
     public static void main(String[] args) {
-        Toolkit.getDefaultToolkit();
-        launch(args);
+        launch(AppLauncher.class, args);
     }
 }

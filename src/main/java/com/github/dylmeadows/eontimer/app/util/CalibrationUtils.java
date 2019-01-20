@@ -1,4 +1,4 @@
-package com.github.dylmeadows.eontimer.util;
+package com.github.dylmeadows.eontimer.app.util;
 
 import com.github.dylmeadows.eontimer.model.config.Console;
 import lombok.experimental.UtilityClass;
