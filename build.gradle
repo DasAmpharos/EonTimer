@@ -20,22 +20,19 @@ apply plugin: "com.github.johnrengelman.shadow"
 repositories {
     mavenCentral()
     maven {
-        url "https://dl.bintray.com/dylmeadows/maven"
+        url "https://dl.bintray.com/dylmeadows/libs-snapshot"
     }
 }
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter")
-
-    compile("moe.tristan:easyfxml:$easyfxmlVersion")
+    compile("io.github.dylmeadows:spring-boot-starter-javafx:$springBootJavafxVersion")
+    compile("io.github.dylmeadows:java-common-core:$javaCommonVersion")
+    compile("io.github.dylmeadows:java-common-javafx:$javaCommonVersion")
     compile("org.hildan.fxgson:fx-gson:$fxgsonVersion")
     compile("io.reactivex.rxjava2:rxjavafx:$rxjavafxVersion")
     compile("de.jensd:fontawesomefx:$fontawesomefxVersion")
-    compile("com.google.guava:guava:$guavaVersion")
-    
-    compile group: "com.github.dylmeadows", name: "javafx-common", version: "1.0.1"
-    compile group: "com.github.dylmeadows", name: "java-common", version: "1.0.8"
-    
+
     compileOnly("org.projectlombok:lombok:$lombokVersion")
 
     testCompile("junit:junit:$junitVersion")
