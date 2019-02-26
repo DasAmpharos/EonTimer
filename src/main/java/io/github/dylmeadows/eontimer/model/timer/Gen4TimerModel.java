@@ -5,7 +5,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen4TimerModel {
 
     private final ObjectProperty<Gen4TimerMode> mode = new SimpleObjectProperty<>(Gen4TimerConstants.DEFAULT_MODE);

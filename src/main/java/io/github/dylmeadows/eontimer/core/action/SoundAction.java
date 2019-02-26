@@ -1,6 +1,8 @@
 package io.github.dylmeadows.eontimer.core.action;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class SoundAction implements CountdownAction {
 
     @Override

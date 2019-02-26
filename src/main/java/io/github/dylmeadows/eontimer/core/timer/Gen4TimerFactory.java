@@ -1,46 +1,48 @@
 package io.github.dylmeadows.eontimer.core.timer;
 
-import io.github.dylmeadows.eontimer.model.Stage;
-import io.github.dylmeadows.eontimer.model.config.TimerConfigurationModel;
-import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode;
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel;
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel;
-import io.github.dylmeadows.eontimer.util.Calibrations;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.github.dylmeadows.eontimer.util.CalibrationUtilsKt.convertToMillis;
+import static io.github.dylmeadows.eontimer.util.CalibrationUtilsKt.createCalibration;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class Gen4TimerFactory implements TimerFactory {
 
     private final Gen4TimerModel timerModel;
-    private final TimerConfigurationModel timerConfig;
+    private final TimerSettingsModel timerConfig;
 
     @Override
-    public List<Stage> createTimer() {
-        if (timerModel.getMode() == Gen4TimerMode.STANDARD) {
-            return getStages();
+    public List<Long> createTimer() {
+        switch (timerModel.getMode()) {
+            case STANDARD:
+                return Arrays.stream(getStages()).boxed()
+                    .collect(Collectors.toList());
+            default:
+                return Collections.emptyList();
         }
-        return Collections.emptyList();
     }
 
-    private List<Stage> getStages() {
-        List<Integer> stages = new ArrayList<>();
-        int calibration = Calibrations.createCalibration(
+    private long[] getStages() {
+        int calibration = createCalibration(
             timerModel.getCalibratedDelay(),
             timerModel.getCalibratedSecond(),
             timerConfig.getConsole());
-        stages.add(normalize(normalize(timerModel.getTargetSecond() * 1000 + calibration + 200)
-            - Calibrations.convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole())));
-        stages.add(Calibrations.convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole()) - calibration);
-        return stages.stream()
-            .map(Stage::new)
-            .collect(Collectors.toList());
+        return new long[]{
+            normalize(normalize(timerModel.getTargetSecond() * 1000 + calibration + 200)
+                - convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole())),
+            convertToMillis(timerModel.getTargetDelay(), timerConfig.getConsole())
+                - calibration
+        };
     }
 
     private int normalize(int stage) {

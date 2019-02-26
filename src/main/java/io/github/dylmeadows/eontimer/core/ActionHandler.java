@@ -1,7 +1,7 @@
 package io.github.dylmeadows.eontimer.core;
 
 import io.github.dylmeadows.eontimer.core.action.CountdownAction;
-import io.github.dylmeadows.eontimer.model.config.ActionConfigurationModel;
+import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ActionHandler {
 
-    private final ActionConfigurationModel actionSettings;
+    private final ActionSettingsModel actionSettings;
     private final List<CountdownAction> actions = new ArrayList<>();
     private long nextAction;
 

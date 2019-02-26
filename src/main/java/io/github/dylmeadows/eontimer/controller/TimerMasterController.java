@@ -1,21 +1,16 @@
 package io.github.dylmeadows.eontimer.controller;
 
-import io.github.dylmeadows.eontimer.core.timer.TimerFactory;
-import io.github.dylmeadows.eontimer.model.Timer;
-import io.reactivex.Observable;
-import io.reactivex.rxjavafx.observables.JavaFxObservable;
-import io.reactivex.rxjavafx.sources.Change;
+import io.github.dylmeadows.eontimer.model.TimerModel;
+import io.github.dylmeadows.eontimer.service.TimerService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
+@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TimerMasterController {
@@ -31,28 +26,36 @@ public class TimerMasterController {
     @FXML
     private TabPane timerTabPane;
 
-    private final Timer model;
-    private final ApplicationContext context;
-
-    private final Map<Tab, TimerFactory> timerFactoryMap = new HashMap<>();
+    private final TimerModel model;
+    private final TimerFactory gen3TimerFactory;
+    private final TimerFactory gen4TimerFactory;
+    private final TimerFactory gen5TimerFactory;
+    private final TimerFactory customTimerFactory;
+    private final TimerService timerService;
 
     public void initialize() {
-        timerFactoryMap.put(gen3Tab, context.getBean("gen3TimerFactory", TimerFactory.class));
-        timerFactoryMap.put(gen4Tab, context.getBean("gen4TimerFactory", TimerFactory.class));
-        timerFactoryMap.put(gen5Tab, context.getBean("gen5TimerFactory", TimerFactory.class));
-        timerFactoryMap.put(customTab, context.getBean("customTimerFactory", TimerFactory.class));
-
-        JavaFxObservable.changesOf(timerTabPane.getSelectionModel().selectedItemProperty())
+        /*JavaFxObservable.changesOf(timerTabPane.getSelectionModel().selectedItemProperty())
             .map(Change::getNewVal)
-            .filter(timerFactoryMap::containsKey)
-            .switchIfEmpty(Observable.error(
-                new IllegalStateException("selected tab does not have an associated TimerFactory")))
-            .map(timerFactoryMap::get)
+            .map(this::getTimerFactory)
             .map(TimerFactory::createTimer)
-            .subscribe(model::setStages);
+            .subscribe(model::setStages, error -> {
+                log.error(error.getMessage(), error);
+                System.exit(-1);
+            });*/
+        timerService.start();
     }
 
-    enum TimerType {
-        GEN3, GEN4, GEN5, CUSTOM
+    private TimerFactory getTimerFactory(Tab tab) {
+        if (tab.equals(gen3Tab)) {
+            return gen3TimerFactory;
+        } else if (tab.equals(gen4Tab)) {
+            return gen4TimerFactory;
+        } else if (tab.equals(gen5Tab)) {
+            return gen5TimerFactory;
+        } else if (tab.equals(customTab)) {
+            return customTimerFactory;
+        } else {
+            throw new IllegalStateException("unable to find timer factory for selected tab");
+        }
     }
 }

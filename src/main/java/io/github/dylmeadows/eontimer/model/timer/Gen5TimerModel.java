@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import static io.github.dylmeadows.eontimer.model.timer.Gen5TimerConstants.*;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
 public class Gen5TimerModel {
 
     private final ObjectProperty<Gen5TimerMode> mode = new SimpleObjectProperty<>(DEFAULT_MODE);

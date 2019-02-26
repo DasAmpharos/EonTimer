@@ -18,4 +18,16 @@ public final class Spinners {
     public static SpinnerValueFactory<Integer> createValueFactory(int min, int max, int initialValue, int amountToStepBy) {
         return new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue, amountToStepBy);
     }
+
+    public static SpinnerValueFactory<Double> createValueFactory(double min, double max) {
+        return new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max);
+    }
+
+    public static SpinnerValueFactory<Double> createValueFactory(double min, double max, double initialValue) {
+        return new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, initialValue);
+    }
+
+    public static SpinnerValueFactory<Double> createValueFactory(double min, double max, double initialValue, double amountToStepBy) {
+        return new SpinnerValueFactory.DoubleSpinnerValueFactory(min, max, initialValue, amountToStepBy);
+    }
 }
