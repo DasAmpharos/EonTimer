@@ -2,13 +2,13 @@ package io.github.dylmeadows.eontimer.util
 
 import io.github.dylmeadows.eontimer.model.settings.Console
 
-fun convertToMillis(delays: Int, console: Console): Int =
-    Math.round(delays * console.frameRate).toInt()
+fun convertToMillis(delays: Int, console: Console): Long =
+    Math.round(delays * console.frameRate)
 
-fun convertToDelays(millis: Int, console: Console): Int =
-    Math.round(millis / console.frameRate).toInt()
+fun convertToDelays(millis: Int, console: Console): Long =
+    Math.round(millis / console.frameRate)
 
-fun createCalibration(delay: Int, second: Int, console: Console): Int {
-    val delayCalibration = delay - convertToDelays(second * 1000, console)
+fun createCalibration(delay: Int, second: Int, console: Console): Long {
+    val delayCalibration = delay - convertToDelays(second * 1000, console).toInt()
     return convertToMillis(delayCalibration, console)
 }

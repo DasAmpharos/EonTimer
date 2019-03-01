@@ -5,15 +5,18 @@ import io.github.dylmeadows.eontimer.model.TimerModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
-import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.util.changesAsFlux
+import io.github.dylmeadows.eontimer.util.getValue
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import tornadofx.getValue
 import javax.annotation.PostConstruct
 
 @Service

@@ -4,6 +4,7 @@ import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import reactor.core.publisher.Flux
+import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 
 fun <T> ObservableValue<T>.changesAsFlux(): Flux<Change<T>> {
@@ -23,4 +24,10 @@ fun <T> ObservableValue<T>.changesAsFlux(): Flux<Change<T>> {
 
 data class Change<T>(val oldValue: T, val newValue: T)
 
-val JavaFxScheduler = Schedulers.fromExecutor(Platform::runLater)
+object JavaFxScheduler {
+    private val platform = Schedulers.fromExecutor(Platform::runLater)
+
+    fun platform(): Scheduler {
+        return this.platform
+    }
+}

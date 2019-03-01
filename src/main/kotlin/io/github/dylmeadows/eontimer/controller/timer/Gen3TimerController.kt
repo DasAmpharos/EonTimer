@@ -2,6 +2,7 @@ package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.common.javafx.util.ChoiceConverter
 import io.github.dylmeadows.common.javafx.util.Nodes
+import io.github.dylmeadows.eontimer.model.timer.Gen3TimerConstants
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
 import io.github.dylmeadows.eontimer.util.Spinners

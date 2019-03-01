@@ -1,6 +1,7 @@
 package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.common.javafx.util.ChoiceConverter
+import io.github.dylmeadows.eontimer.model.timer.Gen5TimerConstants
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
 import io.github.dylmeadows.eontimer.util.Spinners

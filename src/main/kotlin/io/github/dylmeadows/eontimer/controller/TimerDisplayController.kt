@@ -23,7 +23,7 @@ class TimerDisplayController @Autowired constructor(
     fun initialize() {
         timerService.stateProperty
             .changesAsFlux()
-            .subscribeOn(JavaFxScheduler)
+            .subscribeOn(JavaFxScheduler.platform())
             .map { it.newValue }
             .subscribe {
                 minutesBeforeTargetLbl.text = it.minutesBeforeTarget.toString()
