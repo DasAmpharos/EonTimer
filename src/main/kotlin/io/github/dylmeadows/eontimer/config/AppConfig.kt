@@ -9,21 +9,20 @@ import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
-import org.hildan.fxgson.FxGson
+import io.github.dylmeadows.eontimer.util.gson.ApplicationModelAdapter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.io.File
-import java.util.*
 import javax.annotation.PreDestroy
 
 @Configuration
 @EnableConfigurationProperties(AppProperties::class)
 open class AppConfig @Autowired constructor(
-        private val properties: AppProperties,
-        private val context: ApplicationContext) {
+    private val properties: AppProperties,
+    private val context: ApplicationContext) {
 
     @PreDestroy
     private fun destroy() {
@@ -32,21 +31,22 @@ open class AppConfig @Autowired constructor(
         // persist settings
         val json = gson.toJson(settings)
         File("${properties.name}.json")
-                .writeText(json)
+            .writeText(json)
     }
 
     @Bean
-    open fun fxGson(builder: GsonBuilder): Gson {
-        return FxGson.addFxSupport(builder)
-                .setPrettyPrinting()
-                .create()
+    open fun gson(builder: GsonBuilder,
+                  applicationModelAdapter: ApplicationModelAdapter): Gson {
+        return builder.setPrettyPrinting()
+            .registerTypeAdapter(ApplicationModel::class.java, applicationModelAdapter)
+            .create()
     }
 
     @Bean
-    open fun settings(fxGson: Gson): ApplicationModel {
+    open fun settings(gson: Gson): ApplicationModel {
         val file = File("${properties.name}.json")
         return if (file.exists()) {
-            fxGson.fromJson(file.readText(), ApplicationModel::class.java)
+            gson.fromJson(file.readText(), ApplicationModel::class.java)
         } else {
             ApplicationModel()
         }

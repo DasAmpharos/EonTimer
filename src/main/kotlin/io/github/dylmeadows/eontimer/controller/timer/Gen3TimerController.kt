@@ -38,22 +38,22 @@ class Gen3TimerController @Autowired constructor(
         // Mode
         modeField.items = FXCollections.observableArrayList(*Gen3TimerMode.values())
         modeField.converter = ChoiceConverter.forChoice(Gen3TimerMode::class.java)
-        modeField.valueProperty().bindBidirectional(model.modeProperty())
+        modeField.valueProperty().bindBidirectional(model.modeProperty)
         // Calibration
         val calibrationValueFactory = Spinners.createValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_CALIBRATION)
-        calibrationValueFactory.valueProperty().bindBidirectional(model.calibrationProperty().asObject())
+        calibrationValueFactory.valueProperty().bindBidirectional(model.calibrationProperty.asObject())
         calibrationField.valueFactory = calibrationValueFactory
         // Pre-Timer
         val preTimerValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_PRE_TIMER)
-        preTimerValueFactory.valueProperty().bindBidirectional(model.preTimerProperty().asObject())
+        preTimerValueFactory.valueProperty().bindBidirectional(model.preTimerProperty.asObject())
         preTimerField.valueFactory = preTimerValueFactory
         // Target Frame
         val targetFrameValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_TARGET_FRAME)
-        targetFrameValueFactory.valueProperty().bindBidirectional(model.targetFrameProperty().asObject())
+        targetFrameValueFactory.valueProperty().bindBidirectional(model.targetFrameProperty.asObject())
         targetFrameField.valueFactory = targetFrameValueFactory
         // Frame Hit
         val frameHitValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE)
-        frameHitValueFactory.valueProperty().bindBidirectional(model.frameHitProperty().asObject())
+        frameHitValueFactory.valueProperty().bindBidirectional(model.frameHitProperty.asObject())
         frameHitField.valueFactory = frameHitValueFactory
 
         // set conditional field visibility

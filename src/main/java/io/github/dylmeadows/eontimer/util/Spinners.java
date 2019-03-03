@@ -1,10 +1,7 @@
 package io.github.dylmeadows.eontimer.util;
 
 import javafx.scene.control.SpinnerValueFactory;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Spinners {
 
     public static SpinnerValueFactory<Integer> createValueFactory(int min, int max) {

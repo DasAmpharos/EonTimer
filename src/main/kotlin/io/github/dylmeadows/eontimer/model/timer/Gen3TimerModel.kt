@@ -18,7 +18,6 @@ class Gen3TimerModel {
     val targetFrameProperty = SimpleIntegerProperty(Gen3TimerConstants.DEFAULT_TARGET_FRAME)
     var targetFrame by targetFrameProperty
 
-    @Transient
     val frameHitProperty = SimpleIntegerProperty()
     var frameHit by frameHitProperty
 }

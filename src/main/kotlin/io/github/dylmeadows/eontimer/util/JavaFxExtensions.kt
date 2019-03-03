@@ -3,6 +3,7 @@ package io.github.dylmeadows.eontimer.util
 import io.github.dylmeadows.eontimer.model.resource.CssResource
 import javafx.beans.property.*
 import javafx.beans.value.*
+import javafx.scene.Parent
 import javafx.scene.Scene
 import kotlin.reflect.KProperty
 
@@ -24,6 +25,10 @@ operator fun IntegerProperty.setValue(thisRef: Any, property: KProperty<*>, valu
 operator fun ObservableBooleanValue.getValue(thisRef: Any, property: KProperty<*>) = get()
 operator fun BooleanProperty.setValue(thisRef: Any, property: KProperty<*>, value: Boolean) = set(value)
 
-fun Scene.addCssResource(resource: CssResource) {
+fun Scene.addCss(resource: CssResource) {
     this.stylesheets.add(resource.path)
+}
+
+fun Parent.asScene(): Scene {
+    return Scene(this)
 }

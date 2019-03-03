@@ -31,6 +31,6 @@ class Gen4TimerController @Autowired constructor(
         // Mode
         modeField.items = FXCollections.observableArrayList(*Gen4TimerMode.values())
         modeField.converter = ChoiceConverter.forChoice(Gen4TimerMode::class.java)
-        modeField.valueProperty().bindBidirectional(model.modeProperty())
+        modeField.valueProperty().bindBidirectional(model.modeProperty)
     }
 }

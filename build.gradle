@@ -21,10 +21,8 @@ dependencies {
     implementation "io.github.dylmeadows:java-common-javafx:$javaCommonVersion"
     implementation "io.github.dylmeadows:spring-boot-starter-javafx:0.0.1-20190203.122100"
     implementation "io.projectreactor:reactor-core:3.2.6.RELEASE"
-    implementation "org.hildan.fxgson:fx-gson:3.1.1"
+    implementation "com.google.code.gson:gson:2.8.5"
     implementation "de.jensd:fontawesomefx:8.9"
-
-    annotationProcessor "org.projectlombok:lombok:1.18.4"
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.testfx:testfx-core:$testfxVersion"
