@@ -12,6 +12,7 @@
     -theme-control-base: #BFBFBF;
     -theme-label-text: #000000;
     -theme-default-button-base: derive(-theme-accent, 75%);
+    -theme-active: -theme-accent;
 }
 
 * {
@@ -47,13 +48,16 @@
     -fx-border-radius: 3px;
     -fx-border-width: 2px;
 }
+
 .tab-pane.themeable > .tab-header-area > .headers-region > .tab {
     -fx-color: derive(-theme-panel-base, -10%);
 }
+
 .tab-pane.themeable > .tab-header-area > .headers-region > .tab:selected {
     -fx-color: -theme-panel-base;
     -fx-background: -theme-panel-base;
 }
+
 .tab-pane.themeable > .tab-header-area > .control-buttons-tab {
     -fx-base: -theme-control-base;
 }
@@ -110,6 +114,14 @@
  *                                                                              *
  *******************************************************************************/
 
- .label.themeable {
+.label.themeable {
     -fx-text-fill: -theme-label-text;
- }
+}
+
+.label#currentStageLbl.active {
+    -fx-background-color: -theme-active;
+}
+
+.label#currentStageLbl {
+    -fx-background-color: none;
+}

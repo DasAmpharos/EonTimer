@@ -3,8 +3,8 @@ package io.github.dylmeadows.eontimer.service.factory
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
-import io.github.dylmeadows.eontimer.util.convertToMillis
-import io.github.dylmeadows.eontimer.util.createCalibration
+import io.github.dylmeadows.eontimer.util.Calibrations.convertToMillis
+import io.github.dylmeadows.eontimer.util.Calibrations.createCalibration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

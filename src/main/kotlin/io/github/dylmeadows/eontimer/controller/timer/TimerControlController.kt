@@ -1,7 +1,6 @@
-package io.github.dylmeadows.eontimer.controller
+package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.eontimer.model.ApplicationModel
-import io.github.dylmeadows.eontimer.model.TimerModel
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.changesAsFlux

@@ -4,7 +4,7 @@ import io.github.dylmeadows.common.javafx.util.ChoiceConverter
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerConstants
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
-import io.github.dylmeadows.eontimer.util.Spinners
+import io.github.dylmeadows.eontimer.util.createValueFactory
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
@@ -60,45 +60,28 @@ class Gen5TimerController @Autowired constructor(
     private lateinit var actualAdvancesFieldSet: VBox
 
     fun initialize() {
-        // Mode
         modeField.items = FXCollections.observableArrayList(*Gen5TimerMode.values())
         modeField.converter = ChoiceConverter.forChoice(Gen5TimerMode::class.java)
         modeField.valueProperty().bindBidirectional(model.modeProperty)
-        // Calibration
-        val calibrationValueFactory = Spinners.createValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, Gen5TimerConstants.DEFAULT_CALIBRATION)
-        calibrationValueFactory.valueProperty().bindBidirectional(model.calibrationProperty.asObject())
-        calibrationField.valueFactory = calibrationValueFactory
-        // Target Delay
-        val targetDelayValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen5TimerConstants.DEFAULT_TARGET_DELAY)
-        targetDelayValueFactory.valueProperty().bindBidirectional(model.targetDelayProperty.asObject())
-        targetDelayField.valueFactory = targetDelayValueFactory
-        // Target Second
-        val targetSecondValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen5TimerConstants.DEFAULT_TARGET_SECOND)
-        targetSecondValueFactory.valueProperty().bindBidirectional(model.targetSecondProperty.asObject())
-        targetSecondField.valueFactory = targetSecondValueFactory
-        // Entralink Calibration
-        val entralinkCalibrationValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen5TimerConstants.DEFAULT_ENTRALINK_CALIBRATION)
-        entralinkCalibrationValueFactory.valueProperty().bindBidirectional(model.entralinkCalibrationProperty.asObject())
-        entralinkCalibrationField.valueFactory = entralinkCalibrationValueFactory
-        // Frame Calibration
-        val frameCalibrationValueFactory = Spinners.createValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, Gen5TimerConstants.DEFAULT_FRAME_CALIBRATION)
-        frameCalibrationValueFactory.valueProperty().bindBidirectional(model.frameCalibrationProperty.asObject())
-        frameCalibrationField.valueFactory = frameCalibrationValueFactory
-        // Target Advances
-        val targetAdvancesValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen5TimerConstants.DEFAULT_TARGET_ADVANCES)
-        targetAdvancesValueFactory.valueProperty().bindBidirectional(model.targetAdvancesProperty.asObject())
-        targetAdvancesField.valueFactory = targetAdvancesValueFactory
-        // Second Hit
-        val secondHitValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE)
-        secondHitValueFactory.valueProperty().bindBidirectional(model.secondHitProperty.asObject())
-        secondHitField.valueFactory = secondHitValueFactory
-        // Delay Hit
-        val delayHitValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE)
-        delayHitValueFactory.valueProperty().bindBidirectional(model.delayHitProperty.asObject())
-        delayHitField.valueFactory = delayHitValueFactory
-        // Actual Advances
-        val actualAdvancesValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE)
-        actualAdvancesValueFactory.valueProperty().bindBidirectional(model.actualAdvancesProperty.asObject())
-        actualAdvancesField.valueFactory = actualAdvancesValueFactory
+
+        calibrationField.createValueFactory(Int.MIN_VALUE, Int.MAX_VALUE, Gen5TimerConstants.DEFAULT_CALIBRATION)
+            .valueProperty().bindBidirectional(model.calibrationProperty.asObject())
+        targetDelayField.createValueFactory(0, Int.MAX_VALUE, Gen5TimerConstants.DEFAULT_TARGET_DELAY)
+            .valueProperty().bindBidirectional(model.targetDelayProperty.asObject())
+        targetSecondField.createValueFactory(0, Int.MAX_VALUE, Gen5TimerConstants.DEFAULT_TARGET_SECOND)
+            .valueProperty().bindBidirectional(model.targetSecondProperty.asObject())
+        entralinkCalibrationField.createValueFactory(0, Int.MAX_VALUE, Gen5TimerConstants.DEFAULT_ENTRALINK_CALIBRATION)
+            .valueProperty().bindBidirectional(model.entralinkCalibrationProperty.asObject())
+        frameCalibrationField.createValueFactory(Int.MIN_VALUE, Int.MAX_VALUE, Gen5TimerConstants.DEFAULT_FRAME_CALIBRATION)
+            .valueProperty().bindBidirectional(model.frameCalibrationProperty.asObject())
+        targetAdvancesField.createValueFactory(0, Int.MAX_VALUE, Gen5TimerConstants.DEFAULT_TARGET_ADVANCES)
+            .valueProperty().bindBidirectional(model.targetAdvancesProperty.asObject())
+
+        secondHitField.createValueFactory(0, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.secondHitProperty.asObject())
+        delayHitField.createValueFactory(0, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.delayHitProperty.asObject())
+        actualAdvancesField.createValueFactory(0, Integer.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.actualAdvancesProperty.asObject())
     }
 }

@@ -5,6 +5,10 @@ import javafx.beans.property.*
 import javafx.beans.value.*
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.ChoiceBox
+import javafx.scene.control.Label
+import javafx.scene.control.Spinner
+import javafx.scene.control.SpinnerValueFactory
 import kotlin.reflect.KProperty
 
 operator fun <T> ObservableValue<T>.getValue(thisRef: Any, property: KProperty<*>) = value
@@ -32,3 +36,22 @@ fun Scene.addCss(resource: CssResource) {
 fun Parent.asScene(): Scene {
     return Scene(this)
 }
+
+fun Spinner<Int>.createValueFactory(min: Int, max: Int): SpinnerValueFactory<Int> {
+    valueFactory = SpinnerValueFactory.IntegerSpinnerValueFactory(min, max)
+    return valueFactory
+}
+
+fun Spinner<Int>.createValueFactory(min: Int, max: Int, initialValue: Int): SpinnerValueFactory<Int> {
+    valueFactory = SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue)
+    return valueFactory
+}
+
+var Label.isActive: Boolean
+    get() = this.styleClass.contains("active")
+    set(value) {
+        when (value) {
+            true -> styleClass.add("active")
+            false -> styleClass.remove("active")
+        }
+    }

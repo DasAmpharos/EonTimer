@@ -13,9 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
 open class AppLauncher : SpringJavaFxApplication() {
-    companion object {
-        private val log = LoggerFactory.getLogger(AppLauncher::class.java)
-    }
+
+    private val log = LoggerFactory.getLogger(AppLauncher::class.java)
 
     override fun onInit() {
         arrayOf("os.name", "os.version", "os.arch", "java.version", "java.vendor", "sun.arch.data.model")
@@ -23,7 +22,7 @@ open class AppLauncher : SpringJavaFxApplication() {
     }
 
     override fun start(stage: Stage) {
-        stage.scene = load<Parent>(FxmlResource.Gen3TimerPane.asStream).asScene()
+        stage.scene = load<Parent>(FxmlResource.ActionSettingsPane.asStream).asScene()
         stage.scene.addCss(CssResource.MAIN)
         stage.show()
     }

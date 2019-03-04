@@ -5,7 +5,7 @@ import io.github.dylmeadows.common.javafx.util.Nodes
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerConstants
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
-import io.github.dylmeadows.eontimer.util.Spinners
+import io.github.dylmeadows.eontimer.util.createValueFactory
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
@@ -35,26 +35,18 @@ class Gen3TimerController @Autowired constructor(
     private lateinit var frameHitFieldSet: VBox
 
     fun initialize() {
-        // Mode
         modeField.items = FXCollections.observableArrayList(*Gen3TimerMode.values())
         modeField.converter = ChoiceConverter.forChoice(Gen3TimerMode::class.java)
         modeField.valueProperty().bindBidirectional(model.modeProperty)
-        // Calibration
-        val calibrationValueFactory = Spinners.createValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_CALIBRATION)
-        calibrationValueFactory.valueProperty().bindBidirectional(model.calibrationProperty.asObject())
-        calibrationField.valueFactory = calibrationValueFactory
-        // Pre-Timer
-        val preTimerValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_PRE_TIMER)
-        preTimerValueFactory.valueProperty().bindBidirectional(model.preTimerProperty.asObject())
-        preTimerField.valueFactory = preTimerValueFactory
-        // Target Frame
-        val targetFrameValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE, Gen3TimerConstants.DEFAULT_TARGET_FRAME)
-        targetFrameValueFactory.valueProperty().bindBidirectional(model.targetFrameProperty.asObject())
-        targetFrameField.valueFactory = targetFrameValueFactory
-        // Frame Hit
-        val frameHitValueFactory = Spinners.createValueFactory(0, Integer.MAX_VALUE)
-        frameHitValueFactory.valueProperty().bindBidirectional(model.frameHitProperty.asObject())
-        frameHitField.valueFactory = frameHitValueFactory
+
+        calibrationField.createValueFactory(Int.MIN_VALUE, Int.MAX_VALUE, Gen3TimerConstants.DEFAULT_CALIBRATION)
+            .valueProperty().bindBidirectional(model.calibrationProperty.asObject())
+        preTimerField.createValueFactory(0, Int.MAX_VALUE, Gen3TimerConstants.DEFAULT_PRE_TIMER)
+            .valueProperty().bindBidirectional(model.preTimerProperty.asObject())
+        targetFrameField.createValueFactory(0, Int.MAX_VALUE, Gen3TimerConstants.DEFAULT_TARGET_FRAME)
+            .valueProperty().bindBidirectional(model.targetFrameProperty.asObject())
+        frameHitField.createValueFactory(0, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.frameHitProperty.asObject())
 
         // set conditional field visibility
         val isStandardMode = modeField.valueProperty().isNotEqualTo(Gen3TimerMode.STANDARD)
