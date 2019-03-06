@@ -8,8 +8,10 @@ enum class FxmlResource(private val path: String) : Resource {
     Gen5TimerPane("$BASE_RESOURCE_PATH/fxml/timer/Gen5TimerPane.fxml"),
     CustomTimerPane("$BASE_RESOURCE_PATH/fxml/timer/CustomTimer.fxml"),
     ActionSettingsPane("$BASE_RESOURCE_PATH/fxml/settings/ActionSettingsPane.fxml"),
+    TimerSettingsPane("$BASE_RESOURCE_PATH/fxml/settings/TimerSettingsPane.fxml"),
+    SettingsControlPane("$BASE_RESOURCE_PATH/fxml/settings/SettingsControlPane.fxml"),
     TimerDisplayPane("$BASE_RESOURCE_PATH/fxml/TimerDisplayPane.fxml"),
-    TimerControlPane("$BASE_RESOURCE_PATH/fxml/TimerControlPane.fxml");
+    TimerControlPane("$BASE_RESOURCE_PATH/fxml/timer/TimerControlPane.fxml");
 
     override fun getPath(): String {
         return this.path

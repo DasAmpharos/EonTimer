@@ -10,23 +10,17 @@
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="15.0"
       xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="io.github.dylmeadows.eontimer.controller.settings.TimerSettingsController">
-    <children>
-        <VBox spacing="5.0">
-            <children>
-                <Label text="Console"/>
-                <ChoiceBox fx:id="consoleField" maxWidth="1.7976931348623157E308"/>
-            </children>
-        </VBox>
-        <VBox spacing="5.0">
-            <children>
-                <Label text="Refresh Interval"/>
-                <Spinner fx:id="refreshIntervalField" maxWidth="1.7976931348623157E308"/>
-            </children>
-        </VBox>
-        <CheckBox fx:id="precisionCalibrationField" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                  text="Precision Calibration Mode"/>
-    </children>
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
     </padding>
+    <VBox spacing="5.0">
+        <Label text="Console"/>
+        <ChoiceBox fx:id="consoleField" maxWidth="1.7976931348623157E308"/>
+    </VBox>
+    <VBox spacing="5.0">
+        <Label text="Refresh Interval"/>
+        <Spinner fx:id="refreshIntervalField" maxWidth="1.7976931348623157E308"/>
+    </VBox>
+    <CheckBox fx:id="precisionCalibrationField" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+              text="Precision Calibration Mode"/>
 </VBox>

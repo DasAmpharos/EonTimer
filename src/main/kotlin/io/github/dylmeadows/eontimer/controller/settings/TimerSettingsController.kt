@@ -22,7 +22,7 @@ class TimerSettingsController @Autowired constructor(
     @FXML
     private lateinit var refreshIntervalField: Spinner<Int>
     @FXML
-    private lateinit var precisionModeField: CheckBox
+    private lateinit var precisionCalibrationField: CheckBox
 
     fun initialize() {
         consoleField.items = FXCollections.observableArrayList(*Console.values())
@@ -32,12 +32,12 @@ class TimerSettingsController @Autowired constructor(
         refreshIntervalField.createValueFactory(0, Int.MAX_VALUE)
             .valueProperty().bindBidirectional(model.refreshIntervalProperty.asObject())
 
-        precisionModeField.selectedProperty().bindBidirectional(model.precisionCalibrationModeProperty)
+        precisionCalibrationField.selectedProperty().bindBidirectional(model.precisionCalibrationModeProperty)
     }
 
     fun resetDefaultValues() {
         consoleField.value = TimerSettingsConstants.DEFAULT_CONSOLE
         refreshIntervalField.valueFactory.value = TimerSettingsConstants.DEFAULT_REFRESH_INTERVAL
-        precisionModeField.isSelected = TimerSettingsConstants.DEFAULT_PRECISION_CALIBRATION_MODE
+        precisionCalibrationField.isSelected = TimerSettingsConstants.DEFAULT_PRECISION_CALIBRATION_MODE
     }
 }
