@@ -32,12 +32,7 @@ class TimerSettingsController @Autowired constructor(
         refreshIntervalField.createValueFactory(0, Int.MAX_VALUE)
             .valueProperty().bindBidirectional(model.refreshIntervalProperty.asObject())
 
-        precisionCalibrationField.selectedProperty().bindBidirectional(model.precisionCalibrationModeProperty)
-    }
-
-    fun resetDefaultValues() {
-        consoleField.value = TimerSettingsConstants.DEFAULT_CONSOLE
-        refreshIntervalField.valueFactory.value = TimerSettingsConstants.DEFAULT_REFRESH_INTERVAL
-        precisionCalibrationField.isSelected = TimerSettingsConstants.DEFAULT_PRECISION_CALIBRATION_MODE
+        precisionCalibrationField.selectedProperty()
+            .bindBidirectional(model.precisionCalibrationModeProperty)
     }
 }

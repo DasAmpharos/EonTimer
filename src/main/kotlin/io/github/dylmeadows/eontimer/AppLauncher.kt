@@ -1,9 +1,6 @@
 package io.github.dylmeadows.eontimer
 
-import io.github.dylmeadows.eontimer.controller.settings.SettingsDialogController
-import io.github.dylmeadows.eontimer.model.resource.CssResource
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
-import io.github.dylmeadows.eontimer.util.addCss
 import io.github.dylmeadows.eontimer.util.asScene
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.application.Application.launch
@@ -25,12 +22,9 @@ open class AppLauncher : SpringJavaFxApplication() {
     }
 
     override fun start(stage: Stage) {
-
-        val controller = getBean(SettingsDialogController::class.java)
-        controller.showAndWait()
-        /*val parent = load<Parent>(FxmlResource.TimerControlPane.get())
+        val parent = load<Parent>(FxmlResource.TimerControlPane.get())
         stage.scene = parent.asScene()
-        stage.show()*/
+        stage.show()
     }
 }
 

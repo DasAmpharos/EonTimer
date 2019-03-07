@@ -16,9 +16,9 @@ data class ActionSettingsModel(
     val intervalProperty: IntegerProperty = SimpleIntegerProperty(ActionSettingsConstants.DEFAULT_INTERVAL),
     val countProperty: IntegerProperty = SimpleIntegerProperty(ActionSettingsConstants.DEFAULT_COUNT)) {
 
-    var mode by modeProperty
-    var color by colorProperty
-    var sound by soundProperty
+    var mode: ActionMode by modeProperty
+    var color: Color by colorProperty
+    var sound: SoundResource by soundProperty
     var interval by intervalProperty
     var count by countProperty
 }
