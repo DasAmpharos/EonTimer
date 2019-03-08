@@ -1,11 +1,12 @@
 package io.github.dylmeadows.eontimer.util
 
 import io.github.dylmeadows.eontimer.model.resource.CssResource
+import io.github.dylmeadows.eontimer.model.resource.FxmlResource
+import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.beans.property.*
 import javafx.beans.value.*
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.ChoiceBox
 import javafx.scene.control.Label
 import javafx.scene.control.Spinner
 import javafx.scene.control.SpinnerValueFactory
@@ -29,14 +30,6 @@ operator fun IntegerProperty.setValue(thisRef: Any, property: KProperty<*>, valu
 operator fun ObservableBooleanValue.getValue(thisRef: Any, property: KProperty<*>) = get()
 operator fun BooleanProperty.setValue(thisRef: Any, property: KProperty<*>, value: Boolean) = set(value)
 
-fun Scene.addCss(resource: CssResource) {
-    this.stylesheets.add(resource.path)
-}
-
-fun Parent.asScene(): Scene {
-    return Scene(this)
-}
-
 fun Spinner<Int>.createValueFactory(min: Int, max: Int): SpinnerValueFactory<Int> {
     valueFactory = SpinnerValueFactory.IntegerSpinnerValueFactory(min, max)
     return valueFactory
@@ -55,3 +48,15 @@ var Label.isActive: Boolean
             false -> styleClass.remove("active")
         }
     }
+
+fun <T : Parent> SpringJavaFxApplication.load(resource: FxmlResource): T {
+    return load(resource.get())
+}
+
+fun Scene.addCss(resource: CssResource) {
+    stylesheets.add(resource.path)
+}
+
+fun Parent.asScene(): Scene {
+    return Scene(this)
+}

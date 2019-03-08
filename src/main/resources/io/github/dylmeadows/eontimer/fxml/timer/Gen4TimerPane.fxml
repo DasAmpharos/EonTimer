@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen4TimerController">
+            fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen4TimerPaneController">
     <top>
         <VBox spacing="5.0" BorderPane.alignment="CENTER">
             <children>

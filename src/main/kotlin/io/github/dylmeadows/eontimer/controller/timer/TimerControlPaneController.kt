@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class TimerControlController @Autowired constructor(
+class TimerControlPaneController @Autowired constructor(
     private val model: ApplicationModel,
     private val timerService: TimerService) {
 
@@ -28,7 +28,7 @@ class TimerControlController @Autowired constructor(
     private lateinit var timerTabPane: TabPane
 
     companion object {
-        private val log = LoggerFactory.getLogger(TimerControlController::class.java)
+        private val log = LoggerFactory.getLogger(TimerControlPaneController::class.java)
     }
 
     fun initialize() {

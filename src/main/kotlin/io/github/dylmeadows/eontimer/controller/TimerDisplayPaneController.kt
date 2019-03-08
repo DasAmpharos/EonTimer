@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class TimerDisplayController @Autowired constructor(
+class TimerDisplayPaneController @Autowired constructor(
     private val timerService: TimerService) {
 
     @FXML

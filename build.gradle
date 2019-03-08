@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.7'
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
     id 'org.springframework.boot' version '2.1.2.RELEASE'
 }
@@ -27,9 +26,4 @@ dependencies {
     testImplementation "junit:junit:4.12"
     testImplementation "org.testfx:testfx-core:$testfxVersion"
     testImplementation "org.testfx:testfx-junit:$testfxVersion"
-}
-
-javafx {
-    version = "11.0.2"
-    modules = ["javafx.fxml", "javafx.controls", "javafx.media"]
 }

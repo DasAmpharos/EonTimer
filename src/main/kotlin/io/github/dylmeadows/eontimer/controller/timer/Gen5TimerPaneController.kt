@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class Gen5TimerController @Autowired constructor(
+class Gen5TimerPaneController @Autowired constructor(
     private val model: Gen5TimerModel) {
 
     @FXML

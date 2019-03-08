@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ActionSettingsController @Autowired constructor(
+class ActionSettingsPaneController @Autowired constructor(
     private val model: ActionSettingsModel) {
 
     @FXML
