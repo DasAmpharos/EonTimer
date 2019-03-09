@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty
 
 class Gen4TimerModel {
     val modeProperty = SimpleObjectProperty(Gen4TimerConstants.DEFAULT_MODE)
-    var mode by modeProperty
+    var mode: Gen4TimerMode by modeProperty
 
     val calibratedDelayProperty = SimpleIntegerProperty(Gen4TimerConstants.DEFAULT_CALIBRATED_DELAY)
     var calibratedDelay by calibratedDelayProperty
@@ -21,7 +21,6 @@ class Gen4TimerModel {
     val targetSecondProperty = SimpleIntegerProperty(Gen4TimerConstants.DEFAULT_TARGET_SECOND)
     var targetSecond by targetSecondProperty
 
-    @Transient
     val delayHitProperty = SimpleIntegerProperty()
     var delayHit by delayHitProperty
 }

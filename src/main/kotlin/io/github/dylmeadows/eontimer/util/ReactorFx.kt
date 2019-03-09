@@ -1,13 +1,16 @@
 package io.github.dylmeadows.eontimer.util
 
 import javafx.application.Platform
+import javafx.beans.binding.Binding
+import javafx.beans.property.ReadOnlyObjectProperty
+import javafx.beans.property.ReadOnlyObjectWrapper
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import reactor.core.publisher.Flux
 import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 
-fun <T> ObservableValue<T>.changesAsFlux(): Flux<Change<T>> {
+fun <T> ObservableValue<T>.asFlux(): Flux<Change<T>> {
     return Flux.create { emitter ->
         val listener: ChangeListener<T> = ChangeListener { _, oldValue, newValue ->
             emitter.next(Change(oldValue, newValue))

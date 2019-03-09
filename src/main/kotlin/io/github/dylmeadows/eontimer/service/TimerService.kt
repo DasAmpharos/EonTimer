@@ -5,7 +5,7 @@ import io.github.dylmeadows.eontimer.model.TimerModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
-import io.github.dylmeadows.eontimer.util.changesAsFlux
+import io.github.dylmeadows.eontimer.util.asFlux
 import io.github.dylmeadows.eontimer.util.getValue
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -30,7 +30,7 @@ class TimerService @Autowired constructor(
     @PostConstruct
     private fun initialize() {
         model.stagesProperty
-            .changesAsFlux<List<Long>>()
+            .asFlux<List<Long>>()
             // .doOnNext { emitInit() }
             .subscribe()
     }

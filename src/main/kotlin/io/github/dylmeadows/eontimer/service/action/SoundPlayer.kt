@@ -2,7 +2,7 @@ package io.github.dylmeadows.eontimer.service.action
 
 import io.github.dylmeadows.eontimer.model.resource.SoundResource
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.util.changesAsFlux
+import io.github.dylmeadows.eontimer.util.asFlux
 import io.github.dylmeadows.eontimer.util.getValue
 import io.github.dylmeadows.eontimer.util.setValue
 import javafx.beans.property.SimpleObjectProperty
@@ -22,7 +22,7 @@ class SoundPlayer @Autowired constructor(
     init {
         mediaPlayer = createMediaPlayer(actionSettings.sound)
         actionSettings.soundProperty
-            .changesAsFlux()
+            .asFlux()
             .map { it.newValue }
             .map { createMediaPlayer(it) }
             .doOnNext { mediaPlayer = it }

@@ -3,7 +3,7 @@ package io.github.dylmeadows.eontimer.controller
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
 import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
-import io.github.dylmeadows.eontimer.util.changesAsFlux
+import io.github.dylmeadows.eontimer.util.asFlux
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +22,7 @@ class TimerDisplayPaneController @Autowired constructor(
 
     fun initialize() {
         timerService.stateProperty
-            .changesAsFlux()
+            .asFlux()
             .subscribeOn(JavaFxScheduler.platform())
             .map { it.newValue }
             .subscribe {

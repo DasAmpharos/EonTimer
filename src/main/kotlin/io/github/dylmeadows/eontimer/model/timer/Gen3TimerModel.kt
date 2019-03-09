@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty
 
 class Gen3TimerModel {
     val modeProperty = SimpleObjectProperty(Gen3TimerConstants.DEFAULT_MODE)
-    var mode by modeProperty
+    var mode: Gen3TimerMode by modeProperty
 
     val calibrationProperty = SimpleIntegerProperty(Gen3TimerConstants.DEFAULT_CALIBRATION)
     var calibration by calibrationProperty

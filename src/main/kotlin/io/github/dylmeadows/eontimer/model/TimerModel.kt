@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component
 @Component
 class TimerModel {
     val stagesProperty: SimpleObjectProperty<List<Long>> = SimpleObjectProperty(ArrayList())
-    var stages by stagesProperty
+    var stages: List<Long> by stagesProperty
 }

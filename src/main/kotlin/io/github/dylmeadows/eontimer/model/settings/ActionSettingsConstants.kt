@@ -11,7 +11,7 @@ object ActionSettingsConstants {
     @JvmField
     val DEFAULT_SOUND = SoundResource.BEEP
     @JvmField
-    val DEFAULT_COLOR = Color.CYAN
+    val DEFAULT_COLOR: Color = Color.CYAN
 
     const val DEFAULT_INTERVAL = 500
     const val DEFAULT_COUNT = 6

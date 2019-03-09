@@ -40,6 +40,10 @@ fun Spinner<Int>.createValueFactory(min: Int, max: Int, initialValue: Int): Spin
     return valueFactory
 }
 
+fun ObjectProperty<Int>.bindBidirectional(property: IntegerProperty) {
+    bindBidirectional(property.asObject())
+}
+
 var Label.isActive: Boolean
     get() = this.styleClass.contains("active")
     set(value) {

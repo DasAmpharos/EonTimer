@@ -3,6 +3,8 @@ package io.github.dylmeadows.eontimer.controller.timer
 import io.github.dylmeadows.common.javafx.util.ChoiceConverter
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
+import io.github.dylmeadows.eontimer.util.bindBidirectional
+import io.github.dylmeadows.eontimer.util.createValueFactory
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class Gen4TimerPaneController @Autowired constructor(
-    private val model: Gen4TimerModel) {
+    private val model: Gen4TimerModel) : TimerPaneController {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen4TimerMode>
@@ -32,5 +34,18 @@ class Gen4TimerPaneController @Autowired constructor(
         modeField.items = FXCollections.observableArrayList(*Gen4TimerMode.values())
         modeField.converter = ChoiceConverter.forChoice(Gen4TimerMode::class.java)
         modeField.valueProperty().bindBidirectional(model.modeProperty)
+
+        calibratedDelayField.createValueFactory(Int.MIN_VALUE, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.calibratedDelayProperty)
+        calibratedSecondField.createValueFactory(Int.MIN_VALUE, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.calibratedSecondProperty)
+        targetDelayField.createValueFactory(0, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.targetDelayProperty)
+        targetSecondField.createValueFactory(0, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.targetSecondProperty)
+
+        delayHitField.createValueFactory(0, Int.MAX_VALUE)
+            .valueProperty().bindBidirectional(model.delayHitProperty)
+
     }
 }

@@ -3,7 +3,11 @@ package io.github.dylmeadows.eontimer.controller.timer
 import de.jensd.fx.glyphs.GlyphsDude
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
+import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.createValueFactory
+import javafx.beans.binding.BooleanBinding
+import javafx.beans.property.ReadOnlyBooleanProperty
+import javafx.beans.property.ReadOnlyBooleanWrapper
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
@@ -15,7 +19,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class CustomTimerPaneController @Autowired constructor(
-    private val model: CustomTimerModel) {
+    private val model: CustomTimerModel,
+    private val timerService: TimerService) : TimerPaneController {
 
     @FXML
     private lateinit var list: ListView<Long>
@@ -29,6 +34,9 @@ class CustomTimerPaneController @Autowired constructor(
     private lateinit var valueMoveUpBtn: Button
     @FXML
     private lateinit var valueMoveDownBtn: Button
+
+    override val canUpdate: BooleanBinding
+        get() = timerService.runningProperty.not()
 
     fun initialize() {
         list.items = model.stages
