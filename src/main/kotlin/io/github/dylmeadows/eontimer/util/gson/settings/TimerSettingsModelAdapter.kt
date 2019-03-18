@@ -18,8 +18,6 @@ class TimerSettingsModelAdapter : TypeAdapter<TimerSettingsModel>() {
             .value(value.refreshInterval)
             .name("precisionCalibrationMode")
             .value(value.precisionCalibrationMode)
-            .name("minimumLength")
-            .value(value.minimumLength)
             .endObject()
     }
 
@@ -31,7 +29,6 @@ class TimerSettingsModelAdapter : TypeAdapter<TimerSettingsModel>() {
                 "console" -> model.console = Console.valueOf(reader.nextString())
                 "refreshInterval" -> model.refreshInterval = reader.nextInt()
                 "precisionCalibrationMode" -> model.precisionCalibrationMode = reader.nextBoolean()
-                "minimumLength" -> model.minimumLength = reader.nextInt()
             }
         }
         reader.endObject()

@@ -2,10 +2,7 @@ package io.github.dylmeadows.eontimer
 
 import io.github.dylmeadows.eontimer.model.resource.CssResource
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
-import io.github.dylmeadows.eontimer.util.addCss
-import io.github.dylmeadows.eontimer.util.asScene
-import io.github.dylmeadows.eontimer.util.load
-import io.github.dylmeadows.eontimer.util.log
+import io.github.dylmeadows.eontimer.util.*
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.application.Application.launch
 import javafx.scene.Parent
@@ -23,8 +20,9 @@ open class AppLauncher : SpringJavaFxApplication() {
     }
 
     override fun start(stage: Stage) {
-        stage.scene = load<Parent>(FxmlResource.TimerControlPane).asScene()
+        stage.scene = load<Parent>(FxmlResource.EonTimerPane).asScene()
         stage.scene.addCss(CssResource.MAIN)
+        stage.isResizable = false
         stage.show()
     }
 }

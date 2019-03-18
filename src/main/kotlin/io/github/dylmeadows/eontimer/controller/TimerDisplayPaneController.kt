@@ -21,10 +21,8 @@ class TimerDisplayPaneController @Autowired constructor(
     private lateinit var nextStageLbl: Label
 
     fun initialize() {
-        timerService.stateProperty
-            .asFlux()
+        timerService.stateProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .map { it.newValue }
             .subscribe {
                 minutesBeforeTargetLbl.text = it.minutesBeforeTarget.toString()
                 currentStageLbl.text = formatTime(it.remaining)

@@ -1,8 +1,10 @@
 package io.github.dylmeadows.eontimer.service.factory
 
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsConstants
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
+import io.github.dylmeadows.eontimer.model.timer.TimerConstants
 import io.github.dylmeadows.eontimer.util.Calibrations.convertToMillis
 import io.github.dylmeadows.eontimer.util.Calibrations.createCalibration
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +45,7 @@ class Gen4TimerFactory @Autowired constructor(
 
     private fun normalize(value: Long): Long {
         var normalized = value
-        while (normalized < timerSettings.minimumLength)
+        while (normalized < TimerSettingsConstants.MINIMUM_LENGTH)
             normalized += 60000
         return normalized
     }

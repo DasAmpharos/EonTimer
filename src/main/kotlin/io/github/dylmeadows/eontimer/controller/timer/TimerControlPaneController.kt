@@ -5,8 +5,6 @@ import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
 import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.log
-import javafx.beans.property.ReadOnlyBooleanProperty
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Tab
@@ -39,19 +37,21 @@ class TimerControlPaneController @Autowired constructor(
     private lateinit var timerBtn: Button
 
     fun initialize() {
-        timerTabPane.selectionModel.selectedItemProperty().asFlux()
-            .map { getTimerType(it.newValue) }
-            .subscribe({
-                model.selectedTimerType = it
-                updateUpdateBtnDisableProperty(it)
-            }, {
-                log.error(it.message, it)
-                System.exit(-1)
-            })
+        gen3Tab.selectedProperty().asFlux()
+            .subscribe { model.selectedTimerType = TimerType.GEN3 }
+//        timerTabPane.selectionModel.selectedItemProperty().asFlux()
+//            .map { getTimerType(it.newValue) }
+//            .subscribe({
+//                model.selectedTimerType = it
+//                updateUpdateBtnDisableProperty(it)
+//            }, {
+//                log.error(it.message, it)
+//                System.exit(-1)
+//            })
 
         timerService.runningProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .map { if (!it.newValue) "Start" else "Stop" }
+            .map { if (!it) "Start" else "Stop" }
             .subscribe { timerBtn.text = it }
         timerBtn.setOnAction {
             if (!timerService.running) {
@@ -73,7 +73,12 @@ class TimerControlPaneController @Autowired constructor(
     }
 
     private fun updateUpdateBtnDisableProperty(timerType: TimerType) {
-        when (timerType) {
+        val binding = when (timerType) {
+            TimerType.GEN3 -> gen3Controller.canUpdate
+            TimerType.GEN4 -> gen4Controller.canUpdate
+            TimerType.GEN5 -> gen5Controller.canUpdate
+            TimerType.CUSTOM -> customController.canUpdate
         }
+        updateBtn.disableProperty().bind(binding.not())
     }
 }

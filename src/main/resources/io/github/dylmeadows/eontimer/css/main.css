@@ -13,6 +13,8 @@
     -theme-label-text: #000000;
     -theme-default-button-base: derive(-theme-accent, 75%);
     -theme-active: -theme-accent;
+    -fx-background-image: url(/io/github/dylmeadows/eontimer/img/default_background_image.png);
+    -fx-background-size: cover;
 }
 
 * {
@@ -88,9 +90,9 @@
     -fx-background-color: transparent;
 }
 
-.scroll-pane.themeable > .scroll-bar {
-    -fx-base: -theme-control-base;
-}
+/*.scroll-pane.themeable > .scroll-bar {*/
+    /*-fx-base: -theme-control-base;*/
+/*}*/
 
 /********************************************************************************
  *                                                                              *

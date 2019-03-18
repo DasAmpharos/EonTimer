@@ -21,9 +21,7 @@ class SoundPlayer @Autowired constructor(
 
     init {
         mediaPlayer = createMediaPlayer(actionSettings.sound)
-        actionSettings.soundProperty
-            .asFlux()
-            .map { it.newValue }
+        actionSettings.soundProperty.asFlux()
             .map { createMediaPlayer(it) }
             .doOnNext { mediaPlayer = it }
             .subscribe()

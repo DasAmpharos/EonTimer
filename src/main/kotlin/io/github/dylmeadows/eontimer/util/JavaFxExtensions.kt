@@ -10,6 +10,7 @@ import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.Spinner
 import javafx.scene.control.SpinnerValueFactory
+import javafx.stage.Stage
 import kotlin.reflect.KProperty
 
 operator fun <T> ObservableValue<T>.getValue(thisRef: Any, property: KProperty<*>) = value
@@ -56,6 +57,15 @@ var Label.isActive: Boolean
 fun <T : Parent> SpringJavaFxApplication.load(resource: FxmlResource): T {
     return load(resource.get())
 }
+
+data class Dimension(val width: Double, val height: Double)
+
+var Stage.size: Dimension
+    get() = Dimension(width, height)
+    set(value) {
+        width = value.width
+        height = value.height
+    }
 
 fun Scene.addCss(resource: CssResource) {
     stylesheets.add(resource.path)

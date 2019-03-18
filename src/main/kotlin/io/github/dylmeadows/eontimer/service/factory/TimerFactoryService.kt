@@ -19,9 +19,7 @@ class TimerFactoryService @Autowired constructor(
 
     @PostConstruct
     private fun initialize() {
-        applicationModel.selectedTimerTypeProperty
-            .asFlux()
-            .map { it.newValue }
+        applicationModel.selectedTimerTypeProperty.asFlux()
             .map { it.timerFactory }
             .map(TimerFactory::createTimer)
             .subscribe { timerModel.stages = it }

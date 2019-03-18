@@ -4,15 +4,13 @@ import de.jensd.fx.glyphs.GlyphsDude
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
 import io.github.dylmeadows.eontimer.service.TimerService
-import io.github.dylmeadows.eontimer.util.createValueFactory
+import io.github.dylmeadows.eontimer.util.asIntField
 import javafx.beans.binding.BooleanBinding
-import javafx.beans.property.ReadOnlyBooleanProperty
-import javafx.beans.property.ReadOnlyBooleanWrapper
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
 import javafx.scene.control.SelectionMode
-import javafx.scene.control.Spinner
+import javafx.scene.control.TextField
 import javafx.scene.input.KeyCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -25,7 +23,7 @@ class CustomTimerPaneController @Autowired constructor(
     @FXML
     private lateinit var list: ListView<Long>
     @FXML
-    private lateinit var valueField: Spinner<Int>
+    private lateinit var valueField: TextField
     @FXML
     private lateinit var valueAddBtn: Button
     @FXML
@@ -42,31 +40,32 @@ class CustomTimerPaneController @Autowired constructor(
         list.items = model.stages
         list.selectionModel.selectionMode = SelectionMode.MULTIPLE
 
-        valueField.createValueFactory(0, Integer.MAX_VALUE)
+        val valueIntField = valueField.asIntField()
         valueField.setOnKeyPressed {
             if (it.code == KeyCode.ENTER) {
-                add(valueField.value)
+                add(valueIntField.value)
+                valueField.text = ""
             }
         }
-
-        valueMoveUpBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.CHEVRON_UP)
-        valueMoveDownBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.CHEVRON_DOWN)
+        valueField.text = ""
 
         valueAddBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.PLUS)
-        valueAddBtn.disableProperty().bind(
-            valueField.editor.textProperty().isEmpty)
+        valueAddBtn.disableProperty().bind(valueField.textProperty().isEmpty)
         valueAddBtn.setOnAction {
-            add(valueField.value)
+            add(valueIntField.value)
+            valueField.text = ""
         }
 
         valueRemoveBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.MINUS)
-        valueRemoveBtn.disableProperty().bind(
-            list.selectionModel.selectedItemProperty().isNull)
+        valueRemoveBtn.disableProperty().bind(list.selectionModel.selectedItemProperty().isNull)
         valueRemoveBtn.setOnAction {
             removeAll(list.selectionModel.selectedIndices
                 .map { model.stages[it] }
                 .toList())
         }
+
+        valueMoveUpBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.CHEVRON_UP)
+        valueMoveDownBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.CHEVRON_DOWN)
     }
 
     private fun add(value: Int) {
