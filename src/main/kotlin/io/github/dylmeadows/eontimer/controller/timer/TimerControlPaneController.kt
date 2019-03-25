@@ -1,6 +1,7 @@
 package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.eontimer.model.ApplicationModel
+import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class TimerControlPaneController @Autowired constructor(
     private val model: ApplicationModel,
+    private val timerState: TimerState,
     private val timerService: TimerService,
     private val gen3Controller: Gen3TimerPaneController,
     private val gen4Controller: Gen4TimerPaneController,
@@ -37,24 +39,19 @@ class TimerControlPaneController @Autowired constructor(
     private lateinit var timerBtn: Button
 
     fun initialize() {
-        gen3Tab.selectedProperty().asFlux()
-            .subscribe { model.selectedTimerType = TimerType.GEN3 }
-//        timerTabPane.selectionModel.selectedItemProperty().asFlux()
-//            .map { getTimerType(it.newValue) }
-//            .subscribe({
-//                model.selectedTimerType = it
-//                updateUpdateBtnDisableProperty(it)
-//            }, {
-//                log.error(it.message, it)
-//                System.exit(-1)
-//            })
+        timerTabPane.selectionModel.select(getTimerTab())
+        timerTabPane.selectionModel.selectedItemProperty().asFlux()
+            .map { getTimerType(it) }
+            .subscribe {
+                model.selectedTimerType = it
+            }
 
-        timerService.runningProperty.asFlux()
+        timerState.runningProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
             .map { if (!it) "Start" else "Stop" }
             .subscribe { timerBtn.text = it }
         timerBtn.setOnAction {
-            if (!timerService.running) {
+            if (!timerState.running) {
                 timerService.start()
             } else {
                 timerService.stop()
@@ -72,13 +69,12 @@ class TimerControlPaneController @Autowired constructor(
         }
     }
 
-    private fun updateUpdateBtnDisableProperty(timerType: TimerType) {
-        val binding = when (timerType) {
-            TimerType.GEN3 -> gen3Controller.canUpdate
-            TimerType.GEN4 -> gen4Controller.canUpdate
-            TimerType.GEN5 -> gen5Controller.canUpdate
-            TimerType.CUSTOM -> customController.canUpdate
+    private fun getTimerTab(): Tab {
+        return when (model.selectedTimerType) {
+            TimerType.GEN3 -> gen3Tab
+            TimerType.GEN4 -> gen4Tab
+            TimerType.GEN5 -> gen5Tab
+            TimerType.CUSTOM -> customTab
         }
-        updateBtn.disableProperty().bind(binding.not())
     }
 }

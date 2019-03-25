@@ -16,6 +16,6 @@ class ApplicationModel {
     var actionSettings = ActionSettingsModel()
     var timerSettings = TimerSettingsModel()
 
-    val selectedTimerTypeProperty = SimpleObjectProperty(TimerConstants.DEFAULT_TIMER_TYPE)
+    val selectedTimerTypeProperty: ObjectProperty<TimerType> = SimpleObjectProperty(TimerConstants.DEFAULT_TIMER_TYPE)
     var selectedTimerType: TimerType by selectedTimerTypeProperty
 }

@@ -1,7 +1,7 @@
 package io.github.dylmeadows.eontimer.controller
 
+import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
-import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
 import io.github.dylmeadows.eontimer.util.asFlux
 import javafx.fxml.FXML
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class TimerDisplayPaneController @Autowired constructor(
-    private val timerService: TimerService) {
+    private val timerState: TimerState) {
 
     @FXML
     private lateinit var currentStageLbl: Label
@@ -21,13 +21,27 @@ class TimerDisplayPaneController @Autowired constructor(
     private lateinit var nextStageLbl: Label
 
     fun initialize() {
-        timerService.stateProperty.asFlux()
+        timerState.currentStageProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .subscribe {
-                minutesBeforeTargetLbl.text = it.minutesBeforeTarget.toString()
-                currentStageLbl.text = formatTime(it.remaining)
-                nextStageLbl.text = formatTime(it.nextStage)
-            }
+            .doOnNext { println(it) }
+            .map(Number::toLong)
+            .map(this::formatTime)
+            .subscribe(currentStageLbl::setText)
+        timerState.remainingProperty.asFlux()
+            .subscribeOn(JavaFxScheduler.platform())
+            .map(Number::toLong)
+            .map(this::formatTime)
+            .subscribe(currentStageLbl::setText)
+        timerState.minutesBeforeTargetProperty.asFlux()
+            .subscribeOn(JavaFxScheduler.platform())
+            .map(Number::toLong)
+            .map(this::formatTime)
+            .subscribe(minutesBeforeTargetLbl::setText)
+        timerState.nextStageProperty.asFlux()
+            .subscribeOn(JavaFxScheduler.platform())
+            .map(Number::toLong)
+            .map(this::formatTime)
+            .subscribe(nextStageLbl::setText)
     }
 
     private fun formatTime(duration: Long): String {

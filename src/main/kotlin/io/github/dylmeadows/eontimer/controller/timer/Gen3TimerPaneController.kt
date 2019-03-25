@@ -1,12 +1,10 @@
 package io.github.dylmeadows.eontimer.controller.timer
 
-import io.github.dylmeadows.common.javafx.util.Nodes
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
-import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asIntField
-import javafx.beans.binding.BooleanBinding
+import io.github.dylmeadows.eontimer.util.hideWhen
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField
@@ -15,8 +13,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class Gen3TimerPaneController @Autowired constructor(
-    private val model: Gen3TimerModel,
-    private val timerService: TimerService) : TimerPaneController {
+    private val model: Gen3TimerModel) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen3TimerMode>
@@ -29,12 +26,8 @@ class Gen3TimerPaneController @Autowired constructor(
     @FXML
     private lateinit var frameHitField: TextField
 
-    override val canUpdate: BooleanBinding
-        get() = timerService.runningProperty.not()
-            .or(model.modeProperty.isEqualTo(Gen3TimerMode.VARIABLE_TARGET))
-
     fun initialize() {
-        modeField.asChoiceField().valueProperty()
+        modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
         calibrationField.asIntField().valueProperty
             .bindBidirectional(model.calibrationProperty)
@@ -47,8 +40,7 @@ class Gen3TimerPaneController @Autowired constructor(
         frameHitField.text = ""
 
         // set conditional field visibility
-        val isStandardMode = modeField.valueProperty().isEqualTo(Gen3TimerMode.STANDARD)
-        Nodes.hideAndResizeParentIf(calibrationField.parent, isStandardMode.not())
-        Nodes.hideAndResizeParentIf(frameHitField.parent, isStandardMode.not())
+        calibrationField.parent.hideWhen(model.modeProperty.isNotEqualTo(Gen3TimerMode.STANDARD))
+        frameHitField.parent.hideWhen(model.modeProperty.isNotEqualTo(Gen3TimerMode.STANDARD))
     }
 }

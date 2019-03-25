@@ -1,68 +1,45 @@
 package io.github.dylmeadows.eontimer.service
 
-import io.github.dylmeadows.common.core.util.Option
 import io.github.dylmeadows.eontimer.model.TimerModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
-import io.github.dylmeadows.eontimer.model.timer.TimerConstants
-import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.getValue
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleObjectProperty
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import javax.annotation.PostConstruct
 
 @Service
 class TimerService @Autowired constructor(
-    private val model: TimerModel,
-    private val settings: TimerSettingsModel) {
+    private val timerModel: TimerModel,
+    private val timerState: TimerState,
+    private val timerSettingsModel: TimerSettingsModel) {
 
     private lateinit var timerJob: Job
 
-    val stateProperty = SimpleObjectProperty<TimerState>()
-    val state by stateProperty
-    val runningProperty = SimpleBooleanProperty(false)
-    val running by runningProperty
-
-    @PostConstruct
-    private fun initialize() {
-        model.stagesProperty
-            .asFlux<List<Long>>()
-            // .doOnNext { emitInit() }
-            .subscribe()
-    }
-
     fun start() {
-        timerJob = GlobalScope.launch(Dispatchers.JavaFx) {
-            var overlap = 0L
-            model.stages
-                .forEach {
-                    var remaining = it + overlap
-                    var lastTimestamp = System.currentTimeMillis()
-                    while (remaining > 0) {
-                        val now = System.currentTimeMillis()
-                        val delta = now - lastTimestamp
-                        remaining -= delta
-                        stateProperty.value = TimerState(0, 0, remaining, 0)
-                        lastTimestamp = now
-                        delay(settings.refreshInterval.toLong())
+        if (!::timerJob.isInitialized || !timerJob.isActive)
+            timerJob = GlobalScope.launch(Dispatchers.JavaFx) {
+                var overlap = 0L
+                timerModel.stages
+                    .forEach {
+                        timerState.currentStage = it
+                        timerState.remaining = it + overlap
+                        var lastTimestamp = System.currentTimeMillis()
+                        while (timerState.remaining > 0) {
+                            val now = System.currentTimeMillis()
+                            val delta = now - lastTimestamp
+                            timerState.remaining -= delta
+                            lastTimestamp = now
+
+                            delay(timerSettingsModel.refreshInterval.toLong())
+                        }
+                        overlap = timerState.remaining
                     }
-                    overlap = remaining
-                }
-        }
+            }
     }
 
     fun stop() {
-        timerJob.cancel()
-    }
-
-    private fun getStage(stages: List<Long>, index: Int): Long {
-        return Option.of(stages)
-            .filter { it.isNotEmpty() }
-            .map { list -> list[index] }
-            .orElse(TimerConstants.NULL_TIME_SPAN)
+        if (::timerJob.isInitialized && timerJob.isActive)
+            timerJob.cancel()
     }
 }

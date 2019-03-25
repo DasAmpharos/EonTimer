@@ -5,49 +5,89 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen3TimerPaneController">
-    <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-    </padding>
-   <VBox spacing="5.0">
-      <children>
-           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Mode" />
-           <ChoiceBox fx:id="modeField" maxWidth="1.7976931348623157E308" />
-      </children>
-   </VBox>
-    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" VBox.vgrow="ALWAYS">
-        <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-        </padding>
-        <styleClass>
-            <String fx:value="themeable" />
-            <String fx:value="panel" />
-        </styleClass>
-      <VBox spacing="5.0">
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen3TimerPaneController">
+   <children>
+      <GridPane hgap="10.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Calibration" />
-               <TextField fx:id="calibrationField" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="60.0" text="Mode" />
+               <ChoiceBox fx:id="modeField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
          </children>
-      </VBox>
-      <VBox spacing="5.0">
+      </GridPane>
+       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" VBox.vgrow="ALWAYS">
+           <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+           </padding>
+           <styleClass>
+               <String fx:value="themeable" />
+               <String fx:value="panel" />
+           </styleClass>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="83.0" text="Calibration" />
+                   <TextField fx:id="calibrationField" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="83.0" text="Pre-Timer" />
+                   <TextField fx:id="preTimerField" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Target Frame" />
+                   <TextField fx:id="targetFrameField" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+       </VBox>
+      <GridPane hgap="10.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Target Frame" />
-               <TextField fx:id="targetFrameField" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Frame Hit" />
+               <TextField fx:id="frameHitField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
          </children>
-      </VBox>
-      <VBox spacing="5.0">
-         <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Pre-Timer" />
-               <TextField fx:id="preTimerField" />
-         </children>
-      </VBox>
-    </VBox>
-   <VBox spacing="5.0">
-      <children>
-           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Frame Hit" />
-           <TextField fx:id="frameHitField" />
-      </children>
-   </VBox>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </VBox>

@@ -5,89 +5,150 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<VBox spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen5TimerPaneController">
+
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen5TimerPaneController">
     <padding>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-    <VBox spacing="5.0">
-        <children>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Mode"/>
-            <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
-        </children>
-    </VBox>
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308"
-                maxWidth="1.7976931348623157E308" prefViewportHeight="195.0" styleClass="themeable" VBox.vgrow="ALWAYS">
+   <GridPane hgap="10.0" vgap="10.0">
+      <columnConstraints>
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="103.0" text="Mode" />
+            <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+      </children>
+   </GridPane>
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefViewportHeight="195.0" styleClass="themeable" VBox.vgrow="ALWAYS">
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0">
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-                <children>
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Calibration"/>
-                    <TextField fx:id="calibrationField" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308"/>
-                </children>
-            </VBox>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-                <children>
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Target Delay"/>
-                    <TextField fx:id="targetDelayField" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308"/>
-                </children>
-            </VBox>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-                <children>
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Target Second"/>
-                    <TextField fx:id="targetSecondField" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308"/>
-                </children>
-            </VBox>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-                <children>
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           text="Entralink Calibration"/>
-                    <TextField fx:id="entralinkCalibrationField" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308"/>
-                </children>
-            </VBox>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-                <children>
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           text="Frame Calibration"/>
-                    <TextField fx:id="frameCalibrationField" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308"/>
-                </children>
-            </VBox>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-                <children>
-                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Target Advances"/>
-                    <TextField fx:id="targetAdvancesField" maxHeight="1.7976931348623157E308"
-                               maxWidth="1.7976931348623157E308"/>
-                </children>
-            </VBox>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="124.0" text="Calibration" />
+                    <TextField fx:id="calibrationField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="124.0" text="Target Delay" />
+                    <TextField fx:id="targetDelayField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="124.0" text="Target Second" />
+                    <TextField fx:id="targetSecondField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="124.0" text="Entralink Calibration" />
+                    <TextField fx:id="entralinkCalibrationField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="124.0" text="Frame Calibration" />
+                    <TextField fx:id="frameCalibrationField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
+         <GridPane hgap="10.0" vgap="10.0">
+            <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="124.0" text="Target Advances" />
+                    <TextField fx:id="targetAdvancesField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            </children>
+         </GridPane>
         </VBox>
     </ScrollPane>
-    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-        <children>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Second Hit"/>
-            <TextField fx:id="secondHitField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
-        </children>
-    </VBox>
-    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-        <children>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                   minWidth="-Infinity" text="Delay Hit"/>
-            <TextField fx:id="delayHitField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"/>
-        </children>
-    </VBox>
-    <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0">
-        <children>
-            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                   minWidth="-Infinity" text="Actual Advances"/>
-            <TextField fx:id="actualAdvancesField" maxHeight="1.7976931348623157E308"
-                       maxWidth="1.7976931348623157E308"/>
-        </children>
-    </VBox>
+   <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="NEVER">
+      <columnConstraints>
+         <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="103.0" text="Second Hit" />
+            <TextField fx:id="secondHitField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+      </children>
+   </GridPane>
+   <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="NEVER">
+      <columnConstraints>
+         <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="103.0" text="Delay Hit" />
+            <TextField fx:id="delayHitField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+      </children>
+   </GridPane>
+   <GridPane hgap="10.0" vgap="10.0" VBox.vgrow="NEVER">
+      <columnConstraints>
+         <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints vgrow="NEVER" />
+      </rowConstraints>
+      <children>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Actual Advances" />
+            <TextField fx:id="actualAdvancesField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+      </children>
+   </GridPane>
 </VBox>

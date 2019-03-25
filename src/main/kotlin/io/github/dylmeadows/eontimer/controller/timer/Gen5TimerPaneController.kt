@@ -2,10 +2,9 @@ package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
-import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asIntField
-import javafx.beans.binding.BooleanBinding
+import io.github.dylmeadows.eontimer.util.hideWhen
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField
@@ -14,8 +13,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class Gen5TimerPaneController @Autowired constructor(
-    private val model: Gen5TimerModel,
-    private val timerService: TimerService) : TimerPaneController {
+    private val model: Gen5TimerModel) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen5TimerMode>
@@ -38,11 +36,8 @@ class Gen5TimerPaneController @Autowired constructor(
     @FXML
     private lateinit var actualAdvancesField: TextField
 
-    override val canUpdate: BooleanBinding
-        get() = timerService.runningProperty.not()
-
     fun initialize() {
-        modeField.asChoiceField().valueProperty()
+        modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
         calibrationField.asIntField().valueProperty
             .bindBidirectional(model.calibrationProperty)
@@ -62,6 +57,23 @@ class Gen5TimerPaneController @Autowired constructor(
             .bindBidirectional(model.delayHitProperty)
         actualAdvancesField.asIntField().valueProperty
             .bindBidirectional(model.actualAdvancesProperty)
+
+        targetDelayField.parent.hideWhen(
+            model.modeProperty.isEqualTo(Gen5TimerMode.STANDARD))
+        entralinkCalibrationField.parent.hideWhen(
+            model.modeProperty.isEqualTo(Gen5TimerMode.STANDARD)
+                .or(model.modeProperty.isEqualTo(Gen5TimerMode.C_GEAR)))
+        frameCalibrationField.parent.hideWhen(
+            model.modeProperty.isNotEqualTo(Gen5TimerMode.ENHANCED_ENTRALINK))
+        targetAdvancesField.parent.hideWhen(
+            model.modeProperty.isNotEqualTo(Gen5TimerMode.ENHANCED_ENTRALINK))
+
+        secondHitField.parent.hideWhen(
+            model.modeProperty.isEqualTo(Gen5TimerMode.C_GEAR))
+        delayHitField.parent.hideWhen(
+            model.modeProperty.isEqualTo(Gen5TimerMode.STANDARD))
+        actualAdvancesField.parent.hideWhen(
+            model.modeProperty.isNotEqualTo(Gen5TimerMode.ENHANCED_ENTRALINK))
 
         secondHitField.text = ""
         delayHitField.text = ""

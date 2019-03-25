@@ -2,10 +2,8 @@ package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
-import io.github.dylmeadows.eontimer.service.TimerService
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asIntField
-import javafx.beans.binding.BooleanBinding
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField
@@ -14,8 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class Gen4TimerPaneController @Autowired constructor(
-    private val model: Gen4TimerModel,
-    private val timerService: TimerService) : TimerPaneController {
+    private val model: Gen4TimerModel) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen4TimerMode>
@@ -30,11 +27,8 @@ class Gen4TimerPaneController @Autowired constructor(
     @FXML
     private lateinit var delayHitField: TextField
 
-    override val canUpdate: BooleanBinding
-        get() = timerService.runningProperty.not()
-
     fun initialize() {
-        modeField.asChoiceField().valueProperty()
+        modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
         calibratedDelayField.asIntField().valueProperty
             .bindBidirectional(model.calibratedDelayProperty)

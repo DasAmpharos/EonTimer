@@ -21,6 +21,7 @@ open class AppLauncher : SpringJavaFxApplication() {
 
     override fun start(stage: Stage) {
         stage.scene = load<Parent>(FxmlResource.EonTimerPane).asScene()
+        stage.size = Dimension(610.0, 485.0)
         stage.scene.addCss(CssResource.MAIN)
         stage.isResizable = false
         stage.show()

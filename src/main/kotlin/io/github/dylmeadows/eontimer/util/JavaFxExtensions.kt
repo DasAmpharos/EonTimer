@@ -1,15 +1,20 @@
 package io.github.dylmeadows.eontimer.util
 
+import io.github.dylmeadows.common.core.util.function.Function1
+import io.github.dylmeadows.common.javafx.util.Nodes
 import io.github.dylmeadows.eontimer.model.resource.CssResource
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
+import javafx.beans.binding.BooleanBinding
 import javafx.beans.property.*
 import javafx.beans.value.*
+import javafx.scene.Node
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.control.Label
 import javafx.scene.control.Spinner
 import javafx.scene.control.SpinnerValueFactory
+import javafx.scene.layout.RowConstraints
 import javafx.stage.Stage
 import kotlin.reflect.KProperty
 
@@ -45,17 +50,16 @@ fun ObjectProperty<Int>.bindBidirectional(property: IntegerProperty) {
     bindBidirectional(property.asObject())
 }
 
-var Label.isActive: Boolean
-    get() = this.styleClass.contains("active")
-    set(value) {
-        when (value) {
-            true -> styleClass.add("active")
-            false -> styleClass.remove("active")
-        }
-    }
-
 fun <T : Parent> SpringJavaFxApplication.load(resource: FxmlResource): T {
     return load(resource.get())
+}
+
+fun Scene.addCss(resource: CssResource) {
+    stylesheets.add(resource.path)
+}
+
+fun Parent.asScene(): Scene {
+    return Scene(this)
 }
 
 data class Dimension(val width: Double, val height: Double)
@@ -67,10 +71,15 @@ var Stage.size: Dimension
         height = value.height
     }
 
-fun Scene.addCss(resource: CssResource) {
-    stylesheets.add(resource.path)
+fun Node.hideWhen(condition: BooleanBinding) {
+    Nodes.hideAndResizeParentIf(this, condition)
 }
 
-fun Parent.asScene(): Scene {
-    return Scene(this)
-}
+var Label.isActive: Boolean
+    get() = this.styleClass.contains("active")
+    set(value) {
+        when (value) {
+            true -> styleClass.add("active")
+            false -> styleClass.remove("active")
+        }
+    }

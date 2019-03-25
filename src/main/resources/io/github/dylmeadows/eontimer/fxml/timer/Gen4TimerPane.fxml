@@ -5,18 +5,28 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.github.dylmeadows.eontimer.controller.timer.Gen4TimerPaneController">
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
-   <VBox spacing="5.0">
+   <GridPane hgap="10.0" vgap="10.0">
+      <columnConstraints>
+         <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+         <ColumnConstraints hgrow="ALWAYS" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      </rowConstraints>
       <children>
-           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Mode" />
-           <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
+           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="56.0" text="Mode" />
+           <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" />
       </children>
-   </VBox>
+   </GridPane>
     <VBox spacing="15.0" VBox.vgrow="ALWAYS">
         <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -25,35 +35,70 @@
             <String fx:value="panel" />
             <String fx:value="themeable" />
         </styleClass>
-      <VBox spacing="5.0">
+      <GridPane hgap="10.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Calibrated Delay" />
-               <TextField fx:id="calibratedDelayField" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="114.0" text="Calibrated Delay" />
+               <TextField fx:id="calibratedDelayField" GridPane.columnIndex="1" />
          </children>
-      </VBox>
-      <VBox spacing="5.0">
+      </GridPane>
+      <GridPane hgap="10.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Calibrated Second" />
-               <TextField fx:id="calibratedSecondField" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Calibrated Second" />
+               <TextField fx:id="calibratedSecondField" GridPane.columnIndex="1" />
          </children>
-      </VBox>
-      <VBox spacing="5.0">
+      </GridPane>
+      <GridPane hgap="10.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Target Delay" />
-               <TextField fx:id="targetDelayField" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="114.0" text="Target Delay" />
+               <TextField fx:id="targetDelayField" GridPane.columnIndex="1" />
          </children>
-      </VBox>
-      <VBox spacing="5.0">
+      </GridPane>
+      <GridPane hgap="10.0" vgap="10.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Target Second" />
-               <TextField fx:id="targetSecondField" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="114.0" text="Target Second" />
+               <TextField fx:id="targetSecondField" GridPane.columnIndex="1" />
          </children>
-      </VBox>
+      </GridPane>
     </VBox>
-   <VBox spacing="5.0">
+   <GridPane hgap="10.0" vgap="10.0">
+      <columnConstraints>
+         <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+         <ColumnConstraints hgrow="ALWAYS" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      </rowConstraints>
       <children>
-           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Delay Hit" />
-           <TextField fx:id="delayHitField" />
+           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Delay Hit" />
+           <TextField fx:id="delayHitField" GridPane.columnIndex="1" />
       </children>
-   </VBox>
+   </GridPane>
 </VBox>
