@@ -23,6 +23,11 @@
     -fx-accent: -theme-accent;
 }
 
+.label {
+    -fx-font-family: 'Roboto', sans-serif;
+    -fx-font-size: 13px;
+}
+
 /********************************************************************************
  *                                                                              *
  * Panel                                                                        *
