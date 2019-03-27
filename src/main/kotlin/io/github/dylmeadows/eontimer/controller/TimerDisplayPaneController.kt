@@ -23,7 +23,6 @@ class TimerDisplayPaneController @Autowired constructor(
     fun initialize() {
         timerState.currentStageProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .doOnNext { println(it) }
             .map(Number::toLong)
             .map(this::formatTime)
             .subscribe(currentStageLbl::setText)
@@ -34,8 +33,7 @@ class TimerDisplayPaneController @Autowired constructor(
             .subscribe(currentStageLbl::setText)
         timerState.minutesBeforeTargetProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .map(Number::toLong)
-            .map(this::formatTime)
+            .map(Number::toString)
             .subscribe(minutesBeforeTargetLbl::setText)
         timerState.nextStageProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
