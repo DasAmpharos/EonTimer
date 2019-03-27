@@ -4,6 +4,10 @@
  *                                                                              *
  *******************************************************************************/
 
+@font-face {
+    src: url("../fonts/Roboto-Regular.ttf");
+}
+
 .root {
     -theme-accent: #039ED3;
     -theme-faint-accent: #039ED322;
@@ -15,6 +19,8 @@
     -theme-active: -theme-accent;
     -fx-background-image: url(/io/github/dylmeadows/eontimer/img/default_background_image.png);
     -fx-background-size: cover;
+
+    -fx-font-family: Roboto;
 }
 
 * {
@@ -23,10 +29,6 @@
     -fx-accent: -theme-accent;
 }
 
-.label {
-    -fx-font-family: 'Roboto', sans-serif;
-    -fx-font-size: 13px;
-}
 
 /********************************************************************************
  *                                                                              *
@@ -88,16 +90,13 @@
 .scroll-pane.themeable {
     -fx-background-color: -theme-panel-transparent-base;
     -fx-border-color: -theme-panel-base;
+    -fx-border-radius: 3px;
     -fx-border-width: 2px;
 }
 
 .scroll-pane.themeable > .viewport {
     -fx-background-color: transparent;
 }
-
-/*.scroll-pane.themeable > .scroll-bar {*/
-    /*-fx-base: -theme-control-base;*/
-/*}*/
 
 /********************************************************************************
  *                                                                              *
@@ -131,4 +130,5 @@
 
 .label#currentStageLbl {
     -fx-background-color: none;
+    -fx-font-size: 64px;
 }

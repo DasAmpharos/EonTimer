@@ -23,7 +23,7 @@
          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
       </rowConstraints>
       <children>
-           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="56.0" text="Mode" />
+           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Mode" />
            <ChoiceBox fx:id="modeField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" />
       </children>
    </GridPane>
@@ -44,7 +44,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="114.0" text="Calibrated Delay" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Calibrated Delay" />
                <TextField fx:id="calibratedDelayField" GridPane.columnIndex="1" />
          </children>
       </GridPane>
@@ -57,7 +57,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Calibrated Second" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Calibrated Second" />
                <TextField fx:id="calibratedSecondField" GridPane.columnIndex="1" />
          </children>
       </GridPane>
@@ -70,7 +70,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="114.0" text="Target Delay" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="117.0" text="Target Delay" />
                <TextField fx:id="targetDelayField" GridPane.columnIndex="1" />
          </children>
       </GridPane>
@@ -83,7 +83,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="114.0" text="Target Second" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="117.0" text="Target Second" />
                <TextField fx:id="targetSecondField" GridPane.columnIndex="1" />
          </children>
       </GridPane>
@@ -97,7 +97,7 @@
          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
       </rowConstraints>
       <children>
-           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Delay Hit" />
+           <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="97.0" text="Delay Hit" />
            <TextField fx:id="delayHitField" GridPane.columnIndex="1" />
       </children>
    </GridPane>

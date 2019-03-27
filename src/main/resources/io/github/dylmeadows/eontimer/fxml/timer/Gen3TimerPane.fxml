@@ -21,7 +21,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="60.0" text="Mode" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Mode" />
                <ChoiceBox fx:id="modeField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
          </children>
       </GridPane>
@@ -42,7 +42,7 @@
                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="83.0" text="Calibration" />
+                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Calibration" />
                    <TextField fx:id="calibrationField" GridPane.columnIndex="1" />
             </children>
          </GridPane>
@@ -55,7 +55,7 @@
                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="83.0" text="Pre-Timer" />
+                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Pre-Timer" />
                    <TextField fx:id="preTimerField" GridPane.columnIndex="1" />
             </children>
          </GridPane>
@@ -68,7 +68,7 @@
                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Target Frame" />
+                   <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Target Frame" />
                    <TextField fx:id="targetFrameField" GridPane.columnIndex="1" />
             </children>
          </GridPane>
@@ -82,7 +82,7 @@
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Frame Hit" />
+               <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="97.0" text="Frame Hit" />
                <TextField fx:id="frameHitField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
          </children>
       </GridPane>

@@ -26,3 +26,7 @@ dependencies {
     testImplementation "org.testfx:testfx-core:$testfxVersion"
     testImplementation "org.testfx:testfx-junit:$testfxVersion"
 }
+
+application {
+    mainClassName = "io.github.dylmeadows.eontimer.AppLauncher"
+}
