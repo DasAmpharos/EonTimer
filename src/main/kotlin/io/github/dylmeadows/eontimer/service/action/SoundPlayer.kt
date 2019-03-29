@@ -11,16 +11,17 @@ import javafx.scene.media.MediaPlayer
 import javafx.util.Duration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import javax.annotation.PostConstruct
 
 @Component
 class SoundPlayer @Autowired constructor(
-    actionSettings: ActionSettingsModel) {
+    private val actionSettings: ActionSettingsModel) {
 
     private val mediaPlayerProperty = SimpleObjectProperty<MediaPlayer>()
     private var mediaPlayer by mediaPlayerProperty
 
-    init {
-        mediaPlayer = createMediaPlayer(actionSettings.sound)
+    @PostConstruct
+    private fun initialize() {
         actionSettings.soundProperty.asFlux()
             .map { createMediaPlayer(it) }
             .doOnNext { mediaPlayer = it }

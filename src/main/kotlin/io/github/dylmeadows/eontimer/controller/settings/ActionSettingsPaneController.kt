@@ -3,14 +3,13 @@ package io.github.dylmeadows.eontimer.controller.settings
 import io.github.dylmeadows.common.javafx.util.ChoiceConverter
 import io.github.dylmeadows.eontimer.model.resource.SoundResource
 import io.github.dylmeadows.eontimer.model.settings.ActionMode
-import io.github.dylmeadows.eontimer.model.settings.ActionSettingsConstants
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.util.createValueFactory
+import io.github.dylmeadows.eontimer.util.asIntField
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.ColorPicker
-import javafx.scene.control.Spinner
+import javafx.scene.control.TextField
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -25,9 +24,9 @@ class ActionSettingsPaneController @Autowired constructor(
     @FXML
     private lateinit var colorField: ColorPicker
     @FXML
-    private lateinit var intervalField: Spinner<Int>
+    private lateinit var intervalField: TextField
     @FXML
-    private lateinit var countField: Spinner<Int>
+    private lateinit var countField: TextField
 
     fun initialize() {
         modeField.items = FXCollections.observableArrayList(*ActionMode.values())
@@ -40,17 +39,9 @@ class ActionSettingsPaneController @Autowired constructor(
 
         colorField.valueProperty().bindBidirectional(model.colorProperty)
 
-        intervalField.createValueFactory(0, Integer.MAX_VALUE)
-            .valueProperty().bindBidirectional(model.intervalProperty.asObject())
-        countField.createValueFactory(0, Integer.MAX_VALUE)
-            .valueProperty().bindBidirectional(model.countProperty.asObject())
-    }
-
-    fun resetDefaultValues() {
-        modeField.value = ActionSettingsConstants.DEFAULT_MODE
-        soundField.value = ActionSettingsConstants.DEFAULT_SOUND
-        colorField.value = ActionSettingsConstants.DEFAULT_COLOR
-        intervalField.valueFactory.value = ActionSettingsConstants.DEFAULT_INTERVAL
-        countField.valueFactory.value = ActionSettingsConstants.DEFAULT_COUNT
+        intervalField.asIntField().valueProperty
+            .bindBidirectional(model.intervalProperty)
+        countField.asIntField().valueProperty
+            .bindBidirectional(model.countProperty)
     }
 }

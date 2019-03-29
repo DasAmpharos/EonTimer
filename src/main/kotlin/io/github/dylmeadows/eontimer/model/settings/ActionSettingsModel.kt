@@ -10,11 +10,11 @@ import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.paint.Color
 
 class ActionSettingsModel {
-    val modeProperty = SimpleObjectProperty(ActionSettingsConstants.DEFAULT_MODE)
-    val colorProperty = SimpleObjectProperty(ActionSettingsConstants.DEFAULT_COLOR)
-    val soundProperty = SimpleObjectProperty(ActionSettingsConstants.DEFAULT_SOUND)
-    val intervalProperty = SimpleIntegerProperty(ActionSettingsConstants.DEFAULT_INTERVAL)
-    val countProperty = SimpleIntegerProperty(ActionSettingsConstants.DEFAULT_COUNT)
+    val modeProperty: ObjectProperty<ActionMode> = SimpleObjectProperty(ActionSettingsConstants.DEFAULT_MODE)
+    val colorProperty: ObjectProperty<Color> = SimpleObjectProperty(ActionSettingsConstants.DEFAULT_COLOR)
+    val soundProperty: ObjectProperty<SoundResource> = SimpleObjectProperty(ActionSettingsConstants.DEFAULT_SOUND)
+    val intervalProperty: IntegerProperty = SimpleIntegerProperty(ActionSettingsConstants.DEFAULT_INTERVAL)
+    val countProperty: IntegerProperty = SimpleIntegerProperty(ActionSettingsConstants.DEFAULT_COUNT)
 
     var mode: ActionMode by modeProperty
     var color: Color by colorProperty
