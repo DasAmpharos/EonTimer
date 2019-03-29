@@ -80,5 +80,6 @@ class TimerService @Autowired constructor(
         timerState.minutesBeforeTarget = timerModel.stages.sum() / 60000
         timerState.currentStage = getStage(timerModel.stages, 0)
         timerState.nextStage = getStage(timerModel.stages, 1)
+        timerState.remaining = timerState.currentStage
     }
 }
