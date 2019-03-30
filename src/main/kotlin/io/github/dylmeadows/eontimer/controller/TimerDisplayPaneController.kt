@@ -1,9 +1,13 @@
 package io.github.dylmeadows.eontimer.controller
 
+import io.github.dylmeadows.common.javafx.scene.paint.Colors
 import io.github.dylmeadows.eontimer.model.TimerState
+import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
+import io.github.dylmeadows.eontimer.service.action.TimerActionService
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
 import io.github.dylmeadows.eontimer.util.asFlux
+import io.github.dylmeadows.eontimer.util.isActive
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +15,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class TimerDisplayPaneController @Autowired constructor(
-    private val timerState: TimerState) {
+    private val timerState: TimerState,
+    private val timerActionService: TimerActionService,
+    private val actionSettingsModel: ActionSettingsModel) {
 
     @FXML
     private lateinit var currentStageLbl: Label
@@ -40,6 +46,13 @@ class TimerDisplayPaneController @Autowired constructor(
             .map(Number::toLong)
             .map(this::formatTime)
             .subscribe(nextStageLbl::setText)
+        timerActionService.activeProperty.asFlux()
+            .subscribe { currentStageLbl.isActive = it }
+
+        actionSettingsModel.colorProperty.asFlux()
+            .map { Colors.toHex(it) }
+            .map { "-theme-active: $it"}
+            .subscribe(currentStageLbl::setStyle)
     }
 
     private fun formatTime(duration: Long): String {

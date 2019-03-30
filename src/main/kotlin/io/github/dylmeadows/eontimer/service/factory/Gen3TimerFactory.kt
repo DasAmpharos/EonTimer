@@ -36,6 +36,7 @@ class Gen3TimerFactory @Autowired constructor(
                     createStage2())
                     .toList()
             Gen3TimerMode.VARIABLE_TARGET ->
+                // TODO: implement this
                 emptyList()
         }
     }
@@ -45,7 +46,7 @@ class Gen3TimerFactory @Autowired constructor(
     }
 
     private fun createStage2(): Long {
-        return convertToMillis(gen3TimerModel.targetFrame, timerSettings.console) + gen3TimerModel.calibration
+        return (convertToMillis(gen3TimerModel.targetFrame, timerSettings.console) + gen3TimerModel.calibration).toLong()
     }
 
 }

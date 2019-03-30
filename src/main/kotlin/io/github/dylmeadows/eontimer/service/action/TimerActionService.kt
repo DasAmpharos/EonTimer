@@ -1,20 +1,32 @@
 package io.github.dylmeadows.eontimer.service.action
 
 import io.github.dylmeadows.eontimer.model.TimerState
+import io.github.dylmeadows.eontimer.model.settings.ActionMode
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
 import io.github.dylmeadows.eontimer.util.anyChangesOf
 import io.github.dylmeadows.eontimer.util.asFlux
 import io.github.dylmeadows.eontimer.util.asObservableValue
+import javafx.beans.property.BooleanProperty
+import javafx.beans.property.SimpleBooleanProperty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.annotation.PostConstruct
+import io.github.dylmeadows.eontimer.util.getValue
+import io.github.dylmeadows.eontimer.util.setValue
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.concurrent.schedule
 
 @Service
 class TimerActionService @Autowired constructor(
     private val timerState: TimerState,
     private val timerActionSettingsModel: ActionSettingsModel,
     private val soundPlayer: SoundPlayer) {
+
+    val activeProperty: BooleanProperty = SimpleBooleanProperty(false)
+    private var active by activeProperty
 
     @PostConstruct
     private fun initialize() {
@@ -32,7 +44,7 @@ class TimerActionService @Autowired constructor(
             .subscribe {
                 if (it.running && it.remaining <= it.actionInterval[actionIndex]) {
                     actionIndex = getNextActionIndex(actionIndex, it.actionInterval)
-                    soundPlayer.play()
+                    invokeAction()
                 }
             }
 
@@ -48,6 +60,18 @@ class TimerActionService @Autowired constructor(
 
     private fun getNextActionIndex(actionIndex: Int, actionInterval: List<Int>): Int {
         return if (actionIndex + 1 < actionInterval.size) actionIndex + 1 else 0
+    }
+
+    private fun invokeAction() {
+        if (timerActionSettingsModel.mode == ActionMode.AUDIO || timerActionSettingsModel.mode == ActionMode.AV)
+            soundPlayer.play()
+        if (timerActionSettingsModel.mode == ActionMode.AUDIO || timerActionSettingsModel.mode == ActionMode.AV) {
+            GlobalScope.launch {
+                active = true
+                delay(75)
+                active = false
+            }
+        }
     }
 
     private data class ActionState(
