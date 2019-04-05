@@ -4,6 +4,7 @@ import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asIntField
+import io.github.dylmeadows.eontimer.util.asLongField
 import io.github.dylmeadows.eontimer.util.hideWhen
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
@@ -29,13 +30,13 @@ class Gen3TimerPaneController @Autowired constructor(
     fun initialize() {
         modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
-        calibrationField.asIntField().valueProperty
+        calibrationField.asLongField().valueProperty
             .bindBidirectional(model.calibrationProperty)
-        preTimerField.asIntField().valueProperty
+        preTimerField.asLongField().valueProperty
             .bindBidirectional(model.preTimerProperty)
-        targetFrameField.asIntField().valueProperty
+        targetFrameField.asLongField().valueProperty
             .bindBidirectional(model.targetFrameProperty)
-        frameHitField.asIntField().valueProperty
+        frameHitField.asLongField().valueProperty
             .bindBidirectional(model.frameHitProperty)
         frameHitField.text = ""
 

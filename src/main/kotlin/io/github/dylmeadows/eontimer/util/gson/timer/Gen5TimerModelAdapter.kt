@@ -35,12 +35,12 @@ class Gen5TimerModelAdapter : TypeAdapter<Gen5TimerModel>() {
         while (reader.hasNext()) {
             when (reader.nextName()) {
                 "mode" -> model.mode = Gen5TimerMode.valueOf(reader.nextString())
-                "calibration" -> model.calibration = reader.nextInt()
-                "targetDelay" -> model.targetDelay = reader.nextInt()
-                "targetSecond" -> model.targetSecond = reader.nextInt()
-                "entralinkCalibration" -> model.entralinkCalibration = reader.nextInt()
-                "frameCalibration" -> model.frameCalibration = reader.nextInt()
-                "targetAdvances" -> model.targetAdvances = reader.nextInt()
+                "calibration" -> model.calibration = reader.nextLong()
+                "targetDelay" -> model.targetDelay = reader.nextLong()
+                "targetSecond" -> model.targetSecond = reader.nextLong()
+                "entralinkCalibration" -> model.entralinkCalibration = reader.nextLong()
+                "frameCalibration" -> model.frameCalibration = reader.nextLong()
+                "targetAdvances" -> model.targetAdvances = reader.nextLong()
             }
         }
         reader.endObject()

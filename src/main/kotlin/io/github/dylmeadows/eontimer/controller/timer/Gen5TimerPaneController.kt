@@ -4,6 +4,7 @@ import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asIntField
+import io.github.dylmeadows.eontimer.util.asLongField
 import io.github.dylmeadows.eontimer.util.hideWhen
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
@@ -39,24 +40,27 @@ class Gen5TimerPaneController @Autowired constructor(
     fun initialize() {
         modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
-        calibrationField.asIntField().valueProperty
+        calibrationField.asLongField().valueProperty
             .bindBidirectional(model.calibrationProperty)
-        targetDelayField.asIntField().valueProperty
+        targetDelayField.asLongField().valueProperty
             .bindBidirectional(model.targetDelayProperty)
-        targetSecondField.asIntField().valueProperty
+        targetSecondField.asLongField().valueProperty
             .bindBidirectional(model.targetSecondProperty)
-        entralinkCalibrationField.asIntField().valueProperty
+        entralinkCalibrationField.asLongField().valueProperty
             .bindBidirectional(model.entralinkCalibrationProperty)
-        frameCalibrationField.asIntField().valueProperty
+        frameCalibrationField.asLongField().valueProperty
             .bindBidirectional(model.frameCalibrationProperty)
-        targetAdvancesField.asIntField().valueProperty
+        targetAdvancesField.asLongField().valueProperty
             .bindBidirectional(model.targetAdvancesProperty)
-        secondHitField.asIntField().valueProperty
+        secondHitField.asLongField().valueProperty
             .bindBidirectional(model.secondHitProperty)
-        delayHitField.asIntField().valueProperty
+        delayHitField.asLongField().valueProperty
             .bindBidirectional(model.delayHitProperty)
-        actualAdvancesField.asIntField().valueProperty
+        actualAdvancesField.asLongField().valueProperty
             .bindBidirectional(model.actualAdvancesProperty)
+        secondHitField.text = ""
+        delayHitField.text = ""
+        actualAdvancesField.text = ""
 
         targetDelayField.parent.hideWhen(
             model.modeProperty.isEqualTo(Gen5TimerMode.STANDARD))
@@ -74,9 +78,5 @@ class Gen5TimerPaneController @Autowired constructor(
             model.modeProperty.isEqualTo(Gen5TimerMode.STANDARD))
         actualAdvancesField.parent.hideWhen(
             model.modeProperty.isNotEqualTo(Gen5TimerMode.ENHANCED_ENTRALINK))
-
-        secondHitField.text = ""
-        delayHitField.text = ""
-        actualAdvancesField.text = ""
     }
 }

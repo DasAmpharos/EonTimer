@@ -3,21 +3,16 @@ package io.github.dylmeadows.eontimer.service.action
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.ActionMode
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.util.anyChangesOf
-import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.asObservableValue
+import io.github.dylmeadows.eontimer.util.*
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.SimpleBooleanProperty
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.annotation.PostConstruct
-import io.github.dylmeadows.eontimer.util.getValue
-import io.github.dylmeadows.eontimer.util.setValue
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.concurrent.schedule
 
 @Service
 class TimerActionService @Autowired constructor(
@@ -65,9 +60,9 @@ class TimerActionService @Autowired constructor(
     private fun invokeAction() {
         if (timerActionSettingsModel.mode == ActionMode.AUDIO || timerActionSettingsModel.mode == ActionMode.AV)
             soundPlayer.play()
-        if (timerActionSettingsModel.mode == ActionMode.AUDIO || timerActionSettingsModel.mode == ActionMode.AV) {
+        if (timerActionSettingsModel.mode == ActionMode.VISUAL || timerActionSettingsModel.mode == ActionMode.AV) {
+            active = true
             GlobalScope.launch {
-                active = true
                 delay(75)
                 active = false
             }

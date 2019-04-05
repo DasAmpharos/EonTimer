@@ -4,7 +4,7 @@ import io.github.dylmeadows.eontimer.model.ApplicationModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.service.TimerService
-import io.github.dylmeadows.eontimer.util.JavaFxScheduler
+import io.github.dylmeadows.eontimer.service.factory.TimerFactoryService
 import io.github.dylmeadows.eontimer.util.asFlux
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -18,6 +18,7 @@ class TimerControlPaneController @Autowired constructor(
     private val model: ApplicationModel,
     private val timerState: TimerState,
     private val timerService: TimerService,
+    private val timerFactoryService: TimerFactoryService,
     private val gen3Controller: Gen3TimerPaneController,
     private val gen4Controller: Gen4TimerPaneController,
     private val gen5Controller: Gen5TimerPaneController,
@@ -47,7 +48,6 @@ class TimerControlPaneController @Autowired constructor(
             }
 
         timerState.runningProperty.asFlux()
-            .subscribeOn(JavaFxScheduler.platform())
             .map { if (!it) "Start" else "Stop" }
             .subscribe { timerBtn.text = it }
         timerBtn.setOnAction {
@@ -56,6 +56,10 @@ class TimerControlPaneController @Autowired constructor(
             } else {
                 timerService.stop()
             }
+        }
+
+        updateBtn.setOnAction {
+            timerFactoryService.calibrate()
         }
     }
 

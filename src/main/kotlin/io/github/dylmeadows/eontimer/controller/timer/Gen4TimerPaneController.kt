@@ -4,6 +4,7 @@ import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asIntField
+import io.github.dylmeadows.eontimer.util.asLongField
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField
@@ -30,17 +31,16 @@ class Gen4TimerPaneController @Autowired constructor(
     fun initialize() {
         modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
-        calibratedDelayField.asIntField().valueProperty
+        calibratedDelayField.asLongField().valueProperty
             .bindBidirectional(model.calibratedDelayProperty)
-        calibratedSecondField.asIntField().valueProperty
+        calibratedSecondField.asLongField().valueProperty
             .bindBidirectional(model.calibratedSecondProperty)
-        targetDelayField.asIntField().valueProperty
+        targetDelayField.asLongField().valueProperty
             .bindBidirectional(model.targetDelayProperty)
-        targetSecondField.asIntField().valueProperty
+        targetSecondField.asLongField().valueProperty
             .bindBidirectional(model.targetSecondProperty)
-        delayHitField.asIntField().valueProperty
+        delayHitField.asLongField().valueProperty
             .bindBidirectional(model.delayHitProperty)
-
         delayHitField.text = ""
     }
 }

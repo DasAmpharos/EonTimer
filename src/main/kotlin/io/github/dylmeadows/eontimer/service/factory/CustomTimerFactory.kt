@@ -16,10 +16,15 @@ class CustomTimerFactory @Autowired constructor(
     @PostConstruct
     private fun initialize() {
         customTimerModel.stages.asFlux()
+            .map { stages -> stages.map { it.length } }
             .subscribe { timerModel.stages = it }
     }
 
     override fun createTimer(): List<Long> {
-        return customTimerModel.stages.toUnmodifiableList()
+        return customTimerModel.stages
+            .map { it.length }
+            .toUnmodifiableList()
     }
+
+    override fun calibrate() = Unit
 }

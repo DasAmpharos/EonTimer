@@ -29,9 +29,9 @@ class Gen3TimerModelAdapter : TypeAdapter<Gen3TimerModel>() {
         while (reader.hasNext()) {
             when (reader.nextName()) {
                 "mode" -> model.mode = Gen3TimerMode.valueOf(reader.nextString())
-                "calibration" -> model.calibration = reader.nextInt()
-                "preTimer" -> model.preTimer = reader.nextInt()
-                "targetFrame" -> model.targetFrame = reader.nextInt()
+                "calibration" -> model.calibration = reader.nextLong()
+                "preTimer" -> model.preTimer = reader.nextLong()
+                "targetFrame" -> model.targetFrame = reader.nextLong()
             }
         }
         reader.endObject()

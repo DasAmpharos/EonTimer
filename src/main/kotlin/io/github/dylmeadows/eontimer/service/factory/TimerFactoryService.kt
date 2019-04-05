@@ -17,6 +17,14 @@ class TimerFactoryService @Autowired constructor(
     private val customTimerFactory: TimerFactory,
     private val applicationModel: ApplicationModel) {
 
+    private val TimerType.timerFactory: TimerFactory
+        get() = when (this) {
+            TimerType.GEN3 -> gen3TimerFactory
+            TimerType.GEN4 -> gen4TimerFactory
+            TimerType.GEN5 -> gen5TimerFactory
+            TimerType.CUSTOM -> customTimerFactory
+        }
+
     @PostConstruct
     private fun initialize() {
         applicationModel.selectedTimerTypeProperty.asFlux()
@@ -25,11 +33,5 @@ class TimerFactoryService @Autowired constructor(
             .subscribe { timerModel.stages = it }
     }
 
-    private val TimerType.timerFactory: TimerFactory
-        get() = when (this) {
-            TimerType.GEN3 -> gen3TimerFactory
-            TimerType.GEN4 -> gen4TimerFactory
-            TimerType.GEN5 -> gen5TimerFactory
-            TimerType.CUSTOM -> customTimerFactory
-        }
+    fun calibrate() = applicationModel.selectedTimerType.timerFactory.calibrate()
 }

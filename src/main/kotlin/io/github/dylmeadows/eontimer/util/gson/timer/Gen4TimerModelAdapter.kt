@@ -31,10 +31,10 @@ class Gen4TimerModelAdapter : TypeAdapter<Gen4TimerModel>() {
         while (reader.hasNext()) {
             when (reader.nextName()) {
                 "mode" -> model.mode = Gen4TimerMode.valueOf(reader.nextString())
-                "calibratedDelay" -> model.calibratedDelay = reader.nextInt()
-                "calibratedSecond" -> model.calibratedSecond = reader.nextInt()
-                "targetDelay" -> model.targetDelay = reader.nextInt()
-                "targetSecond" -> model.targetSecond = reader.nextInt()
+                "calibratedDelay" -> model.calibratedDelay = reader.nextLong()
+                "calibratedSecond" -> model.calibratedSecond = reader.nextLong()
+                "targetDelay" -> model.targetDelay = reader.nextLong()
+                "targetSecond" -> model.targetSecond = reader.nextLong()
             }
         }
         reader.endObject()

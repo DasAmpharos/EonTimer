@@ -4,7 +4,8 @@ import io.github.dylmeadows.eontimer.model.TimerModel
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
-import io.github.dylmeadows.eontimer.util.Calibrations.convertToMillis
+import io.github.dylmeadows.eontimer.service.CalibrationService
+import io.github.dylmeadows.eontimer.service.factory.timer.FrameTimer
 import io.github.dylmeadows.eontimer.util.asFlux
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -14,39 +15,37 @@ import javax.annotation.PostConstruct
 class Gen3TimerFactory @Autowired constructor(
     private val timerModel: TimerModel,
     private val gen3TimerModel: Gen3TimerModel,
-    private val timerSettings: TimerSettingsModel) : TimerFactory {
+    private val frameTimer: FrameTimer) : TimerFactory {
 
     @PostConstruct
     private fun initialize() {
-        gen3TimerModel.modeProperty.asFlux()
-            .subscribe { timerModel.stages = createTimer() }
-        gen3TimerModel.calibrationProperty.asFlux()
-            .subscribe { timerModel.stages = createTimer() }
-        gen3TimerModel.preTimerProperty.asFlux()
-            .subscribe { timerModel.stages = createTimer() }
-        gen3TimerModel.targetFrameProperty.asFlux()
-            .subscribe { timerModel.stages = createTimer() }
+        listOf(
+            gen3TimerModel.modeProperty,
+            gen3TimerModel.calibrationProperty,
+            gen3TimerModel.preTimerProperty,
+            gen3TimerModel.targetFrameProperty)
+            .map { it.asFlux() }
+            .forEach {
+                it.subscribe {
+                    timerModel.stages = createTimer()
+                }
+            }
     }
 
     override fun createTimer(): List<Long> {
         return when (gen3TimerModel.mode) {
             Gen3TimerMode.STANDARD ->
-                longArrayOf(
-                    createStage1(),
-                    createStage2())
-                    .toList()
+                frameTimer.createStages(
+                    gen3TimerModel.calibration,
+                    gen3TimerModel.preTimer,
+                    gen3TimerModel.targetFrame)
             Gen3TimerMode.VARIABLE_TARGET ->
                 // TODO: implement this
                 emptyList()
         }
     }
 
-    private fun createStage1(): Long {
-        return gen3TimerModel.preTimer.toLong()
+    override fun calibrate() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-    private fun createStage2(): Long {
-        return (convertToMillis(gen3TimerModel.targetFrame, timerSettings.console) + gen3TimerModel.calibration).toLong()
-    }
-
 }
