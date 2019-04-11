@@ -37,4 +37,8 @@ class DelayTimer @Autowired constructor(
     private fun createStage2(calibration: Long, targetDelay: Long): Long {
         return calibrationService.toMillis(targetDelay) - calibration
     }
+
+    fun start() {
+
+    }
 }

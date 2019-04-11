@@ -148,16 +148,17 @@ class ObservableFluxValue<T> constructor(private val flux: Flux<T>, initialValue
     override fun getValue(): T = property.value
 
     fun subscribe() {
-        if (disposable.isDisposed)
+        if (disposable.isDisposed) {
             disposable = flux.subscribe(property::set)
+        }
     }
 
     fun dispose() {
-        if (!disposable.isDisposed)
+        if (!disposable.isDisposed) {
             disposable.dispose()
+        }
     }
 }
-
 
 object JavaFxScheduler {
 

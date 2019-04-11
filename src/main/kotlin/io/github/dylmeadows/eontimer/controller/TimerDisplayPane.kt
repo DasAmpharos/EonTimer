@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class TimerDisplayPaneController @Autowired constructor(
+class TimerDisplayPane @Autowired constructor(
     private val timerState: TimerState,
     private val timerActionService: TimerActionService,
     private val actionSettingsModel: ActionSettingsModel) {
 
     @FXML
-    private lateinit var currentStageLbl: Label
+    lateinit var currentStageLbl: Label
     @FXML
-    private lateinit var minutesBeforeTargetLbl: Label
+    lateinit var minutesBeforeTargetLbl: Label
     @FXML
-    private lateinit var nextStageLbl: Label
+    lateinit var nextStageLbl: Label
 
     fun initialize() {
         timerState.currentStageProperty.asFlux()

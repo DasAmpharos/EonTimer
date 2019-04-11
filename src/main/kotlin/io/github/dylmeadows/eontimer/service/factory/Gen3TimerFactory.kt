@@ -1,11 +1,9 @@
 package io.github.dylmeadows.eontimer.service.factory
 
 import io.github.dylmeadows.eontimer.model.TimerModel
-import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
-import io.github.dylmeadows.eontimer.service.CalibrationService
-import io.github.dylmeadows.eontimer.service.factory.timer.FrameTimer
+import io.github.dylmeadows.eontimer.service.factory.timer.FixedFrameTimer
 import io.github.dylmeadows.eontimer.util.asFlux
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -15,7 +13,7 @@ import javax.annotation.PostConstruct
 class Gen3TimerFactory @Autowired constructor(
     private val timerModel: TimerModel,
     private val gen3TimerModel: Gen3TimerModel,
-    private val frameTimer: FrameTimer) : TimerFactory {
+    private val fixedFrameTimer: FixedFrameTimer) : TimerFactory {
 
     @PostConstruct
     private fun initialize() {
@@ -35,7 +33,7 @@ class Gen3TimerFactory @Autowired constructor(
     override fun createTimer(): List<Long> {
         return when (gen3TimerModel.mode) {
             Gen3TimerMode.STANDARD ->
-                frameTimer.createStages(
+                fixedFrameTimer.createStages(
                     gen3TimerModel.calibration,
                     gen3TimerModel.preTimer,
                     gen3TimerModel.targetFrame)
