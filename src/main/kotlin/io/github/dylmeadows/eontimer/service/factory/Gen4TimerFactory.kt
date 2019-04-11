@@ -6,7 +6,6 @@ import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
 import io.github.dylmeadows.eontimer.service.CalibrationService
 import io.github.dylmeadows.eontimer.service.factory.timer.DelayTimer
 import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.normalize
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct

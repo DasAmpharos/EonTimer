@@ -1,49 +1,61 @@
 package io.github.dylmeadows.eontimer.service
 
-import io.github.dylmeadows.eontimer.model.TimerModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
-import io.github.dylmeadows.eontimer.util.JavaFxScheduler
-import io.github.dylmeadows.eontimer.util.asFlux
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
+import java.time.Duration
 import java.util.*
-import javax.annotation.PostConstruct
 
 @Service
-class TimerService @Autowired constructor(
-    private val timerModel: TimerModel,
+class CountdownTimer @Autowired constructor(
     private val timerState: TimerState,
-    private val timerSettingsModel: TimerSettingsModel) {
+    private val timerSettings: TimerSettingsModel) {
 
     private lateinit var timerJob: Job
+    private var stages: List<Long> = Collections.emptyList()
 
-    @PostConstruct
-    private fun initialize() {
-        timerModel.stagesProperty.asFlux()
-            .subscribeOn(JavaFxScheduler.platform())
-            .subscribe { resetState() }
+    private val now: Long get() = System.currentTimeMillis()
+
+    fun fixedInterval(period: Duration, totalDuration: Duration): Flux<Long> {
+        return Flux.create<Long> { emitter ->
+            val job = GlobalScope.launch {
+                var totalTime = 0L
+                var lastTimestamp = now
+                while (totalTime < totalDuration.toMillis()) {
+                    delay(period.toMillis())
+                    val delta = now - lastTimestamp
+                    emitter.next(delta)
+                    totalTime += delta
+                    lastTimestamp = now
+                }
+                emitter.complete()
+            }
+            emitter.onDispose(job::cancel)
+            emitter.onCancel(job::cancel)
+        }
     }
 
-    fun start() {
-        if (!::timerJob.isInitialized || !timerState.running) {
+    fun start(stages: List<Long>) {
+        if (!::timerJob.isInitialized || !timerState.running && stages.isNotEmpty()) {
+            this.stages = stages
             timerState.running = true
             timerJob = GlobalScope.launch(Dispatchers.JavaFx) {
                 var overlap = 0L
-                var totalTime = timerModel.stages.sum()
+                var totalTime = stages.sum()
                 timerState.minutesBeforeTarget = totalTime / 60000
 
-                for (index in timerModel.stages.indices) {
-                    timerState.currentStage = getStage(timerModel.stages, index)
-                    timerState.nextStage = getStage(timerModel.stages, index + 1)
+                for (index in stages.indices) {
+                    timerState.currentStage = getStage(stages, index)
+                    timerState.nextStage = getStage(stages, index + 1)
                     timerState.remaining = timerState.currentStage + overlap
 
                     var lastTimestamp = System.currentTimeMillis()
                     while (timerState.remaining > 0) {
-                        delay(timerSettingsModel.refreshInterval.toLong())
                         val now = System.currentTimeMillis()
                         val delta = now - lastTimestamp
                         lastTimestamp = now
@@ -51,6 +63,8 @@ class TimerService @Autowired constructor(
                         totalTime -= delta
                         timerState.minutesBeforeTarget = totalTime / 60000
                         timerState.remaining -= delta
+
+                        delay(timerSettings.refreshInterval.toLong())
                     }
                     overlap = timerState.remaining
                 }
@@ -77,9 +91,9 @@ class TimerService @Autowired constructor(
     }
 
     private fun resetState() {
-        timerState.minutesBeforeTarget = timerModel.stages.sum() / 60000
-        timerState.currentStage = getStage(timerModel.stages, 0)
-        timerState.nextStage = getStage(timerModel.stages, 1)
+        timerState.minutesBeforeTarget = stages.sum() / 60000
+        timerState.currentStage = getStage(stages, 0)
+        timerState.nextStage = getStage(stages, 1)
         timerState.remaining = timerState.currentStage
     }
 }

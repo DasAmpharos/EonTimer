@@ -3,6 +3,7 @@ package io.github.dylmeadows.eontimer.util
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsConstants
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.Duration
 
 val <T : Any> T.log: Logger
     get() = LoggerFactory.getLogger(javaClass)
@@ -13,3 +14,6 @@ fun Long.normalize(): Long {
         normalized += 60000
     return normalized
 }
+
+val Long.milliseconds: Duration get() = Duration.ofMillis(this)
+val Long.seconds: Duration get() = Duration.ofSeconds(this)

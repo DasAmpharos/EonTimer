@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class FrameTimer @Autowired constructor(
+class FixedFrameTimer @Autowired constructor(
     private val calibrationService: CalibrationService) {
 
     fun createStages(calibration: Long, preTimer: Long, targetFrame: Long): List<Long> {

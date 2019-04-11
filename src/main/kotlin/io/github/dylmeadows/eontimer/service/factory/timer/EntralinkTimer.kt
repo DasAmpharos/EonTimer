@@ -1,6 +1,5 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
-import io.github.dylmeadows.eontimer.model.timer.Gen5TimerConstants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
