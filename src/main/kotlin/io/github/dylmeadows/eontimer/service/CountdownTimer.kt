@@ -3,6 +3,7 @@ package io.github.dylmeadows.eontimer.service
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
+import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,27 +19,6 @@ class CountdownTimer @Autowired constructor(
 
     private lateinit var timerJob: Job
     private var stages: List<Long> = Collections.emptyList()
-
-    private val now: Long get() = System.currentTimeMillis()
-
-    fun fixedInterval(period: Duration, totalDuration: Duration): Flux<Long> {
-        return Flux.create<Long> { emitter ->
-            val job = GlobalScope.launch {
-                var totalTime = 0L
-                var lastTimestamp = now
-                while (totalTime < totalDuration.toMillis()) {
-                    delay(period.toMillis())
-                    val delta = now - lastTimestamp
-                    emitter.next(delta)
-                    totalTime += delta
-                    lastTimestamp = now
-                }
-                emitter.complete()
-            }
-            emitter.onDispose(job::cancel)
-            emitter.onCancel(job::cancel)
-        }
-    }
 
     fun start(stages: List<Long>) {
         if (!::timerJob.isInitialized || !timerState.running && stages.isNotEmpty()) {

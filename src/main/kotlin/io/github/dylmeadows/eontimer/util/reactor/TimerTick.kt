@@ -1,11 +1,13 @@
 package io.github.dylmeadows.eontimer.util.reactor
 
-data class TimerTick(val delta: Long, val elapsed: Long) {
+import java.time.Duration
+
+data class TimerTick(val delta: Duration, val elapsed: Duration) {
     companion object {
-        val ZERO = TimerTick(0L, 0L)
+        val ZERO = TimerTick(Duration.ZERO, Duration.ZERO)
     }
 
-    operator fun plus(delta: Long): TimerTick {
+    operator fun plus(delta: Duration): TimerTick {
         return TimerTick(delta, elapsed + delta)
     }
 }
