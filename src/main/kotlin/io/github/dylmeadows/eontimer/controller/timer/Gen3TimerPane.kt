@@ -3,7 +3,9 @@ package io.github.dylmeadows.eontimer.controller.timer
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
+import io.github.dylmeadows.eontimer.service.factory.Gen3TimerFactory
 import io.github.dylmeadows.eontimer.service.factory.timer.VariableFrameTimer
+import io.github.dylmeadows.eontimer.util.JavaFxScheduler
 import io.github.dylmeadows.eontimer.util.asChoiceField
 import io.github.dylmeadows.eontimer.util.asLongField
 import javafx.fxml.FXML
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component
 class Gen3TimerPane @Autowired constructor(
     private val state: TimerState,
     private val model: Gen3TimerModel,
+    private val factory: Gen3TimerFactory,
     private val variableFrameTimer: VariableFrameTimer) : TimerController {
 
     @FXML
@@ -71,7 +74,12 @@ class Gen3TimerPane @Autowired constructor(
     }
 
     override fun start() {
-        variableFrameTimer.start()
+        factory.start()
+            .subscribeOn(JavaFxScheduler.platform())
+            .publishOn(JavaFxScheduler.platform())
+            .subscribe {
+                state.remaining = it.remaining.toMillis()
+            }
     }
 
     override fun stop() {

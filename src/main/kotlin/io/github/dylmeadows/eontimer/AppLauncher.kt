@@ -3,23 +3,27 @@ package io.github.dylmeadows.eontimer
 import io.github.dylmeadows.eontimer.config.AppProperties
 import io.github.dylmeadows.eontimer.model.resource.CssResource
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
-import io.github.dylmeadows.eontimer.util.*
+import io.github.dylmeadows.eontimer.util.Dimension
+import io.github.dylmeadows.eontimer.util.addCss
+import io.github.dylmeadows.eontimer.util.asScene
+import io.github.dylmeadows.eontimer.util.load
+import io.github.dylmeadows.eontimer.util.milliseconds
 import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
+import io.github.dylmeadows.eontimer.util.seconds
+import io.github.dylmeadows.eontimer.util.size
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.application.Application.launch
 import javafx.scene.Parent
 import javafx.stage.Stage
-import kotlinx.coroutines.delay
+import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.ComponentScan
-import reactor.core.Disposable
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import java.time.Duration
 
 @SpringBootApplication
 @ComponentScan(value = ["io.github.dylmeadows.*"])
 open class AppLauncher : SpringJavaFxApplication() {
+
+    private val log = LoggerFactory.getLogger(AppLauncher::class.java)
 
     override fun onInit() {
         arrayOf("os.name", "os.version", "os.arch", "java.version", "java.vendor", "sun.arch.data.model")
@@ -38,18 +42,5 @@ open class AppLauncher : SpringJavaFxApplication() {
 }
 
 fun main(args: Array<String>) {
-    // launch(AppLauncher::class.java, *args)
-    var targetFrame = -1
-    val sub = FluxFactory.timer(5L.milliseconds)
-        .takeUntil { targetFrame >= 0 }
-        .doOnNext { println(it) }
-        .doOnNext {
-            if (it.elapsed >= 5000) {
-                targetFrame = 1
-            }
-        }
-        .last()
-        .subscribe { println("last: $it") }
-
-    while (!sub.isDisposed) {}
+    launch(AppLauncher::class.java, *args)
 }

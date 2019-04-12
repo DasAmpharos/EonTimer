@@ -5,8 +5,10 @@ import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
 import io.github.dylmeadows.eontimer.service.factory.timer.FixedFrameTimer
 import io.github.dylmeadows.eontimer.util.asFlux
+import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
 import javax.annotation.PostConstruct
 
 @Component
@@ -45,5 +47,12 @@ class Gen3TimerFactory @Autowired constructor(
 
     override fun calibrate() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun start(): Flux<TimerState> {
+        return fixedFrameTimer.start(
+            gen3TimerModel.preTimer,
+            gen3TimerModel.targetFrame,
+            gen3TimerModel.calibration)
     }
 }
