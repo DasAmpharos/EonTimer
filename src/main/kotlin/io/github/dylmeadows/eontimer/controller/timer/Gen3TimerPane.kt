@@ -60,12 +60,12 @@ class Gen3TimerPane @Autowired constructor(
                 }
             }*/
 
-        val targetFrameProperty = targetFrameField.asLongField().valueProperty
+        /*val targetFrameProperty = targetFrameField.asLongField().valueProperty
         setTargetFrameBtn.setOnAction {
             if (state.running && variableFrameTimer.targetFrame < 0) {
                 variableFrameTimer.targetFrame = targetFrameProperty.value
             }
-        }
+        }*/
 
         // set conditional field visibility
         /*setTargetFrameBtn.hideWhen(model.modeProperty.isNotEqualTo(Gen3TimerMode.VARIABLE_TARGET))
@@ -83,7 +83,6 @@ class Gen3TimerPane @Autowired constructor(
     }
 
     override fun stop() {
-        variableFrameTimer.stop()
     }
 
     override fun update() {

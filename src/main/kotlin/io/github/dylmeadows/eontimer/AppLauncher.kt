@@ -7,10 +7,6 @@ import io.github.dylmeadows.eontimer.util.Dimension
 import io.github.dylmeadows.eontimer.util.addCss
 import io.github.dylmeadows.eontimer.util.asScene
 import io.github.dylmeadows.eontimer.util.load
-import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
-import io.github.dylmeadows.eontimer.util.reactor.TimerState
-import io.github.dylmeadows.eontimer.util.seconds
 import io.github.dylmeadows.eontimer.util.size
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.application.Application.launch
@@ -19,10 +15,6 @@ import javafx.stage.Stage
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.ComponentScan
-import java.time.Duration
-import java.time.Instant
-import java.util.concurrent.CountDownLatch
-import java.util.function.BiFunction
 
 @SpringBootApplication
 @ComponentScan(value = ["io.github.dylmeadows.*"])
@@ -44,4 +36,8 @@ open class AppLauncher : SpringJavaFxApplication() {
         stage.isResizable = false
         stage.show()
     }
+}
+
+fun main(args: Array<String>) {
+    launch(AppLauncher::class.java, *args)
 }
