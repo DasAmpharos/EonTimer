@@ -4,7 +4,7 @@ import io.github.dylmeadows.common.javafx.util.ChoiceConverter
 import io.github.dylmeadows.eontimer.model.resource.SoundResource
 import io.github.dylmeadows.eontimer.model.settings.ActionMode
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.util.asIntField
+import io.github.dylmeadows.eontimer.util.javafx.asIntField
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox

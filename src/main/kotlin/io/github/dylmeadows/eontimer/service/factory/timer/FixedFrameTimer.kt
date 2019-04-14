@@ -1,5 +1,6 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.service.CalibrationService
 import io.github.dylmeadows.eontimer.util.milliseconds
 import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
@@ -11,20 +12,25 @@ import java.time.Duration
 
 @Service
 class FixedFrameTimer @Autowired constructor(
-    private val calibrationService: CalibrationService) {
+    private val calibrationService: CalibrationService,
+    private val timerSettings: TimerSettingsModel) {
 
-    fun createStages(preTimer: Long, targetFrame: Long, calibration: Long): List<Long> {
+    fun createStages(preTimer: Long, targetFrame: Long, calibration: Long): List<Duration> {
         return listOf(
-            preTimer,
-            createStage2(targetFrame, calibration))
+            stage1(preTimer),
+            stage2(targetFrame, calibration))
+            .map(Duration::ofMillis)
     }
 
-    private fun createStage2(targetFrame: Long, calibration: Long): Long {
+    private fun stage1(preTimer: Long): Long =
+        preTimer
+
+    private fun stage2(targetFrame: Long, calibration: Long): Long {
         return calibrationService.toMillis(targetFrame) + calibration
     }
 
     fun start(preTimer: Long, targetFrame: Long, calibration: Long): Flux<TimerState> {
-        val stages = createStages(preTimer, targetFrame, calibration).map(Duration::ofMillis)
-        return FluxFactory.multiTimer(8L.milliseconds, stages)
+        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+            createStages(preTimer, targetFrame, calibration))
     }
 }

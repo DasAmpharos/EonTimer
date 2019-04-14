@@ -1,7 +1,9 @@
-package io.github.dylmeadows.eontimer.util
+package io.github.dylmeadows.eontimer.util.javafx
 
 import io.github.dylmeadows.common.javafx.util.Choice
 import io.github.dylmeadows.common.javafx.util.ChoiceConverter
+import io.github.dylmeadows.eontimer.util.getValue
+import io.github.dylmeadows.eontimer.util.setValue
 import javafx.beans.property.ObjectProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList

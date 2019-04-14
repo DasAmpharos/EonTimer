@@ -7,6 +7,6 @@ object TimerSettingsConstants {
     val DEFAULT_CONSOLE = Console.NDS
 
     const val DEFAULT_PRECISION_CALIBRATION_MODE = false
-    const val DEFAULT_REFRESH_INTERVAL = 8
+    const val DEFAULT_REFRESH_INTERVAL = 8L
     const val MINIMUM_LENGTH = 14000
 }

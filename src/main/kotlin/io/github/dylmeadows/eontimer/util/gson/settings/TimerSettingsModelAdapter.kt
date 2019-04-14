@@ -27,7 +27,7 @@ class TimerSettingsModelAdapter : TypeAdapter<TimerSettingsModel>() {
         while (reader.hasNext()) {
             when (reader.nextName()) {
                 "console" -> model.console = Console.valueOf(reader.nextString())
-                "refreshInterval" -> model.refreshInterval = reader.nextInt()
+                "refreshInterval" -> model.refreshInterval = reader.nextLong()
                 "precisionCalibrationMode" -> model.precisionCalibrationMode = reader.nextBoolean()
             }
         }

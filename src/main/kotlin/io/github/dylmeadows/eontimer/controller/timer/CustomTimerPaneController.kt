@@ -5,7 +5,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import io.github.dylmeadows.eontimer.model.TimerStage
 import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
 import io.github.dylmeadows.eontimer.util.TimerStageStringConverter
-import io.github.dylmeadows.eontimer.util.asLongField
+import io.github.dylmeadows.eontimer.util.javafx.asLongField
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView

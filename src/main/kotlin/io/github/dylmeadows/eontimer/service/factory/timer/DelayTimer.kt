@@ -1,21 +1,29 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerConstants
 import io.github.dylmeadows.eontimer.service.CalibrationService
+import io.github.dylmeadows.eontimer.util.milliseconds
 import io.github.dylmeadows.eontimer.util.normalize
+import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
+import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
+import java.time.Duration
 import kotlin.math.absoluteValue
 
 @Service
 class DelayTimer @Autowired constructor(
     private val secondTimer: SecondTimer,
-    private val calibrationService: CalibrationService) {
+    private val calibrationService: CalibrationService,
+    private val timerSettings: TimerSettingsModel) {
 
-    fun createStages(calibration: Long, targetSecond: Long, targetDelay: Long): List<Long> {
+    fun createStages(targetSecond: Long, targetDelay: Long, calibration: Long): List<Duration> {
         return listOf(
-            createStage1(calibration, targetSecond, targetDelay),
-            createStage2(calibration, targetDelay))
+            stage1(targetSecond, targetDelay, calibration),
+            stage2(targetDelay, calibration))
+            .map { stage -> Duration.ofMillis(stage) }
     }
 
     fun calibrate(targetDelay: Long, delayHit: Long): Long {
@@ -28,17 +36,18 @@ class DelayTimer @Autowired constructor(
         }
     }
 
-    private fun createStage1(calibration: Long, targetSecond: Long, targetDelay: Long): Long {
-        return (secondTimer.createStages(calibration, targetSecond)[0]
+    private fun stage1(targetSecond: Long, targetDelay: Long, calibration: Long): Long {
+        return (secondTimer.createStages(calibration, targetSecond)[0].toMillis()
             - calibrationService.toMillis(targetDelay))
             .normalize()
     }
 
-    private fun createStage2(calibration: Long, targetDelay: Long): Long {
+    private fun stage2(targetDelay: Long, calibration: Long): Long {
         return calibrationService.toMillis(targetDelay) - calibration
     }
 
-    fun start() {
-
+    fun start(targetSecond: Long, targetDelay: Long, calibration: Long): Flux<TimerState> {
+        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+            createStages(targetSecond, targetDelay, calibration))
     }
 }

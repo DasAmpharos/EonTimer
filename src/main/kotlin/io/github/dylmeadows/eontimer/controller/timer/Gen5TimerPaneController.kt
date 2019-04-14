@@ -2,9 +2,8 @@ package io.github.dylmeadows.eontimer.controller.timer
 
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
-import io.github.dylmeadows.eontimer.util.asChoiceField
-import io.github.dylmeadows.eontimer.util.asIntField
-import io.github.dylmeadows.eontimer.util.asLongField
+import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
+import io.github.dylmeadows.eontimer.util.javafx.asLongField
 import io.github.dylmeadows.eontimer.util.hideWhen
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox

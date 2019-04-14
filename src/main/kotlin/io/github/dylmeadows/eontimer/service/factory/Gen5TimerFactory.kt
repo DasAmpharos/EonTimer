@@ -12,6 +12,7 @@ import io.github.dylmeadows.eontimer.service.factory.timer.SecondTimer
 import io.github.dylmeadows.eontimer.util.asFlux
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.util.*
 import javax.annotation.PostConstruct
 
 @Component
@@ -62,10 +63,12 @@ class Gen5TimerFactory @Autowired constructor(
                     gen5TimerModel.calibration.calibrate(),
                     gen5TimerModel.targetSecond)
             Gen5TimerMode.C_GEAR ->
-                delayTimer.createStages(
-                    gen5TimerModel.calibration.calibrate(),
-                    gen5TimerModel.targetSecond,
-                    gen5TimerModel.targetDelay)
+                // TODO: fix this
+                // delayTimer.createStages(
+                //    gen5TimerModel.calibration.calibrate(),
+                //    gen5TimerModel.targetSecond,
+                //    gen5TimerModel.targetDelay)
+                Collections.emptyList()
             Gen5TimerMode.ENTRALINK ->
                 entralinkTimer.createStages(
                     gen5TimerModel.calibration.calibrate(),

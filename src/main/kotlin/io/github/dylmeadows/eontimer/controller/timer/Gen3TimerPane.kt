@@ -6,8 +6,8 @@ import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
 import io.github.dylmeadows.eontimer.service.factory.Gen3TimerFactory
 import io.github.dylmeadows.eontimer.service.factory.timer.VariableFrameTimer
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
-import io.github.dylmeadows.eontimer.util.asChoiceField
-import io.github.dylmeadows.eontimer.util.asLongField
+import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
+import io.github.dylmeadows.eontimer.util.javafx.asLongField
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ChoiceBox

@@ -29,10 +29,10 @@ class TimerSettingsPaneController @Autowired constructor(
         consoleField.converter = ChoiceConverter.forChoice(Console::class.java)
         consoleField.valueProperty().bindBidirectional(model.consoleProperty)
 
-        refreshIntervalField.createValueFactory(0, Int.MAX_VALUE)
-            .valueProperty().bindBidirectional(model.refreshIntervalProperty.asObject())
-
-        precisionCalibrationField.selectedProperty()
-            .bindBidirectional(model.precisionCalibrationModeProperty)
+//        refreshIntervalField.createValueFactory(0, Int.MAX_VALUE)
+//            .valueProperty().bindBidirectional(model.refreshIntervalProperty.asObject())
+//
+//        precisionCalibrationField.selectedProperty()
+//            .bindBidirectional(model.precisionCalibrationModeProperty)
     }
 }

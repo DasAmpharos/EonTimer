@@ -1,7 +1,9 @@
-package io.github.dylmeadows.eontimer.util
+package io.github.dylmeadows.eontimer.util.javafx
 
 import com.google.common.primitives.Ints
 import com.sun.javafx.binding.BidirectionalBinding
+import io.github.dylmeadows.eontimer.util.getValue
+import io.github.dylmeadows.eontimer.util.setValue
 import javafx.beans.property.IntegerProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.StringProperty

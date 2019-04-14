@@ -8,6 +8,7 @@ import io.github.dylmeadows.eontimer.service.factory.timer.DelayTimer
 import io.github.dylmeadows.eontimer.util.asFlux
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.time.Duration
 import javax.annotation.PostConstruct
 
 @Component
@@ -36,6 +37,8 @@ class Gen4TimerFactory @Autowired constructor(
     override fun createTimer(): List<Long> {
         val calibration = calibrationService.createCalibration(gen4TimerModel.calibratedDelay, gen4TimerModel.calibratedSecond)
         return delayTimer.createStages(calibration, gen4TimerModel.targetSecond, gen4TimerModel.targetDelay)
+            // TODO: fix this
+            .map(Duration::toMillis)
     }
 
     override fun calibrate() {
