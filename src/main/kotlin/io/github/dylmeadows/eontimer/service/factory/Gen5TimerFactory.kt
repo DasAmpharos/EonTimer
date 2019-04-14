@@ -12,7 +12,6 @@ import io.github.dylmeadows.eontimer.service.factory.timer.SecondTimer
 import io.github.dylmeadows.eontimer.util.asFlux
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.util.*
 import javax.annotation.PostConstruct
 
 @Component
@@ -59,30 +58,36 @@ class Gen5TimerFactory @Autowired constructor(
     override fun createTimer(): List<Long> {
         return when (gen5TimerModel.mode) {
             Gen5TimerMode.STANDARD ->
-                secondTimer.createStages(
-                    gen5TimerModel.calibration.calibrate(),
-                    gen5TimerModel.targetSecond)
+                // TODO: fix this
+                // secondTimer.createStages(
+                //    gen5TimerModel.calibration.calibrate(),
+                //    gen5TimerModel.targetSecond)
+                emptyList()
             Gen5TimerMode.C_GEAR ->
                 // TODO: fix this
                 // delayTimer.createStages(
                 //    gen5TimerModel.calibration.calibrate(),
                 //    gen5TimerModel.targetSecond,
                 //    gen5TimerModel.targetDelay)
-                Collections.emptyList()
+                emptyList()
             Gen5TimerMode.ENTRALINK ->
-                entralinkTimer.createStages(
-                    gen5TimerModel.calibration.calibrate(),
-                    gen5TimerModel.entralinkCalibration.calibrate(),
-                    gen5TimerModel.targetSecond,
-                    gen5TimerModel.targetDelay)
+                // TODO: fix this
+                // entralinkTimer.createStages(
+                //    gen5TimerModel.calibration.calibrate(),
+                //    gen5TimerModel.entralinkCalibration.calibrate(),
+                //    gen5TimerModel.targetSecond,
+                //    gen5TimerModel.targetDelay)
+                emptyList()
             Gen5TimerMode.ENHANCED_ENTRALINK ->
-                enhancedEntralinkTimer.createStages(
-                    gen5TimerModel.calibration.calibrate(),
-                    gen5TimerModel.entralinkCalibration.calibrate(),
-                    gen5TimerModel.frameCalibration,
-                    gen5TimerModel.targetSecond,
-                    gen5TimerModel.targetDelay,
-                    gen5TimerModel.targetAdvances)
+                // TODO: fix this
+                // enhancedEntralinkTimer.createStages(
+                //    gen5TimerModel.calibration.calibrate(),
+                //    gen5TimerModel.entralinkCalibration.calibrate(),
+                //    gen5TimerModel.frameCalibration,
+                //    gen5TimerModel.targetSecond,
+                //    gen5TimerModel.targetDelay,
+                //    gen5TimerModel.targetAdvances)
+                emptyList()
         }
     }
 

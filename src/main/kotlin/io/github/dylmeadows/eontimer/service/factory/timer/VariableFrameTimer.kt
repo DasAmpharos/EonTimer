@@ -2,6 +2,7 @@ package io.github.dylmeadows.eontimer.service.factory.timer
 
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.service.CalibrationService
+import io.github.dylmeadows.eontimer.util.INDEFINITE
 import io.github.dylmeadows.eontimer.util.milliseconds
 import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
 import io.github.dylmeadows.eontimer.util.reactor.TimerState
@@ -14,16 +15,58 @@ class VariableFrameTimer @Autowired constructor(
     private val timerSettings: TimerSettingsModel,
     private val calibrationService: CalibrationService) {
 
+    var targetFrame: Long = -1L
+
     fun start(preTimer: Long, calibration: Long): Flux<TimerState> {
         /* TODO:
             [] design mechanism for setting target frame
             [] implement timer
          */
         return Flux.create { emitter ->
-            FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
-                preTimer.milliseconds)
+            val timer = FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+                listOf(preTimer.milliseconds, INDEFINITE))
+                .doOnSubscribe { targetFrame = -1L }
                 .doOnNext { emitter.next(it) }
                 .doOnError(emitter::error)
+                .takeUntil {
+                    it.duration == INDEFINITE
+                        && targetFrame != -1L
+                }
+                .share()
+            timer.last()
+                .flatMapMany { lastState ->
+                    val duration = calibrationService.toMillis(targetFrame).milliseconds
+                    FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+                        duration - lastState.elapsed)
+                }
+                .doOnComplete(emitter::complete)
+                .doOnNext { emitter.next(it) }
+                .doOnError(emitter::error)
+
+            val timerSub = timer.subscribe()
+            val targetSub =
+            // val countDownTargetTimer
+
+            val sub = FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+                listOf(preTimer.milliseconds, INDEFINITE))
+                .doOnSubscribe { targetFrame = -1L }
+                .doOnNext { emitter.next(it) }
+                .doOnError(emitter::error)
+                .takeUntil {
+                    it.duration == INDEFINITE
+                        && targetFrame != -1L
+                }.last()
+                .flatMapMany { lastState ->
+                    val duration = calibrationService.toMillis(targetFrame).milliseconds
+                    FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+                        duration - lastState.elapsed)
+                }
+                .doOnComplete(emitter::complete)
+                .doOnNext { emitter.next(it) }
+                .doOnError(emitter::error)
+                .subscribe()
+            emitter.onDispose(sub::dispose)
+            emitter.onCancel(sub::dispose)
         }
         /*if (!::timerJob.isInitialized || !timerState.running) {
             targetFrame = -1

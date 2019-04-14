@@ -35,10 +35,12 @@ class Gen3TimerFactory @Autowired constructor(
     override fun createTimer(): List<Long> {
         return when (gen3TimerModel.mode) {
             Gen3TimerMode.STANDARD ->
-                fixedFrameTimer.createStages(
-                    gen3TimerModel.calibration,
-                    gen3TimerModel.preTimer,
-                    gen3TimerModel.targetFrame)
+                // TODO: fix this
+                emptyList()
+                // fixedFrameTimer.createStages(
+                //    gen3TimerModel.calibration,
+                //    gen3TimerModel.preTimer,
+                //    gen3TimerModel.targetFrame)
             Gen3TimerMode.VARIABLE_TARGET ->
                 // TODO: implement this
                 emptyList()
