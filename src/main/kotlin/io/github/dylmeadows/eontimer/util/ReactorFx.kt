@@ -9,6 +9,7 @@ import javafx.collections.ListChangeListener
 import javafx.collections.ObservableList
 import reactor.core.Disposable
 import reactor.core.publisher.Flux
+import reactor.core.publisher.FluxSink
 import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 import reactor.util.function.Tuple2
@@ -158,6 +159,12 @@ class ObservableFluxValue<T> constructor(private val flux: Flux<T>, initialValue
             disposable.dispose()
         }
     }
+}
+
+fun <T> Flux<T>.emitTo(sink: FluxSink<T>): Flux<T> {
+    return doOnComplete { sink.complete() }
+        .doOnError { sink.error(it) }
+        .doOnNext { sink.next(it) }
 }
 
 object JavaFxScheduler {

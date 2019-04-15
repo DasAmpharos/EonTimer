@@ -5,6 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import reactor.core.publisher.Flux
+import reactor.core.publisher.FluxSink
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -21,38 +22,41 @@ object FluxFactory {
 
     fun timer(period: Duration, durations: List<Duration>): Flux<TimerState> {
         return if (durations.isNotEmpty()) {
-            return Flux.create { emitter ->
-                val job = GlobalScope.launch {
-                    var offset = Duration.ZERO
-                    durations.forEach { duration ->
-                        var delay = period
-                        var elapsed = Duration.ZERO + offset
-                        var lastTimestamp = Instant.now()
-                        while (elapsed < duration) {
-                            delay(delay.toMillis())
-
-                            val now = Instant.now()
-                            val delta = Duration.between(lastTimestamp, now)
-                            // adjust delay
-                            if ((duration - elapsed) < period) {
-                                delay = duration - elapsed
-                            } else {
-                                delay -= delta - period
-                            }
-                            lastTimestamp = now
-                            elapsed += delta
-
-                            emitter.next(TimerState(delta, elapsed, duration))
-                        }
-                        offset = elapsed - duration
-                    }
-                    emitter.complete()
-                }
-                emitter.onDispose(job::cancel)
-                emitter.onCancel(job::cancel)
-            }
+            return Flux.create(asTimer(period, durations))
         } else {
             Flux.empty()
+        }
+    }
+
+    fun asTimer(period: Duration, durations: List<Duration>): (FluxSink<TimerState>) -> Unit {
+        return { emitter ->
+            val job = GlobalScope.launch {
+                var elapsed = Duration.ZERO
+                durations.forEach { duration ->
+                    var delay = period
+                    var lastTimestamp = Instant.now()
+                    while (elapsed < duration) {
+                        delay(delay.toMillis())
+
+                        val now = Instant.now()
+                        val delta = Duration.between(lastTimestamp, now)
+                        // adjust delay
+                        if ((duration - elapsed) < period) {
+                            delay = duration - elapsed
+                        } else {
+                            delay -= delta - period
+                        }
+                        lastTimestamp = now
+                        elapsed += delta
+
+                        emitter.next(TimerState(delta, elapsed, duration))
+                    }
+                    elapsed -= duration
+                }
+                emitter.complete()
+            }
+            emitter.onDispose(job::cancel)
+            emitter.onCancel(job::cancel)
         }
     }
 
