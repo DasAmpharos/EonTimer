@@ -17,7 +17,9 @@ import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.application.Application.launch
 import javafx.scene.Parent
 import javafx.stage.Stage
+import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.ComponentScan
@@ -47,18 +49,18 @@ open class AppLauncher : SpringJavaFxApplication() {
 
 suspend fun main(args: Array<String>) {
     // launch(AppLauncher::class.java, *args)
-    val settings = TimerSettingsModel()
-    val calibrationService = CalibrationService(settings)
-    val timer = VariableFrameTimer(settings, calibrationService)
-
-    val latch = CountDownLatch(1)
-    timer.start(5000L, 0L)
-        .doOnComplete(latch::countDown)
-        .doOnNext { println("{ delta: ${it.delta.toMillis()}; elapsed: ${it.elapsed.toMillis()}; duration: ${it.duration.isIndefinite} }") }
-        .subscribe()
-
-    delay(20L.seconds.toMillis())
-    timer.targetFrame = calibrationService.toDelays(45L.seconds.toMillis())
-
-    latch.await()
+//    val settings = TimerSettingsModel()
+//    val calibrationService = CalibrationService(settings)
+//    val timer = VariableFrameTimer(settings, calibrationService)
+//
+//    val latch = CountDownLatch(1)
+//    timer.start(3000L, 0L)
+//        .doOnComplete(latch::countDown)
+//        .doOnNext { println("{ delta: ${it.delta.toMillis()}; elapsed: ${it.elapsed.toMillis()}; duration: ${it.duration.isIndefinite} }") }
+//        .subscribe()
+//
+//    delay(10L.seconds.toMillis())
+//    timer.targetFrame = calibrationService.toDelays(20L.seconds.toMillis())
+//
+//    latch.await()
 }

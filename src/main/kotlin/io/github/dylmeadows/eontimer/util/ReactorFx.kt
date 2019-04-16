@@ -19,9 +19,10 @@ import reactor.util.function.Tuples
 import java.util.stream.Stream
 import kotlin.streams.toList
 
-fun <T> ObservableValue<T>.asFlux(): Flux<T> {
+fun <T> ObservableValue<T>.asFlux(emitCurrentValue: Boolean = true): Flux<T> {
     return Flux.create { emitter ->
-        emitter.next(value)
+        if (emitCurrentValue)
+            emitter.next(value)
         val listener: ChangeListener<T> = ChangeListener { _, _, newValue ->
             emitter.next(newValue)
         }
@@ -161,10 +162,20 @@ class ObservableFluxValue<T> constructor(private val flux: Flux<T>, initialValue
     }
 }
 
-fun <T> Flux<T>.emitTo(sink: FluxSink<T>): Flux<T> {
-    return doOnComplete { sink.complete() }
-        .doOnError { sink.error(it) }
-        .doOnNext { sink.next(it) }
+fun <T> Flux<T>.emitTo(sink: FluxSink<T>, withComplete: Boolean = true): Flux<T> {
+    return if (withComplete) {
+        doOnComplete { sink.complete() }
+            .doOnError { sink.error(it) }
+            .doOnNext { sink.next(it) }
+    } else {
+        doOnError { sink.error(it) }
+            .doOnNext { sink.next(it) }
+    }
+}
+
+fun <T> FluxSink<T>.addDisposable(disposable: Disposable) {
+    this.onDispose(disposable::dispose)
+        .onCancel(disposable::dispose)
 }
 
 object JavaFxScheduler {

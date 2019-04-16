@@ -22,41 +22,15 @@ object FluxFactory {
 
     fun timer(period: Duration, durations: List<Duration>): Flux<TimerState> {
         return if (durations.isNotEmpty()) {
-            return Flux.create(asTimer(period, durations))
+            return Flux.create { emitter ->
+                val job = GlobalScope.launch {
+                    emitter.asTimer(period, durations)
+                }
+                emitter.onDispose(job::cancel)
+                emitter.onCancel(job::cancel)
+            }
         } else {
             Flux.empty()
-        }
-    }
-
-    fun asTimer(period: Duration, durations: List<Duration>): (FluxSink<TimerState>) -> Unit {
-        return { emitter ->
-            val job = GlobalScope.launch {
-                var elapsed = Duration.ZERO
-                durations.forEach { duration ->
-                    var delay = period
-                    var lastTimestamp = Instant.now()
-                    while (elapsed < duration) {
-                        delay(delay.toMillis())
-
-                        val now = Instant.now()
-                        val delta = Duration.between(lastTimestamp, now)
-                        // adjust delay
-                        if ((duration - elapsed) < period) {
-                            delay = duration - elapsed
-                        } else {
-                            delay -= delta - period
-                        }
-                        lastTimestamp = now
-                        elapsed += delta
-
-                        emitter.next(TimerState(delta, elapsed, duration))
-                    }
-                    elapsed -= duration
-                }
-                emitter.complete()
-            }
-            emitter.onDispose(job::cancel)
-            emitter.onCancel(job::cancel)
         }
     }
 
