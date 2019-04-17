@@ -12,25 +12,27 @@ import java.time.Duration
 
 @Service
 class FixedFrameTimer @Autowired constructor(
-    private val calibrationService: CalibrationService,
-    private val timerSettings: TimerSettingsModel) {
+    private val timerSettings: TimerSettingsModel,
+    private val calibrationService: CalibrationService) {
 
     fun createStages(preTimer: Long, targetFrame: Long, calibration: Long): List<Duration> {
         return listOf(
             stage1(preTimer),
             stage2(targetFrame, calibration))
-            .map(Duration::ofMillis)
     }
 
-    private fun stage1(preTimer: Long): Long =
-        preTimer
-
-    private fun stage2(targetFrame: Long, calibration: Long): Long {
-        return calibrationService.toMillis(targetFrame) + calibration
+    fun createTimer(preTimer: Long, targetFrame: Long, calibration: Long): Flux<TimerState> {
+//        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+//            createStages(preTimer, targetFrame, calibration))
+        // TODO: fix this
+        return Flux.empty()
     }
 
-    fun start(preTimer: Long, targetFrame: Long, calibration: Long): Flux<TimerState> {
-        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
-            createStages(preTimer, targetFrame, calibration))
+    private fun stage1(preTimer: Long): Duration =
+        preTimer.milliseconds
+
+    private fun stage2(targetFrame: Long, calibration: Long): Duration {
+        return (calibrationService.toMillis(targetFrame) + calibration)
+            .milliseconds
     }
 }

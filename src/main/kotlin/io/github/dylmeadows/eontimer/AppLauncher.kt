@@ -11,6 +11,8 @@ import io.github.dylmeadows.eontimer.util.addCss
 import io.github.dylmeadows.eontimer.util.asScene
 import io.github.dylmeadows.eontimer.util.isIndefinite
 import io.github.dylmeadows.eontimer.util.load
+import io.github.dylmeadows.eontimer.util.milliseconds
+import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
 import io.github.dylmeadows.eontimer.util.seconds
 import io.github.dylmeadows.eontimer.util.size
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
@@ -49,18 +51,10 @@ open class AppLauncher : SpringJavaFxApplication() {
 
 suspend fun main(args: Array<String>) {
     // launch(AppLauncher::class.java, *args)
-//    val settings = TimerSettingsModel()
-//    val calibrationService = CalibrationService(settings)
-//    val timer = VariableFrameTimer(settings, calibrationService)
-//
-//    val latch = CountDownLatch(1)
-//    timer.start(3000L, 0L)
-//        .doOnComplete(latch::countDown)
-//        .doOnNext { println("{ delta: ${it.delta.toMillis()}; elapsed: ${it.elapsed.toMillis()}; duration: ${it.duration.isIndefinite} }") }
-//        .subscribe()
-//
-//    delay(10L.seconds.toMillis())
-//    timer.targetFrame = calibrationService.toDelays(20L.seconds.toMillis())
-//
-//    latch.await()
+    val state = FluxFactory.fixedTimer(8L.milliseconds, 3L.seconds)
+        .last()
+        .doOnNext { println(it) }
+        .flatMapMany { FluxFactory.fixedTimer(8L.milliseconds, 3L.seconds) }
+        .last().block()
+    println(state)
 }

@@ -11,7 +11,7 @@ class EnhancedEntralinkTimer @Autowired constructor(
 
     fun createStages(targetSecond: Long, targetDelay: Long, targetAdvances: Long,
                      calibration: Long, entralinkCalibration: Long, frameCalibration: Long): List<Duration> {
-        val stages = entralinkTimer.createStages(targetSecond, targetDelay, calibration, entralinkCalibration)
+        val stages = entralinkTimer.createStages(targetDelay, targetSecond, calibration, entralinkCalibration)
         return listOf(
             stage1(stages),
             stage2(stages),

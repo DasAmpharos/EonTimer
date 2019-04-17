@@ -10,8 +10,11 @@ import io.github.dylmeadows.eontimer.service.factory.timer.EnhancedEntralinkTime
 import io.github.dylmeadows.eontimer.service.factory.timer.EntralinkTimer
 import io.github.dylmeadows.eontimer.service.factory.timer.SecondTimer
 import io.github.dylmeadows.eontimer.util.asFlux
+import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
+import java.time.Duration
 import javax.annotation.PostConstruct
 
 @Component
@@ -22,8 +25,7 @@ class Gen5TimerFactory @Autowired constructor(
     private val secondTimer: SecondTimer,
     private val entralinkTimer: EntralinkTimer,
     private val enhancedEntralinkTimer: EnhancedEntralinkTimer,
-    timerSettings: TimerSettingsModel,
-    calibrationService: CalibrationService) : AbstractTimerFactory(timerSettings, calibrationService) {
+    private val calibrationService: CalibrationService) : TimerFactory {
 
     private val delayCalibration: Long
         get() = delayTimer.calibrate(gen5TimerModel.targetDelay, gen5TimerModel.delayHit)
@@ -50,12 +52,12 @@ class Gen5TimerFactory @Autowired constructor(
             .map { it.asFlux() }
             .forEach {
                 it.subscribe {
-                    timerModel.stages = createTimer()
+                    timerModel.stages = stages
                 }
             }
     }
 
-    override fun createTimer(): List<Long> {
+    override val stages: List<Duration> get() {
         return when (gen5TimerModel.mode) {
             Gen5TimerMode.STANDARD ->
                 // TODO: fix this
@@ -91,21 +93,26 @@ class Gen5TimerFactory @Autowired constructor(
         }
     }
 
+    override fun createTimer(): Flux<TimerState> {
+        // TODO: fix this
+        return Flux.empty()
+    }
+
     override fun calibrate() {
         when (gen5TimerModel.mode) {
             Gen5TimerMode.C_GEAR -> {
-                gen5TimerModel.calibration += delayCalibration.calibrate()
+                gen5TimerModel.calibration += calibrationService.calibrate(delayCalibration)
             }
             Gen5TimerMode.STANDARD -> {
-                gen5TimerModel.calibration += secondCalibration.calibrate()
+                gen5TimerModel.calibration += calibrationService.calibrate(secondCalibration)
             }
             Gen5TimerMode.ENTRALINK -> {
-                gen5TimerModel.calibration += secondCalibration.calibrate()
-                gen5TimerModel.entralinkCalibration += entralinkCalibration.calibrate()
+                gen5TimerModel.calibration += calibrationService.calibrate(secondCalibration)
+                gen5TimerModel.entralinkCalibration += calibrationService.calibrate(entralinkCalibration)
             }
             Gen5TimerMode.ENHANCED_ENTRALINK -> {
-                gen5TimerModel.calibration += secondCalibration.calibrate()
-                gen5TimerModel.entralinkCalibration += entralinkCalibration.calibrate()
+                gen5TimerModel.calibration += calibrationService.calibrate(secondCalibration)
+                gen5TimerModel.entralinkCalibration += calibrationService.calibrate(entralinkCalibration)
                 gen5TimerModel.frameCalibration += advancesCalibration
             }
         }

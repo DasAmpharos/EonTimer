@@ -1,23 +1,14 @@
 package io.github.dylmeadows.eontimer.service.factory
 
-import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
-import io.github.dylmeadows.eontimer.service.CalibrationService
+import io.github.dylmeadows.eontimer.util.reactor.TimerState
+import reactor.core.publisher.Flux
+import java.time.Duration
 
 interface TimerFactory {
 
-    fun createTimer(): List<Long>
+    val stages: List<Duration>
+
+    fun createTimer(): Flux<TimerState>
 
     fun calibrate()
-}
-
-abstract class AbstractTimerFactory constructor(
-    private val timerSettings: TimerSettingsModel,
-    private val calibrationService: CalibrationService) : TimerFactory {
-
-    fun Long.calibrate(): Long {
-        return if (!timerSettings.precisionCalibrationMode)
-            calibrationService.toDelays(this)
-        else
-            this
-    }
 }

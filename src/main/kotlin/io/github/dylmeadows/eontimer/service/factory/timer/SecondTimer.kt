@@ -17,7 +17,13 @@ class SecondTimer @Autowired constructor(
     fun createStages(targetSecond: Long, calibration: Long): List<Duration> {
         return listOf(
             stage1(calibration, targetSecond))
-            .map(Duration::ofMillis)
+    }
+
+    fun createTimer(targetSecond: Long, calibration: Long): Flux<TimerState> {
+//        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
+//            createStages(targetSecond, calibration))
+        // TODO: fix this
+        return Flux.empty()
     }
 
     fun calibrate(targetSecond: Long, secondHit: Long): Long {
@@ -28,12 +34,8 @@ class SecondTimer @Autowired constructor(
         }
     }
 
-    private fun stage1(calibration: Long, targetSecond: Long): Long {
+    private fun stage1(calibration: Long, targetSecond: Long): Duration {
         return (targetSecond * 1000 + calibration + 200).normalize()
-    }
-
-    fun start(targetSecond: Long, calibration: Long): Flux<TimerState> {
-        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
-            createStages(targetSecond, calibration))
+            .milliseconds
     }
 }

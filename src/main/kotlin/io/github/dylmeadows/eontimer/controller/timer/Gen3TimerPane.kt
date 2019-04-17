@@ -19,8 +19,7 @@ import org.springframework.stereotype.Component
 class Gen3TimerPane @Autowired constructor(
     private val state: TimerState,
     private val model: Gen3TimerModel,
-    private val factory: Gen3TimerFactory,
-    private val variableFrameTimer: VariableFrameTimer) : TimerController {
+    private val factory: Gen3TimerFactory) : TimerController {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen3TimerMode>
@@ -74,12 +73,12 @@ class Gen3TimerPane @Autowired constructor(
     }
 
     override fun start() {
-        factory.start()
-            .subscribeOn(JavaFxScheduler.platform())
-            .publishOn(JavaFxScheduler.platform())
-            .subscribe {
-                state.remaining = it.remaining.toMillis()
-            }
+//        factory.start()
+//            .subscribeOn(JavaFxScheduler.platform())
+//            .publishOn(JavaFxScheduler.platform())
+//            .subscribe {
+//                state.remaining = it.remaining.toMillis()
+//            }
     }
 
     override fun stop() {
