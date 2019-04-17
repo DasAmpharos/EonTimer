@@ -2,7 +2,7 @@ package io.github.dylmeadows.eontimer.service.factory.timer
 
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.normalize
+import io.github.dylmeadows.eontimer.util.toMinimumLength
 import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
 import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +17,11 @@ class SecondTimer @Autowired constructor(
     fun createStages(targetSecond: Long, calibration: Long): List<Duration> {
         return listOf(
             stage1(calibration, targetSecond))
-            .map(Duration::ofMillis)
+    }
+
+    fun createTimer(targetSecond: Long, calibration: Long): Flux<TimerState> {
+        return FluxFactory.fixedTimer(timerSettings.refreshInterval.milliseconds,
+            createStages(targetSecond, calibration))
     }
 
     fun calibrate(targetSecond: Long, secondHit: Long): Long {
@@ -28,12 +32,8 @@ class SecondTimer @Autowired constructor(
         }
     }
 
-    private fun stage1(calibration: Long, targetSecond: Long): Long {
-        return (targetSecond * 1000 + calibration + 200).normalize()
-    }
-
-    fun start(targetSecond: Long, calibration: Long): Flux<TimerState> {
-        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
-            createStages(targetSecond, calibration))
+    private fun stage1(calibration: Long, targetSecond: Long): Duration {
+        return (targetSecond * 1000 + calibration + 200).toMinimumLength()
+            .milliseconds
     }
 }

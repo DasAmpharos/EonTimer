@@ -1,30 +1,40 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
+import io.github.dylmeadows.eontimer.util.milliseconds
+import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
+import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import java.time.Duration
 
 @Service
 class EntralinkTimer @Autowired constructor(
-    private val delayTimer: DelayTimer) {
+    private val delayTimer: DelayTimer,
+    private val timerSettings: TimerSettingsModel) {
 
-    fun createStages(targetDelay: Long, targetSecond: Long, entralinkCalibration: Long, calibration: Long): List<Duration> {
-        val stages = delayTimer.createStages(targetDelay, targetSecond, calibration)
+    fun createStages(targetSecond: Long, targetDelay: Long, entralinkCalibration: Long, calibration: Long): List<Duration> {
+        val stages = delayTimer.createStages(targetSecond, targetDelay, calibration)
         return listOf(
             stage1(stages),
             stage2(stages, entralinkCalibration))
-            .map(Duration::ofMillis)
+    }
+
+    fun createTimer(targetSecond: Long, targetDelay: Long, entralinkCalibration: Long, calibration: Long): Flux<TimerState> {
+        return FluxFactory.fixedTimer(timerSettings.refreshInterval.milliseconds,
+            createStages(targetSecond, targetDelay, entralinkCalibration, calibration))
     }
 
     fun calibrate(targetDelay: Long, delayHit: Long): Long {
         return delayTimer.calibrate(targetDelay, delayHit)
     }
 
-    private fun stage1(stages: List<Duration>): Long {
-        return stages[0].toMillis() + 250
+    private fun stage1(stages: List<Duration>): Duration {
+        return stages[0] + 250L.milliseconds
     }
 
-    private fun stage2(stages: List<Duration>, entralinkCalibration: Long): Long {
-        return stages[1].toMillis() - entralinkCalibration
+    private fun stage2(stages: List<Duration>, entralinkCalibration: Long): Duration {
+        return stages[1] - entralinkCalibration.milliseconds
     }
 }

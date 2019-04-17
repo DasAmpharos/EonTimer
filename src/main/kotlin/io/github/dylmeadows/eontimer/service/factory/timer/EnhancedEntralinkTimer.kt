@@ -1,22 +1,35 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerConstants
+import io.github.dylmeadows.eontimer.util.milliseconds
+import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
+import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import java.time.Duration
 
 @Service
 class EnhancedEntralinkTimer @Autowired constructor(
-    private val entralinkTimer: EntralinkTimer) {
+    private val entralinkTimer: EntralinkTimer,
+    private val timerSettings: TimerSettingsModel) {
 
     fun createStages(targetSecond: Long, targetDelay: Long, targetAdvances: Long,
                      calibration: Long, entralinkCalibration: Long, frameCalibration: Long): List<Duration> {
-        val stages = entralinkTimer.createStages(targetSecond, targetDelay, calibration, entralinkCalibration)
+        val stages = entralinkTimer.createStages(targetDelay, targetSecond, calibration, entralinkCalibration)
         return listOf(
             stage1(stages),
             stage2(stages),
             stage3(targetAdvances, frameCalibration))
             .map(Duration::ofMillis)
+    }
+
+    fun createTimer(targetSecond: Long, targetDelay: Long, targetAdvances: Long,
+                    calibration: Long, entralinkCalibration: Long, frameCalibration: Long): Flux<TimerState> {
+        return FluxFactory.fixedTimer(timerSettings.refreshInterval.milliseconds,
+            createStages(targetSecond, targetDelay, targetAdvances,
+                calibration, entralinkCalibration, frameCalibration))
     }
 
     fun calibrate(targetAdvances: Long, actualAdvances: Long): Long {
