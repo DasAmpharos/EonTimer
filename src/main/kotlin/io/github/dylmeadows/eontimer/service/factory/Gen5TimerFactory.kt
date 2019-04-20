@@ -1,7 +1,6 @@
 package io.github.dylmeadows.eontimer.service.factory
 
 import io.github.dylmeadows.eontimer.model.TimerModel
-import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
 import io.github.dylmeadows.eontimer.service.CalibrationService
@@ -57,45 +56,61 @@ class Gen5TimerFactory @Autowired constructor(
             }
     }
 
-    override val stages: List<Duration> get() {
-        return when (gen5TimerModel.mode) {
-            Gen5TimerMode.STANDARD ->
-                // TODO: fix this
-                // secondTimer.createStages(
-                //    gen5TimerModel.calibration.calibrate(),
-                //    gen5TimerModel.targetSecond)
-                emptyList()
-            Gen5TimerMode.C_GEAR ->
-                // TODO: fix this
-                // delayTimer.createStages(
-                //    gen5TimerModel.calibration.calibrate(),
-                //    gen5TimerModel.targetSecond,
-                //    gen5TimerModel.targetDelay)
-                emptyList()
-            Gen5TimerMode.ENTRALINK ->
-                // TODO: fix this
-                // entralinkTimer.createStages(
-                //    gen5TimerModel.calibration.calibrate(),
-                //    gen5TimerModel.entralinkCalibration.calibrate(),
-                //    gen5TimerModel.targetSecond,
-                //    gen5TimerModel.targetDelay)
-                emptyList()
-            Gen5TimerMode.ENHANCED_ENTRALINK ->
-                // TODO: fix this
-                // enhancedEntralinkTimer.createStages(
-                //    gen5TimerModel.calibration.calibrate(),
-                //    gen5TimerModel.entralinkCalibration.calibrate(),
-                //    gen5TimerModel.frameCalibration,
-                //    gen5TimerModel.targetSecond,
-                //    gen5TimerModel.targetDelay,
-                //    gen5TimerModel.targetAdvances)
-                emptyList()
+    override val stages: List<Duration>
+        get() {
+            return when (gen5TimerModel.mode) {
+                Gen5TimerMode.STANDARD ->
+                    secondTimer.createStages(
+                        calibrationService.calibrate(gen5TimerModel.calibration),
+                        gen5TimerModel.targetSecond)
+                Gen5TimerMode.C_GEAR ->
+                    delayTimer.createStages(
+                        calibrationService.calibrate(gen5TimerModel.calibration),
+                        gen5TimerModel.targetSecond,
+                        gen5TimerModel.targetDelay)
+                Gen5TimerMode.ENTRALINK ->
+                    entralinkTimer.createStages(
+                        calibrationService.calibrate(gen5TimerModel.calibration),
+                        calibrationService.calibrate(gen5TimerModel.entralinkCalibration),
+                        gen5TimerModel.targetSecond,
+                        gen5TimerModel.targetDelay)
+                Gen5TimerMode.ENHANCED_ENTRALINK ->
+                    enhancedEntralinkTimer.createStages(
+                        calibrationService.calibrate(gen5TimerModel.calibration),
+                        calibrationService.calibrate(gen5TimerModel.entralinkCalibration),
+                        gen5TimerModel.frameCalibration,
+                        gen5TimerModel.targetSecond,
+                        gen5TimerModel.targetDelay,
+                        gen5TimerModel.targetAdvances)
+            }
         }
-    }
 
     override fun createTimer(): Flux<TimerState> {
-        // TODO: fix this
-        return Flux.empty()
+        return when (gen5TimerModel.mode) {
+            Gen5TimerMode.STANDARD ->
+                secondTimer.createTimer(
+                    calibrationService.calibrate(gen5TimerModel.calibration),
+                    gen5TimerModel.targetSecond)
+            Gen5TimerMode.C_GEAR ->
+                delayTimer.createTimer(
+                    calibrationService.calibrate(gen5TimerModel.calibration),
+                    gen5TimerModel.targetSecond,
+                    gen5TimerModel.targetDelay)
+            Gen5TimerMode.ENTRALINK ->
+                entralinkTimer.createTimer(
+                    calibrationService.calibrate(gen5TimerModel.calibration),
+                    calibrationService.calibrate(gen5TimerModel.entralinkCalibration),
+                    gen5TimerModel.targetSecond,
+                    gen5TimerModel.targetDelay)
+            Gen5TimerMode.ENHANCED_ENTRALINK ->
+                enhancedEntralinkTimer.createTimer(
+                    calibrationService.calibrate(gen5TimerModel.calibration),
+                    calibrationService.calibrate(gen5TimerModel.entralinkCalibration),
+                    gen5TimerModel.frameCalibration,
+                    gen5TimerModel.targetSecond,
+                    gen5TimerModel.targetDelay,
+                    gen5TimerModel.targetAdvances)
+        }
     }
 
     override fun calibrate() {

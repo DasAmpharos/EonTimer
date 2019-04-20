@@ -1,16 +1,18 @@
 package io.github.dylmeadows.eontimer.service
 
+import io.github.dylmeadows.eontimer.util.INDEFINITE
+import io.github.dylmeadows.eontimer.util.reactor.TimerTick
 import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.Instant
 
 object Timers {
 
-    suspend fun fixedTimer(period: Duration, duration: Duration, onTick: (Duration) -> Unit): Duration {
+    suspend fun fixedTimer(period: Duration, duration: Duration, onTick: (TimerTick) -> Unit): Duration {
         return fixedTimer(period, duration, Duration.ZERO, onTick)
     }
 
-    suspend fun fixedTimer(period: Duration, duration: Duration, preElapsed: Duration, onTick: (Duration) -> Unit): Duration {
+    suspend fun fixedTimer(period: Duration, duration: Duration, preElapsed: Duration, onTick: (TimerTick) -> Unit): Duration {
         var elapsed = preElapsed
         var adjustedDelay = period
         var lastTimestamp = Instant.now()
@@ -26,12 +28,13 @@ object Timers {
             }
             lastTimestamp = now
             elapsed += delta
-            onTick(elapsed)
+
+            onTick(TimerTick(delta, elapsed, duration))
         }
         return elapsed
     }
 
-    suspend fun variableTimer(period: Duration, preElapsed: Duration, onTick: (Duration) -> Unit, takeUntil: (Duration) -> Boolean): Duration {
+    suspend fun variableTimer(period: Duration, preElapsed: Duration, onTick: (TimerTick) -> Unit, takeUntil: (Duration) -> Boolean): Duration {
         var elapsed = preElapsed
         var adjustedDelay = period
         var lastTimestamp = Instant.now()
@@ -43,7 +46,8 @@ object Timers {
             adjustedDelay -= delta - period
             lastTimestamp = now
             elapsed += delta
-            onTick(elapsed)
+
+            onTick(TimerTick(delta, elapsed, INDEFINITE))
         }
         return elapsed
     }

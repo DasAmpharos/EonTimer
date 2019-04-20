@@ -22,10 +22,8 @@ class FixedFrameTimer @Autowired constructor(
     }
 
     fun createTimer(preTimer: Long, targetFrame: Long, calibration: Long): Flux<TimerState> {
-//        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
-//            createStages(preTimer, targetFrame, calibration))
-        // TODO: fix this
-        return Flux.empty()
+        return FluxFactory.fixedTimer(timerSettings.refreshInterval.milliseconds,
+            createStages(preTimer, targetFrame, calibration))
     }
 
     private fun stage1(preTimer: Long): Duration =

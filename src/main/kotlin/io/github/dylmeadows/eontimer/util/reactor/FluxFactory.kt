@@ -1,27 +1,22 @@
 package io.github.dylmeadows.eontimer.util.reactor
 
 import io.github.dylmeadows.eontimer.service.Timers
-import io.github.dylmeadows.eontimer.util.INDEFINITE
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import reactor.core.publisher.Flux
-import reactor.core.publisher.FluxSink
 import java.time.Duration
-import java.time.Instant
-import java.util.*
 
 object FluxFactory {
 
-    fun fixedTimer(period: Duration, duration: Duration): Flux<TimerState> {
+    fun fixedTimer(period: Duration, duration: Duration): Flux<TimerTick> {
         return fixedTimer(period, duration, Duration.ZERO)
     }
 
-    fun fixedTimer(period: Duration, duration: Duration, preElapsed: Duration): Flux<TimerState> {
+    fun fixedTimer(period: Duration, duration: Duration, preElapsed: Duration): Flux<TimerTick> {
         return Flux.create { emitter ->
             val job = GlobalScope.launch {
-                Timers.fixedTimer(period, duration, preElapsed) {
-                    emitter.next(TimerState(it, duration))
+                Timers.fixedTimer(period, duration, preElapsed) { tick ->
+                    emitter.next(tick)
                 }
                 emitter.complete()
             }
@@ -30,11 +25,27 @@ object FluxFactory {
         }
     }
 
-    fun variableTimer(period: Duration, preElapsed: Duration, takeUntil: (Duration) -> Boolean): Flux<TimerState> {
+    fun fixedTimer(period: Duration, durations: List<Duration>): Flux<TimerTick> {
+        return Flux.create { emitter ->
+            val job = GlobalScope.launch {
+                var preElapsed = Duration.ZERO
+                durations.forEach { duration ->
+                    preElapsed = Timers.fixedTimer(period, duration, preElapsed) { tick ->
+                        emitter.next(tick)
+                    }
+                }
+                emitter.complete()
+            }
+            emitter.onDispose(job::cancel)
+            emitter.onCancel(job::cancel)
+        }
+    }
+
+    fun variableTimer(period: Duration, preElapsed: Duration, takeUntil: (Duration) -> Boolean): Flux<TimerTick> {
         return Flux.create { emitter ->
             val job = GlobalScope.launch {
                 Timers.variableTimer(period, preElapsed,
-                    { emitter.next(TimerState(it, INDEFINITE)) },
+                    { emitter.next(it) },
                     takeUntil)
                 emitter.complete()
             }

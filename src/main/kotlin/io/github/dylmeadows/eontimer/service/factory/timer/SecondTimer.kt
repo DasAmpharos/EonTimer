@@ -2,7 +2,7 @@ package io.github.dylmeadows.eontimer.service.factory.timer
 
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.normalize
+import io.github.dylmeadows.eontimer.util.toMinimumLength
 import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
 import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,10 +20,8 @@ class SecondTimer @Autowired constructor(
     }
 
     fun createTimer(targetSecond: Long, calibration: Long): Flux<TimerState> {
-//        return FluxFactory.timer(timerSettings.refreshInterval.milliseconds,
-//            createStages(targetSecond, calibration))
-        // TODO: fix this
-        return Flux.empty()
+        return FluxFactory.fixedTimer(timerSettings.refreshInterval.milliseconds,
+            createStages(targetSecond, calibration))
     }
 
     fun calibrate(targetSecond: Long, secondHit: Long): Long {
@@ -35,7 +33,7 @@ class SecondTimer @Autowired constructor(
     }
 
     private fun stage1(calibration: Long, targetSecond: Long): Duration {
-        return (targetSecond * 1000 + calibration + 200).normalize()
+        return (targetSecond * 1000 + calibration + 200).toMinimumLength()
             .milliseconds
     }
 }

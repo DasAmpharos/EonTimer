@@ -1,6 +1,8 @@
 package io.github.dylmeadows.eontimer.service.factory.timer
 
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.util.milliseconds
+import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
 import io.github.dylmeadows.eontimer.util.reactor.TimerState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -9,7 +11,8 @@ import java.time.Duration
 
 @Service
 class EntralinkTimer @Autowired constructor(
-    private val delayTimer: DelayTimer) {
+    private val delayTimer: DelayTimer,
+    private val timerSettings: TimerSettingsModel) {
 
     fun createStages(targetSecond: Long, targetDelay: Long, entralinkCalibration: Long, calibration: Long): List<Duration> {
         val stages = delayTimer.createStages(targetSecond, targetDelay, calibration)
@@ -19,8 +22,8 @@ class EntralinkTimer @Autowired constructor(
     }
 
     fun createTimer(targetSecond: Long, targetDelay: Long, entralinkCalibration: Long, calibration: Long): Flux<TimerState> {
-        // TODO: fix this
-        return Flux.empty()
+        return FluxFactory.fixedTimer(timerSettings.refreshInterval.milliseconds,
+            createStages(targetSecond, targetDelay, entralinkCalibration, calibration))
     }
 
     fun calibrate(targetDelay: Long, delayHit: Long): Long {
