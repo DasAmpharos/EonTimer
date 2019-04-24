@@ -6,4 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class AppProperties {
     lateinit var name: String
     lateinit var version: String
+
+    val fullApplicationName: String get() = "$name v$version"
 }

@@ -6,7 +6,6 @@ import javafx.beans.property.BooleanProperty
 import javafx.beans.property.LongProperty
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 

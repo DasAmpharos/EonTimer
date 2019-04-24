@@ -2,28 +2,30 @@ package io.github.dylmeadows.eontimer.controller.timer
 
 import de.jensd.fx.glyphs.GlyphsDude
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import io.github.dylmeadows.eontimer.model.TimerStage
+import io.github.dylmeadows.eontimer.model.Stage
 import io.github.dylmeadows.eontimer.model.timer.CustomTimerModel
-import io.github.dylmeadows.eontimer.util.TimerStageStringConverter
-import io.github.dylmeadows.eontimer.util.javafx.asLongField
+import io.github.dylmeadows.eontimer.util.LongValueFactory
+import io.github.dylmeadows.eontimer.util.StageStringConverter
+import io.github.dylmeadows.eontimer.util.text
+import io.github.dylmeadows.eontimer.util.textProperty
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.ListView
 import javafx.scene.control.SelectionMode
-import javafx.scene.control.TextField
+import javafx.scene.control.Spinner
 import javafx.scene.control.cell.TextFieldListCell
 import javafx.scene.input.KeyCode
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class CustomTimerPaneController @Autowired constructor(
+class CustomTimerPane @Autowired constructor(
     private val model: CustomTimerModel) {
 
     @FXML
-    private lateinit var list: ListView<TimerStage>
+    private lateinit var list: ListView<Stage>
     @FXML
-    private lateinit var valueField: TextField
+    private lateinit var valueField: Spinner<Long>
     @FXML
     private lateinit var valueAddBtn: Button
     @FXML
@@ -36,21 +38,21 @@ class CustomTimerPaneController @Autowired constructor(
     fun initialize() {
         list.items = model.stages
         list.selectionModel.selectionMode = SelectionMode.MULTIPLE
-        list.cellFactory = TextFieldListCell.forListView(TimerStageStringConverter())
+        list.cellFactory = TextFieldListCell.forListView(StageStringConverter())
 
-        val valueLongField = valueField.asLongField()
+        valueField.valueFactory = LongValueFactory(0L)
         valueField.setOnKeyPressed {
             if (it.code == KeyCode.ENTER) {
-                model.stages.add(TimerStage(valueLongField.value))
+                model.stages.add(Stage(valueField.value))
                 valueField.text = ""
             }
         }
         valueField.text = ""
 
         valueAddBtn.graphic = GlyphsDude.createIcon(FontAwesomeIcon.PLUS)
-        valueAddBtn.disableProperty().bind(valueField.textProperty().isEmpty)
+        valueAddBtn.disableProperty().bind(valueField.textProperty.isEmpty)
         valueAddBtn.setOnAction {
-            model.stages.add(TimerStage(valueLongField.value))
+            model.stages.add(Stage(valueField.value))
             valueField.text = ""
         }
 

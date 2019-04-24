@@ -13,20 +13,27 @@ import javafx.util.StringConverter
 import java.util.*
 
 class LongField
-constructor(val textField: TextField,
-            val valueProperty: LongProperty) {
+constructor(textField: TextField,
+            val valueProperty: LongProperty,
+            val minProperty: LongProperty,
+            val maxProperty: LongProperty) {
 
     val textProperty: StringProperty = textField.textProperty()
     var text: String by textProperty
 
     var value: Long by valueProperty
+    var min: Long by minProperty
+    var max: Long by maxProperty
 }
 
-fun TextField.asLongField(): LongField {
-    textFormatter = TextFormatter<Int>(::validate)
+fun TextField.asLongField(min: Long = Long.MIN_VALUE,
+                          max: Long = Long.MAX_VALUE): LongField {
+    val minProperty = SimpleLongProperty(min)
+    val maxProperty = SimpleLongProperty(max)
+    textFormatter = TextFormatter<Long>(validate(minProperty, maxProperty))
     val valueProperty = SimpleLongProperty()
     BidirectionalBinding.bind(textProperty(), valueProperty, LongFieldStringConverter(valueProperty))
-    return LongField(this, valueProperty)
+    return LongField(this, valueProperty, minProperty, maxProperty)
 }
 
 private class LongFieldStringConverter
@@ -43,7 +50,11 @@ constructor(private val valueProperty: LongProperty) : StringConverter<Number>()
 }
 
 private val LONG_REGEX = Regex("^-?\\d*$")
-
-private fun validate(change: TextFormatter.Change): TextFormatter.Change? {
-    return if (change.controlNewText.matches(LONG_REGEX)) change else null
+private fun validate(min: LongProperty, max: LongProperty): (TextFormatter.Change) -> TextFormatter.Change? {
+    return { change ->
+        if (change.controlNewText.matches(LONG_REGEX))
+            change
+        else
+            null
+    }
 }

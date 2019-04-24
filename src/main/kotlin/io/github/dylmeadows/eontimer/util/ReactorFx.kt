@@ -118,14 +118,14 @@ fun <T1, T2, T3, T4, R> anyChangesOf(property1: ObservableValue<T1>,
     }
 }
 
-fun <T> Flux<T>.asObservableValue(initialValue: T): ObservableFluxValue<T> {
-    return ObservableFluxValue(this, initialValue)
+fun <T> Flux<T>.asObservableValue(): ObservableFluxValue<T> {
+    return ObservableFluxValue(this)
 }
 
-class ObservableFluxValue<T> constructor(private val flux: Flux<T>, initialValue: T) : ObservableValue<T> {
+class ObservableFluxValue<T> constructor(private val flux: Flux<T>) : ObservableValue<T> {
 
     private var disposable: Disposable
-    private val property = SimpleObjectProperty(initialValue)
+    private val property = SimpleObjectProperty<T>(this, "ObservableFlux")
 
     init {
         disposable = flux.subscribe(property::set)

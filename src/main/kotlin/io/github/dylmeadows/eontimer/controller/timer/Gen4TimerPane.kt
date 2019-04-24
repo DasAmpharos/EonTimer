@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class Gen4TimerPaneController @Autowired constructor(
+class Gen4TimerPane @Autowired constructor(
     private val model: Gen4TimerModel) {
 
     @FXML
@@ -30,14 +30,19 @@ class Gen4TimerPaneController @Autowired constructor(
     fun initialize() {
         modeField.asChoiceField().valueProperty
             .bindBidirectional(model.modeProperty)
+
         calibratedDelayField.asLongField().valueProperty
             .bindBidirectional(model.calibratedDelayProperty)
+
         calibratedSecondField.asLongField().valueProperty
             .bindBidirectional(model.calibratedSecondProperty)
+
         targetDelayField.asLongField().valueProperty
             .bindBidirectional(model.targetDelayProperty)
+
         targetSecondField.asLongField().valueProperty
             .bindBidirectional(model.targetSecondProperty)
+
         delayHitField.asLongField().valueProperty
             .bindBidirectional(model.delayHitProperty)
         delayHitField.text = ""

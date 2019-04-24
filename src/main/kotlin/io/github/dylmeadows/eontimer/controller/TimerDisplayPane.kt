@@ -3,15 +3,18 @@ package io.github.dylmeadows.eontimer.controller
 import io.github.dylmeadows.common.javafx.scene.paint.Colors
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.model.timer.TimerConstants
 import io.github.dylmeadows.eontimer.service.action.TimerActionService
+import io.github.dylmeadows.eontimer.util.INDEFINITE
 import io.github.dylmeadows.eontimer.util.JavaFxScheduler
+import io.github.dylmeadows.eontimer.util.anyChangesOf
 import io.github.dylmeadows.eontimer.util.asFlux
 import io.github.dylmeadows.eontimer.util.isActive
+import io.github.dylmeadows.eontimer.util.toSeconds
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.time.Duration
 
 @Component
 class TimerDisplayPane @Autowired constructor(
@@ -29,21 +32,22 @@ class TimerDisplayPane @Autowired constructor(
     fun initialize() {
         timerState.currentStageProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .map(Number::toLong)
             .map(this::formatTime)
             .subscribe(currentStageLbl::setText)
-        timerState.remainingProperty.asFlux()
+        timerState.currentRemainingProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .map(Number::toLong)
             .map(this::formatTime)
             .subscribe(currentStageLbl::setText)
-        timerState.minutesBeforeTargetProperty.asFlux()
+        anyChangesOf(
+            timerState.totalTimeProperty,
+            timerState.totalElapsedProperty)
             .subscribeOn(JavaFxScheduler.platform())
-            .map(Number::toString)
-            .subscribe(minutesBeforeTargetLbl::setText)
+            .subscribe {
+                minutesBeforeTargetLbl.text =
+                    formatMinutesBeforeTarget(it.t1, it.t2)
+            }
         timerState.nextStageProperty.asFlux()
             .subscribeOn(JavaFxScheduler.platform())
-            .map(Number::toLong)
             .map(this::formatTime)
             .subscribe(nextStageLbl::setText)
         timerActionService.activeProperty.asFlux()
@@ -51,15 +55,27 @@ class TimerDisplayPane @Autowired constructor(
 
         actionSettingsModel.colorProperty.asFlux()
             .map { Colors.toHex(it) }
-            .map { "-theme-active: $it"}
+            .map { "-theme-active: $it" }
             .subscribe(currentStageLbl::setStyle)
     }
 
-    private fun formatTime(duration: Long): String {
+    private fun formatMinutesBeforeTarget(totalTime: Duration, totalElapsed: Duration): String {
+        return when (totalTime) {
+            INDEFINITE -> "?"
+            else -> {
+                val remaining = totalTime - totalElapsed
+                remaining.toMinutes().toString()
+            }
+        }
+    }
+
+    private fun formatTime(duration: Duration): String {
         return when (duration) {
-            TimerConstants.NULL_TIME_SPAN -> "0:00"
-            TimerConstants.INFINITE_TIME_SPAN -> "?:??"
-            else -> String.format("%d:%02d", duration / 1000, duration / 10 % 100)
+            INDEFINITE -> "?:??"
+            else -> String.format("%d:%02d",
+                duration.toSeconds(),
+                duration.toMillis()
+                    / 10 % 100)
         }
     }
 }

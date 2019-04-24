@@ -7,12 +7,9 @@ import io.github.dylmeadows.eontimer.util.Dimension
 import io.github.dylmeadows.eontimer.util.addCss
 import io.github.dylmeadows.eontimer.util.asScene
 import io.github.dylmeadows.eontimer.util.load
-import io.github.dylmeadows.eontimer.util.milliseconds
-import io.github.dylmeadows.eontimer.util.reactor.FluxFactory
-import io.github.dylmeadows.eontimer.util.reactor.changesOf
-import io.github.dylmeadows.eontimer.util.seconds
 import io.github.dylmeadows.eontimer.util.size
 import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
+import javafx.application.Application.launch
 import javafx.scene.Parent
 import javafx.stage.Stage
 import org.slf4j.LoggerFactory
@@ -31,8 +28,7 @@ open class AppLauncher : SpringJavaFxApplication() {
     }
 
     override fun start(stage: Stage) {
-        val properties = getBean(AppProperties::class.java)
-        stage.title = "${properties.name} v${properties.version}"
+        stage.title = getBean(AppProperties::class.java).fullApplicationName
         stage.scene = load<Parent>(FxmlResource.EonTimerPane).asScene()
         stage.size = Dimension(610.0, 470.0)
         stage.scene.addCss(CssResource.MAIN)
@@ -42,9 +38,5 @@ open class AppLauncher : SpringJavaFxApplication() {
 }
 
 fun main(args: Array<String>) {
-    // launch(AppLauncher::class.java, *args)
-    FluxFactory.fixedTimer(8L.milliseconds, listOf(3L.seconds, 3L.seconds))
-        .changesOf()
-        .doOnNext { println(it) }
-        .blockLast()
+    launch(AppLauncher::class.java, *args)
 }

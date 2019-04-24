@@ -14,7 +14,7 @@ import java.util.*
 import java.util.regex.Pattern
 
 class IntField
-constructor(val textField: TextField,
+constructor(textField: TextField,
             val valueProperty: IntegerProperty) {
 
     val textProperty: StringProperty = textField.textProperty()

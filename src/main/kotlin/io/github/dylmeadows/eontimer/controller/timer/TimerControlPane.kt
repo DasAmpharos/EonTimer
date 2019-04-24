@@ -3,8 +3,7 @@ package io.github.dylmeadows.eontimer.controller.timer
 import io.github.dylmeadows.eontimer.model.ApplicationModel
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.TimerType
-import io.github.dylmeadows.eontimer.service.CountdownTimer
-import io.github.dylmeadows.eontimer.service.factory.timer.VariableFrameTimer
+import io.github.dylmeadows.eontimer.service.TimerRunnerService
 import io.github.dylmeadows.eontimer.service.factory.TimerFactoryService
 import io.github.dylmeadows.eontimer.util.asFlux
 import javafx.fxml.FXML
@@ -15,16 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class TimerControlPaneController @Autowired constructor(
+class TimerControlPane @Autowired constructor(
     private val model: ApplicationModel,
     private val timerState: TimerState,
-    private val countdownTimer: CountdownTimer,
-    private val variableFrameTimer: VariableFrameTimer,
-    private val timerFactoryService: TimerFactoryService,
+    private val timerRunner: TimerRunnerService,
+    private val timerFactory: TimerFactoryService,
     private val gen3: Gen3TimerPane,
-    private val gen4Controller: Gen4TimerPaneController,
-    private val gen5Controller: Gen5TimerPaneController,
-    private val customController: CustomTimerPaneController) {
+    private val gen4: Gen4TimerPane,
+    private val gen5: Gen5TimerPane,
+    private val custom: CustomTimerPane) {
 
     @FXML
     private lateinit var gen3Tab: Tab
@@ -54,14 +52,14 @@ class TimerControlPaneController @Autowired constructor(
             .subscribe { timerBtn.text = it }
         timerBtn.setOnAction {
             if (!timerState.running) {
-                gen3.start()
+                timerRunner.start(timerFactory.stages)
             } else {
-                gen3.stop()
+                timerRunner.stop()
             }
         }
 
         updateBtn.setOnAction {
-            timerFactoryService.calibrate()
+            timerFactory.calibrate()
         }
     }
 

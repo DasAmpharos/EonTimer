@@ -3,7 +3,6 @@ package io.github.dylmeadows.eontimer.model.timer
 import io.github.dylmeadows.eontimer.util.getValue
 import io.github.dylmeadows.eontimer.util.setValue
 import javafx.beans.property.LongProperty
-import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 
