@@ -3,6 +3,7 @@ package io.github.dylmeadows.eontimer
 import io.github.dylmeadows.eontimer.config.AppProperties
 import io.github.dylmeadows.eontimer.model.resource.CssResource
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
+import io.github.dylmeadows.eontimer.model.resource.SoundResource
 import io.github.dylmeadows.eontimer.util.Dimension
 import io.github.dylmeadows.eontimer.util.addCss
 import io.github.dylmeadows.eontimer.util.asScene
@@ -12,9 +13,14 @@ import io.github.dylmeadows.springboot.javafx.SpringJavaFxApplication
 import javafx.application.Application.launch
 import javafx.scene.Parent
 import javafx.stage.Stage
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.ComponentScan
+import java.io.BufferedInputStream
+import javax.sound.sampled.AudioSystem
 
 @SpringBootApplication
 @ComponentScan(value = ["io.github.dylmeadows.*"])

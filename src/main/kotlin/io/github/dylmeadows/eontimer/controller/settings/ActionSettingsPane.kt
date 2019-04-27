@@ -1,21 +1,18 @@
 package io.github.dylmeadows.eontimer.controller.settings
 
-import io.github.dylmeadows.common.javafx.util.ChoiceConverter
 import io.github.dylmeadows.eontimer.model.resource.SoundResource
 import io.github.dylmeadows.eontimer.model.settings.ActionMode
 import io.github.dylmeadows.eontimer.model.settings.ActionSettingsModel
-import io.github.dylmeadows.eontimer.util.IntValueFactory
-import io.github.dylmeadows.eontimer.util.LongValueFactory
 import io.github.dylmeadows.eontimer.util.bindBidirectional
 import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
-import io.github.dylmeadows.eontimer.util.javafx.asIntField
-import io.github.dylmeadows.eontimer.util.valueProperty
-import javafx.collections.FXCollections
+import io.github.dylmeadows.eontimer.util.javafx.spinner.IntValueFactory
+import io.github.dylmeadows.eontimer.util.javafx.spinner.commitValue
+import io.github.dylmeadows.eontimer.util.javafx.spinner.setOnFocusLost
+import io.github.dylmeadows.eontimer.util.javafx.spinner.valueProperty
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.ColorPicker
 import javafx.scene.control.Spinner
-import javafx.scene.control.TextField
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -43,8 +40,10 @@ class ActionSettingsPane @Autowired constructor(
 
         intervalField.valueFactory = IntValueFactory(0, 1000)
         intervalField.valueProperty!!.bindBidirectional(model.intervalProperty)
+        intervalField.setOnFocusLost(intervalField::commitValue)
 
         countField.valueFactory = IntValueFactory(0, 50)
         countField.valueProperty!!.bindBidirectional(model.countProperty)
+        countField.setOnFocusLost(countField::commitValue)
     }
 }

@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -44,7 +44,7 @@
             </rowConstraints>
             <children>
                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Calibration" />
-                   <TextField fx:id="calibrationField" GridPane.columnIndex="1" />
+               <Spinner fx:id="calibrationField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
             </children>
          </GridPane>
          <GridPane hgap="10.0" vgap="10.0">
@@ -57,7 +57,7 @@
             </rowConstraints>
             <children>
                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Pre-Timer" />
-                   <TextField fx:id="preTimerField" GridPane.columnIndex="1" />
+               <Spinner fx:id="preTimerField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
             </children>
          </GridPane>
          <GridPane hgap="10.0" vgap="10.0">
@@ -70,7 +70,7 @@
             </rowConstraints>
             <children>
                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="117.0" text="Target Frame" />
-                   <TextField fx:id="targetFrameField" GridPane.columnIndex="1" />
+               <Spinner fx:id="targetFrameField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
             </children>
          </GridPane>
          <Button fx:id="setTargetFrameBtn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Set Target Frame" />
@@ -85,7 +85,7 @@
          </rowConstraints>
          <children>
                <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="97.0" text="Frame Hit" />
-               <TextField fx:id="frameHitField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+            <Spinner fx:id="frameHitField" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>

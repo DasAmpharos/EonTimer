@@ -47,6 +47,19 @@ class TimerControlPane @Autowired constructor(
                 model.selectedTimerType = it
             }
 
+        gen3Tab.disableProperty().bind(
+            timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(gen3Tab)
+                .and(timerState.runningProperty))
+        gen4Tab.disableProperty().bind(
+            timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(gen4Tab)
+                .and(timerState.runningProperty))
+        gen5Tab.disableProperty().bind(
+            timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(gen5Tab)
+                .and(timerState.runningProperty))
+        customTab.disableProperty().bind(
+            timerTabPane.selectionModel.selectedItemProperty().isNotEqualTo(customTab)
+                .and(timerState.runningProperty))
+
         timerState.runningProperty.asFlux()
             .map { if (!it) "Start" else "Stop" }
             .subscribe { timerBtn.text = it }
@@ -58,6 +71,8 @@ class TimerControlPane @Autowired constructor(
             }
         }
 
+        updateBtn.disableProperty().bind(
+            timerState.runningProperty)
         updateBtn.setOnAction {
             timerFactory.calibrate()
         }

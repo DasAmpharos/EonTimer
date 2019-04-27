@@ -4,7 +4,6 @@ import io.github.dylmeadows.eontimer.config.AppProperties
 import io.github.dylmeadows.eontimer.model.resource.FxmlResource
 import io.github.dylmeadows.springboot.javafx.fxml.SpringFxmlLoader
 import javafx.application.Platform
-import javafx.scene.Parent
 import javafx.scene.control.ButtonType
 import javafx.scene.control.Dialog
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,9 +20,8 @@ class SettingsDialog @Autowired constructor(
         Platform.runLater {
             dialog = Dialog()
             dialog.title = properties.fullApplicationName
-            val pane = loader.load<Parent>(FxmlResource.SettingsControlPane.get())
+            dialog.dialogPane.content = loader.load(FxmlResource.SettingsControlPane.get())
             dialog.dialogPane.buttonTypes.setAll(ButtonType.OK)
-            dialog.dialogPane.content = pane
         }
     }
 

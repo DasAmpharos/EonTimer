@@ -2,11 +2,12 @@ package io.github.dylmeadows.eontimer.controller.settings
 
 import io.github.dylmeadows.eontimer.model.settings.Console
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
-import io.github.dylmeadows.eontimer.util.LongValueFactory
-import io.github.dylmeadows.eontimer.util.asFlux
 import io.github.dylmeadows.eontimer.util.bindBidirectional
 import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
-import io.github.dylmeadows.eontimer.util.valueProperty
+import io.github.dylmeadows.eontimer.util.javafx.spinner.LongValueFactory
+import io.github.dylmeadows.eontimer.util.javafx.spinner.commitValue
+import io.github.dylmeadows.eontimer.util.javafx.spinner.setOnFocusLost
+import io.github.dylmeadows.eontimer.util.javafx.spinner.valueProperty
 import javafx.fxml.FXML
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ChoiceBox
@@ -31,6 +32,7 @@ class TimerSettingsPane @Autowired constructor(
 
         refreshIntervalField.valueFactory = LongValueFactory(0L, 1000L)
         refreshIntervalField.valueProperty!!.bindBidirectional(model.refreshIntervalProperty)
+        refreshIntervalField.setOnFocusLost(refreshIntervalField::commitValue)
 
         precisionCalibrationField.selectedProperty()
             .bindBidirectional(model.precisionCalibrationModeProperty)
