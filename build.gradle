@@ -1,45 +1,40 @@
-group 'com.github.dylmeadows'
-version '2.0.0-beta1'
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.3'
-    }
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
 }
-
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-mainClassName = 'com.github.dylmeadows.EonTimer'
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://dl.bintray.com/dylmeadows/libs-snapshot"
+    }
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/log4j/log4j
-    compile group: 'log4j', name: 'log4j', version: '1.2.17'
-    // https://mvnrepository.com/artifact/org.hildan.fxgson/fx-gson
-    compile group: 'org.hildan.fxgson', name: 'fx-gson', version: '3.1.0'
-    // https://mvnrepository.com/artifact/de.jensd/fontawesomefx
-    compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
-    // https://mvnrepository.com/artifact/junit/junit
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    // https://mvnrepository.com/artifact/org.testfx/testfx-core
-    testCompile group: 'org.testfx', name: 'testfx-core', version: '4.0.13-alpha'
-    // https://mvnrepository.com/artifact/org.testfx/testfx-junit
-    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.13-alpha'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.1.1"
+    implementation "io.github.dylmeadows:java-common-core:$javaCommonVersion"
+    implementation "io.github.dylmeadows:java-common-javafx:$javaCommonVersion"
+    implementation "io.github.dylmeadows:spring-boot-starter-javafx:0.0.1-20190203.122100"
+    implementation "io.reactivex.rxjava2:rxjava:2.2.8"
+    implementation "io.projectreactor:reactor-core:3.2.6.RELEASE"
+    implementation "com.google.guava:guava:27.1-jre"
+    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "de.jensd:fontawesomefx:8.9"
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.testfx:testfx-core:$testfxVersion"
+    testImplementation "org.testfx:testfx-junit:$testfxVersion"
 }
 
-shadowJar {
-    baseName = project.name
-    version = project.version
-    classifier = null
+application {
+    mainClassName = "io.github.dylmeadows.eontimer.AppLauncher"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
 }

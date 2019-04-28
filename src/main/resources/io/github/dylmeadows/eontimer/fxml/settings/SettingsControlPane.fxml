@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane prefWidth="350.0" styleClass="floating" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.171"
+         xmlns:fx="http://javafx.com/fxml/1">
+    <Tab text="Action">
+        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <fx:include source="ActionSettingsPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        </AnchorPane>
+    </Tab>
+    <Tab text="Timer">
+        <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <fx:include source="TimerSettingsPane.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        </AnchorPane>
+    </Tab>
+</TabPane>

@@ -1,0 +1,134 @@
+/********************************************************************************
+ *                                                                              *
+ * Theme Definitions                                                            *
+ *                                                                              *
+ *******************************************************************************/
+
+@font-face {
+    src: url("../fonts/Roboto-Regular.ttf");
+}
+
+.root {
+    -theme-accent: #039ED3;
+    -theme-faint-accent: #039ED322;
+    -theme-panel-base: #FFFFFF;
+    -theme-panel-transparent-base: #FFFFFF7F;
+    -theme-control-base: #BFBFBF;
+    -theme-label-text: #000000;
+    -theme-default-button-base: derive(-theme-accent, 75%);
+    -theme-active: -theme-accent;
+    -fx-background-image: url(/io/github/dylmeadows/eontimer/img/default_background_image.png);
+    -fx-background-size: cover;
+
+    -fx-font-family: Roboto;
+}
+
+* {
+    -fx-focus-color: -theme-accent;
+    -fx-faint-focus-color: -theme-faint-accent;
+    -fx-accent: -theme-accent;
+}
+
+
+/********************************************************************************
+ *                                                                              *
+ * Panel                                                                        *
+ *                                                                              *
+ *******************************************************************************/
+
+.panel.themeable {
+    -fx-background-color: -theme-panel-transparent-base;
+    -fx-background-radius: 5px;
+    -fx-border-color: -theme-panel-base;
+    -fx-border-radius: 3px;
+    -fx-border-width: 2px;
+}
+
+/********************************************************************************
+ *                                                                              *
+ * TabPane                                                                      *
+ *                                                                              *
+ *******************************************************************************/
+
+.tab-pane.themeable > .tab-content-area {
+    -fx-background-color: -theme-panel-transparent-base;
+    -fx-background-radius: 5px;
+    -fx-border-color: -theme-panel-base;
+    -fx-border-radius: 3px;
+    -fx-border-width: 2px;
+}
+
+.tab-pane.themeable > .tab-header-area > .headers-region > .tab {
+    -fx-color: derive(-theme-panel-base, -10%);
+}
+
+.tab-pane.themeable > .tab-header-area > .headers-region > .tab:selected {
+    -fx-color: -theme-panel-base;
+    -fx-background: -theme-panel-base;
+}
+
+.tab-pane.themeable > .tab-header-area > .control-buttons-tab {
+    -fx-base: -theme-control-base;
+}
+
+.tab-pane.large-tabs {
+    -fx-tab-min-width: 4.5em;
+}
+
+.tab-pane.bold-labels > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-font-size: 12pt;
+}
+
+/********************************************************************************
+ *                                                                              *
+ * ScrollPane                                                                   *
+ *                                                                              *
+ *******************************************************************************/
+
+.scroll-pane.themeable {
+    -fx-background-color: -theme-panel-transparent-base;
+    -fx-border-color: -theme-panel-base;
+    -fx-border-radius: 3px;
+    -fx-border-width: 2px;
+}
+
+.scroll-pane.themeable > .viewport {
+    -fx-background-color: transparent;
+}
+
+/********************************************************************************
+ *                                                                              *
+ * Controls                                                                     *
+ *                                                                              *
+ *******************************************************************************/
+
+.button.themeable,
+.choice-box.themeable,
+.spinner.themeable {
+    -fx-base: -theme-control-base;
+}
+
+.button.themeable:default {
+    -fx-base: -theme-default-button-base;
+}
+
+/********************************************************************************
+ *                                                                              *
+ * Labels                                                                       *
+ *                                                                              *
+ *******************************************************************************/
+
+.label.themeable {
+    -fx-text-fill: -theme-label-text;
+}
+
+.label#currentStageLbl.active {
+    -fx-background-color: -theme-active;
+}
+
+.label#currentStageLbl {
+    -fx-background-color: none;
+    -fx-font-size: 64px;
+}

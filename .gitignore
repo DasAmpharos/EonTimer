@@ -1,0 +1,12 @@
+# gradle
+.gradle/
+build/
+
+# intellij
+.idea/
+out/
+*.iml
+
+EonTimer.json
+EonTimer.log
+*.log
