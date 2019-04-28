@@ -4,6 +4,7 @@ import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.service.action.TimerActionService
 import io.github.dylmeadows.eontimer.util.Stack
+import io.github.dylmeadows.eontimer.util.asStack
 import io.github.dylmeadows.eontimer.util.getStage
 import io.github.dylmeadows.eontimer.util.isIndefinite
 import io.github.dylmeadows.eontimer.util.milliseconds
@@ -64,19 +65,15 @@ class TimerRunnerService @Autowired constructor(
             timerState.running = value
         }
     private val actionInterval: Stack<Duration>
-        get() = Stack(timerActionService.actionInterval
-            .filter { it < currentStage })
+        get() = timerActionService.actionInterval
+            .filter { it < currentStage }
+            .asStack()
 
     private val period: Duration get() = timerSettings.refreshInterval.milliseconds
 
     fun start(stages: List<Duration> = mStages) {
         if (!isRunning) {
-            this.mStages = stages
-            this.stages = stages.toMutableList()
-
-            updateState()
-            totalTime = stages.sum()
-            nextStage = stages.getStage(1)
+            resetState(stages)
             timerJob = GlobalScope.launch(Dispatchers.JavaFx) {
                 var stageIndex = 0
                 var preElapsed = Duration.ZERO
@@ -135,8 +132,9 @@ class TimerRunnerService @Autowired constructor(
         totalElapsed += delta
     }
 
-    private fun resetState() {
-        stages = mStages.toMutableList()
+    private fun resetState(stages: List<Duration> = this.mStages) {
+        this.mStages = stages
+        this.stages = stages.toMutableList()
 
         totalTime = mStages.sum()
         totalElapsed = Duration.ZERO
@@ -144,4 +142,6 @@ class TimerRunnerService @Autowired constructor(
         currentRemaining = if (!currentStage.isIndefinite) currentStage else Duration.ZERO
         nextStage = mStages.getStage(1)
     }
+
+
 }

@@ -42,7 +42,10 @@ class Gen4TimerFactory @Autowired constructor(
             calibration)
 
     override fun calibrate() {
-        gen4TimerModel.calibratedDelay += calibrationService.calibrate(
-            delayTimerFactory.calibrate(gen4TimerModel.targetDelay, gen4TimerModel.delayHit))
+        gen4TimerModel.calibratedDelay +=
+            calibrationService.calibrateToDelays(
+                delayTimerFactory.calibrate(
+                    gen4TimerModel.targetDelay,
+                    gen4TimerModel.delayHit))
     }
 }

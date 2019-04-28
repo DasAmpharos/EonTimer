@@ -14,3 +14,7 @@ class Stack<T>(list: List<T>) {
 
     fun pop(): T? = if (!isEmpty) list.removeAt(0) else null
 }
+
+fun <T> List<T>.asStack(): Stack<T> {
+    return Stack(this)
+}

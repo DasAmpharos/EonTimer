@@ -60,44 +60,44 @@ class Gen5TimerFactory @Autowired constructor(
                 Gen5TimerMode.STANDARD ->
                     secondTimerFactory.createStages(
                         gen5TimerModel.targetSecond,
-                        calibrationService.calibrate(gen5TimerModel.calibration))
+                        calibrationService.calibrateToMillis(gen5TimerModel.calibration))
                 Gen5TimerMode.C_GEAR ->
                     delayTimerFactory.createStages(
                         gen5TimerModel.targetSecond,
                         gen5TimerModel.targetDelay,
-                        calibrationService.calibrate(gen5TimerModel.calibration))
+                        calibrationService.calibrateToMillis(gen5TimerModel.calibration))
                 Gen5TimerMode.ENTRALINK ->
                     entralinkTimerFactory.createStages(
                         gen5TimerModel.targetSecond,
                         gen5TimerModel.targetDelay,
-                        calibrationService.calibrate(gen5TimerModel.calibration),
-                        calibrationService.calibrate(gen5TimerModel.entralinkCalibration))
+                        calibrationService.calibrateToMillis(gen5TimerModel.calibration),
+                        calibrationService.calibrateToMillis(gen5TimerModel.entralinkCalibration))
                 Gen5TimerMode.ENHANCED_ENTRALINK ->
                     enhancedEntralinkTimerFactory.createStages(
                         gen5TimerModel.targetSecond,
                         gen5TimerModel.targetDelay,
                         gen5TimerModel.targetAdvances,
-                        calibrationService.calibrate(gen5TimerModel.calibration),
-                        calibrationService.calibrate(gen5TimerModel.entralinkCalibration),
+                        calibrationService.calibrateToMillis(gen5TimerModel.calibration),
+                        calibrationService.calibrateToMillis(gen5TimerModel.entralinkCalibration),
                         gen5TimerModel.frameCalibration)
             }
         }
 
     override fun calibrate() {
         when (gen5TimerModel.mode) {
-            Gen5TimerMode.C_GEAR -> {
-                gen5TimerModel.calibration += calibrationService.calibrate(delayCalibration)
-            }
             Gen5TimerMode.STANDARD -> {
-                gen5TimerModel.calibration += calibrationService.calibrate(secondCalibration)
+                gen5TimerModel.calibration += calibrationService.calibrateToDelays(secondCalibration)
+            }
+            Gen5TimerMode.C_GEAR -> {
+                gen5TimerModel.calibration += calibrationService.calibrateToDelays(delayCalibration)
             }
             Gen5TimerMode.ENTRALINK -> {
-                gen5TimerModel.calibration += calibrationService.calibrate(secondCalibration)
-                gen5TimerModel.entralinkCalibration += calibrationService.calibrate(entralinkCalibration)
+                gen5TimerModel.calibration += calibrationService.calibrateToDelays(secondCalibration)
+                gen5TimerModel.entralinkCalibration += calibrationService.calibrateToDelays(entralinkCalibration)
             }
             Gen5TimerMode.ENHANCED_ENTRALINK -> {
-                gen5TimerModel.calibration += calibrationService.calibrate(secondCalibration)
-                gen5TimerModel.entralinkCalibration += calibrationService.calibrate(entralinkCalibration)
+                gen5TimerModel.calibration += calibrationService.calibrateToDelays(secondCalibration)
+                gen5TimerModel.entralinkCalibration += calibrationService.calibrateToDelays(entralinkCalibration)
                 gen5TimerModel.frameCalibration += advancesCalibration
             }
         }

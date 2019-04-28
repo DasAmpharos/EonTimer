@@ -19,10 +19,9 @@ class TimerControlPane @Autowired constructor(
     private val timerState: TimerState,
     private val timerRunner: TimerRunnerService,
     private val timerFactory: TimerFactoryService,
-    private val gen3: Gen3TimerPane,
-    private val gen4: Gen4TimerPane,
-    private val gen5: Gen5TimerPane,
-    private val custom: CustomTimerPane) {
+    private val gen3TimerPane: Gen3TimerPane,
+    private val gen4TimerPane: Gen4TimerPane,
+    private val gen5TimerPane: Gen5TimerPane) {
 
     @FXML
     private lateinit var gen3Tab: Tab
@@ -39,12 +38,18 @@ class TimerControlPane @Autowired constructor(
     @FXML
     private lateinit var timerBtn: Button
 
+    private var timerType: TimerType
+        get() = model.selectedTimerType
+        set(value) {
+            model.selectedTimerType = value
+        }
+
     fun initialize() {
-        timerTabPane.selectionModel.select(model.selectedTimerType.tab)
+        timerTabPane.selectionModel.select(timerType.tab)
         timerTabPane.selectionModel.selectedItemProperty().asFlux()
             .map { it.timerType }
             .subscribe {
-                model.selectedTimerType = it
+                timerType = it
             }
 
         gen3Tab.disableProperty().bind(
@@ -74,7 +79,16 @@ class TimerControlPane @Autowired constructor(
         updateBtn.disableProperty().bind(
             timerState.runningProperty)
         updateBtn.setOnAction {
-            timerFactory.calibrate()
+            calibrate()
+        }
+    }
+
+    private fun calibrate() {
+        when (timerType) {
+            TimerType.GEN3 -> gen3TimerPane.calibrate()
+            TimerType.GEN4 -> gen4TimerPane.calibrate()
+            TimerType.GEN5 -> gen5TimerPane.calibrate()
+            else -> Unit
         }
     }
 

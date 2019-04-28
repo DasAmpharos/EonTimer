@@ -3,6 +3,7 @@ package io.github.dylmeadows.eontimer.controller.timer
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen4TimerModel
+import io.github.dylmeadows.eontimer.service.factory.Gen4TimerFactory
 import io.github.dylmeadows.eontimer.util.bindBidirectional
 import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
 import io.github.dylmeadows.eontimer.util.javafx.spinner.LongValueFactory
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Component
 @Component
 class Gen4TimerPane @Autowired constructor(
     private val model: Gen4TimerModel,
-    private val timerState: TimerState) {
+    private val timerState: TimerState,
+    private val timerFactory: Gen4TimerFactory) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen4TimerMode>
@@ -63,6 +65,11 @@ class Gen4TimerPane @Autowired constructor(
         delayHitField.valueProperty!!.bindBidirectional(model.delayHitProperty)
         delayHitField.parent.disableProperty().bind(timerState.runningProperty)
         delayHitField.setOnFocusLost(delayHitField::commitValue)
+        delayHitField.text = ""
+    }
+
+    fun calibrate() {
+        timerFactory.calibrate()
         delayHitField.text = ""
     }
 }

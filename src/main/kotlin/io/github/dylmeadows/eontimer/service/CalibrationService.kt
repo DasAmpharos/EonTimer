@@ -19,7 +19,11 @@ class CalibrationService @Autowired constructor(
     fun createCalibration(delay: Long, second: Long): Long =
         toMillis(delay - toDelays(second * 1000))
 
-    fun calibrate(value: Long): Long {
+    fun calibrateToMillis(value: Long): Long {
         return if (timerSettingsModel.precisionCalibrationMode) value else toMillis(value)
+    }
+
+    fun calibrateToDelays(value: Long): Long {
+        return if (timerSettingsModel.precisionCalibrationMode) value else toDelays(value)
     }
 }

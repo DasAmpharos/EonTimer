@@ -5,6 +5,7 @@ import io.github.dylmeadows.eontimer.model.timer.Gen3TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen3TimerModel
 import io.github.dylmeadows.eontimer.service.CalibrationService
 import io.github.dylmeadows.eontimer.service.TimerRunnerService
+import io.github.dylmeadows.eontimer.service.factory.Gen3TimerFactory
 import io.github.dylmeadows.eontimer.util.asFlux
 import io.github.dylmeadows.eontimer.util.bindBidirectional
 import io.github.dylmeadows.eontimer.util.getValue
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component
 class Gen3TimerPane @Autowired constructor(
     private val model: Gen3TimerModel,
     private val timerState: TimerState,
+    private val timerFactory: Gen3TimerFactory,
     private val timerRunnerService: TimerRunnerService,
     private val calibrationService: CalibrationService) {
 
@@ -81,7 +83,7 @@ class Gen3TimerPane @Autowired constructor(
         setTargetFrameBtn.setOnAction {
             if (timerState.running) {
                 val duration = calibrationService.toMillis(model.targetFrame)
-                timerRunnerService.stages[1] = duration.milliseconds
+                timerRunnerService.stages[1] = (duration + model.calibration).milliseconds
                 timerState.totalTime = timerRunnerService.stages.sum()
                 isPrimed = false
             }
@@ -95,5 +97,10 @@ class Gen3TimerPane @Autowired constructor(
 
         timerState.runningProperty.asFlux()
             .subscribe { isPrimed = it }
+    }
+
+    fun calibrate() {
+        timerFactory.calibrate()
+        frameHitField.text = ""
     }
 }

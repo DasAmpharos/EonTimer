@@ -50,6 +50,12 @@ class Gen3TimerFactory @Autowired constructor(
         }
 
     override fun calibrate() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // NOTE: VariableFrameTimer is essentially a FixedFrameTimer
+        // just with a floating target frame value. Therefore, the
+        // calibration process is the same for both.
+        gen3TimerModel.calibration +=
+            fixedFrameTimerFactory.calibrate(
+                gen3TimerModel.targetFrame,
+                gen3TimerModel.frameHit)
     }
 }

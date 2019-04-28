@@ -2,10 +2,9 @@ package io.github.dylmeadows.eontimer.service.factory
 
 import io.github.dylmeadows.eontimer.model.ApplicationModel
 import io.github.dylmeadows.eontimer.model.TimerState
+import io.github.dylmeadows.eontimer.model.settings.TimerSettingsModel
 import io.github.dylmeadows.eontimer.model.timer.TimerType
 import io.github.dylmeadows.eontimer.util.asFlux
-import io.github.dylmeadows.eontimer.util.getStage
-import io.github.dylmeadows.eontimer.util.sum
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.Duration
@@ -18,7 +17,8 @@ class TimerFactoryService @Autowired constructor(
     private val gen4TimerFactory: TimerFactory,
     private val gen5TimerFactory: TimerFactory,
     private val customTimerFactory: TimerFactory,
-    private val applicationModel: ApplicationModel) {
+    private val applicationModel: ApplicationModel,
+    private val timerSettings: TimerSettingsModel) {
 
     val stages: List<Duration> get() = timerFactory.stages
     private val timerFactory: TimerFactory get() = applicationModel.selectedTimerType.timerFactory
@@ -28,12 +28,19 @@ class TimerFactoryService @Autowired constructor(
         applicationModel.selectedTimerTypeProperty.asFlux()
             .map { it.timerFactory }
             .map(TimerFactory::stages)
-            .subscribe {
-                timerState.currentStage = it.getStage(0)
-                timerState.nextStage = it.getStage(1)
-                timerState.totalTime = it.sum()
+            .subscribe(timerState::update)
+        listOf(
+            timerSettings.consoleProperty,
+            timerSettings.precisionCalibrationModeProperty)
+            .map { it.asFlux() }
+            .forEach {
+                it.subscribe {
+                    timerState.update(stages)
+                }
             }
     }
+
+    fun calibrate() = timerFactory.calibrate()
 
     private val TimerType.timerFactory: TimerFactory
         get() = when (this) {
@@ -42,6 +49,4 @@ class TimerFactoryService @Autowired constructor(
             TimerType.GEN5 -> gen5TimerFactory
             TimerType.CUSTOM -> customTimerFactory
         }
-
-    fun calibrate() = applicationModel.selectedTimerType.timerFactory.calibrate()
 }

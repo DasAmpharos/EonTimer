@@ -36,7 +36,7 @@ class DelayTimerFactory @Autowired constructor(
             delta.absoluteValue <= TimerConstants.CLOSE_THRESHOLD ->
                 (TimerConstants.CLOSE_UPDATE_FACTOR * delta).toLong()
             else ->
-                (TimerConstants.UPDATE_FACTOR * delta).toLong()
+                TimerConstants.UPDATE_FACTOR.toLong() * delta
         }
     }
 }

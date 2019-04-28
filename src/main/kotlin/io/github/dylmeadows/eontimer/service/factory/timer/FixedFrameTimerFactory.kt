@@ -21,4 +21,7 @@ class FixedFrameTimerFactory @Autowired constructor(
         return (calibrationService.toMillis(targetFrame) + calibration)
             .milliseconds
     }
+
+    fun calibrate(targetFrame: Long, frameHit: Long): Long =
+        calibrationService.toMillis(targetFrame - frameHit)
 }

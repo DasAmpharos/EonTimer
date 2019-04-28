@@ -3,6 +3,7 @@ package io.github.dylmeadows.eontimer.controller.timer
 import io.github.dylmeadows.eontimer.model.TimerState
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerMode
 import io.github.dylmeadows.eontimer.model.timer.Gen5TimerModel
+import io.github.dylmeadows.eontimer.service.factory.Gen5TimerFactory
 import io.github.dylmeadows.eontimer.util.bindBidirectional
 import io.github.dylmeadows.eontimer.util.javafx.asChoiceField
 import io.github.dylmeadows.eontimer.util.javafx.spinner.LongValueFactory
@@ -20,7 +21,8 @@ import org.springframework.stereotype.Component
 @Component
 class Gen5TimerPane @Autowired constructor(
     private val model: Gen5TimerModel,
-    private val timerState: TimerState) {
+    private val timerState: TimerState,
+    private val timerFactory: Gen5TimerFactory) {
 
     @FXML
     private lateinit var modeField: ChoiceBox<Gen5TimerMode>
@@ -115,6 +117,13 @@ class Gen5TimerPane @Autowired constructor(
         actualAdvancesField.parent.showWhen(
             model.modeProperty.isEqualTo(Gen5TimerMode.ENHANCED_ENTRALINK))
         actualAdvancesField.setOnFocusLost(actualAdvancesField::commitValue)
+        actualAdvancesField.text = ""
+    }
+
+    fun calibrate() {
+        timerFactory.calibrate()
+        secondHitField.text = ""
+        delayHitField.text = ""
         actualAdvancesField.text = ""
     }
 }
