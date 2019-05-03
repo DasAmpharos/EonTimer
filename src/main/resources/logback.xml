@@ -9,7 +9,7 @@
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
         <file>EonTimer.log</file>
