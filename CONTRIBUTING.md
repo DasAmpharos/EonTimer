@@ -77,7 +77,16 @@ your IDE.
 
 ### Source Code Style
 
-The wiki pages
-[Code Style](https://github.com/dylmeadows/EonTimer/wiki/Code-Style) and
-[IntelliJ IDEA Editor Settings](https://github.com/dylmeadows/EonTimer/wiki/IntelliJ-IDEA-Editor-Settings)
-defines the source file coding standards we use along with some IDEA editor settings we customize.
+Source code style is enforced using [ktlint](https://ktlint.github.io/) and [ktlint-gradle](https://github.com/jlleitschuh/ktlint-gradle).
+
+To run ktlint use:
+
+```bash
+./gradlew ktlintCheck
+```
+
+ktlint is also capable of fixing code style problems. To remedy code style issues, use:
+
+```bash
+./gradlew ktlintFormat
+```
