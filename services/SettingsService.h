@@ -5,19 +5,13 @@
 #ifndef EONTIMER_SETTINGSSERVICE_H
 #define EONTIMER_SETTINGSSERVICE_H
 
-#include "../models/Console.h"
+#include <QObject>
+#include <models/Console.h>
 
-namespace service {
-    class SettingsService {
-    private:
-        model::Console console;
-    public:
-        SettingsService();
+namespace service::Settings {
+    model::Console getConsole();
 
-        model::Console getConsole() const;
-
-        void setConsole(model::Console console);
-    };
+    void setConsole(model::Console console);
 }
 
 #endif //EONTIMER_SETTINGSSERVICE_H

@@ -6,22 +6,26 @@
 #include <QVBoxLayout>
 #include "TimerDisplayPane.h"
 #include "util/FontHelper.h"
+#include <models/TimerState.h>
 
-namespace ui {
+namespace gui {
     TimerDisplayPane::TimerDisplayPane(service::TimerService *timerService)
         : QGroupBox(nullptr) {
         currentStage = new QLabel("0:000");
-        connect(timerService, &service::TimerService::currentStageChanged, [=](long val) {
-            currentStage->setText(QString::number(val));
-        });
+        connect(timerService, &service::TimerService::stateChanged,
+                [this](const model::TimerState &state) {
+                    this->currentStage->setText(formatTime(state.remaining));
+                });
         minutesBeforeTarget = new QLabel("0");
-        connect(timerService, &service::TimerService::minutesBeforeTargetChanged, [=](long val) {
-            minutesBeforeTarget->setText(QString::number(val));
-        });
+        connect(timerService, &service::TimerService::minutesBeforeTargetChanged,
+                [this](const int minutesBeforeTarget) {
+                    this->minutesBeforeTarget->setText(QString::number(minutesBeforeTarget));
+                });
         nextStage = new QLabel("0:000");
-        connect(timerService, &service::TimerService::nextStageChanged, [=](long val) {
-            nextStage->setText(QString::number(val));
-        });
+        connect(timerService, &service::TimerService::nextStageChanged,
+                [this](const int nextStage) {
+                    this->nextStage->setText(formatTime(nextStage));
+                });
         initComponents();
     }
 
@@ -53,6 +57,17 @@ namespace ui {
                 layout->addWidget(new QLabel("Next Stage:"));
                 layout->addWidget(nextStage);
             }
+        }
+    }
+
+    const QString TimerDisplayPane::formatTime(const int milliseconds) const {
+        if (milliseconds > 0) {
+            return QString::number(milliseconds / 1000) + ":" +
+                   QString::number(milliseconds % 1000).rightJustified(3, '0');
+        } else if (milliseconds < 0) {
+            return "?:???";
+        } else {
+            return "0:000";
         }
     }
 }

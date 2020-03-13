@@ -5,8 +5,14 @@
 #ifndef EONTIMER_TIMERSTATE_H
 #define EONTIMER_TIMERSTATE_H
 
-struct TimerState {
+namespace model {
+    struct TimerState {
+        TimerState(long duration, long remaining, bool isRunning);
 
-};
+        const long duration;
+        const long remaining;
+        const bool isRunning;
+    };
+}
 
 #endif //EONTIMER_TIMERSTATE_H

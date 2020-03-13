@@ -1,11 +1,11 @@
 #include <qapplication.h>
-#include "ui/ApplicationWindow.h"
+#include <gui/ApplicationWindow.h>
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
 
-    ui::ApplicationWindow window;
+    gui::ApplicationWindow window;
     window.show();
 
-    return app.exec();
+    return QApplication::exec();
 }

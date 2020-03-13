@@ -7,14 +7,17 @@
 
 #include <QGroupBox>
 #include <QLabel>
-#include "../services/TimerService.h"
+#include <services/TimerService.h>
 
-namespace ui {
+namespace gui {
     class TimerDisplayPane : public QGroupBox {
     public:
         explicit TimerDisplayPane(service::TimerService *timerService);
+
     private:
         void initComponents();
+
+        const QString formatTime(int milliseconds) const;
 
     private:
         QLabel *currentStage;

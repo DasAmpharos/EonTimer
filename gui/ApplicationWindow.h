@@ -7,7 +7,7 @@
 
 #include <QMainWindow>
 
-namespace ui {
+namespace gui {
     class ApplicationPane;
 
     class ApplicationWindow : public QMainWindow {

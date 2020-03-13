@@ -4,16 +4,14 @@
 
 #include "SettingsService.h"
 
-namespace service {
-    SettingsService::SettingsService() {
-        console = model::Console::NDS;
+namespace service::Settings {
+    model::Console mConsole = model::Console::NDS;
+
+    model::Console getConsole() {
+        return mConsole;
     }
 
-    model::Console SettingsService::getConsole() const {
-        return console;
-    }
-
-    void SettingsService::setConsole(const model::Console console) {
-        this->console = console;
+    void setConsole(const model::Console console) {
+        mConsole = console;
     }
 }

@@ -6,29 +6,41 @@
 #define EONTIMER_TIMERSERVICE_H
 
 #include <QObject>
+#include <vector>
+
+namespace model {
+    struct TimerState;
+}
 
 namespace service {
     class TimerService : public QObject {
     Q_OBJECT
     private:
-        long currentStage;
-        long minutesBeforeTarget;
-        long nextStage;
+        bool running;
+        std::shared_ptr<std::vector<int>> stages;
+        uint8_t currentStageIdx;
+        int elapsed;
 
     public:
-        void setCurrentStage(long value);
+        void start();
 
-        void setMinutesBeforeTarget(long value);
+        void stop();
 
-        void setNextStage(long value);
+        void setStages(std::shared_ptr<std::vector<int>> stages);
 
+        const bool isRunning() const;
+
+    private:
+        void reset();
+
+        void publishStateChange();
+
+        // @formatter:off
     signals:
-
-        void currentStageChanged(long value);
-
-        void minutesBeforeTargetChanged(long value);
-
-        void nextStageChanged(long value);
+        void stateChanged(const model::TimerState &state);
+        void minutesBeforeTargetChanged(int value);
+        void nextStageChanged(int value);
+        // @formatter:on
     };
 }
 

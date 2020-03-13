@@ -7,7 +7,7 @@
 
 #include <QWidget>
 
-namespace ui::util::font {
+namespace gui::util::font {
     void setFontSize(QWidget *widget, int fontSize);
 }
 

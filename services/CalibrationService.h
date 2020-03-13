@@ -5,23 +5,12 @@
 #ifndef EONTIMER_CALIBRATIONHELPER_H
 #define EONTIMER_CALIBRATIONHELPER_H
 
-#include <cmath>
-#include "../models/Console.h"
-#include "SettingsService.h"
+namespace service::CalibrationService {
+    int toDelays(int milliseconds);
 
-namespace service {
-    class CalibrationService {
-    private:
-        const SettingsService *settings;
-    public:
-        explicit CalibrationService(SettingsService *settings);
+    int toMilliseconds(int delays);
 
-        long toDelays(long milliseconds) const;
-
-        long toMilliseconds(long delays) const;
-
-        long createCalibration(long delays, long seconds) const;
-    };
+    int createCalibration(int delays, int seconds);
 }
 
 #endif //EONTIMER_CALIBRATIONHELPER_H

@@ -8,7 +8,7 @@
 #include <QWindow>
 #include <iostream>
 
-namespace ui {
+namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
         applicationPane = new ApplicationPane(this);

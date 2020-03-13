@@ -3,27 +3,22 @@
 //
 
 #include "CalibrationService.h"
+#include "SettingsService.h"
+#include <models/Console.h>
+#include <cmath>
 
-namespace service {
-    CalibrationService::CalibrationService(SettingsService *settings)
-        : settings(settings) {
+namespace service::CalibrationService {
+    int toDelays(const int milliseconds) {
+        const double framerate = model::getFramerate(Settings::getConsole());
+        return static_cast<int>(std::round(milliseconds / framerate));
     }
 
-    long CalibrationService::toDelays(const long milliseconds) const {
-        const double framerate = model::getFramerate(settings->getConsole());
-        return static_cast<long>(std::round(
-            milliseconds / framerate
-        ));
+    int toMilliseconds(const int delays) {
+        const double framerate = model::getFramerate(Settings::getConsole());
+        return static_cast<int>(std::round(delays * framerate));
     }
 
-    long CalibrationService::toMilliseconds(const long delays) const {
-        const double framerate = model::getFramerate(settings->getConsole());
-        return static_cast<long>(std::round(
-            delays * framerate
-        ));
-    }
-
-    long CalibrationService::createCalibration(const long delays, const long seconds) const {
+    int createCalibration(const int delays, const int seconds) {
         return toMilliseconds(delays - toDelays(seconds * 1000));
     }
 }

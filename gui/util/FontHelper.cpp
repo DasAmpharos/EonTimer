@@ -4,7 +4,7 @@
 
 #include "FontHelper.h"
 
-namespace ui::util::font {
+namespace gui::util::font {
     void setFontSize(QWidget *widget, const int fontSize) {
         QFont font = widget->font();
         font.setPointSize(fontSize);
