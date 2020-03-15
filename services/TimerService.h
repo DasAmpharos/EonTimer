@@ -7,39 +7,48 @@
 
 #include <QObject>
 #include <vector>
-
-namespace model {
-    struct TimerState;
-}
+#include "TimerThread.h"
+#include "SoundService.h"
+#include <models/TimerState.h>
 
 namespace service {
     class TimerService : public QObject {
     Q_OBJECT
     private:
         bool running;
+        TimerThread *timerThread;
         std::shared_ptr<std::vector<int>> stages;
-        uint8_t currentStageIdx;
-        int elapsed;
+        SoundService *sounds;
 
     public:
+        explicit TimerService(SoundService *sounds, QObject *parent = nullptr);
+
+        ~TimerService() override;
+
         void start();
 
         void stop();
 
         void setStages(std::shared_ptr<std::vector<int>> stages);
 
-        const bool isRunning() const;
+        bool isRunning() const;
 
     private:
+        void run();
+
+        std::chrono::milliseconds runStage(uint8_t stageIndex, std::chrono::milliseconds elapsed);
+
         void reset();
 
-        void publishStateChange();
+        void publishStateChange(const std::chrono::milliseconds &currentStage,
+                                const std::chrono::milliseconds &elapsed);
 
         // @formatter:off
     signals:
         void stateChanged(const model::TimerState &state);
-        void minutesBeforeTargetChanged(int value);
-        void nextStageChanged(int value);
+        void minutesBeforeTargetChanged(const std::chrono::minutes &minutesBeforeTarget);
+        void nextStageChanged(const std::chrono::milliseconds &nextStage);
+        void actionTriggered();
         // @formatter:on
     };
 }

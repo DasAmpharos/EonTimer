@@ -5,9 +5,9 @@
 #include "TimerState.h"
 
 namespace model {
-    TimerState::TimerState(const long duration, const long remaining, const bool isRunning)
+    TimerState::TimerState(const std::chrono::milliseconds &duration,
+                           const std::chrono::milliseconds &remaining)
         : duration(duration),
-          remaining(remaining),
-          isRunning(isRunning) {
+          remaining(remaining) {
     }
 }

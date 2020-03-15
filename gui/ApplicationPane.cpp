@@ -12,7 +12,8 @@
 namespace gui {
     ApplicationPane::ApplicationPane(QWidget *parent)
         : QWidget(parent) {
-        auto *timerService = new service::TimerService();
+        auto *sounds = new service::SoundService(this);
+        timerService = new service::TimerService(sounds, this);
         gen4TimerPane = new Gen4TimerPane(timerService);
         timerDisplayPane = new TimerDisplayPane(timerService);
         initComponents();
@@ -44,6 +45,15 @@ namespace gui {
         // ----- startStopBtn -----
         {
             auto *startStopBtn = new QPushButton("Start");
+            connect(startStopBtn, &QPushButton::clicked, [this, startStopBtn]() {
+                if (!timerService->isRunning()) {
+                    startStopBtn->setText("Stop");
+                    timerService->start();
+                } else {
+                    startStopBtn->setText("Start");
+                    timerService->stop();
+                }
+            });
             layout->addWidget(startStopBtn, 2, 1);
             startStopBtn->setDefault(true);
             startStopBtn->setSizePolicy(

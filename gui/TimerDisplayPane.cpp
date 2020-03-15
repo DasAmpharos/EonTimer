@@ -18,12 +18,12 @@ namespace gui {
                 });
         minutesBeforeTarget = new QLabel("0");
         connect(timerService, &service::TimerService::minutesBeforeTargetChanged,
-                [this](const int minutesBeforeTarget) {
-                    this->minutesBeforeTarget->setText(QString::number(minutesBeforeTarget));
+                [this](const std::chrono::minutes &minutesBeforeTarget) {
+                    this->minutesBeforeTarget->setText(QString::number(minutesBeforeTarget.count()));
                 });
         nextStage = new QLabel("0:000");
         connect(timerService, &service::TimerService::nextStageChanged,
-                [this](const int nextStage) {
+                [this](const std::chrono::milliseconds &nextStage) {
                     this->nextStage->setText(formatTime(nextStage));
                 });
         initComponents();
@@ -60,11 +60,12 @@ namespace gui {
         }
     }
 
-    const QString TimerDisplayPane::formatTime(const int milliseconds) const {
-        if (milliseconds > 0) {
-            return QString::number(milliseconds / 1000) + ":" +
-                   QString::number(milliseconds % 1000).rightJustified(3, '0');
-        } else if (milliseconds < 0) {
+    const QString TimerDisplayPane::formatTime(const std::chrono::milliseconds &milliseconds) const {
+        const auto ms = milliseconds.count();
+        if (ms > 0) {
+            return QString::number(ms / 1000) + ":" +
+                   QString::number(ms % 1000).rightJustified(3, '0');
+        } else if (ms < 0) {
             return "?:???";
         } else {
             return "0:000";

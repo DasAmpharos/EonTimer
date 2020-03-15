@@ -17,7 +17,7 @@ namespace gui {
     private:
         void initComponents();
 
-        const QString formatTime(int milliseconds) const;
+        const QString formatTime(const std::chrono::milliseconds &milliseconds) const;
 
     private:
         QLabel *currentStage;

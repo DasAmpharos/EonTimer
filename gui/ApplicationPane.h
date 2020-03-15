@@ -6,6 +6,7 @@
 #define EONTIMER_APPLICATIONPANE_H
 
 #include <QWidget>
+#include <services/TimerService.h>
 
 namespace gui {
     // @formatter:off
@@ -18,6 +19,7 @@ namespace gui {
     private:
         Gen4TimerPane *gen4TimerPane;
         TimerDisplayPane *timerDisplayPane;
+        service::TimerService *timerService;
     public:
         explicit ApplicationPane(QWidget *parent = nullptr);
 

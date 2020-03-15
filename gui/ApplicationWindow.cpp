@@ -7,6 +7,8 @@
 #include <QMenuBar>
 #include <QWindow>
 #include <iostream>
+#include <models/Sound.h>
+#include <QSoundEffect>
 
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)

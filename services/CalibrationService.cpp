@@ -9,12 +9,12 @@
 
 namespace service::CalibrationService {
     int toDelays(const int milliseconds) {
-        const double framerate = model::getFramerate(Settings::getConsole());
+        const double framerate = model::getFramerate(SettingsService::get().getConsole());
         return static_cast<int>(std::round(milliseconds / framerate));
     }
 
     int toMilliseconds(const int delays) {
-        const double framerate = model::getFramerate(Settings::getConsole());
+        const double framerate = model::getFramerate(SettingsService::get().getConsole());
         return static_cast<int>(std::round(delays * framerate));
     }
 

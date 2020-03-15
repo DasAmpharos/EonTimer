@@ -5,13 +5,15 @@
 #ifndef EONTIMER_TIMERSTATE_H
 #define EONTIMER_TIMERSTATE_H
 
+#include <chrono>
+
 namespace model {
     struct TimerState {
-        TimerState(long duration, long remaining, bool isRunning);
+        TimerState(const std::chrono::milliseconds &duration,
+                   const std::chrono::milliseconds &remaining);
 
-        const long duration;
-        const long remaining;
-        const bool isRunning;
+        const std::chrono::milliseconds &duration;
+        const std::chrono::milliseconds &remaining;
     };
 }
 
