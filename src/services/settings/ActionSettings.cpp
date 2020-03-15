@@ -32,7 +32,7 @@ namespace service::settings {
     }
 
     void ActionSettings::setInterval(const std::chrono::milliseconds &interval) {
-        settings->setValue(INTERVAL, interval.count());
+        settings->setValue(INTERVAL, static_cast<qint64>(interval.count()));
         settings->sync();
     }
 

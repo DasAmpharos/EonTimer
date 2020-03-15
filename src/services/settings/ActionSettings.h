@@ -7,6 +7,7 @@
 
 #include <QSettings>
 #include <models/Sound.h>
+#include <chrono>
 
 namespace service::settings {
     class ActionSettings {

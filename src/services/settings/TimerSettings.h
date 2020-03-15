@@ -7,6 +7,7 @@
 
 #include <QSettings>
 #include <models/Console.h>
+#include <chrono>
 
 namespace service::settings {
     class TimerSettings {

@@ -31,7 +31,7 @@ namespace service::settings {
     }
 
     void TimerSettings::setRefreshInterval(const std::chrono::milliseconds &refreshInterval) {
-        settings->setValue(REFRESH_INTERVAL, refreshInterval.count());
+        settings->setValue(REFRESH_INTERVAL, static_cast<qint64>(refreshInterval.count()));
         settings->sync();
     }
 
