@@ -4,13 +4,14 @@ project(EonTimer)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
-set(BASEPATH "${CMAKE_SOURCE_DIR}")
+set(BASEPATH "${CMAKE_SOURCE_DIR}/src")
 include_directories("${BASEPATH}")
 
 set(CMAKE_PREFIX_PATH "/usr/local/opt/qt/lib/cmake")
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
 
-add_executable(EonTimer main.cpp gui/Gen4TimerPane.cpp gui/Gen4TimerPane.h gui/ApplicationWindow.cpp gui/ApplicationWindow.h gui/TimerDisplayPane.cpp gui/TimerDisplayPane.h gui/util/FontHelper.h services/CalibrationService.h models/TimerState.h models/Console.h services/CalibrationService.cpp gui/ApplicationPane.cpp gui/ApplicationPane.h services/SettingsService.cpp services/SettingsService.h models/Console.cpp gui/util/FontHelper.cpp services/TimerService.cpp services/TimerService.h models/TimerState.cpp services/timer/SecondTimer.cpp services/timer/SecondTimer.h util/Functions.h util/Functions.cpp services/timer/DelayTimer.h services/timer/DelayTimer.cpp util/ThreadPool.cpp util/ThreadPool.h models/Sound.h services/SoundService.cpp services/SoundService.h services/TimerThread.cpp services/TimerThread.h)
-target_link_libraries(EonTimer Qt5::Multimedia Qt5::Widgets)
+add_executable(EonTimer resources/resources.qrc src/main.cpp src/gui/Gen4TimerPane.cpp src/gui/Gen4TimerPane.h src/gui/ApplicationWindow.cpp src/gui/ApplicationWindow.h src/gui/TimerDisplayPane.cpp src/gui/TimerDisplayPane.h src/gui/util/FontHelper.h src/services/CalibrationService.h src/models/TimerState.h src/models/Console.h src/services/CalibrationService.cpp src/gui/ApplicationPane.cpp src/gui/ApplicationPane.h src/models/Console.cpp src/gui/util/FontHelper.cpp src/services/TimerService.cpp src/services/TimerService.h src/models/TimerState.cpp src/services/timer/SecondTimer.cpp src/services/timer/SecondTimer.h src/util/Functions.h src/util/Functions.cpp src/services/timer/DelayTimer.h src/services/timer/DelayTimer.cpp src/models/Sound.h src/services/SoundService.cpp src/services/SoundService.h src/services/TimerThread.cpp src/services/TimerThread.h src/services/settings/ActionSettings.cpp src/services/settings/ActionSettings.h src/services/settings/TimerSettings.cpp src/services/settings/TimerSettings.h)
+target_link_libraries(EonTimer Qt5::Widgets Qt5::Multimedia)

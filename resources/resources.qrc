@@ -1,0 +1,18 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>fonts/Roboto-Regular.ttf</file>
+    </qresource>
+    <qresource>
+        <file>sounds/beep.wav</file>
+    </qresource>
+    <qresource>
+        <file>sounds/ding.wav</file>
+    </qresource>
+    <qresource>
+        <file>sounds/pop.wav</file>
+    </qresource>
+    <qresource>
+        <file>sounds/tick.wav</file>
+    </qresource>
+</RCC>
