@@ -53,10 +53,11 @@ namespace service {
 
         // @formatter:off
     signals:
+        void activated(bool);
+        void actionTriggered();
         void stateChanged(const model::TimerState &state);
         void minutesBeforeTargetChanged(const std::chrono::minutes &minutesBeforeTarget);
         void nextStageChanged(const std::chrono::milliseconds &nextStage);
-        void actionTriggered();
         // @formatter:on
     };
 }

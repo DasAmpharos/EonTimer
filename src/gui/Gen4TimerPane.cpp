@@ -8,6 +8,7 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QSpinBox>
+#include <gui/util/FontHelper.h>
 
 using namespace service;
 using namespace service::timer;

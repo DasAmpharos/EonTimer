@@ -5,8 +5,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "TimerDisplayPane.h"
-#include <gui/util/FontHelper.h>
-#include <models/TimerState.h>
+#include <QFontDatabase>
 
 namespace gui {
     TimerDisplayPane::TimerDisplayPane(service::TimerService *timerService)
@@ -37,7 +36,9 @@ namespace gui {
             {
                 rootLayout->addWidget(currentStage);
                 rootLayout->setAlignment(currentStage, Qt::AlignCenter);
-                util::font::setFontSize(currentStage, 36);
+                const int font = QFontDatabase::addApplicationFont(":/fonts/RobotoMono-Regular.ttf");
+                const QString family = QFontDatabase::applicationFontFamilies(font)[0];
+                currentStage->setFont(QFont(family, 36));
             }
             // ----- minutesBeforeTarget -----
             {

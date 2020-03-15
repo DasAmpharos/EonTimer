@@ -23,6 +23,9 @@ namespace gui {
 
         timerService = new service::TimerService(timerSettings, actionSettings, soundService, this);
         gen4TimerPane = new Gen4TimerPane(delayTimer, calibrationService, timerService);
+        connect(timerService, &service::TimerService::activated, [this](const bool activated) {
+            this->gen4TimerPane->setEnabled(!activated);
+        });
         timerDisplayPane = new TimerDisplayPane(timerService);
         initComponents();
     }
@@ -44,6 +47,9 @@ namespace gui {
         {
             auto *updateBtn = new QPushButton("Update");
             connect(updateBtn, SIGNAL(clicked(bool)), this, SLOT(onUpdate()));
+            connect(timerService, &service::TimerService::activated, [updateBtn](const bool activated) {
+                updateBtn->setEnabled(!activated);
+            });
             layout->addWidget(updateBtn, 2, 0);
             updateBtn->setSizePolicy(
                 QSizePolicy::Expanding,
@@ -53,12 +59,17 @@ namespace gui {
         // ----- startStopBtn -----
         {
             auto *startStopBtn = new QPushButton("Start");
-            connect(startStopBtn, &QPushButton::clicked, [this, startStopBtn]() {
-                if (!timerService->isRunning()) {
+            connect(timerService, &service::TimerService::activated, [startStopBtn](const bool activated) {
+                if (activated) {
                     startStopBtn->setText("Stop");
-                    timerService->start();
                 } else {
                     startStopBtn->setText("Start");
+                }
+            });
+            connect(startStopBtn, &QPushButton::clicked, [this, startStopBtn]() {
+                if (!timerService->isRunning()) {
+                    timerService->start();
+                } else {
                     timerService->stop();
                 }
             });

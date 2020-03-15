@@ -1,7 +1,10 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource>
-        <file>fonts/Roboto-Regular.ttf</file>
+        <file>fonts/RobotoMono-Regular.ttf</file>
+    </qresource>
+    <qresource>
+        <file>images/default_background_image.png</file>
     </qresource>
     <qresource>
         <file>sounds/beep.wav</file>

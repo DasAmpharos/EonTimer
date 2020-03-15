@@ -34,6 +34,7 @@ namespace service {
     void TimerService::start() {
         if (!running) {
             running = true;
+            emit activated(true);
             timerThread->submit(std::bind(&TimerService::run, this));
         }
     }
@@ -41,6 +42,8 @@ namespace service {
     void TimerService::stop() {
         if (running) {
             running = false;
+            emit activated(false);
+            reset();
         }
     }
 
@@ -52,8 +55,7 @@ namespace service {
             preElapsed = runStage(stageIndex, preElapsed) - currentStage;
             stageIndex++;
         }
-        running = false;
-        reset();
+        stop();
     }
 
     std::chrono::milliseconds

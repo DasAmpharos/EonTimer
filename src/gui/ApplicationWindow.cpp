@@ -7,7 +7,6 @@
 #include <QMenuBar>
 #include <QWindow>
 #include <iostream>
-#include <models/Sound.h>
 #include <QSoundEffect>
 
 namespace gui {
@@ -15,6 +14,12 @@ namespace gui {
         : QMainWindow(parent) {
         settings = new QSettings(this);
         applicationPane = new ApplicationPane(settings, this);
+
+        QPalette palette;
+        QPixmap background(":/images/default_background_image.png");
+        /*background = background.scaled(this->size(), Qt::IgnoreAspectRatio);*/
+        palette.setBrush(QPalette::Window, background);
+        setPalette(palette);
         initComponents();
     }
 
