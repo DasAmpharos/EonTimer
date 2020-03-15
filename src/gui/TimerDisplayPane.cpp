@@ -32,10 +32,11 @@ namespace gui {
         // --- group ---
         {
             auto *rootLayout = new QVBoxLayout(this);
+            rootLayout->setSpacing(5);
             // ----- currentStage ----
             {
                 rootLayout->addWidget(currentStage);
-                rootLayout->setAlignment(currentStage, Qt::AlignCenter);
+                rootLayout->setAlignment(currentStage, Qt::AlignLeft);
                 const int font = QFontDatabase::addApplicationFont(":/fonts/RobotoMono-Regular.ttf");
                 const QString family = QFontDatabase::applicationFontFamilies(font)[0];
                 currentStage->setFont(QFont(family, 36));
@@ -45,7 +46,7 @@ namespace gui {
                 auto *layout = new QHBoxLayout();
                 layout->setSpacing(5);
                 rootLayout->addLayout(layout);
-                rootLayout->setAlignment(layout, Qt::AlignCenter);
+                rootLayout->setAlignment(layout, Qt::AlignLeft);
                 layout->addWidget(new QLabel("Minutes Before Target:"));
                 layout->addWidget(minutesBeforeTarget);
             }
@@ -54,7 +55,7 @@ namespace gui {
                 auto *layout = new QHBoxLayout();
                 layout->setSpacing(5);
                 rootLayout->addLayout(layout);
-                rootLayout->setAlignment(layout, Qt::AlignCenter);
+                rootLayout->setAlignment(layout, Qt::AlignLeft);
                 layout->addWidget(new QLabel("Next Stage:"));
                 layout->addWidget(nextStage);
             }

@@ -37,6 +37,10 @@ namespace gui {
             auto *group = new QGroupBox();
             auto *layout = new QFormLayout(group);
             layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+            group->setSizePolicy(
+                QSizePolicy::Expanding,
+                QSizePolicy::Expanding
+            );
             // ----- targetDelay -----
             {
                 auto *label = new QLabel();

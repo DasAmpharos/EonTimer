@@ -32,11 +32,21 @@ namespace gui {
 
     void ApplicationPane::initComponents() {
         auto *layout = new QGridLayout(this);
-        layout->addWidget(timerDisplayPane, 0, 0, 1, 2);
+        layout->setColumnMinimumWidth(0, 215);
+        layout->setHorizontalSpacing(10);
+        layout->setVerticalSpacing(10);
+        // ----- timerDisplayPane -----
+        {
+            layout->addWidget(timerDisplayPane, 0, 0);
+            timerDisplayPane->setSizePolicy(
+                QSizePolicy::Expanding,
+                QSizePolicy::Fixed
+            );
+        }
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
-            layout->addWidget(tabPane, 1, 0, 1, 2);
+            layout->addWidget(tabPane, 0, 1, 2, 2);
             tabPane->addTab(gen4TimerPane, "4");
             // tabPane->addTab(gen5TimerPane, "5");
             // tabPane->addTab(gen3TimerPane, "3");
@@ -50,7 +60,7 @@ namespace gui {
             connect(timerService, &service::TimerService::activated, [updateBtn](const bool activated) {
                 updateBtn->setEnabled(!activated);
             });
-            layout->addWidget(updateBtn, 2, 0);
+            layout->addWidget(updateBtn, 2, 1);
             updateBtn->setSizePolicy(
                 QSizePolicy::Expanding,
                 QSizePolicy::Fixed
@@ -73,7 +83,7 @@ namespace gui {
                     timerService->stop();
                 }
             });
-            layout->addWidget(startStopBtn, 2, 1);
+            layout->addWidget(startStopBtn, 2, 2);
             startStopBtn->setDefault(true);
             startStopBtn->setSizePolicy(
                 QSizePolicy::Expanding,
