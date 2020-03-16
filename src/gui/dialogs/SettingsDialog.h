@@ -7,13 +7,17 @@
 
 #include <QDialog>
 #include <services/settings/TimerSettings.h>
+#include <gui/settings/TimerSettingsPane.h>
 #include <services/settings/ActionSettings.h>
+#include <gui/settings/ActionSettingsPane.h>
 
 namespace gui::dialog {
     class SettingsDialog : public QDialog {
     private:
         service::settings::TimerSettings *timerSettings;
+        settings::TimerSettingsPane *timerSettingsPane;
         service::settings::ActionSettings *actionSettings;
+        settings::ActionSettingsPane *actionSettingsPane;
     public:
         explicit SettingsDialog(service::settings::TimerSettings *timerSettings,
                                 service::settings::ActionSettings *actionSettings,

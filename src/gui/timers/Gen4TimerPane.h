@@ -8,7 +8,7 @@
 #include <QWidget>
 #include <services/TimerService.h>
 #include <services/CalibrationService.h>
-#include <services/timer/DelayTimer.h>
+#include <services/timers/DelayTimer.h>
 
 class QSpinBox;
 

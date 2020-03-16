@@ -56,6 +56,9 @@ namespace gui {
         // ----- settingsBtn -----
         {
             auto *settingsBtn = new QPushButton();
+            connect(timerService, &service::TimerService::activated, [settingsBtn](const bool activated) {
+                settingsBtn->setEnabled(!activated);
+            });
             connect(settingsBtn, &QPushButton::clicked, [this]() {
                 dialog::SettingsDialog dialog(timerSettings, actionSettings, this);
                 if (dialog.exec() == 0) {

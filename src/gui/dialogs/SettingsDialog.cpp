@@ -18,28 +18,36 @@ namespace gui::dialog {
     }
 
     void SettingsDialog::initComponents() {
-        auto *layout = new QVBoxLayout(this);
-        layout->setSpacing(10);
+        setWindowTitle("Preferences");
+        auto *layout = new QGridLayout(this);
+        layout->setVerticalSpacing(10);
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
-            layout->addWidget(tabPane);
+            actionSettingsPane = new settings::ActionSettingsPane(actionSettings);
+            timerSettingsPane = new settings::TimerSettingsPane(timerSettings);
+            tabPane->addTab(actionSettingsPane, "Action");
+            tabPane->addTab(timerSettingsPane, "Timer");
+            layout->addWidget(tabPane, 0, 0, 1, 2);
         }
-        // ----- buttonBar -----
+        // ----- cancelButton -----
         {
-            auto *buttonBar = new QHBoxLayout();
-            // ----- cancelBtn -----
-            {
-                auto *cancelButton = new QPushButton("Cancel");
-                buttonBar->addWidget(cancelButton);
-            }
-            // ----- okBtn -----
-            {
-                auto *okButton = new QPushButton("OK");
-                buttonBar->addWidget(okButton);
-                okButton->setDefault(true);
-            }
-            layout->addLayout(buttonBar);
+            auto *cancelButton = new QPushButton("Cancel");
+            connect(cancelButton, &QPushButton::clicked, [this]() {
+               done(QDialog::Rejected);
+            });
+            layout->addWidget(cancelButton, 1, 0);
+        }
+        // ----- okButton -----
+        {
+            auto *okButton = new QPushButton("OK");
+            connect(okButton, &QPushButton::clicked, [this]() {
+                actionSettingsPane->sync();
+                timerSettingsPane->sync();
+                done(QDialog::Accepted);
+            });
+            layout->addWidget(okButton, 1, 1);
+            okButton->setDefault(true);
         }
     }
 }

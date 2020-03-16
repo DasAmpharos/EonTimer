@@ -7,7 +7,7 @@
 
 #include <QWidget>
 #include "TimerDisplayPane.h"
-#include "timer/Gen4TimerPane.h"
+#include "timers/Gen4TimerPane.h"
 #include <services/TimerService.h>
 
 namespace gui {
