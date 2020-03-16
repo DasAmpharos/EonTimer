@@ -3,30 +3,30 @@
 //
 
 #include "ApplicationPane.h"
-#include "Gen4TimerPane.h"
-#include "TimerDisplayPane.h"
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QPushButton>
-#include <services/timer/SecondTimer.h>
-#include <services/timer/DelayTimer.h>
+#include <QFontDatabase>
+#include <QDebug>
+#include <gui/dialogs/SettingsDialog.h>
 
 namespace gui {
-    ApplicationPane::ApplicationPane(QSettings *settings, QWidget *parent)
-        : QWidget(parent) {
-        auto *timerSettings = new service::settings::TimerSettings(settings);
-        auto *actionSettings = new service::settings::ActionSettings(settings);
-
+    ApplicationPane::ApplicationPane(service::settings::ActionSettings *actionSettings,
+                                     service::settings::TimerSettings *timerSettings,
+                                     QWidget *parent)
+        : QWidget(parent),
+          timerSettings(timerSettings),
+          actionSettings(actionSettings) {
         auto *soundService = new service::SoundService(actionSettings, this);
+        timerService = new service::TimerService(timerSettings, actionSettings, soundService, this);
         auto *calibrationService = new service::CalibrationService(timerSettings);
         auto *delayTimer = new service::timer::DelayTimer(calibrationService, new service::timer::SecondTimer());
 
-        timerService = new service::TimerService(timerSettings, actionSettings, soundService, this);
-        gen4TimerPane = new Gen4TimerPane(delayTimer, calibrationService, timerService);
+        timerDisplayPane = new TimerDisplayPane(timerService);
+        gen4TimerPane = new timer::Gen4TimerPane(delayTimer, calibrationService, timerService);
         connect(timerService, &service::TimerService::activated, [this](const bool activated) {
             this->gen4TimerPane->setEnabled(!activated);
         });
-        timerDisplayPane = new TimerDisplayPane(timerService);
         initComponents();
     }
 
@@ -52,6 +52,24 @@ namespace gui {
             // tabPane->addTab(gen3TimerPane, "3");
             // tabPane->addTab(customTimerPane, "C");
             // tabPane->setCurrentIndex(1);
+        }
+        // ----- settingsBtn -----
+        {
+            auto *settingsBtn = new QPushButton();
+            connect(settingsBtn, &QPushButton::clicked, [this]() {
+                dialog::SettingsDialog dialog(timerSettings, actionSettings, this);
+                if (dialog.exec() == 0) {
+                }
+            });
+            const auto id = QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
+            const auto family = QFontDatabase::applicationFontFamilies(id)[0];
+            settingsBtn->setFont(QFont(family));
+            settingsBtn->setText("\uf013");
+            settingsBtn->setSizePolicy(
+                QSizePolicy::Fixed,
+                QSizePolicy::Fixed
+            );
+            layout->addWidget(settingsBtn, 2, 0);
         }
         // ----- updateBtn -----
         {

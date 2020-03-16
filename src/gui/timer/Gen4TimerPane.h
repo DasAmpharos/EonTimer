@@ -12,7 +12,7 @@
 
 class QSpinBox;
 
-namespace gui {
+namespace gui::timer {
     class Gen4TimerPane : public QWidget {
     Q_OBJECT
     private:
@@ -27,7 +27,8 @@ namespace gui {
     public:
         explicit Gen4TimerPane(const service::timer::DelayTimer *delayTimer,
                                const service::CalibrationService *calibrationService,
-                               service::TimerService *timerService);
+                               service::TimerService *timerService,
+                               QWidget *parent = nullptr);
 
         void calibrateTimer();
 

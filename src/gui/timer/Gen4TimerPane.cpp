@@ -8,30 +8,23 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QSpinBox>
-#include <gui/util/FontHelper.h>
 
-using namespace service;
-using namespace service::timer;
-
-namespace gui {
+namespace gui::timer {
     Gen4TimerPane::Gen4TimerPane(const service::timer::DelayTimer *delayTimer,
                                  const service::CalibrationService *calibrationService,
-                                 service::TimerService *timerService)
-        : QWidget(nullptr),
+                                 service::TimerService *timerService,
+                                 QWidget *parent)
+        : QWidget(parent),
           delayTimer(delayTimer),
           calibrationService(calibrationService),
           timerService(timerService) {
-        targetDelay = new QSpinBox();
-        targetSecond = new QSpinBox();
-        calibratedDelay = new QSpinBox();
-        calibratedSecond = new QSpinBox();
-        delayHit = new QSpinBox();
         initComponents();
     }
 
     void Gen4TimerPane::initComponents() {
         auto *rootLayout = new QVBoxLayout(this);
         void (QSpinBox::* valueChanged)(int) = &QSpinBox::valueChanged;
+        const auto updateTimer = std::bind(&Gen4TimerPane::updateTimer, this);
         // --- fields ---
         {
             auto *group = new QGroupBox();
@@ -41,61 +34,57 @@ namespace gui {
                 QSizePolicy::Expanding,
                 QSizePolicy::Expanding
             );
-            // ----- targetDelay -----
-            {
-                auto *label = new QLabel();
-                label->setText("Target Delay");
-                layout->addRow(label, targetDelay);
-                connect(targetDelay, valueChanged, [this]() {
-                    updateTimer();
-                });
-                targetDelay->setRange(0, 10000);
-                targetDelay->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-            }
-            // ----- targetSecond -----
-            {
-                auto *label = new QLabel();
-                label->setText("Target Second");
-                layout->addRow(label, targetSecond);
-                connect(targetSecond, valueChanged, [this]() {
-                    updateTimer();
-                });
-                targetSecond->setRange(0, 10000);
-                targetSecond->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-            }
             // ----- calibratedDelay -----
             {
                 auto *label = new QLabel();
                 label->setText("Calibrated Delay");
-                layout->addRow(label, calibratedDelay);
-                connect(calibratedDelay, valueChanged, [this]() {
-                    updateTimer();
-                });
+                calibratedDelay = new QSpinBox();
+                connect(calibratedDelay, valueChanged, updateTimer);
                 calibratedDelay->setRange(-10000, 10000);
                 calibratedDelay->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
                 );
+                layout->addRow(label, calibratedDelay);
             }
             // ----- calibratedSecond -----
             {
                 auto *label = new QLabel();
                 label->setText("Calibrated Second");
-                layout->addRow(label, calibratedSecond);
-                connect(calibratedSecond, valueChanged, [this]() {
-                    updateTimer();
-                });
+                calibratedSecond = new QSpinBox();
+                connect(calibratedSecond, valueChanged, updateTimer);
                 calibratedSecond->setRange(-10000, 10000);
                 calibratedSecond->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
                 );
+                layout->addRow(label, calibratedSecond);
+            }
+            // ----- targetDelay -----
+            {
+                auto *label = new QLabel();
+                label->setText("Target Delay");
+                targetDelay = new QSpinBox();
+                connect(targetDelay, valueChanged, updateTimer);
+                targetDelay->setRange(0, 10000);
+                targetDelay->setSizePolicy(
+                    QSizePolicy::Expanding,
+                    QSizePolicy::Fixed
+                );
+                layout->addRow(label, targetDelay);
+            }
+            // ----- targetSecond -----
+            {
+                auto *label = new QLabel();
+                label->setText("Target Second");
+                targetSecond = new QSpinBox();
+                connect(targetSecond, valueChanged, updateTimer);
+                targetSecond->setRange(0, 10000);
+                targetSecond->setSizePolicy(
+                    QSizePolicy::Expanding,
+                    QSizePolicy::Fixed
+                );
+                layout->addRow(label, targetSecond);
             }
             rootLayout->addWidget(group);
         }
@@ -106,8 +95,9 @@ namespace gui {
             rootLayout->addLayout(layout);
 
             auto *label = new QLabel();
-            label->setText("Delay Hit");
+            delayHit = new QSpinBox();
             layout->addRow(label, delayHit);
+            label->setText("Delay Hit");
             delayHit->setRange(0, 10000);
             delayHit->setSizePolicy(
                 QSizePolicy::Expanding,

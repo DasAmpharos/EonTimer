@@ -8,12 +8,15 @@
 #include <QWindow>
 #include <iostream>
 #include <QSoundEffect>
+#include <gui/dialogs/SettingsDialog.h>
 
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
         settings = new QSettings(this);
-        applicationPane = new ApplicationPane(settings, this);
+        actionSettings = new service::settings::ActionSettings(settings);
+        timerSettings = new service::settings::TimerSettings(settings);
+        applicationPane = new ApplicationPane(actionSettings, timerSettings, this);
 
         QPalette palette;
         QPixmap background(":/images/default_background_image.png");
@@ -53,6 +56,7 @@ namespace gui {
     }
 
     void ApplicationWindow::onPreferencesTriggered() {
-        std::cout << "preferences" << std::endl;
+        gui::dialog::SettingsDialog settings(timerSettings, actionSettings, this);
+        const int rval = settings.exec();
     }
 }

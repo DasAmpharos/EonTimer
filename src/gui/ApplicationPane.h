@@ -6,23 +6,23 @@
 #define EONTIMER_APPLICATIONPANE_H
 
 #include <QWidget>
+#include "TimerDisplayPane.h"
+#include "timer/Gen4TimerPane.h"
 #include <services/TimerService.h>
-#include <QSettings>
 
 namespace gui {
-    // @formatter:off
-    class Gen4TimerPane;
-    class TimerDisplayPane;
-    // @formatter:on
-
     class ApplicationPane : public QWidget {
     Q_OBJECT
     private:
-        Gen4TimerPane *gen4TimerPane;
-        TimerDisplayPane *timerDisplayPane;
+        service::settings::ActionSettings *actionSettings;
+        service::settings::TimerSettings *timerSettings;
         service::TimerService *timerService;
+        TimerDisplayPane *timerDisplayPane;
+        timer::Gen4TimerPane *gen4TimerPane;
     public:
-        ApplicationPane(QSettings *settings, QWidget *parent = nullptr);
+        ApplicationPane(service::settings::ActionSettings *actionSettings,
+                        service::settings::TimerSettings *timerSettings,
+                        QWidget *parent = nullptr);
 
     private:
         void initComponents();

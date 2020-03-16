@@ -6,7 +6,8 @@
 #define EONTIMER_APPLICATIONWINDOW_H
 
 #include <QMainWindow>
-#include <QSettings>
+#include <services/settings/ActionSettings.h>
+#include <services/settings/TimerSettings.h>
 
 namespace gui {
     class ApplicationPane;
@@ -15,6 +16,8 @@ namespace gui {
     Q_OBJECT
     private:
         QSettings *settings;
+        service::settings::ActionSettings *actionSettings;
+        service::settings::TimerSettings *timerSettings;
         ApplicationPane *applicationPane;
     public:
         explicit ApplicationWindow(QWidget *parent = nullptr);
