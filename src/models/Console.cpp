@@ -9,6 +9,7 @@ namespace model {
     const double NDS_FPS = 59.8261;
     const double GBA_FRAMERATE = 1000 / GBA_FPS;
     const double NDS_FRAMERATE = 1000 / NDS_FPS;
+    const std::vector<Console> VALUES{Console::NDS, Console::GBA};
 
     double getFps(const Console console) {
         switch (console) {
@@ -30,5 +31,9 @@ namespace model {
             default:
                 return -1.0;
         }
+    }
+
+    const std::vector<Console> &consoles() {
+        return VALUES;
     }
 }

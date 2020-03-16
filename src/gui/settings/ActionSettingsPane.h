@@ -7,16 +7,23 @@
 
 #include <QWidget>
 #include <services/settings/ActionSettings.h>
+#include <QSpinBox>
+#include <QComboBox>
 
 namespace gui::settings {
     class ActionSettingsPane : public QWidget {
     Q_OBJECT
     private:
         service::settings::ActionSettings *settings;
+        QComboBox *sound;
+        QSpinBox *interval;
+        QSpinBox *count;
     public:
         ActionSettingsPane(service::settings::ActionSettings *settings,
                            QWidget *parent = nullptr);
+
         void sync();
+
     private:
         void initComponents();
     };

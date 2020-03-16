@@ -6,50 +6,43 @@
 #define EONTIMER_TIMERSERVICE_H
 
 #include <QObject>
+#include <memory>
 #include <vector>
-#include "TimerThread.h"
-#include "SoundService.h"
-#include <models/TimerState.h>
 #include <services/settings/TimerSettings.h>
 #include <services/settings/ActionSettings.h>
+#include <models/TimerState.h>
+#include <QRunnable>
 
 namespace service {
     class TimerService : public QObject {
     Q_OBJECT
     private:
         bool running;
-        TimerThread *timerThread;
         std::shared_ptr<std::vector<int>> stages;
-
         settings::TimerSettings *timerSettings;
         settings::ActionSettings *actionSettings;
-        SoundService *sounds;
 
     public:
         explicit TimerService(settings::TimerSettings *timerSettings,
                               settings::ActionSettings *actionSettings,
-                              SoundService *sounds,
                               QObject *parent = nullptr);
 
         ~TimerService() override;
+
+        void setStages(std::shared_ptr<std::vector<int>> stages);
 
         void start();
 
         void stop();
 
-        void setStages(std::shared_ptr<std::vector<int>> stages);
-
         bool isRunning() const;
 
     private:
+        void reset();
+
         void run();
 
         std::chrono::milliseconds runStage(uint8_t stageIndex, std::chrono::milliseconds elapsed);
-
-        void reset();
-
-        void publishStateChange(const std::chrono::milliseconds &currentStage,
-                                const std::chrono::milliseconds &elapsed);
 
         // @formatter:off
     signals:
@@ -61,6 +54,5 @@ namespace service {
         // @formatter:on
     };
 }
-
 
 #endif //EONTIMER_TIMERSERVICE_H

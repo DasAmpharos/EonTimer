@@ -4,6 +4,8 @@
 
 #include "SoundService.h"
 #include <iostream>
+#include <QThreadPool>
+#include <util/QRunnableFunction.h>
 
 namespace service {
     static QSoundEffect *loadSound(const std::string &filename);
@@ -18,25 +20,24 @@ namespace service {
           mPop(loadSound(":/sounds/pop.wav")) {
     }
 
-    void SoundService::play(const model::Sound sound) const {
-        switch (sound) {
-            case model::Sound::BEEP:
-                mBeep->play();
-                break;
-            case model::Sound::DING:
-                mDing->play();
-                break;
-            case model::Sound::TICK:
-                mTick->play();
-                break;
-            case model::Sound::POP:
-                mPop->play();
-                break;
-        }
-    }
-
-    void SoundService::play() const {
-        play(actionSettings->getSound());
+    void SoundService::play() {
+        QThreadPool::globalInstance()->start(
+            new util::QRunnableFunction([this]() {
+                switch (this->actionSettings->getSound()) {
+                    case model::Sound::BEEP:
+                        mBeep->play();
+                        break;
+                    case model::Sound::DING:
+                        mDing->play();
+                        break;
+                    case model::Sound::TICK:
+                        mTick->play();
+                        break;
+                    case model::Sound::POP:
+                        mPop->play();
+                        break;
+                }
+            }));
     }
 
     QSoundEffect *loadSound(const std::string &filename) {

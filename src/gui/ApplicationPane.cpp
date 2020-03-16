@@ -13,12 +13,12 @@
 namespace gui {
     ApplicationPane::ApplicationPane(service::settings::ActionSettings *actionSettings,
                                      service::settings::TimerSettings *timerSettings,
+                                     service::TimerService *timerService,
                                      QWidget *parent)
         : QWidget(parent),
           timerSettings(timerSettings),
-          actionSettings(actionSettings) {
-        auto *soundService = new service::SoundService(actionSettings, this);
-        timerService = new service::TimerService(timerSettings, actionSettings, soundService, this);
+          actionSettings(actionSettings),
+          timerService(timerService) {
         auto *calibrationService = new service::CalibrationService(timerSettings);
         auto *delayTimer = new service::timer::DelayTimer(calibrationService, new service::timer::SecondTimer());
 

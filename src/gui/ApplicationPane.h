@@ -22,6 +22,7 @@ namespace gui {
     public:
         ApplicationPane(service::settings::ActionSettings *actionSettings,
                         service::settings::TimerSettings *timerSettings,
+                        service::TimerService *timerService,
                         QWidget *parent = nullptr);
 
     private:

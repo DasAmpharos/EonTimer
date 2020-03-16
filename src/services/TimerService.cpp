@@ -6,36 +6,45 @@
 
 #include "TimerService.h"
 #include "SoundService.h"
-#include <models/TimerState.h>
-#include <models/Sound.h>
-#include <iostream>
+#include <QThreadPool>
+#include <util/QRunnableFunction.h>
 #include <stack>
 
 using namespace std::literals::chrono_literals;
 
 namespace service {
-
     TimerService::TimerService(settings::TimerSettings *timerSettings,
                                settings::ActionSettings *actionSettings,
-                               SoundService *sounds,
                                QObject *parent)
         : QObject(parent),
           timerSettings(timerSettings),
           actionSettings(actionSettings),
-          sounds(sounds),
-          running(false),
-          timerThread(new TimerThread(this)) {
+          running(false) {
+        auto *sounds = new service::SoundService(actionSettings);
+        connect(this, &TimerService::actionTriggered, [sounds]() {
+            sounds->play();
+        });
     }
 
     TimerService::~TimerService() {
-        stop();
+        running = false;
+    }
+
+    void TimerService::setStages(std::shared_ptr<std::vector<int>> stages) {
+        if (!running) {
+            this->stages = std::move(stages);
+            reset();
+        }
     }
 
     void TimerService::start() {
         if (!running) {
-            running = true;
-            emit activated(true);
-            timerThread->submit(std::bind(&TimerService::run, this));
+            QThreadPool::globalInstance()->start(
+                new util::QRunnableFunction([this]() {
+                    running = true;
+                    emit activated(true);
+                    run();
+                }));
         }
     }
 
@@ -47,9 +56,20 @@ namespace service {
         }
     }
 
+    void TimerService::reset() {
+        auto totalTime = 0ms;
+        for (int stage : (*stages)) {
+            totalTime += std::chrono::milliseconds(stage);
+        }
+        const auto currentStage = std::chrono::milliseconds((*stages)[0]);
+        emit stateChanged(model::TimerState(currentStage, currentStage));
+        emit minutesBeforeTargetChanged(std::chrono::duration_cast<std::chrono::minutes>(totalTime));
+        emit nextStageChanged(stages->size() >= 2 ? std::chrono::milliseconds((*stages)[1]) : 0ms);
+    }
+
     void TimerService::run() {
+        auto preElapsed = 0ms;
         uint8_t stageIndex = 0;
-        auto preElapsed = std::chrono::milliseconds(0);
         while (running && stageIndex < stages->size()) {
             auto currentStage = std::chrono::milliseconds((*stages)[stageIndex]);
             preElapsed = runStage(stageIndex, preElapsed) - currentStage;
@@ -58,8 +78,7 @@ namespace service {
         stop();
     }
 
-    std::chrono::milliseconds
-    TimerService::runStage(const uint8_t stageIndex, const std::chrono::milliseconds preElapsed) {
+    std::chrono::milliseconds TimerService::runStage(uint8_t stageIndex, std::chrono::milliseconds preElapsed) {
         const auto period = timerSettings->getRefreshInterval();
         const auto currentStage = std::chrono::milliseconds((*stages)[stageIndex]);
 
@@ -81,43 +100,13 @@ namespace service {
             lastTimestamp = now;
             elapsed += delta;
 
-            publishStateChange(currentStage, elapsed);
+            emit stateChanged(model::TimerState(currentStage, currentStage - elapsed));
             if (currentStage - elapsed <= actionStack.top()) {
-                sounds->play(model::Sound::TICK);
+                emit actionTriggered();
                 actionStack.pop();
             }
         }
         return elapsed;
-    }
-
-    void TimerService::reset() {
-        const auto currentStage = std::chrono::milliseconds((*stages)[0]);
-        publishStateChange(currentStage, 0ms);
-
-        auto totalTime = 0ms;
-        for (int stage : (*stages)) {
-            totalTime += std::chrono::milliseconds(stage);
-        }
-        emit minutesBeforeTargetChanged(std::chrono::duration_cast<std::chrono::minutes>(totalTime));
-
-        if (stages->size() >= 2) {
-            emit nextStageChanged(std::chrono::milliseconds((*stages)[1]));
-        } else {
-            emit nextStageChanged(0ms);
-        }
-    }
-
-    void TimerService::publishStateChange(const std::chrono::milliseconds &currentStage,
-                                          const std::chrono::milliseconds &elapsed) {
-        const model::TimerState state(currentStage, currentStage - elapsed);
-        emit stateChanged(state);
-    }
-
-    void TimerService::setStages(std::shared_ptr<std::vector<int>> stages) {
-        if (!running) {
-            this->stages = std::move(stages);
-            reset();
-        }
     }
 
     bool TimerService::isRunning() const {

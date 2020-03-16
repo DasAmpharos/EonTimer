@@ -9,6 +9,7 @@
 #include <iostream>
 #include <QSoundEffect>
 #include <gui/dialogs/SettingsDialog.h>
+#include <QThreadPool>
 
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
@@ -16,7 +17,8 @@ namespace gui {
         settings = new QSettings(this);
         actionSettings = new service::settings::ActionSettings(settings);
         timerSettings = new service::settings::TimerSettings(settings);
-        applicationPane = new ApplicationPane(actionSettings, timerSettings, this);
+        timerService = new service::TimerService(timerSettings, actionSettings, this);
+        applicationPane = new ApplicationPane(actionSettings, timerSettings, timerService, this);
 
         QPalette palette;
         QPixmap background(":/images/default_background_image.png");
@@ -39,6 +41,9 @@ namespace gui {
                 auto *about = new QAction();
                 about->setMenuRole(QAction::AboutRole);
                 connect(about, SIGNAL(triggered(bool)), this, SLOT(onAboutTriggered()));
+                connect(timerService, &service::TimerService::activated, [about](const bool activated) {
+                   about->setEnabled(!activated);
+                });
                 menu->addAction(about);
             }
             // ----- preferences -----
@@ -46,6 +51,9 @@ namespace gui {
                 auto *preferences = new QAction();
                 preferences->setMenuRole(QAction::PreferencesRole);
                 connect(preferences, SIGNAL(triggered(bool)), this, SLOT(onPreferencesTriggered()));
+                connect(timerService, &service::TimerService::activated, [preferences](const bool activated) {
+                    preferences->setEnabled(!activated);
+                });
                 menu->addAction(preferences);
             }
         }

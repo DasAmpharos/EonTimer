@@ -26,8 +26,7 @@ namespace service {
 
         // @formatter:off
     public slots:
-        void play(model::Sound sound) const;
-        void play() const;
+        void play();
         // @formatter:on
     };
 }

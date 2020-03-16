@@ -8,16 +8,17 @@
 #include <QMainWindow>
 #include <services/settings/ActionSettings.h>
 #include <services/settings/TimerSettings.h>
+#include <services/TimerService.h>
+#include "ApplicationPane.h"
 
 namespace gui {
-    class ApplicationPane;
-
     class ApplicationWindow : public QMainWindow {
     Q_OBJECT
     private:
         QSettings *settings;
         service::settings::ActionSettings *actionSettings;
         service::settings::TimerSettings *timerSettings;
+        service::TimerService *timerService;
         ApplicationPane *applicationPane;
     public:
         explicit ApplicationWindow(QWidget *parent = nullptr);
