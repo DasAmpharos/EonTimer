@@ -6,6 +6,7 @@
 #define EONTIMER_TIMERSERVICE_H
 
 #include <QObject>
+#include <util/WorkerThread.h>
 #include <memory>
 #include <vector>
 #include <services/settings/TimerSettings.h>
@@ -18,6 +19,7 @@ namespace service {
     Q_OBJECT
     private:
         bool running;
+        QThread *timerThread;
         std::shared_ptr<std::vector<int>> stages;
         settings::TimerSettings *timerSettings;
         settings::ActionSettings *actionSettings;

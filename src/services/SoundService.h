@@ -5,15 +5,17 @@
 #ifndef EONTIMER_SOUNDREGISTRY_H
 #define EONTIMER_SOUNDREGISTRY_H
 
-#include <string>
-#include <models/Sound.h>
-#include <QSoundEffect>
+#include <QObject>
+#include <QThread>
 #include <services/settings/ActionSettings.h>
+#include <QSoundEffect>
+#include <util/WorkerThread.h>
 
 namespace service {
     class SoundService : public QObject {
     Q_OBJECT
     private:
+        util::WorkerThread *workerThread;
         const settings::ActionSettings *actionSettings;
         QSoundEffect *mBeep;
         QSoundEffect *mDing;

@@ -9,6 +9,7 @@
 #include <QThreadPool>
 #include <util/QRunnableFunction.h>
 #include <stack>
+#include <iostream>
 
 using namespace std::literals::chrono_literals;
 
@@ -20,14 +21,12 @@ namespace service {
           timerSettings(timerSettings),
           actionSettings(actionSettings),
           running(false) {
-        auto *sounds = new service::SoundService(actionSettings);
-        connect(this, &TimerService::actionTriggered, [sounds]() {
-            sounds->play();
-        });
+        auto *sounds = new service::SoundService(actionSettings, this);
+        connect(this, SIGNAL(actionTriggered()), sounds, SLOT(play()));
     }
 
     TimerService::~TimerService() {
-        running = false;
+        stop();
     }
 
     void TimerService::setStages(std::shared_ptr<std::vector<int>> stages) {
@@ -39,18 +38,18 @@ namespace service {
 
     void TimerService::start() {
         if (!running) {
-            QThreadPool::globalInstance()->start(
-                new util::QRunnableFunction([this]() {
-                    running = true;
-                    emit activated(true);
-                    run();
-                }));
+            running = true;
+            timerThread = QThread::create(&TimerService::run, this);
+            timerThread->start();
+            emit activated(true);
         }
     }
 
     void TimerService::stop() {
         if (running) {
             running = false;
+            timerThread->quit();
+            timerThread->wait();
             emit activated(false);
             reset();
         }
@@ -75,10 +74,13 @@ namespace service {
             preElapsed = runStage(stageIndex, preElapsed) - currentStage;
             stageIndex++;
         }
-        stop();
+        running = false;
+        emit activated(false);
+        reset();
     }
 
-    std::chrono::milliseconds TimerService::runStage(uint8_t stageIndex, std::chrono::milliseconds preElapsed) {
+    std::chrono::milliseconds
+    TimerService::runStage(const uint8_t stageIndex, const std::chrono::milliseconds preElapsed) {
         const auto period = timerSettings->getRefreshInterval();
         const auto currentStage = std::chrono::milliseconds((*stages)[stageIndex]);
 
@@ -88,23 +90,28 @@ namespace service {
             actionStack.push(actionInterval * i);
         }
 
+        auto ticks = 0;
         auto elapsed = preElapsed;
         auto adjustedPeriod = period;
         auto lastTimestamp = std::chrono::high_resolution_clock::now();
         while (running && elapsed < currentStage) {
+            const auto nextAction = actionStack.top();
+            const auto remainingUntilAction = currentStage - elapsed - nextAction;
+            if (remainingUntilAction < adjustedPeriod) adjustedPeriod = remainingUntilAction;
             std::this_thread::sleep_for(std::chrono::duration_cast<std::chrono::nanoseconds>(adjustedPeriod));
 
             const auto now = std::chrono::high_resolution_clock::now();
             const auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTimestamp);
-            adjustedPeriod -= delta - period;
-            lastTimestamp = now;
-            elapsed += delta;
-
-            emit stateChanged(model::TimerState(currentStage, currentStage - elapsed));
-            if (currentStage - elapsed <= actionStack.top()) {
+            const auto remaining = currentStage - elapsed - delta;
+            if (remaining <= nextAction) {
                 emit actionTriggered();
                 actionStack.pop();
             }
+            if (ticks % 4 == 0) emit stateChanged(model::TimerState(currentStage, remaining));
+            adjustedPeriod -= delta - period;
+            lastTimestamp = now;
+            elapsed += delta;
+            ticks++;
         }
         return elapsed;
     }
