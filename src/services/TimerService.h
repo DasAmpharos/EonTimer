@@ -6,13 +6,12 @@
 #define EONTIMER_TIMERSERVICE_H
 
 #include <QObject>
-#include <util/WorkerThread.h>
+#include <QThread>
 #include <memory>
 #include <vector>
 #include <services/settings/TimerSettings.h>
 #include <services/settings/ActionSettings.h>
 #include <models/TimerState.h>
-#include <QRunnable>
 
 namespace service {
     class TimerService : public QObject {

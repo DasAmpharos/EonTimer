@@ -7,9 +7,7 @@
 #include "TimerService.h"
 #include "SoundService.h"
 #include <QThreadPool>
-#include <util/QRunnableFunction.h>
 #include <stack>
-#include <iostream>
 
 using namespace std::literals::chrono_literals;
 
@@ -22,11 +20,17 @@ namespace service {
           actionSettings(actionSettings),
           running(false) {
         auto *sounds = new service::SoundService(actionSettings, this);
-        connect(this, SIGNAL(actionTriggered()), sounds, SLOT(play()));
+        connect(this, &TimerService::actionTriggered, [sounds] {
+            sounds->play();
+        });
     }
 
     TimerService::~TimerService() {
-        stop();
+        if (running) {
+            running = false;
+            timerThread->quit();
+            timerThread->wait();
+        }
     }
 
     void TimerService::setStages(std::shared_ptr<std::vector<int>> stages) {

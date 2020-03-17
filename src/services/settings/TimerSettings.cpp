@@ -3,6 +3,7 @@
 //
 
 #include "TimerSettings.h"
+#include <QtCore>
 
 namespace service::settings {
     const char *CONSOLE = "timer/console";
@@ -15,6 +16,9 @@ namespace service::settings {
 
     TimerSettings::TimerSettings(QSettings *settings)
         : settings(settings) {
+        qApp->connect(qApp, &QCoreApplication::aboutToQuit, [settings] {
+            settings->sync();
+        });
     }
 
     model::Console TimerSettings::getConsole() const {
@@ -23,7 +27,6 @@ namespace service::settings {
 
     void TimerSettings::setConsole(const model::Console console) {
         settings->setValue(CONSOLE, console);
-        settings->sync();
     }
 
     std::chrono::milliseconds TimerSettings::getRefreshInterval() const {
@@ -32,7 +35,6 @@ namespace service::settings {
 
     void TimerSettings::setRefreshInterval(const std::chrono::milliseconds &refreshInterval) {
         settings->setValue(REFRESH_INTERVAL, static_cast<qint64>(refreshInterval.count()));
-        settings->sync();
     }
 
     bool TimerSettings::isPrecisionCalibrationEnabled() const {
@@ -41,6 +43,5 @@ namespace service::settings {
 
     void TimerSettings::setPrecisionCalibrationEnabled(const bool precisionCalibrationEnabled) {
         settings->setValue(PRECISION_CALIBRATION_ENABLED, precisionCalibrationEnabled);
-        settings->sync();
     }
 }

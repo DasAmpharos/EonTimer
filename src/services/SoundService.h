@@ -6,21 +6,18 @@
 #define EONTIMER_SOUNDREGISTRY_H
 
 #include <QObject>
-#include <QThread>
 #include <services/settings/ActionSettings.h>
-#include <QSoundEffect>
-#include <util/WorkerThread.h>
+#include <SFML/Audio/Sound.hpp>
 
 namespace service {
     class SoundService : public QObject {
     Q_OBJECT
     private:
-        util::WorkerThread *workerThread;
         const settings::ActionSettings *actionSettings;
-        QSoundEffect *mBeep;
-        QSoundEffect *mDing;
-        QSoundEffect *mTick;
-        QSoundEffect *mPop;
+        sf::Sound *mBeep;
+        sf::Sound *mDing;
+        sf::Sound *mTick;
+        sf::Sound *mPop;
 
     public:
         explicit SoundService(const settings::ActionSettings *actionSettings,

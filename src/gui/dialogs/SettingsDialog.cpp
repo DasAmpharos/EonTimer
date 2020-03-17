@@ -42,8 +42,8 @@ namespace gui::dialog {
         {
             auto *okButton = new QPushButton("OK");
             connect(okButton, &QPushButton::clicked, [this]() {
-                actionSettingsPane->sync();
-                timerSettingsPane->sync();
+                actionSettingsPane->updateSettings();
+                timerSettingsPane->updateSettings();
                 done(QDialog::Accepted);
             });
             layout->addWidget(okButton, 1, 1);

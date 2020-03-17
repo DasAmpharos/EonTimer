@@ -15,7 +15,6 @@ namespace gui {
     class ApplicationWindow : public QMainWindow {
     Q_OBJECT
     private:
-        QSettings *settings;
         service::settings::ActionSettings *actionSettings;
         service::settings::TimerSettings *timerSettings;
         service::TimerService *timerService;

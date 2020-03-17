@@ -3,6 +3,7 @@
 //
 
 #include "ActionSettings.h"
+#include <QtCore>
 
 namespace service::settings {
     const char *SOUND = "action/sound";
@@ -16,6 +17,9 @@ namespace service::settings {
 
     ActionSettings::ActionSettings(QSettings *settings)
         : settings(settings) {
+        qApp->connect(qApp, &QCoreApplication::aboutToQuit, [settings] {
+            settings->sync();
+        });
     }
 
     model::Sound ActionSettings::getSound() const {
@@ -24,7 +28,6 @@ namespace service::settings {
 
     void ActionSettings::setSound(const model::Sound sound) {
         settings->setValue(SOUND, sound);
-        settings->sync();
     }
 
     std::chrono::milliseconds ActionSettings::getInterval() const {
@@ -33,7 +36,6 @@ namespace service::settings {
 
     void ActionSettings::setInterval(const std::chrono::milliseconds &interval) {
         settings->setValue(INTERVAL, static_cast<qint64>(interval.count()));
-        settings->sync();
     }
 
     uint ActionSettings::getCount() const {
@@ -42,6 +44,5 @@ namespace service::settings {
 
     void ActionSettings::setCount(const uint count) {
         settings->setValue(COUNT, count);
-        settings->sync();
     }
 }

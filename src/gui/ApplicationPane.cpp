@@ -11,7 +11,8 @@
 #include <gui/dialogs/SettingsDialog.h>
 
 namespace gui {
-    ApplicationPane::ApplicationPane(service::settings::ActionSettings *actionSettings,
+    ApplicationPane::ApplicationPane(QSettings *settings,
+                                     service::settings::ActionSettings *actionSettings,
                                      service::settings::TimerSettings *timerSettings,
                                      service::TimerService *timerService,
                                      QWidget *parent)
@@ -23,7 +24,8 @@ namespace gui {
         auto *delayTimer = new service::timer::DelayTimer(calibrationService, new service::timer::SecondTimer());
 
         timerDisplayPane = new TimerDisplayPane(timerService);
-        gen4TimerPane = new timer::Gen4TimerPane(delayTimer, calibrationService, timerService);
+        auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
+        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings, delayTimer, calibrationService, timerService);
         connect(timerService, &service::TimerService::activated, [this](const bool activated) {
             this->gen4TimerPane->setEnabled(!activated);
         });

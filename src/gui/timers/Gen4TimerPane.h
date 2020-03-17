@@ -9,6 +9,7 @@
 #include <services/TimerService.h>
 #include <services/CalibrationService.h>
 #include <services/timers/DelayTimer.h>
+#include <services/settings/Gen4TimerSettings.h>
 
 class QSpinBox;
 
@@ -16,6 +17,7 @@ namespace gui::timer {
     class Gen4TimerPane : public QWidget {
     Q_OBJECT
     private:
+        service::settings::Gen4TimerSettings *settings;
         const service::timer::DelayTimer *delayTimer;
         const service::CalibrationService *calibrationService;
         service::TimerService *timerService;
@@ -25,7 +27,8 @@ namespace gui::timer {
         QSpinBox *calibratedSecond;
         QSpinBox *delayHit;
     public:
-        explicit Gen4TimerPane(const service::timer::DelayTimer *delayTimer,
+        explicit Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
+                               const service::timer::DelayTimer *delayTimer,
                                const service::CalibrationService *calibrationService,
                                service::TimerService *timerService,
                                QWidget *parent = nullptr);

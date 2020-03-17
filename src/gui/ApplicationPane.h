@@ -20,7 +20,8 @@ namespace gui {
         TimerDisplayPane *timerDisplayPane;
         timer::Gen4TimerPane *gen4TimerPane;
     public:
-        ApplicationPane(service::settings::ActionSettings *actionSettings,
+        ApplicationPane(QSettings *settings,
+                        service::settings::ActionSettings *actionSettings,
                         service::settings::TimerSettings *timerSettings,
                         service::TimerService *timerService,
                         QWidget *parent = nullptr);

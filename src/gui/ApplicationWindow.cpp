@@ -3,22 +3,19 @@
 //
 
 #include "ApplicationWindow.h"
-#include "ApplicationPane.h"
 #include <QMenuBar>
 #include <QWindow>
 #include <iostream>
-#include <QSoundEffect>
 #include <gui/dialogs/SettingsDialog.h>
-#include <QThreadPool>
 
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
-        settings = new QSettings(this);
+        auto *settings = new QSettings(this);
         actionSettings = new service::settings::ActionSettings(settings);
         timerSettings = new service::settings::TimerSettings(settings);
         timerService = new service::TimerService(timerSettings, actionSettings, this);
-        applicationPane = new ApplicationPane(actionSettings, timerSettings, timerService, this);
+        applicationPane = new ApplicationPane(settings, actionSettings, timerSettings, timerService, this);
 
         QPalette palette;
         QPixmap background(":/images/default_background_image.png");
@@ -42,7 +39,7 @@ namespace gui {
                 about->setMenuRole(QAction::AboutRole);
                 connect(about, SIGNAL(triggered(bool)), this, SLOT(onAboutTriggered()));
                 connect(timerService, &service::TimerService::activated, [about](const bool activated) {
-                   about->setEnabled(!activated);
+                    about->setEnabled(!activated);
                 });
                 menu->addAction(about);
             }

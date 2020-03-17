@@ -3,13 +3,12 @@
 //
 
 #include "SoundService.h"
-#include <iostream>
-#include <QtCore>
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <QResource>
 
 namespace service {
-    QThread *mThread;
 
-    static QSoundEffect *loadSound(const std::string &filename, QObject *parent = nullptr);
+    static sf::Sound *loadSound(const char *filename);
 
     SoundService::SoundService(const settings::ActionSettings *actionSettings,
                                QObject *parent)
@@ -38,9 +37,12 @@ namespace service {
         }
     }
 
-    QSoundEffect *loadSound(const std::string &filename, QObject *parent) {
-        auto *sound = new QSoundEffect(parent);
-        sound->setSource(QUrl::fromLocalFile(QString::fromStdString(filename)));
+    sf::Sound *loadSound(const char* filename) {
+        QResource resource(filename);
+        auto *sound = new sf::Sound();
+        auto *buffer = new sf::SoundBuffer();
+        buffer->loadFromMemory(resource.data(), static_cast<size_t>(resource.size()));
+        sound->setBuffer(*buffer);
         return sound;
     }
 }

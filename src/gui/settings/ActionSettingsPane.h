@@ -22,7 +22,7 @@ namespace gui::settings {
         ActionSettingsPane(service::settings::ActionSettings *settings,
                            QWidget *parent = nullptr);
 
-        void sync();
+        void updateSettings();
 
     private:
         void initComponents();

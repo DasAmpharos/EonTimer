@@ -16,7 +16,7 @@ namespace gui::settings {
         TimerSettingsPane(service::settings::TimerSettings *settings,
                           QWidget *parent = nullptr);
 
-        void sync();
+        void updateSettings();
     private:
         void initComponents();
     };

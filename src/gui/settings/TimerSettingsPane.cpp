@@ -15,7 +15,7 @@ namespace gui::settings {
     void TimerSettingsPane::initComponents() {
     }
 
-    void TimerSettingsPane::sync() {
-        std::cout << "gui::settings::TimerSettingsPane::sync" << std::endl;
+    void TimerSettingsPane::updateSettings() {
+        std::cout << "gui::settings::TimerSettingsPane::updateSettings" << std::endl;
     }
 }

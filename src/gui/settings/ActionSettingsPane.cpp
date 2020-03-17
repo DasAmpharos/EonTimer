@@ -60,7 +60,7 @@ namespace gui::settings {
 
     }
 
-    void ActionSettingsPane::sync() {
+    void ActionSettingsPane::updateSettings() {
         settings->setSound(model::sounds()[sound->currentIndex()]);
         settings->setInterval(std::chrono::milliseconds(interval->value()));
         settings->setCount(static_cast<uint>(count->value()));

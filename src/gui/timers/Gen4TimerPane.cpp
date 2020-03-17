@@ -10,15 +10,18 @@
 #include <QSpinBox>
 
 namespace gui::timer {
-    Gen4TimerPane::Gen4TimerPane(const service::timer::DelayTimer *delayTimer,
+    Gen4TimerPane::Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
+                                 const service::timer::DelayTimer *delayTimer,
                                  const service::CalibrationService *calibrationService,
                                  service::TimerService *timerService,
                                  QWidget *parent)
         : QWidget(parent),
+          settings(settings),
           delayTimer(delayTimer),
           calibrationService(calibrationService),
           timerService(timerService) {
         initComponents();
+        updateTimer();
     }
 
     void Gen4TimerPane::initComponents() {
@@ -39,8 +42,9 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Calibrated Delay");
                 calibratedDelay = new QSpinBox();
-                connect(calibratedDelay, valueChanged, updateTimer);
                 calibratedDelay->setRange(-10000, 10000);
+                calibratedDelay->setValue(settings->getCalibratedDelay());
+                connect(calibratedDelay, valueChanged, updateTimer);
                 calibratedDelay->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -52,8 +56,9 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Calibrated Second");
                 calibratedSecond = new QSpinBox();
-                connect(calibratedSecond, valueChanged, updateTimer);
                 calibratedSecond->setRange(-10000, 10000);
+                calibratedSecond->setValue(settings->getCalibratedSecond());
+                connect(calibratedSecond, valueChanged, updateTimer);
                 calibratedSecond->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -65,8 +70,9 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Target Delay");
                 targetDelay = new QSpinBox();
-                connect(targetDelay, valueChanged, updateTimer);
                 targetDelay->setRange(0, 10000);
+                targetDelay->setValue(settings->getTargetDelay());
+                connect(targetDelay, valueChanged, updateTimer);
                 targetDelay->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -78,8 +84,9 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Target Second");
                 targetSecond = new QSpinBox();
-                connect(targetSecond, valueChanged, updateTimer);
                 targetSecond->setRange(0, 10000);
+                targetSecond->setValue(settings->getTargetSecond());
+                connect(targetSecond, valueChanged, updateTimer);
                 targetSecond->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
