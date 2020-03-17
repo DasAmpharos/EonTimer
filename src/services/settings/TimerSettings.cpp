@@ -3,7 +3,6 @@
 //
 
 #include "TimerSettings.h"
-#include <QtCore>
 
 namespace service::settings {
     const char *CONSOLE = "timer/console";
@@ -16,9 +15,6 @@ namespace service::settings {
 
     TimerSettings::TimerSettings(QSettings *settings)
         : settings(settings) {
-        qApp->connect(qApp, &QCoreApplication::aboutToQuit, [settings] {
-            settings->sync();
-        });
     }
 
     model::Console TimerSettings::getConsole() const {

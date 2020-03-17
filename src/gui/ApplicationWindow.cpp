@@ -11,7 +11,7 @@
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
-        auto *settings = new QSettings(this);
+        settings = new QSettings(this);
         actionSettings = new service::settings::ActionSettings(settings);
         timerSettings = new service::settings::TimerSettings(settings);
         timerService = new service::TimerService(timerSettings, actionSettings, this);
@@ -54,6 +54,10 @@ namespace gui {
                 menu->addAction(preferences);
             }
         }
+    }
+
+    void ApplicationWindow::closeEvent(QCloseEvent *event) {
+        settings->sync();
     }
 
     void ApplicationWindow::onAboutTriggered() {

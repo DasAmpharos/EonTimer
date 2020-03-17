@@ -4,6 +4,7 @@
 
 #include <QtCore>
 #include "Gen4TimerSettings.h"
+#include <iostream>
 
 namespace service::settings {
     const char *CALIBRATED_DELAY = "gen4/calibratedDelay";
@@ -18,10 +19,6 @@ namespace service::settings {
 
     Gen4TimerSettings::Gen4TimerSettings(QSettings *settings)
         : settings(settings) {
-        // TODO: this isn't working
-        qApp->connect(qApp, &QCoreApplication::aboutToQuit, [settings] {
-            settings->sync();
-        });
     }
 
     int Gen4TimerSettings::getCalibratedDelay() const {

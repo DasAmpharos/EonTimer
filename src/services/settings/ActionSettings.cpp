@@ -3,7 +3,6 @@
 //
 
 #include "ActionSettings.h"
-#include <QtCore>
 
 namespace service::settings {
     const char *SOUND = "action/sound";
@@ -17,9 +16,6 @@ namespace service::settings {
 
     ActionSettings::ActionSettings(QSettings *settings)
         : settings(settings) {
-        qApp->connect(qApp, &QCoreApplication::aboutToQuit, [settings] {
-            settings->sync();
-        });
     }
 
     model::Sound ActionSettings::getSound() const {

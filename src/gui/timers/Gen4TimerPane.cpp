@@ -27,7 +27,6 @@ namespace gui::timer {
     void Gen4TimerPane::initComponents() {
         auto *rootLayout = new QVBoxLayout(this);
         void (QSpinBox::* valueChanged)(int) = &QSpinBox::valueChanged;
-        const auto updateTimer = std::bind(&Gen4TimerPane::updateTimer, this);
         // --- fields ---
         {
             auto *group = new QGroupBox();
@@ -44,7 +43,10 @@ namespace gui::timer {
                 calibratedDelay = new QSpinBox();
                 calibratedDelay->setRange(-10000, 10000);
                 calibratedDelay->setValue(settings->getCalibratedDelay());
-                connect(calibratedDelay, valueChanged, updateTimer);
+                connect(calibratedDelay, valueChanged, [this](const int calibratedDelay) {
+                    settings->setCalibratedDelay(calibratedDelay);
+                    updateTimer();
+                });
                 calibratedDelay->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -58,7 +60,10 @@ namespace gui::timer {
                 calibratedSecond = new QSpinBox();
                 calibratedSecond->setRange(-10000, 10000);
                 calibratedSecond->setValue(settings->getCalibratedSecond());
-                connect(calibratedSecond, valueChanged, updateTimer);
+                connect(calibratedSecond, valueChanged, [this](const int calibratedSecond) {
+                    settings->setCalibratedSecond(calibratedSecond);
+                    updateTimer();
+                });
                 calibratedSecond->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -72,7 +77,10 @@ namespace gui::timer {
                 targetDelay = new QSpinBox();
                 targetDelay->setRange(0, 10000);
                 targetDelay->setValue(settings->getTargetDelay());
-                connect(targetDelay, valueChanged, updateTimer);
+                connect(targetDelay, valueChanged, [this](const int targetDelay) {
+                    settings->setTargetDelay(targetDelay);
+                    updateTimer();
+                });
                 targetDelay->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -86,7 +94,10 @@ namespace gui::timer {
                 targetSecond = new QSpinBox();
                 targetSecond->setRange(0, 10000);
                 targetSecond->setValue(settings->getTargetSecond());
-                connect(targetSecond, valueChanged, updateTimer);
+                connect(targetSecond, valueChanged, [this](const int targetSecond) {
+                    settings->setTargetSecond(targetSecond);
+                    updateTimer();
+                });
                 targetSecond->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
