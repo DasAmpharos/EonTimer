@@ -9,6 +9,7 @@
 #include <gui/dialogs/SettingsDialog.h>
 #include <QStyle>
 #include <QFile>
+#include <app.h>
 
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
@@ -28,7 +29,7 @@ namespace gui {
     }
 
     void ApplicationWindow::initComponents() {
-        setWindowTitle("EonTimer");
+        setWindowTitle("EonTimer - " VERSION);
         setCentralWidget(applicationPane);
         setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
         setFixedSize(525, 395);

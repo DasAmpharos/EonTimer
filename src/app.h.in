@@ -1,0 +1,12 @@
+//
+// Created by Dylan Meadows on 2020-03-17.
+//
+
+#ifndef APP_H
+#define APP_H
+
+#define GIT_BRANCH "@GIT_BRANCH@"
+#define GIT_COMMIT_HASH "@GIT_COMMIT_HASH@"
+#define VERSION "@PROJECT_VERSION_MAJOR@.@PROJECT_VERSION_MINOR@.@PROJECT_VERSION_PATCH@"
+
+#endif // APP_H
