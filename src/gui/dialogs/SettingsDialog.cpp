@@ -19,6 +19,7 @@ namespace gui::dialog {
 
     void SettingsDialog::initComponents() {
         setWindowTitle("Preferences");
+        setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
         auto *layout = new QGridLayout(this);
         layout->setVerticalSpacing(10);
         // ----- tabPane -----

@@ -29,11 +29,9 @@ namespace gui {
 
     void ApplicationWindow::initComponents() {
         setWindowTitle("EonTimer");
-        QFile file(":/css/main.css");
-        file.open(QFile::ReadOnly);
-        setStyleSheet(QString(file.readAll()));
         setCentralWidget(applicationPane);
-        setMinimumSize(525, 395);
+        setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+        setFixedSize(525, 395);
         // ----- menu -----
         {
             auto *menu = new QMenu();
