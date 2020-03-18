@@ -1,6 +1,9 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource>
+        <file>css/main.css</file>
+    </qresource>
+    <qresource>
         <file>fonts/FontAwesome.ttf</file>
     </qresource>
     <qresource>

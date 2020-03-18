@@ -9,12 +9,14 @@
 
 namespace model {
     enum Console {
-        NDS, GBA
+        GBA, NDS, DSI, _3DS
     };
 
     double getFps(Console console);
 
     double getFramerate(Console console);
+
+    const char *getName(Console console);
 
     const std::vector<Console> &consoles();
 }

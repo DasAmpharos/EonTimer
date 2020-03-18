@@ -7,11 +7,17 @@
 
 #include <QWidget>
 #include <services/settings/TimerSettings.h>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QCheckBox>
 
 namespace gui::settings {
     class TimerSettingsPane : public QWidget {
     private:
         service::settings::TimerSettings *settings;
+        QComboBox *console;
+        QCheckBox *precisionCalibrationEnabled;
+        QSpinBox *refreshInterval;
     public:
         TimerSettingsPane(service::settings::TimerSettings *settings,
                           QWidget *parent = nullptr);

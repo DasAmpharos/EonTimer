@@ -7,6 +7,8 @@
 #include <QWindow>
 #include <iostream>
 #include <gui/dialogs/SettingsDialog.h>
+#include <QStyle>
+#include <QFile>
 
 namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
@@ -27,7 +29,11 @@ namespace gui {
 
     void ApplicationWindow::initComponents() {
         setWindowTitle("EonTimer");
+        QFile file(":/css/main.css");
+        file.open(QFile::ReadOnly);
+        setStyleSheet(QString(file.readAll()));
         setCentralWidget(applicationPane);
+        setMinimumSize(525, 395);
         // ----- menu -----
         {
             auto *menu = new QMenu();

@@ -57,7 +57,6 @@ namespace gui::settings {
             );
             layout->addRow(label, count);
         }
-
     }
 
     void ActionSettingsPane::updateSettings() {

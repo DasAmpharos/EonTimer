@@ -48,6 +48,7 @@ namespace gui {
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
+            tabPane->setObjectName("tabPane");
             layout->addWidget(tabPane, 0, 1, 2, 2);
             tabPane->addTab(gen4TimerPane, "4");
             // tabPane->addTab(gen5TimerPane, "5");
