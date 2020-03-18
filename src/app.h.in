@@ -5,8 +5,11 @@
 #ifndef APP_H
 #define APP_H
 
+#define APP_NAME "@CMAKE_PROJECT_NAME@"
+#define APP_VERSION "@EonTimer_VERSION@"
+#define BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+
 #define GIT_BRANCH "@GIT_BRANCH@"
 #define GIT_COMMIT_HASH "@GIT_COMMIT_HASH@"
-#define VERSION "@EonTimer_VERSION@"
 
 #endif // APP_H

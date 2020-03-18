@@ -1,13 +1,12 @@
 #include <qapplication.h>
 #include <gui/ApplicationWindow.h>
-#include <QThreadPool>
+#include <app.h>
 
 int main(int argc, char **argv) {
     QApplication app(argc, argv);
-    QCoreApplication::setApplicationName("EonTimer");
+    QCoreApplication::setApplicationName(APP_NAME);
     QCoreApplication::setOrganizationName("DylanMeadows");
     QCoreApplication::setOrganizationDomain("io.github.dylmeadows");
-    QThreadPool::globalInstance()->setExpiryTimeout(-1);
 
     gui::ApplicationWindow window;
     window.show();

@@ -5,13 +5,15 @@
 #include "ApplicationWindow.h"
 #include <QMenuBar>
 #include <QWindow>
-#include <iostream>
 #include <gui/dialogs/SettingsDialog.h>
-#include <QStyle>
-#include <QFile>
+#include <iostream>
+#include <sstream>
+#include <string.h>
 #include <app.h>
 
 namespace gui {
+    const char *getTitle();
+
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
         settings = new QSettings(this);
@@ -29,9 +31,10 @@ namespace gui {
     }
 
     void ApplicationWindow::initComponents() {
-        setWindowTitle("EonTimer - " VERSION);
+        setWindowTitle(getTitle());
         setCentralWidget(applicationPane);
-        setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+        setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint |
+                       Qt::WindowMinimizeButtonHint);
         setFixedSize(525, 395);
         // ----- menu -----
         {
@@ -72,5 +75,27 @@ namespace gui {
     void ApplicationWindow::onPreferencesTriggered() {
         gui::dialog::SettingsDialog settings(timerSettings, actionSettings, this);
         const int rval = settings.exec();
+    }
+
+    bool equalsIgnoreCase(const char *s1, const char *s2) {
+        std::string a(s1);
+        std::string b(s2);
+        return std::equal(a.begin(), a.end(),
+                          b.begin(), b.end(),
+                          [](char a, char b) {
+                              return tolower(a) == tolower(b);
+                          });
+    }
+
+    const char *getTitle() {
+        std::stringstream sstream;
+        sstream << APP_NAME << " " << APP_VERSION;
+        if (!equalsIgnoreCase(BUILD_TYPE, "release")) {
+            sstream << " - git#" << GIT_COMMIT_HASH;
+        }
+        std::string title = sstream.str();
+        char* buffer = new char[title.capacity()];
+        strcpy(buffer, title.c_str());
+        return buffer;
     }
 }
