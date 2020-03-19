@@ -24,6 +24,12 @@ namespace gui {
         return buffer;
     }
 
+    void addStylesheet(QString &css, const char *resource) {
+        QFile file(resource);
+        file.open(QFile::ReadOnly);
+        css.append(file.readAll());
+    }
+
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
         settings = new QSettings(this);
@@ -40,10 +46,13 @@ namespace gui {
                        Qt::WindowMinimizeButtonHint);
         setCentralWidget(applicationPane);
         setFixedSize(525, 395);
-        // css
-        QFile css(":/css/main.css");
-        css.open(QFile::ReadOnly);
-        setStyleSheet(css.readAll());
+
+        QString stylesheet;
+        addStylesheet(stylesheet, ":/css/main.css");
+#if defined(__APPLE__)
+        addStylesheet(stylesheet, ":/css/macos.css");
+#endif
+        setStyleSheet(stylesheet);
 
         // background image
         QPalette palette;

@@ -1,0 +1,5 @@
+QTabWidget::pane {
+    position: absolute;
+    margin-top: -0.66em;
+    padding-top: 10px;
+}

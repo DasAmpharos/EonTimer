@@ -4,12 +4,6 @@ QTabWidget::pane, QGroupBox {
     border-radius: 5px;
 }
 
-QTabWidget::pane {
-    position: absolute;
-    margin-top: -0.66em;
-    padding-top: 10px;
-}
-
 QScrollArea {
     background-color: transparent;
     border: 2px solid white;
