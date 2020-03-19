@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include "TimerDisplayPane.h"
+#include "timers/Gen5TimerPane.h"
 #include "timers/Gen4TimerPane.h"
 #include <services/TimerService.h>
 
@@ -18,6 +19,7 @@ namespace gui {
         service::settings::TimerSettings *timerSettings;
         service::TimerService *timerService;
         TimerDisplayPane *timerDisplayPane;
+        timer::Gen5TimerPane *gen5TimerPane;
         timer::Gen4TimerPane *gen4TimerPane;
     public:
         ApplicationPane(QSettings *settings,

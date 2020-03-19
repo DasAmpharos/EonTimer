@@ -3,16 +3,26 @@
 //
 
 #include "ApplicationWindow.h"
-#include <QMenuBar>
-#include <QWindow>
-#include <gui/dialogs/SettingsDialog.h>
-#include <iostream>
 #include <sstream>
-#include <string.h>
 #include <app.h>
+#include <util/Functions.h>
+#include <QMenuBar>
+#include <gui/dialogs/SettingsDialog.h>
+#include <gui/dialogs/AboutDialog.h>
+#include <QFile>
 
 namespace gui {
-    const char *getTitle();
+    const char *getTitle() {
+        std::stringstream stream;
+        stream << APP_NAME << " " << APP_VERSION;
+        if (!util::functions::equalsIgnoreCase(BUILD_TYPE, "release")) {
+            stream << " - git#" << GIT_COMMIT_HASH;
+        }
+        std::string title = stream.str();
+        char *buffer = new char[title.capacity()];
+        strcpy(buffer, title.c_str());
+        return buffer;
+    }
 
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
@@ -21,36 +31,32 @@ namespace gui {
         timerSettings = new service::settings::TimerSettings(settings);
         timerService = new service::TimerService(timerSettings, actionSettings, this);
         applicationPane = new ApplicationPane(settings, actionSettings, timerSettings, timerService, this);
-
-        QPalette palette;
-        QPixmap background(":/images/default_background_image.png");
-        /*background = background.scaled(this->size(), Qt::IgnoreAspectRatio);*/
-        palette.setBrush(QPalette::Window, background);
-        setPalette(palette);
         initComponents();
     }
 
     void ApplicationWindow::initComponents() {
         setWindowTitle(getTitle());
-        setCentralWidget(applicationPane);
         setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint |
                        Qt::WindowMinimizeButtonHint);
+        setCentralWidget(applicationPane);
         setFixedSize(525, 395);
+        // css
+        QFile css(":/css/main.css");
+        css.open(QFile::ReadOnly);
+        setStyleSheet(css.readAll());
+
+        // background image
+        QPalette palette;
+        QPixmap background(":/images/default_background_image.png");
+        /*background = background.scaled(this->size(), Qt::IgnoreAspectRatio);*/
+        palette.setBrush(QPalette::Window, background);
+        setPalette(palette);
+
         // ----- menu -----
         {
             auto *menu = new QMenu();
             auto *menuBar = new QMenuBar();
             menuBar->addMenu(menu);
-            // ----- about -----
-            {
-                auto *about = new QAction();
-                about->setMenuRole(QAction::AboutRole);
-                connect(about, SIGNAL(triggered(bool)), this, SLOT(onAboutTriggered()));
-                connect(timerService, &service::TimerService::activated, [about](const bool activated) {
-                    about->setEnabled(!activated);
-                });
-                menu->addAction(about);
-            }
             // ----- preferences -----
             {
                 auto *preferences = new QAction();
@@ -68,34 +74,8 @@ namespace gui {
         settings->sync();
     }
 
-    void ApplicationWindow::onAboutTriggered() {
-        std::cout << "about" << std::endl;
-    }
-
     void ApplicationWindow::onPreferencesTriggered() {
-        gui::dialog::SettingsDialog settings(timerSettings, actionSettings, this);
-        const int rval = settings.exec();
-    }
-
-    bool equalsIgnoreCase(const char *s1, const char *s2) {
-        std::string a(s1);
-        std::string b(s2);
-        return std::equal(a.begin(), a.end(),
-                          b.begin(), b.end(),
-                          [](char a, char b) {
-                              return tolower(a) == tolower(b);
-                          });
-    }
-
-    const char *getTitle() {
-        std::stringstream sstream;
-        sstream << APP_NAME << " " << APP_VERSION;
-        if (!equalsIgnoreCase(BUILD_TYPE, "release")) {
-            sstream << " - git#" << GIT_COMMIT_HASH;
-        }
-        std::string title = sstream.str();
-        char* buffer = new char[title.capacity()];
-        strcpy(buffer, title.c_str());
-        return buffer;
+        gui::dialog::SettingsDialog(timerSettings, actionSettings, this)
+            .exec();
     }
 }

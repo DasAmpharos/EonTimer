@@ -24,6 +24,8 @@ namespace gui {
         auto *delayTimer = new service::timer::DelayTimer(calibrationService, new service::timer::SecondTimer());
 
         timerDisplayPane = new TimerDisplayPane(timerService);
+        auto *gen5TimerSettings = new service::settings::Gen5TimerSettings();
+        gen5TimerPane = new timer::Gen5TimerPane(gen5TimerSettings, calibrationService);
         auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
         gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings, delayTimer, calibrationService, timerService);
         connect(timerService, &service::TimerService::activated, [this](const bool activated) {
@@ -50,6 +52,7 @@ namespace gui {
             auto *tabPane = new QTabWidget();
             tabPane->setObjectName("tabPane");
             layout->addWidget(tabPane, 0, 1, 2, 2);
+            tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");
             // tabPane->addTab(gen5TimerPane, "5");
             // tabPane->addTab(gen3TimerPane, "3");

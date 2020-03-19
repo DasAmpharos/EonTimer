@@ -9,7 +9,10 @@ namespace model {
     const double NDS_FPS = 59.8261;
     const double GBA_FRAMERATE = 1000 / GBA_FPS;
     const double NDS_FRAMERATE = 1000 / NDS_FPS;
-    const std::vector<Console> VALUES{Console::GBA, Console::NDS, Console::DSI, Console::_3DS};
+    const std::vector<Console> VALUES{Console::GBA,
+                                      Console::NDS,
+                                      Console::DSI,
+                                      Console::_3DS};
     namespace names {
         const char *GBA = "GBA";
         const char *NDS = "NDS";

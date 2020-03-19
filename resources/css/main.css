@@ -1,4 +1,21 @@
-/*QGroupBox {*/
-    /*background-color: rgba(255, 255, 255, 127);*/
-    /*border-radius: 5px;*/
-/*}*/
+QTabWidget::pane, QGroupBox {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+QTabWidget::pane {
+    position: absolute;
+    margin-top: -0.66em;
+    padding-top: 10px;
+}
+
+QScrollArea {
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px;
+}
+
+.themeable {
+    background-color: rgba(255, 255, 255, 0.5);
+}

@@ -32,7 +32,6 @@ namespace gui {
 
         // @formatter:off
     private slots:
-        void onAboutTriggered();
         void onPreferencesTriggered();
         // @formatter:on
     };

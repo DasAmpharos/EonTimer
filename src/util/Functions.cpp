@@ -14,4 +14,16 @@ namespace util::functions {
         }
         return normalized;
     }
+
+    bool equalsIgnoreCase(const char *s1, const char *s2) {
+        return equalsIgnoreCase(std::string(s1), std::string(s2));
+    }
+
+    bool equalsIgnoreCase(const std::string &s1, const std::string &s2) {
+        return std::equal(s1.begin(), s1.end(),
+                          s2.begin(), s2.end(),
+                          [](char c1, char c2) {
+                              return tolower(c1) == tolower(c2);
+                          });;
+    }
 }
