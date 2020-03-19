@@ -1,5 +1,5 @@
-QTabWidget::pane {
+QTabWidget.themeable::pane {
     position: absolute;
-    margin-top: -0.66em;
-    padding-top: 10px;
+    margin-top: -11px;
+    padding-top: 14px;
 }

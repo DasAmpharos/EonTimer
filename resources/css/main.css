@@ -1,15 +1,15 @@
-QTabWidget::pane, QGroupBox {
+QTabWidget.themeable::pane, QGroupBox.themeable {
     background-color: rgba(255, 255, 255, 0.5);
     border: 2px solid white;
     border-radius: 5px;
 }
 
-QScrollArea {
+QScrollArea.themeable {
     background-color: transparent;
     border: 2px solid white;
     border-radius: 5px;
 }
 
-.themeable {
+.bg-transparent-white {
     background-color: rgba(255, 255, 255, 0.5);
 }

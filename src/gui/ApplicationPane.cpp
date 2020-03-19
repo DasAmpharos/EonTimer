@@ -50,7 +50,7 @@ namespace gui {
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
-            tabPane->setObjectName("tabPane");
+            tabPane->setProperty("class", "themeable");
             layout->addWidget(tabPane, 0, 1, 2, 2);
             tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");

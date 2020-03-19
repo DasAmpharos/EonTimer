@@ -41,6 +41,7 @@ namespace gui::timer {
         {
             auto *scrollArea = new QScrollArea();
             scrollArea->setFrameShape(QFrame::NoFrame);
+            scrollArea->setProperty("class", "themeable");
             scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
             scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
             scrollArea->setWidgetResizable(true);
@@ -50,7 +51,7 @@ namespace gui::timer {
             group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);*/
 
             auto *scrollPane = new QWidget(scrollArea);
-            scrollPane->setProperty("class", "themeable");
+            scrollPane->setProperty("class", "bg-transparent-white");
             scrollArea->setWidget(scrollPane);
 
             auto *form = new QFormLayout(scrollPane);

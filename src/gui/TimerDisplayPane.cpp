@@ -31,6 +31,7 @@ namespace gui {
     void TimerDisplayPane::initComponents() {
         // --- group ---
         {
+            setProperty("class", "themeable");
             auto *rootLayout = new QVBoxLayout(this);
             rootLayout->setSpacing(5);
             // ----- currentStage ----
