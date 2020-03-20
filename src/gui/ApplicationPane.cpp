@@ -24,7 +24,7 @@ namespace gui {
         auto *delayTimer = new service::timer::DelayTimer(calibrationService, new service::timer::SecondTimer());
 
         timerDisplayPane = new TimerDisplayPane(timerService);
-        auto *gen5TimerSettings = new service::settings::Gen5TimerSettings();
+        auto *gen5TimerSettings = new service::settings::Gen5TimerSettings(settings);
         gen5TimerPane = new timer::Gen5TimerPane(gen5TimerSettings, calibrationService);
         auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
         gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings, delayTimer, calibrationService, timerService);

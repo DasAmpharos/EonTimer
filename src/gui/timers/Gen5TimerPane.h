@@ -6,9 +6,12 @@
 #define EONTIMER_GEN5TIMERPANE_H
 
 #include <QWidget>
-#include <QComboBox>
 #include <services/settings/Gen5TimerSettings.h>
+#include <services/timers/DelayTimer.h>
+#include <services/timers/SecondTimer.h>
+#include <services/timers/EntralinkTimer.h>
 #include <services/CalibrationService.h>
+#include <QComboBox>
 #include <QSpinBox>
 
 namespace gui::timer {
@@ -16,6 +19,9 @@ namespace gui::timer {
     Q_OBJECT
     private:
         service::settings::Gen5TimerSettings *settings;
+        const service::timer::DelayTimer *delayTimer;
+        const service::timer::SecondTimer *secondTimer;
+        const service::timer::EntralinkTimer *entralinkTimer;
         const service::CalibrationService *calibrationService;
         QComboBox *modeField;
         QSpinBox *calibrationField;
@@ -29,11 +35,18 @@ namespace gui::timer {
         QSpinBox *actualAdvancesField;
     public:
         explicit Gen5TimerPane(service::settings::Gen5TimerSettings *settings,
+                               const service::timer::DelayTimer *delayTimer,
+                               const service::timer::SecondTimer *secondTimer,
+                               const service::timer::EntralinkTimer *entralinkTimer,
                                const service::CalibrationService *calibrationService,
                                QWidget *parent = nullptr);
 
+        void calibrateTimer();
+
     private:
         void initComponents();
+
+        void updateTimer();
     };
 }
 

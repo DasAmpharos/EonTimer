@@ -8,6 +8,7 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QSpinBox>
+#include <limits.h>
 
 namespace gui::timer {
     Gen4TimerPane::Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
@@ -41,7 +42,7 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Calibrated Delay");
                 calibratedDelay = new QSpinBox();
-                calibratedDelay->setRange(-10000, 10000);
+                calibratedDelay->setRange(INT_MIN, INT_MAX);
                 calibratedDelay->setValue(settings->getCalibratedDelay());
                 connect(calibratedDelay, valueChanged, [this](const int calibratedDelay) {
                     settings->setCalibratedDelay(calibratedDelay);
@@ -58,7 +59,7 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Calibrated Second");
                 calibratedSecond = new QSpinBox();
-                calibratedSecond->setRange(-10000, 10000);
+                calibratedSecond->setRange(INT_MIN, INT_MAX);
                 calibratedSecond->setValue(settings->getCalibratedSecond());
                 connect(calibratedSecond, valueChanged, [this](const int calibratedSecond) {
                     settings->setCalibratedSecond(calibratedSecond);
@@ -75,7 +76,7 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Target Delay");
                 targetDelay = new QSpinBox();
-                targetDelay->setRange(0, 10000);
+                targetDelay->setRange(0, INT_MAX);
                 targetDelay->setValue(settings->getTargetDelay());
                 connect(targetDelay, valueChanged, [this](const int targetDelay) {
                     settings->setTargetDelay(targetDelay);
@@ -92,7 +93,7 @@ namespace gui::timer {
                 auto *label = new QLabel();
                 label->setText("Target Second");
                 targetSecond = new QSpinBox();
-                targetSecond->setRange(0, 10000);
+                targetSecond->setRange(0, 59);
                 targetSecond->setValue(settings->getTargetSecond());
                 connect(targetSecond, valueChanged, [this](const int targetSecond) {
                     settings->setTargetSecond(targetSecond);
@@ -116,7 +117,7 @@ namespace gui::timer {
             delayHit = new QSpinBox();
             layout->addRow(label, delayHit);
             label->setText("Delay Hit");
-            delayHit->setRange(0, 10000);
+            delayHit->setRange(0, INT_MAX);
             delayHit->setSizePolicy(
                 QSizePolicy::Expanding,
                 QSizePolicy::Fixed

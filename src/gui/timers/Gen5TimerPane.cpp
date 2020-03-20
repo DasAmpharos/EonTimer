@@ -6,15 +6,20 @@
 #include <models/Gen5TimerMode.h>
 #include <QGridLayout>
 #include <QFormLayout>
-#include <QGroupBox>
 #include <QScrollArea>
 
 namespace gui::timer {
     Gen5TimerPane::Gen5TimerPane(service::settings::Gen5TimerSettings *settings,
+                                 const service::timer::DelayTimer *delayTimer,
+                                 const service::timer::SecondTimer *secondTimer,
+                                 const service::timer::EntralinkTimer *entralinkTimer,
                                  const service::CalibrationService *calibrationService,
                                  QWidget *parent)
         : QWidget(parent),
           settings(settings),
+          delayTimer(delayTimer),
+          secondTimer(secondTimer),
+          entralinkTimer(entralinkTimer),
           calibrationService(calibrationService) {
         initComponents();
     }
@@ -47,9 +52,6 @@ namespace gui::timer {
             scrollArea->setWidgetResizable(true);
             layout->addWidget(scrollArea);
 
-            /*auto *group = new QGroupBox();
-            group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);*/
-
             auto *scrollPane = new QWidget(scrollArea);
             scrollPane->setProperty("class", "bg-transparent-white");
             scrollArea->setWidget(scrollPane);
@@ -59,6 +61,8 @@ namespace gui::timer {
             // ----- calibration -----
             {
                 calibrationField = new QSpinBox();
+                calibrationField->setRange(INT_MIN, INT_MAX);
+                calibrationField->setValue(settings->getCalibration());
                 calibrationField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -68,6 +72,8 @@ namespace gui::timer {
             // ----- targetDelay -----
             {
                 targetDelayField = new QSpinBox();
+                targetDelayField->setRange(0, INT_MAX);
+                targetDelayField->setValue(settings->getTargetDelay());
                 targetDelayField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -77,6 +83,8 @@ namespace gui::timer {
             // ----- targetSecond -----
             {
                 targetSecondField = new QSpinBox();
+                targetSecondField->setRange(0, 59);
+                targetSecondField->setValue(settings->getTargetSecond());
                 targetSecondField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -86,6 +94,8 @@ namespace gui::timer {
             // ----- entralinkCalibration -----
             {
                 entralinkCalibrationField = new QSpinBox();
+                entralinkCalibrationField->setRange(INT_MIN, INT_MAX);
+                entralinkCalibrationField->setValue(settings->getEntralinkCalibration());
                 entralinkCalibrationField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -95,6 +105,8 @@ namespace gui::timer {
             // ----- frameCalibration -----
             {
                 frameCalibrationField = new QSpinBox();
+                frameCalibrationField->setRange(INT_MIN, INT_MAX);
+                frameCalibrationField->setValue(settings->getFrameCalibration());
                 frameCalibrationField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -104,6 +116,8 @@ namespace gui::timer {
             // ----- targetAdvances -----
             {
                 targetAdvancesField = new QSpinBox();
+                targetAdvancesField->setRange(0, INT_MAX);
+                targetAdvancesField->setValue(settings->getTargetAdvances());
                 targetAdvancesField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -119,6 +133,7 @@ namespace gui::timer {
             // ----- delayHit -----
             {
                 delayHitField = new QSpinBox();
+                delayHitField->setRange(0, INT_MAX);
                 delayHitField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -128,6 +143,7 @@ namespace gui::timer {
             // ----- secondHit -----
             {
                 secondHitField = new QSpinBox();
+                secondHitField->setRange(0, 59);
                 secondHitField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -137,6 +153,7 @@ namespace gui::timer {
             // ----- actualAdvances -----
             {
                 actualAdvancesField = new QSpinBox();
+                actualAdvancesField->setRange(0, INT_MAX);
                 actualAdvancesField->setSizePolicy(
                     QSizePolicy::Expanding,
                     QSizePolicy::Fixed
@@ -144,5 +161,13 @@ namespace gui::timer {
                 form->addRow("Actual Advances", actualAdvancesField);
             }
         }
+    }
+
+    void Gen5TimerPane::calibrateTimer() {
+
+    }
+
+    void Gen5TimerPane::updateTimer() {
+
     }
 }

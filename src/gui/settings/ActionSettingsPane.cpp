@@ -49,7 +49,7 @@ namespace gui::settings {
             auto *label = new QLabel();
             label->setText("Count");
             count = new QSpinBox;
-            count->setRange(1, 100);
+            count->setRange(1, 50);
             count->setValue(settings->getCount());
             count->setSizePolicy(
                 QSizePolicy::Expanding,
