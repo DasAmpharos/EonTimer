@@ -25,8 +25,9 @@ namespace service::settings {
         }
     }
 
-    Gen5TimerSettings::Gen5TimerSettings(QSettings *settings)
-        : settings(settings) {
+    Gen5TimerSettings::Gen5TimerSettings(QSettings *settings, QObject *parent)
+        : QObject(parent),
+          settings(settings) {
     }
 
     model::Gen5TimerMode Gen5TimerSettings::getMode() const {
@@ -35,7 +36,10 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setMode(model::Gen5TimerMode mode) {
-        settings->setValue(Gen5Fields::MODE, model::indexOf(mode));
+        if (getMode() != mode) {
+            settings->setValue(Gen5Fields::MODE, model::indexOf(mode));
+            emit modeChanged(mode);
+        }
     }
 
     int Gen5TimerSettings::getCalibration() const {
@@ -43,7 +47,10 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setCalibration(int calibration) {
-        settings->setValue(Gen5Fields::CALIBRATION, calibration);
+        if (getCalibration() != calibration) {
+            settings->setValue(Gen5Fields::CALIBRATION, calibration);
+            emit calibrationChanged(calibration);
+        }
     }
 
     int Gen5TimerSettings::getTargetDelay() const {
@@ -51,7 +58,10 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setTargetDelay(int targetDelay) {
-        settings->setValue(Gen5Fields::TARGET_DELAY, targetDelay);
+        if (getTargetDelay() != targetDelay) {
+            settings->setValue(Gen5Fields::TARGET_DELAY, targetDelay);
+            emit targetDelayChanged(targetDelay);
+        }
     }
 
     int Gen5TimerSettings::getTargetSecond() const {
@@ -59,7 +69,10 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setTargetSecond(int targetSecond) {
-        settings->setValue(Gen5Fields::TARGET_SECOND, targetSecond);
+        if (getTargetSecond() != targetSecond) {
+            settings->setValue(Gen5Fields::TARGET_SECOND, targetSecond);
+            emit targetSecondChanged(targetSecond);
+        }
     }
 
     int Gen5TimerSettings::getEntralinkCalibration() const {
@@ -67,7 +80,10 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setEntralinkCalibration(int entralinkCalibration) {
-        settings->setValue(Gen5Fields::ENTRALINK_CALIBRATION, entralinkCalibration);
+        if (getEntralinkCalibration() != entralinkCalibration) {
+            settings->setValue(Gen5Fields::ENTRALINK_CALIBRATION, entralinkCalibration);
+            emit entralinkCalibrationChanged(entralinkCalibration);
+        }
     }
 
     int Gen5TimerSettings::getFrameCalibration() const {
@@ -75,7 +91,10 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setFrameCalibration(int frameCalibration) {
-        settings->setValue(Gen5Fields::FRAME_CALIBRATION, frameCalibration);
+        if (getFrameCalibration() != frameCalibration) {
+            settings->setValue(Gen5Fields::FRAME_CALIBRATION, frameCalibration);
+            emit frameCalibrationChanged(frameCalibration);
+        }
     }
 
     int Gen5TimerSettings::getTargetAdvances() const {
@@ -83,6 +102,9 @@ namespace service::settings {
     }
 
     void Gen5TimerSettings::setTargetAdvances(int targetAdvances) {
-        settings->setValue(Gen5Fields::TARGET_ADVANCES, targetAdvances);
+        if (getTargetAdvances() != targetAdvances) {
+            settings->setValue(Gen5Fields::TARGET_ADVANCES, targetAdvances);
+            emit targetAdvancesChanged(targetAdvances);
+        }
     }
 }

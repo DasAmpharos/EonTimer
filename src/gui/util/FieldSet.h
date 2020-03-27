@@ -31,6 +31,7 @@ namespace gui::util {
     template<typename T>
     void addFieldSet(QGridLayout *layout, FieldSet<T> &fieldSet) {
         if (fieldSet.layout == nullptr) {
+            fieldSet.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             fieldSet.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addWidget(fieldSet.label, fieldSet.rowIndex, 0, Qt::AlignRight);
             layout->addWidget(fieldSet.field, fieldSet.rowIndex, 1);

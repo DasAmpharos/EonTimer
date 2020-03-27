@@ -28,19 +28,9 @@ namespace gui::timer {
         const service::timer::EntralinkTimer *entralinkTimer;
         const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer;
         const service::CalibrationService *calibrationService;
-
-        QGridLayout *timerForm;
-        QGridLayout *calibrationForm;
-        util::FieldSet<QComboBox> mode;
-        util::FieldSet<QSpinBox> targetDelay;
-        util::FieldSet<QSpinBox> targetSecond;
-        util::FieldSet<QSpinBox> targetAdvances;
-        util::FieldSet<QSpinBox> calibration;
-        util::FieldSet<QSpinBox> entralinkCalibration;
-        util::FieldSet<QSpinBox> frameCalibration;
-        util::FieldSet<QSpinBox> delayHit;
-        util::FieldSet<QSpinBox> secondHit;
-        util::FieldSet<QSpinBox> advancesHit;
+        QSpinBox *delayHit;
+        QSpinBox *secondHit;
+        QSpinBox *advancesHit;
     public:
         explicit Gen5TimerPane(service::settings::Gen5TimerSettings *settings,
                                const service::timer::DelayTimer *delayTimer,
@@ -57,18 +47,13 @@ namespace gui::timer {
     private:
         void initComponents();
 
-        void updateComponents();
-
         int getDelayCalibration() const;
 
         int getSecondCalibration() const;
 
         int getEntralinkCalibration() const;
 
-        // @formatter:off
-    signals:
-        void shouldUpdate();
-        // @formatter:on
+        int getAdvancesCalibration() const;
     };
 }
 
