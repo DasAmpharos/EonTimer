@@ -6,13 +6,15 @@
 #define EONTIMER_ENTRALINKTIMER_H
 
 #include "DelayTimer.h"
+#include <memory>
+#include <vector>
 
 namespace service::timer {
     class EntralinkTimer {
     private:
-        DelayTimer *delayTimer;
+        const DelayTimer *delayTimer;
     public:
-        explicit EntralinkTimer(DelayTimer *delayTimer);
+        explicit EntralinkTimer(const DelayTimer *delayTimer);
 
         const std::shared_ptr<std::vector<int>> createStages(int targetSecond, int targetDelay, int calibration, int entralinkCalibration) const;
 

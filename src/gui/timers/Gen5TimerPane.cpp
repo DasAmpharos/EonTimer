@@ -3,171 +3,266 @@
 //
 
 #include "Gen5TimerPane.h"
-#include <models/Gen5TimerMode.h>
-#include <QGridLayout>
-#include <QFormLayout>
 #include <QScrollArea>
+#include <QLabel>
 
 namespace gui::timer {
     Gen5TimerPane::Gen5TimerPane(service::settings::Gen5TimerSettings *settings,
                                  const service::timer::DelayTimer *delayTimer,
                                  const service::timer::SecondTimer *secondTimer,
                                  const service::timer::EntralinkTimer *entralinkTimer,
+                                 const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer,
                                  const service::CalibrationService *calibrationService,
+                                 service::TimerService *timerService,
                                  QWidget *parent)
         : QWidget(parent),
           settings(settings),
           delayTimer(delayTimer),
           secondTimer(secondTimer),
           entralinkTimer(entralinkTimer),
-          calibrationService(calibrationService) {
+          enhancedEntralinkTimer(enhancedEntralinkTimer),
+          calibrationService(calibrationService),
+          timerService(timerService),
+          mode({0, new QLabel("Mode"), new QComboBox}),
+          calibration({0, new QLabel("Calibration"), new QSpinBox}),
+          targetDelay({1, new QLabel("Target Delay"), new QSpinBox}),
+          targetSecond({2, new QLabel("Target Second"), new QSpinBox}),
+          entralinkCalibration({3, new QLabel("Entralink Calibration"), new QSpinBox}),
+          frameCalibration({4, new QLabel("Frame Calibration"), new QSpinBox}),
+          targetAdvances({5, new QLabel("Target Advances"), new QSpinBox}),
+          delayHit({0, new QLabel("Delay Hit"), new QSpinBox}),
+          secondHit({1, new QLabel("Second Hit"), new QSpinBox}),
+          advancesHit({2, new QLabel("Advances Hit"), new QSpinBox}) {
         initComponents();
     }
 
     void Gen5TimerPane::initComponents() {
-        auto *layout = new QVBoxLayout(this);
-        layout->setSpacing(10);
+        auto *rootLayout = new QVBoxLayout(this);
+        rootLayout->setContentsMargins(10, 0, 10, 10);
+        rootLayout->setSpacing(10);
+
+        void (QSpinBox::* valueChanged)(int) = &QSpinBox::valueChanged;
         // ----- mode -----
         {
-            auto *form = new QFormLayout();
-            form->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-            modeField = new QComboBox();
-            for (auto mode : model::gen5TimerModes()) {
-                modeField->addItem(model::getName(mode), mode);
+            auto *form = new QGridLayout();
+            rootLayout->addLayout(form);
+
+            mode.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            for (const auto mode : model::gen5TimerModes()) {
+                this->mode.field->addItem(model::getName(mode), mode);
             }
-            modeField->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
-            form->addRow("Mode", modeField);
-            layout->addLayout(form);
+            mode.field->setCurrentText(model::getName(settings->getMode()));
+            connect(mode.field, QOverload<int>::of(&QComboBox::currentIndexChanged),
+                    [this](const int currentIndex) {
+                        settings->setMode(model::gen5TimerModes()[currentIndex]);
+                        updateComponents();
+                        updateTimer();
+                    });
+            util::addFieldSet(form, mode);
         }
-        // ----- fields -----
+        // ----- timer fields -----
         {
             auto *scrollArea = new QScrollArea();
             scrollArea->setFrameShape(QFrame::NoFrame);
             scrollArea->setProperty("class", "themeable");
             scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-            scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+            scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
             scrollArea->setWidgetResizable(true);
-            layout->addWidget(scrollArea);
+            rootLayout->addWidget(scrollArea);
 
             auto *scrollPane = new QWidget(scrollArea);
+            auto *scrollPaneLayout = new QVBoxLayout(scrollPane);
+            scrollPaneLayout->setSpacing(10);
+            scrollPaneLayout->setContentsMargins(0, 0, 0, 0);
+            scrollPane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             scrollPane->setProperty("class", "bg-transparent-white");
             scrollArea->setWidget(scrollPane);
 
-            auto *form = new QFormLayout(scrollPane);
-            form->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+            auto *formWidget = new QWidget();
+            formWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            scrollPaneLayout->addWidget(formWidget, 0, Qt::AlignTop);
+            timerForm = new QGridLayout(formWidget);
+            timerForm->setSpacing(10);
             // ----- calibration -----
             {
-                calibrationField = new QSpinBox();
-                calibrationField->setRange(INT_MIN, INT_MAX);
-                calibrationField->setValue(settings->getCalibration());
-                calibrationField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Calibration", calibrationField);
+                calibration.field->setRange(INT_MIN, INT_MAX);
+                calibration.field->setValue(settings->getCalibration());
+                calibration.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                calibration.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(calibration.field, valueChanged, [this](const int calibration) {
+                    settings->setCalibration(calibration);
+                    updateTimer();
+                });
+                util::addFieldSet(timerForm, calibration);
             }
             // ----- targetDelay -----
             {
-                targetDelayField = new QSpinBox();
-                targetDelayField->setRange(0, INT_MAX);
-                targetDelayField->setValue(settings->getTargetDelay());
-                targetDelayField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Target Delay", targetDelayField);
+                targetDelay.field->setRange(0, INT_MAX);
+                targetDelay.field->setValue(settings->getTargetDelay());
+                targetDelay.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                targetDelay.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(targetDelay.field, valueChanged, [this](const int targetDelay) {
+                    settings->setTargetDelay(targetDelay);
+                    updateTimer();
+                });
+                util::addFieldSet(timerForm, targetDelay);
             }
             // ----- targetSecond -----
             {
-                targetSecondField = new QSpinBox();
-                targetSecondField->setRange(0, 59);
-                targetSecondField->setValue(settings->getTargetSecond());
-                targetSecondField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Target Second", targetSecondField);
+                targetSecond.field->setRange(0, 59);
+                targetSecond.field->setValue(settings->getTargetSecond());
+                targetSecond.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                targetSecond.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(targetSecond.field, valueChanged, [this](const int targetSecond) {
+                    settings->setTargetSecond(targetSecond);
+                    updateTimer();
+                });
+                util::addFieldSet(timerForm, targetSecond);
             }
             // ----- entralinkCalibration -----
             {
-                entralinkCalibrationField = new QSpinBox();
-                entralinkCalibrationField->setRange(INT_MIN, INT_MAX);
-                entralinkCalibrationField->setValue(settings->getEntralinkCalibration());
-                entralinkCalibrationField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Entralink Calibration", entralinkCalibrationField);
+                entralinkCalibration.field->setRange(INT_MIN, INT_MAX);
+                entralinkCalibration.field->setValue(settings->getEntralinkCalibration());
+                entralinkCalibration.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                entralinkCalibration.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(entralinkCalibration.field, valueChanged, [this](const int entralinkCalibration) {
+                    settings->setEntralinkCalibration(entralinkCalibration);
+                    updateTimer();
+                });
+                util::addFieldSet(timerForm, entralinkCalibration);
             }
             // ----- frameCalibration -----
             {
-                frameCalibrationField = new QSpinBox();
-                frameCalibrationField->setRange(INT_MIN, INT_MAX);
-                frameCalibrationField->setValue(settings->getFrameCalibration());
-                frameCalibrationField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Frame Calibration", frameCalibrationField);
+                frameCalibration.field->setRange(INT_MIN, INT_MAX);
+                frameCalibration.field->setValue(settings->getFrameCalibration());
+                frameCalibration.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                frameCalibration.field->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                connect(frameCalibration.field, valueChanged, [this](const int frameCalibration) {
+                    settings->setFrameCalibration(frameCalibration);
+                    updateTimer();
+                });
+                util::addFieldSet(timerForm, frameCalibration);
             }
             // ----- targetAdvances -----
             {
-                targetAdvancesField = new QSpinBox();
-                targetAdvancesField->setRange(0, INT_MAX);
-                targetAdvancesField->setValue(settings->getTargetAdvances());
-                targetAdvancesField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Target Advances", targetAdvancesField);
+                targetAdvances.field->setRange(0, INT_MAX);
+                targetAdvances.field->setValue(settings->getTargetAdvances());
+                targetAdvances.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(targetAdvances.field, valueChanged, [this](const int targetAdvances) {
+                    settings->setFrameCalibration(targetAdvances);
+                    updateTimer();
+                });
+                util::addFieldSet(timerForm, targetAdvances);
             }
         }
-        // ----- actual fields -----
+        // ----- calibration fields -----
         {
-            auto *form = new QFormLayout();
-            form->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-            layout->addLayout(form);
+            calibrationForm = new QGridLayout();
+            calibrationForm->setSpacing(10);
+            rootLayout->addLayout(calibrationForm);
             // ----- delayHit -----
             {
-                delayHitField = new QSpinBox();
-                delayHitField->setRange(0, INT_MAX);
-                delayHitField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Delay Hit", delayHitField);
+                delayHit.field->setRange(0, INT_MAX);
+                delayHit.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                util::addFieldSet(calibrationForm, delayHit);
             }
             // ----- secondHit -----
             {
-                secondHitField = new QSpinBox();
-                secondHitField->setRange(0, 59);
-                secondHitField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Second Hit", secondHitField);
+                secondHit.field->setRange(0, 59);
+                secondHit.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                util::addFieldSet(calibrationForm, secondHit);
             }
-            // ----- actualAdvances -----
+            // ----- advancesHit -----
             {
-                actualAdvancesField = new QSpinBox();
-                actualAdvancesField->setRange(0, INT_MAX);
-                actualAdvancesField->setSizePolicy(
-                    QSizePolicy::Expanding,
-                    QSizePolicy::Fixed
-                );
-                form->addRow("Actual Advances", actualAdvancesField);
+                advancesHit.field->setRange(0, INT_MAX);
+                advancesHit.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                util::addFieldSet(calibrationForm, advancesHit);
             }
         }
+        updateComponents();
+    }
+
+    void Gen5TimerPane::updateComponents() {
+        const auto mode = settings->getMode();
+        const bool isCGear = mode == model::Gen5TimerMode::C_GEAR;
+        const bool isStandard = mode == model::Gen5TimerMode::STANDARD;
+        const bool isEntralink = mode == model::Gen5TimerMode::ENTRALINK;
+        const bool isEnhancedEntralink = mode == model::Gen5TimerMode::ENTRALINK_PLUS;
+
+        util::setVisible(timerForm, targetDelay, !isStandard);
+        util::setVisible(timerForm, entralinkCalibration, isEntralink || isEnhancedEntralink);
+        util::setVisible(timerForm, frameCalibration, isEnhancedEntralink);
+        util::setVisible(timerForm, targetAdvances, isEnhancedEntralink);
+
+        util::setVisible(calibrationForm, delayHit, !isStandard);
+        util::setVisible(calibrationForm, secondHit, !isCGear);
+        util::setVisible(calibrationForm, advancesHit, isEnhancedEntralink);
     }
 
     void Gen5TimerPane::calibrateTimer() {
-
+        switch (settings->getMode()) {
+            case model::Gen5TimerMode::STANDARD:
+                calibration.field->setValue(calibration.field->value() + getSecondCalibration());
+                break;
+            case model::Gen5TimerMode::C_GEAR:
+                calibration.field->setValue(calibration.field->value() + getDelayCalibration());
+                break;
+            case model::Gen5TimerMode::ENTRALINK:
+                calibration.field->setValue(calibration.field->value() + getSecondCalibration());
+                entralinkCalibration.field->setValue(entralinkCalibration.field->value() + getEntralinkCalibration());
+                break;
+            case model::Gen5TimerMode::ENTRALINK_PLUS:
+                break;
+        }
     }
 
     void Gen5TimerPane::updateTimer() {
+        std::shared_ptr<std::vector<int>> stages;
+        switch (settings->getMode()) {
+            case model::Gen5TimerMode::STANDARD:
+                stages = secondTimer->createStages(
+                    targetSecond.field->value(),
+                    calibration.field->value()
+                );
+                break;
+            case model::Gen5TimerMode::C_GEAR:
+                stages = delayTimer->createStages(
+                    targetSecond.field->value(),
+                    targetDelay.field->value(),
+                    calibration.field->value()
+                );
+                break;
+            case model::Gen5TimerMode::ENTRALINK:
+                stages = entralinkTimer->createStages(
+                    targetSecond.field->value(),
+                    targetDelay.field->value(),
+                    calibration.field->value(),
+                    entralinkCalibration.field->value()
+                );
+                break;
+            case model::Gen5TimerMode::ENTRALINK_PLUS:
+                stages = enhancedEntralinkTimer->createStages(
+                    targetDelay.field->value(),
+                    targetSecond.field->value(),
+                    targetAdvances.field->value(),
+                    calibration.field->value(),
+                    entralinkCalibration.field->value(),
+                    frameCalibration.field->value()
+                );
+                break;
+        }
+        timerService->setStages(stages);
+    }
 
+    int Gen5TimerPane::getDelayCalibration() const {
+        return delayTimer->calibrate(targetDelay.field->value(), delayHit.field->value());
+    }
+
+    int Gen5TimerPane::getSecondCalibration() const {
+        return secondTimer->calibrate(targetSecond.field->value(), secondHit.field->value());
+    }
+
+    int Gen5TimerPane::getEntralinkCalibration() const {
+        return entralinkTimer->calibrate(targetDelay.field->value(), delayHit.field->value() - getSecondCalibration());
     }
 }

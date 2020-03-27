@@ -85,5 +85,19 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/services/TimerService.cpp
     src/services/TimerService.h
     src/util/Functions.cpp
-    src/util/Functions.h src/gui/timers/Gen5TimerPane.cpp src/gui/timers/Gen5TimerPane.h src/services/settings/Gen5TimerSettings.cpp src/services/settings/Gen5TimerSettings.h src/models/Gen5TimerMode.cpp src/models/Gen5TimerMode.h src/services/timers/EntralinkTimer.cpp src/services/timers/EntralinkTimer.h src/services/timers/FrameTimer.cpp src/services/timers/FrameTimer.h)
+    src/util/Functions.h
+    src/gui/timers/Gen5TimerPane.cpp
+    src/gui/timers/Gen5TimerPane.h
+    src/services/settings/Gen5TimerSettings.cpp
+    src/services/settings/Gen5TimerSettings.h
+    src/models/Gen5TimerMode.cpp
+    src/models/Gen5TimerMode.h
+    src/services/timers/EntralinkTimer.cpp
+    src/services/timers/EntralinkTimer.h
+    src/services/timers/FrameTimer.cpp
+    src/services/timers/FrameTimer.h
+    src/services/timers/EnhancedEntralinkTimer.cpp
+    src/services/timers/EnhancedEntralinkTimer.h
+    src/gui/util/FieldSet.h
+    src/services/settings/Gen3TimerSettings.cpp src/services/settings/Gen3TimerSettings.h)
 target_link_libraries(EonTimer Qt5::Widgets sfml-audio)

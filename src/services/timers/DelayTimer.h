@@ -5,10 +5,10 @@
 #ifndef EONTIMER_DELAYTIMER_H
 #define EONTIMER_DELAYTIMER_H
 
+#include "SecondTimer.h"
+#include <services/CalibrationService.h>
 #include <memory>
 #include <vector>
-#include <services/CalibrationService.h>
-#include "SecondTimer.h"
 
 namespace service::timer {
     class DelayTimer {
@@ -16,8 +16,8 @@ namespace service::timer {
         const SecondTimer *secondTimer;
         const CalibrationService *calibrationService;
     public:
-        explicit DelayTimer(const CalibrationService *calibrationService,
-                            const SecondTimer *secondTimer);
+        DelayTimer(const SecondTimer *secondTimer,
+                   const CalibrationService *calibrationService);
 
         const std::shared_ptr<std::vector<int>> createStages(int targetSecond, int targetDelay, int calibration) const;
 

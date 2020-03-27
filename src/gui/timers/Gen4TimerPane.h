@@ -35,10 +35,10 @@ namespace gui::timer {
 
         void calibrateTimer();
 
+        void updateTimer();
+
     private:
         void initComponents();
-
-        void updateTimer();
     };
 }
 

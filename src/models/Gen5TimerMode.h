@@ -15,6 +15,8 @@ namespace model {
     const char *getName(Gen5TimerMode mode);
 
     const std::vector<Gen5TimerMode> &gen5TimerModes();
+
+    int indexOf(Gen5TimerMode mode);
 }
 
 #endif //EONTIMER_GEN5TIMERMODE_H

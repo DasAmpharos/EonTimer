@@ -15,7 +15,7 @@ namespace gui {
     const char *getTitle() {
         std::stringstream stream;
         stream << APP_NAME << " " << APP_VERSION;
-        if (!util::functions::equalsIgnoreCase(BUILD_TYPE, "release")) {
+        if (!::util::functions::equalsIgnoreCase(BUILD_TYPE, "release")) {
             stream << " - git#" << GIT_COMMIT_HASH;
         }
         std::string title = stream.str();

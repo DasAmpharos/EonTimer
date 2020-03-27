@@ -2,6 +2,7 @@
 // Created by Dylan Meadows on 2020-03-19.
 //
 
+#include <ntsid.h>
 #include "Gen5TimerMode.h"
 
 namespace model {
@@ -33,5 +34,12 @@ namespace model {
 
     const std::vector<Gen5TimerMode> &gen5TimerModes() {
         return VALUES;
+    }
+
+    int indexOf(const Gen5TimerMode mode) {
+        for (int i = 0; i < VALUES.size(); i++) {
+            if (mode == VALUES[i]) return i;
+        }
+        return -1;
     }
 }

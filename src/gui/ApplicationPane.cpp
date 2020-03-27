@@ -4,31 +4,51 @@
 
 #include "ApplicationPane.h"
 #include <QGridLayout>
-#include <QTabWidget>
 #include <QPushButton>
 #include <QFontDatabase>
-#include <QDebug>
 #include <gui/dialogs/SettingsDialog.h>
+#include <iostream>
 
 namespace gui {
+    namespace Fields {
+        const char *SELECTED_TAB = "selectedTab";
+    }
+    const uint GEN5 = 0;
+    const uint GEN4 = 1;
+    const uint GEN3 = 2;
+    const uint CUSTOM = 3;
+
     ApplicationPane::ApplicationPane(QSettings *settings,
                                      service::settings::ActionSettings *actionSettings,
                                      service::settings::TimerSettings *timerSettings,
                                      service::TimerService *timerService,
                                      QWidget *parent)
         : QWidget(parent),
+          settings(settings),
           timerSettings(timerSettings),
           actionSettings(actionSettings),
           timerService(timerService) {
         auto *calibrationService = new service::CalibrationService(timerSettings);
-        auto *delayTimer = new service::timer::DelayTimer(calibrationService, new service::timer::SecondTimer());
+        auto *secondTimer = new service::timer::SecondTimer();
+        auto *delayTimer = new service::timer::DelayTimer(secondTimer, calibrationService);
+        auto *entralinkTimer = new service::timer::EntralinkTimer(delayTimer);
+        auto *enhancedEntralinkTimer = new service::timer::EnhancedEntralinkTimer(entralinkTimer);
+        auto *gen5TimerSettings = new service::settings::Gen5TimerSettings(settings);
+        auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
 
         timerDisplayPane = new TimerDisplayPane(timerService);
-        auto *gen5TimerSettings = new service::settings::Gen5TimerSettings(settings);
-        gen5TimerPane = new timer::Gen5TimerPane(gen5TimerSettings, calibrationService);
-        auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
-        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings, delayTimer, calibrationService, timerService);
+        gen5TimerPane = new timer::Gen5TimerPane(gen5TimerSettings,
+                                                 delayTimer,
+                                                 secondTimer,
+                                                 entralinkTimer,
+                                                 enhancedEntralinkTimer,
+                                                 calibrationService, timerService);
+        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings,
+                                                 delayTimer,
+                                                 calibrationService,
+                                                 timerService);
         connect(timerService, &service::TimerService::activated, [this](const bool activated) {
+            this->gen5TimerPane->setEnabled(!activated);
             this->gen4TimerPane->setEnabled(!activated);
         });
         initComponents();
@@ -51,9 +71,13 @@ namespace gui {
         {
             auto *tabPane = new QTabWidget();
             tabPane->setProperty("class", "themeable");
+            connect(tabPane, &QTabWidget::currentChanged, [this](const int index) {
+                setSelectedTab((uint) index);
+            });
             layout->addWidget(tabPane, 0, 1, 2, 2);
             tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");
+            tabPane->setCurrentIndex(getSelectedTab());
             // tabPane->addTab(gen5TimerPane, "5");
             // tabPane->addTab(gen3TimerPane, "3");
             // tabPane->addTab(customTimerPane, "C");
@@ -119,7 +143,30 @@ namespace gui {
         }
     }
 
+    uint ApplicationPane::getSelectedTab() const {
+        return settings->value(Fields::SELECTED_TAB, 0).toUInt();
+    }
+
+    void ApplicationPane::setSelectedTab(uint selectedTab) {
+        settings->value(Fields::SELECTED_TAB, selectedTab);
+        switch (selectedTab) {
+            case GEN5:
+                gen5TimerPane->updateTimer();
+                break;
+            case GEN4:
+                gen4TimerPane->updateTimer();
+                break;
+        }
+    }
+
     void ApplicationPane::onUpdate() {
-        gen4TimerPane->calibrateTimer();
+        switch (getSelectedTab()) {
+            case GEN5:
+                gen5TimerPane->calibrateTimer();
+                break;
+            case GEN4:
+                gen4TimerPane->calibrateTimer();
+                break;
+        }
     }
 }

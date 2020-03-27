@@ -15,6 +15,7 @@ namespace gui {
     class ApplicationPane : public QWidget {
     Q_OBJECT
     private:
+        QSettings *settings;
         service::settings::ActionSettings *actionSettings;
         service::settings::TimerSettings *timerSettings;
         service::TimerService *timerService;
@@ -30,6 +31,10 @@ namespace gui {
 
     private:
         void initComponents();
+
+        uint getSelectedTab() const;
+
+        void setSelectedTab(uint timerType);
 
         // @formatter:off
     private slots:

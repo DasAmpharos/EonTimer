@@ -10,10 +10,10 @@ namespace service::timer {
     const double UPDATE_FACTOR = 1.0;
     const double CLOSE_UPDATE_FACTOR = 0.75;
 
-    DelayTimer::DelayTimer(const CalibrationService *calibrationService,
-                           const SecondTimer *secondTimer)
-        : calibrationService(calibrationService),
-          secondTimer(secondTimer) {
+    DelayTimer::DelayTimer(const SecondTimer *secondTimer,
+                           const CalibrationService *calibrationService)
+        : secondTimer(secondTimer),
+          calibrationService(calibrationService) {
     }
 
     const std::shared_ptr<std::vector<int>>

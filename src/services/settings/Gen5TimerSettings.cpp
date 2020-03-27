@@ -6,6 +6,7 @@
 
 namespace service::settings {
     namespace Gen5Fields {
+        const char *MODE = "gen5/mode";
         const char *CALIBRATION = "gen5/calibration";
         const char *TARGET_DELAY = "gen5/targetDelay";
         const char *TARGET_SECOND = "gen5/targetSecond";
@@ -14,6 +15,7 @@ namespace service::settings {
         const char *TARGET_ADVANCES = "gen5/targetAdvances";
 
         namespace Defaults {
+            const int MODE = 0;
             const int CALIBRATION = 95;
             const int TARGET_DELAY = 1200;
             const int TARGET_SECOND = 50;
@@ -25,6 +27,15 @@ namespace service::settings {
 
     Gen5TimerSettings::Gen5TimerSettings(QSettings *settings)
         : settings(settings) {
+    }
+
+    model::Gen5TimerMode Gen5TimerSettings::getMode() const {
+        const int index = settings->value(Gen5Fields::MODE, Gen5Fields::Defaults::MODE).toInt();
+        return model::gen5TimerModes()[index];
+    }
+
+    void Gen5TimerSettings::setMode(model::Gen5TimerMode mode) {
+        settings->setValue(Gen5Fields::MODE, model::indexOf(mode));
     }
 
     int Gen5TimerSettings::getCalibration() const {

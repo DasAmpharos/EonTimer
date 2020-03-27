@@ -6,6 +6,7 @@
 #define EONTIMER_GEN5TIMERSETTINGS_H
 
 #include <QSettings>
+#include <models/Gen5TimerMode.h>
 
 namespace service::settings {
     class Gen5TimerSettings {
@@ -13,6 +14,10 @@ namespace service::settings {
         QSettings *settings;
     public:
         explicit Gen5TimerSettings(QSettings *settings);
+
+        model::Gen5TimerMode getMode() const;
+
+        void setMode(model::Gen5TimerMode mode);
 
         int getCalibration() const;
 

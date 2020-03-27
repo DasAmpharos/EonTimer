@@ -5,7 +5,7 @@
 #include "EntralinkTimer.h"
 
 namespace service::timer {
-    EntralinkTimer::EntralinkTimer(service::timer::DelayTimer *delayTimer)
+    EntralinkTimer::EntralinkTimer(const DelayTimer *delayTimer)
         : delayTimer(delayTimer) {
     }
 
