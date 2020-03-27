@@ -20,14 +20,14 @@ namespace service::timer {
                                          int entralinkCalibration,
                                          int frameCalibration) const {
         std::shared_ptr<std::vector<int>> stages = std::make_shared<std::vector<int>>(3);
-        (*stages)[0] = createStage1(targetSecond, targetDelay, calibration);
+        (*stages)[0] = createStage1(targetDelay, targetSecond, calibration);
         (*stages)[1] = createStage2(targetDelay, calibration, entralinkCalibration);
         (*stages)[2] = createStage3(targetAdvances, frameCalibration);
         return stages;
     }
 
-    const int EnhancedEntralinkTimer::createStage1(int targetSecond, int targetDelay, int calibration) const {
-        return entralinkTimer->createStage1(targetSecond, targetDelay, calibration);
+    const int EnhancedEntralinkTimer::createStage1(int targetDelay, int targetSecond, int calibration) const {
+        return entralinkTimer->createStage1(targetDelay, targetSecond, calibration);
     }
 
     const int EnhancedEntralinkTimer::createStage2(int targetDelay, int calibration, int entralinkCalibration) const {

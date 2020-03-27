@@ -19,9 +19,9 @@ namespace service::timer {
         DelayTimer(const SecondTimer *secondTimer,
                    const CalibrationService *calibrationService);
 
-        const std::shared_ptr<std::vector<int>> createStages(int targetSecond, int targetDelay, int calibration) const;
+        const std::shared_ptr<std::vector<int>> createStages(int targetDelay, int targetSecond, int calibration) const;
 
-        const int createStage1(int targetSecond, int targetDelay, int calibration) const;
+        const int createStage1(int targetDelay, int targetSecond, int calibration) const;
 
         const int createStage2(int targetDelay, int calibration) const;
 

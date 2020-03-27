@@ -5,14 +5,16 @@
 #ifndef EONTIMER_GEN4TIMERSETTINGS_H
 #define EONTIMER_GEN4TIMERSETTINGS_H
 
+#include <QObject>
 #include <QSettings>
 
 namespace service::settings {
-    class Gen4TimerSettings {
+    class Gen4TimerSettings : public QObject {
+    Q_OBJECT
     private:
         QSettings *settings;
     public:
-        explicit Gen4TimerSettings(QSettings *settings);
+        explicit Gen4TimerSettings(QSettings *settings, QObject *parent = nullptr);
 
         int getCalibratedDelay() const;
 
@@ -29,6 +31,14 @@ namespace service::settings {
         int getTargetSecond() const;
 
         void setTargetSecond(int targetSecond);
+
+        // @formatter:off
+    signals:
+        void calibratedDelayChanged(int calibratedDelay);
+        void calibratedSecondChanged(int calibratedSecond);
+        void targetDelayChanged(int targetDelay);
+        void targetSecondChanged(int targetSecond);
+        // @formatter:on
     };
 }
 

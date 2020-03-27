@@ -17,14 +17,14 @@ namespace service::timer {
     }
 
     const std::shared_ptr<std::vector<int>>
-    DelayTimer::createStages(const int targetSecond, const int targetDelay, const int calibration) const {
+    DelayTimer::createStages(const int targetDelay, const int targetSecond, const int calibration) const {
         std::shared_ptr<std::vector<int>> stages = std::make_shared<std::vector<int>>(2);
-        (*stages)[0] = createStage1(targetSecond, targetDelay, calibration);
+        (*stages)[0] = createStage1(targetDelay, targetSecond, calibration);
         (*stages)[1] = createStage2(targetDelay, calibration);
         return stages;
     }
 
-    const int DelayTimer::createStage1(const int targetSecond, const int targetDelay, const int calibration) const {
+    const int DelayTimer::createStage1(int targetDelay, int targetSecond, int calibration) const {
         return util::functions::toMinimumLength(
             secondTimer->createStage1(targetSecond, calibration) -
             calibrationService->toMilliseconds(targetDelay)

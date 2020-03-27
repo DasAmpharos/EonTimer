@@ -13,7 +13,6 @@ namespace gui::timer {
                                  const service::timer::EntralinkTimer *entralinkTimer,
                                  const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer,
                                  const service::CalibrationService *calibrationService,
-                                 service::TimerService *timerService,
                                  QWidget *parent)
         : QWidget(parent),
           settings(settings),
@@ -22,7 +21,6 @@ namespace gui::timer {
           entralinkTimer(entralinkTimer),
           enhancedEntralinkTimer(enhancedEntralinkTimer),
           calibrationService(calibrationService),
-          timerService(timerService),
           mode({0, new QLabel("Mode"), new QComboBox}),
           calibration({0, new QLabel("Calibration"), new QSpinBox}),
           targetDelay({1, new QLabel("Target Delay"), new QSpinBox}),
@@ -55,8 +53,8 @@ namespace gui::timer {
             connect(mode.field, QOverload<int>::of(&QComboBox::currentIndexChanged),
                     [this](const int currentIndex) {
                         settings->setMode(model::gen5TimerModes()[currentIndex]);
+                        emit shouldUpdate();
                         updateComponents();
-                        updateTimer();
                     });
             util::addFieldSet(form, mode);
         }
@@ -91,7 +89,7 @@ namespace gui::timer {
                 calibration.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 connect(calibration.field, valueChanged, [this](const int calibration) {
                     settings->setCalibration(calibration);
-                    updateTimer();
+                    createStages();
                 });
                 util::addFieldSet(timerForm, calibration);
             }
@@ -103,7 +101,7 @@ namespace gui::timer {
                 targetDelay.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 connect(targetDelay.field, valueChanged, [this](const int targetDelay) {
                     settings->setTargetDelay(targetDelay);
-                    updateTimer();
+                    createStages();
                 });
                 util::addFieldSet(timerForm, targetDelay);
             }
@@ -115,7 +113,7 @@ namespace gui::timer {
                 targetSecond.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 connect(targetSecond.field, valueChanged, [this](const int targetSecond) {
                     settings->setTargetSecond(targetSecond);
-                    updateTimer();
+                    createStages();
                 });
                 util::addFieldSet(timerForm, targetSecond);
             }
@@ -127,7 +125,7 @@ namespace gui::timer {
                 entralinkCalibration.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 connect(entralinkCalibration.field, valueChanged, [this](const int entralinkCalibration) {
                     settings->setEntralinkCalibration(entralinkCalibration);
-                    updateTimer();
+                    createStages();
                 });
                 util::addFieldSet(timerForm, entralinkCalibration);
             }
@@ -139,7 +137,7 @@ namespace gui::timer {
                 frameCalibration.field->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
                 connect(frameCalibration.field, valueChanged, [this](const int frameCalibration) {
                     settings->setFrameCalibration(frameCalibration);
-                    updateTimer();
+                    createStages();
                 });
                 util::addFieldSet(timerForm, frameCalibration);
             }
@@ -150,7 +148,7 @@ namespace gui::timer {
                 targetAdvances.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 connect(targetAdvances.field, valueChanged, [this](const int targetAdvances) {
                     settings->setFrameCalibration(targetAdvances);
-                    updateTimer();
+                    createStages();
                 });
                 util::addFieldSet(timerForm, targetAdvances);
             }
@@ -199,59 +197,59 @@ namespace gui::timer {
         util::setVisible(calibrationForm, advancesHit, isEnhancedEntralink);
     }
 
-    void Gen5TimerPane::calibrateTimer() {
-        switch (settings->getMode()) {
-            case model::Gen5TimerMode::STANDARD:
-                calibration.field->setValue(calibration.field->value() + getSecondCalibration());
-                break;
-            case model::Gen5TimerMode::C_GEAR:
-                calibration.field->setValue(calibration.field->value() + getDelayCalibration());
-                break;
-            case model::Gen5TimerMode::ENTRALINK:
-                calibration.field->setValue(calibration.field->value() + getSecondCalibration());
-                entralinkCalibration.field->setValue(entralinkCalibration.field->value() + getEntralinkCalibration());
-                break;
-            case model::Gen5TimerMode::ENTRALINK_PLUS:
-                break;
-        }
-    }
-
-    void Gen5TimerPane::updateTimer() {
+    std::shared_ptr<std::vector<int>> Gen5TimerPane::createStages() {
         std::shared_ptr<std::vector<int>> stages;
         switch (settings->getMode()) {
-            case model::Gen5TimerMode::STANDARD:
-                stages = secondTimer->createStages(
-                    targetSecond.field->value(),
-                    calibration.field->value()
-                );
-                break;
             case model::Gen5TimerMode::C_GEAR:
                 stages = delayTimer->createStages(
-                    targetSecond.field->value(),
-                    targetDelay.field->value(),
-                    calibration.field->value()
+                    settings->getTargetDelay(),
+                    settings->getTargetSecond(),
+                    settings->getCalibration()
+                );
+                break;
+            case model::Gen5TimerMode::STANDARD:
+                stages = secondTimer->createStages(
+                    settings->getTargetSecond(),
+                    settings->getCalibration()
                 );
                 break;
             case model::Gen5TimerMode::ENTRALINK:
                 stages = entralinkTimer->createStages(
-                    targetSecond.field->value(),
-                    targetDelay.field->value(),
-                    calibration.field->value(),
-                    entralinkCalibration.field->value()
+                    settings->getTargetDelay(),
+                    settings->getTargetSecond(),
+                    settings->getCalibration(),
+                    settings->getEntralinkCalibration()
                 );
                 break;
             case model::Gen5TimerMode::ENTRALINK_PLUS:
                 stages = enhancedEntralinkTimer->createStages(
-                    targetDelay.field->value(),
-                    targetSecond.field->value(),
-                    targetAdvances.field->value(),
-                    calibration.field->value(),
-                    entralinkCalibration.field->value(),
-                    frameCalibration.field->value()
+                    settings->getTargetDelay(),
+                    settings->getTargetSecond(),
+                    settings->getTargetAdvances(),
+                    settings->getCalibration(),
+                    settings->getEntralinkCalibration(),
+                    settings->getFrameCalibration()
                 );
                 break;
         }
-        timerService->setStages(stages);
+        return stages;
+    }
+
+    void Gen5TimerPane::calibrate() {
+        switch (settings->getMode()) {
+            case model::Gen5TimerMode::C_GEAR:
+                settings->setCalibration(settings->getCalibration() + getDelayCalibration());
+                break;
+            case model::Gen5TimerMode::STANDARD:
+                settings->setCalibration(settings->getCalibration() + getSecondCalibration());
+                break;
+            case model::Gen5TimerMode::ENTRALINK:
+                settings->setCalibration(settings->getCalibration() + getSecondCalibration());
+                settings->setEntralinkCalibration(settings->getEntralinkCalibration() + getEntralinkCalibration());
+                break;
+            case model::Gen5TimerMode::ENTRALINK_PLUS:
+                break;
+        }
     }
 
     int Gen5TimerPane::getDelayCalibration() const {

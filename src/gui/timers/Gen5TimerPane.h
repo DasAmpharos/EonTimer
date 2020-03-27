@@ -28,7 +28,6 @@ namespace gui::timer {
         const service::timer::EntralinkTimer *entralinkTimer;
         const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer;
         const service::CalibrationService *calibrationService;
-        service::TimerService *timerService;
 
         QGridLayout *timerForm;
         QGridLayout *calibrationForm;
@@ -49,12 +48,11 @@ namespace gui::timer {
                                const service::timer::EntralinkTimer *entralinkTimer,
                                const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer,
                                const service::CalibrationService *calibrationService,
-                               service::TimerService *timerService,
                                QWidget *parent = nullptr);
 
-        void calibrateTimer();
+        std::shared_ptr<std::vector<int>> createStages();
 
-        void updateTimer();
+        void calibrate();
 
     private:
         void initComponents();
@@ -66,6 +64,11 @@ namespace gui::timer {
         int getSecondCalibration() const;
 
         int getEntralinkCalibration() const;
+
+        // @formatter:off
+    signals:
+        void shouldUpdate();
+        // @formatter:on
     };
 }
 

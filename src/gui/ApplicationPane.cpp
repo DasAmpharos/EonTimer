@@ -42,15 +42,14 @@ namespace gui {
                                                  secondTimer,
                                                  entralinkTimer,
                                                  enhancedEntralinkTimer,
-                                                 calibrationService, timerService);
+                                                 calibrationService);
+        connect(gen5TimerPane, &timer::Gen5TimerPane::shouldUpdate, [this] { updateTimer(); });
         gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings,
                                                  delayTimer,
-                                                 calibrationService,
-                                                 timerService);
+                                                 calibrationService);
         gen3TimerPane = new timer::Gen3TimerPane(gen3TimerSettings,
                                                  frameTimer,
-                                                 calibrationService,
-                                                 timerService);
+                                                 calibrationService);
         initComponents();
     }
 
@@ -148,34 +147,44 @@ namespace gui {
     }
 
     uint ApplicationPane::getSelectedTab() const {
-        return settings->value(Fields::SELECTED_TAB, 0).toUInt();
+        return settings->value(Fields::SELECTED_TAB, GEN5).toUInt();
     }
 
     void ApplicationPane::setSelectedTab(uint selectedTab) {
-        settings->value(Fields::SELECTED_TAB, selectedTab);
-        switch (selectedTab) {
+        settings->setValue(Fields::SELECTED_TAB, selectedTab);
+        updateTimer();
+    }
+
+    void ApplicationPane::updateTimer() {
+        std::shared_ptr<std::vector<int>> stages;
+        switch (getSelectedTab()) {
             case GEN5:
-                gen5TimerPane->updateTimer();
+                stages = gen5TimerPane->createStages();
                 break;
             case GEN4:
-                gen4TimerPane->updateTimer();
+                stages = gen4TimerPane->createStages();
                 break;
             case GEN3:
-                gen3TimerPane->updateTimer();
+                stages = gen3TimerPane->createStages();
+                break;
+            case CUSTOM:
+                stages = std::make_shared<std::vector<int>>(1);
+                (*stages)[0] = 10000;
                 break;
         }
+        timerService->setStages(stages);
     }
 
     void ApplicationPane::onUpdate() {
         switch (getSelectedTab()) {
             case GEN5:
-                gen5TimerPane->calibrateTimer();
+                gen5TimerPane->calibrate();
                 break;
             case GEN4:
-                gen4TimerPane->calibrateTimer();
+                gen4TimerPane->calibrate();
                 break;
             case GEN3:
-                gen3TimerPane->calibrateTimer();
+                gen3TimerPane->calibrate();
                 break;
         }
     }

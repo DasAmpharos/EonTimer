@@ -6,23 +6,19 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QFormLayout>
+#include <gui/util/FieldSet.h>
 #include <QLabel>
-#include <QSpinBox>
-#include <limits.h>
 
 namespace gui::timer {
     Gen4TimerPane::Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
                                  const service::timer::DelayTimer *delayTimer,
                                  const service::CalibrationService *calibrationService,
-                                 service::TimerService *timerService,
                                  QWidget *parent)
         : QWidget(parent),
           settings(settings),
           delayTimer(delayTimer),
-          calibrationService(calibrationService),
-          timerService(timerService) {
+          calibrationService(calibrationService) {
         initComponents();
-        updateTimer();
     }
 
     void Gen4TimerPane::initComponents() {
@@ -36,60 +32,68 @@ namespace gui::timer {
             auto *group = new QGroupBox();
             group->setProperty("class", "themeable");
             group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            auto *timerForm = new QFormLayout(group);
-            timerForm->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+            auto *timerForm = new QGridLayout(group);
             // ----- calibratedDelay -----
             {
-                calibratedDelay = new QSpinBox();
-                calibratedDelay->setRange(INT_MIN, INT_MAX);
-                calibratedDelay->setValue(settings->getCalibratedDelay());
-                calibratedDelay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(calibratedDelay, valueChanged, [this](const int calibratedDelay) {
-                    settings->setCalibratedDelay(calibratedDelay);
-                    updateTimer();
-                });
-                timerForm->addRow("Calibrated Delay", calibratedDelay);
+                auto calibratedDelay = util::FieldSet<QSpinBox>(0, new QLabel("Calibrated Delay"), new QSpinBox);
+                calibratedDelay.field->setRange(INT_MIN, INT_MAX);
+                calibratedDelay.field->setValue(settings->getCalibratedDelay());
+                calibratedDelay.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(calibratedDelay.field, valueChanged,
+                        [this](const int value) {
+                            settings->setCalibratedDelay(value);
+                            createStages();
+                        });
+                util::addFieldSet(timerForm, calibratedDelay);
             }
             // ----- calibratedSecond -----
             {
-                calibratedSecond = new QSpinBox();
-                calibratedSecond->setRange(INT_MIN, INT_MAX);
-                calibratedSecond->setValue(settings->getCalibratedSecond());
-                calibratedSecond->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(calibratedSecond, valueChanged, [this](const int calibratedSecond) {
-                    settings->setCalibratedSecond(calibratedSecond);
-                    updateTimer();
-                });
-                timerForm->addRow("Calibrated Second", calibratedSecond);
+                auto calibratedSecond = util::FieldSet<QSpinBox>(1, new QLabel("Calibrated Second"), new QSpinBox);
+                calibratedSecond.field->setRange(INT_MIN, INT_MAX);
+                calibratedSecond.field->setValue(settings->getCalibratedSecond());
+                calibratedSecond.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(calibratedSecond.field, valueChanged,
+                        [this](const int value) {
+                            settings->setCalibratedSecond(value);
+                            createStages();
+                        });
+                util::addFieldSet(timerForm, calibratedSecond);
             }
             // ----- targetDelay -----
             {
-                targetDelay = new QSpinBox();
-                targetDelay->setRange(0, INT_MAX);
-                targetDelay->setValue(settings->getTargetDelay());
-                targetDelay->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(targetDelay, valueChanged, [this](const int targetDelay) {
-                    settings->setTargetDelay(targetDelay);
-                    updateTimer();
-                });
-                timerForm->addRow("Target Delay", targetDelay);
+                auto targetDelay = util::FieldSet<QSpinBox>(2, new QLabel("Target Delay"), new QSpinBox);
+                targetDelay.field->setRange(0, INT_MAX);
+                targetDelay.field->setValue(settings->getTargetDelay());
+                targetDelay.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(settings, &service::settings::Gen4TimerSettings::targetDelayChanged,
+                        [targetDelay](const int value) {
+                            targetDelay.field->setValue(value);
+                        });
+                connect(targetDelay.field, valueChanged,
+                        [this](const int value) {
+                            settings->setTargetDelay(value);
+                            createStages();
+                        });
+                util::addFieldSet(timerForm, targetDelay);
             }
             // ----- targetSecond -----
             {
-                targetSecond = new QSpinBox();
-                targetSecond->setRange(0, 59);
-                targetSecond->setValue(settings->getTargetSecond());
-                targetSecond->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(targetSecond, valueChanged, [this](const int targetSecond) {
-                    settings->setTargetSecond(targetSecond);
-                    updateTimer();
-                });
-                timerForm->addRow("Target Second", targetSecond);
+                auto targetSecond = util::FieldSet<QSpinBox>(3, new QLabel("Target Second"), new QSpinBox);
+                targetSecond.field->setRange(0, 59);
+                targetSecond.field->setValue(settings->getTargetSecond());
+                targetSecond.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(targetSecond.field, valueChanged,
+                        [this](const int value) {
+                            settings->setTargetSecond(value);
+                            createStages();
+                        });
+                util::addFieldSet(timerForm, targetSecond);
             }
             rootLayout->addWidget(group);
         }
         // ----- delayHit -----
         {
+            // TODO
             auto *layout = new QFormLayout();
             layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
             rootLayout->addLayout(layout);
@@ -99,18 +103,34 @@ namespace gui::timer {
             delayHit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addRow("Delay Hit", delayHit);
         }
+        createStages();
     }
 
-    void Gen4TimerPane::calibrateTimer() {
-        const int calibratedDelay = calibrationService->toDelays(
-            delayTimer->calibrate(targetDelay->value(), delayHit->value()));
-        this->calibratedDelay->setValue(this->calibratedDelay->value() + calibratedDelay);
+    void Gen4TimerPane::calibrate() {
+        settings->setCalibratedDelay(
+            settings->getCalibratedDelay() +
+            calibrationService->toDelays(
+                delayTimer->calibrate(
+                    settings->getTargetDelay(),
+                    delayHit->value()
+                )
+            )
+        );
+        delayHit->setValue(0);
     }
 
-    void Gen4TimerPane::updateTimer() {
-        const int calibration = calibrationService->createCalibration(
-            calibratedDelay->value(), calibratedSecond->value());
-        timerService->setStages(delayTimer->createStages(
-            targetSecond->value(), targetDelay->value(), calibration));
+    std::shared_ptr<std::vector<int>> Gen4TimerPane::createStages() {
+        return delayTimer->createStages(
+            settings->getTargetDelay(),
+            settings->getTargetSecond(),
+            getCalibration()
+        );
+    }
+
+    int Gen4TimerPane::getCalibration() const {
+        return calibrationService->createCalibration(
+            settings->getCalibratedDelay(),
+            settings->getCalibratedSecond()
+        );
     }
 }

@@ -41,6 +41,8 @@ namespace gui {
 
         void setSelectedTab(uint timerType);
 
+        void updateTimer();
+
         // @formatter:off
     private slots:
         void onUpdate();

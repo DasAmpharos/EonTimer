@@ -17,14 +17,14 @@ namespace service::timer {
         explicit EnhancedEntralinkTimer(const EntralinkTimer *entralinkTimer);
 
         const std::shared_ptr<std::vector<int>>
-        createStages(int targetSecond,
-                     int targetDelay,
+        createStages(int targetDelay,
+                     int targetSecond,
                      int targetAdvances,
                      int calibration,
                      int entralinkCalibration,
                      int frameCalibration) const;
 
-        const int createStage1(int targetSecond, int targetDelay, int calibration) const;
+        const int createStage1(int targetDelay, int targetSecond, int calibration) const;
 
         const int createStage2(int targetDelay, int calibration, int entralinkCalibration) const;
 

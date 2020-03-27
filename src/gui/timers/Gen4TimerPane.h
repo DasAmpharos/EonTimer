@@ -6,12 +6,10 @@
 #define EONTIMER_GEN4TIMERPANE_H
 
 #include <QWidget>
-#include <services/TimerService.h>
-#include <services/CalibrationService.h>
-#include <services/timers/DelayTimer.h>
 #include <services/settings/Gen4TimerSettings.h>
-
-class QSpinBox;
+#include <services/timers/DelayTimer.h>
+#include <services/CalibrationService.h>
+#include <QSpinBox>
 
 namespace gui::timer {
     class Gen4TimerPane : public QWidget {
@@ -20,25 +18,21 @@ namespace gui::timer {
         service::settings::Gen4TimerSettings *settings;
         const service::timer::DelayTimer *delayTimer;
         const service::CalibrationService *calibrationService;
-        service::TimerService *timerService;
-        QSpinBox *targetDelay;
-        QSpinBox *targetSecond;
-        QSpinBox *calibratedDelay;
-        QSpinBox *calibratedSecond;
         QSpinBox *delayHit;
     public:
         Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
                       const service::timer::DelayTimer *delayTimer,
                       const service::CalibrationService *calibrationService,
-                      service::TimerService *timerService,
                       QWidget *parent = nullptr);
 
-        void calibrateTimer();
+        std::shared_ptr<std::vector<int>> createStages();
 
-        void updateTimer();
+        void calibrate();
 
     private:
         void initComponents();
+
+        int getCalibration() const;
     };
 }
 

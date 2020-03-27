@@ -16,9 +16,10 @@ namespace service::timer {
     public:
         explicit EntralinkTimer(const DelayTimer *delayTimer);
 
-        const std::shared_ptr<std::vector<int>> createStages(int targetSecond, int targetDelay, int calibration, int entralinkCalibration) const;
+        const std::shared_ptr<std::vector<int>>
+        createStages(int targetDelay, int targetSecond, int calibration, int entralinkCalibration) const;
 
-        const int createStage1(int targetSecond, int targetDelay, int calibration) const;
+        const int createStage1(int targetDelay, int targetSecond, int calibration) const;
 
         const int createStage2(int targetDelay, int calibration, int entralinkCalibration) const;
 

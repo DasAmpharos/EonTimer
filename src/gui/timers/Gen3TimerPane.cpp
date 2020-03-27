@@ -6,18 +6,17 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <gui/util/FieldSet.h>
 
 namespace gui::timer {
     Gen3TimerPane::Gen3TimerPane(service::settings::Gen3TimerSettings *settings,
                                  const service::timer::FrameTimer *frameTimer,
                                  const service::CalibrationService *calibrationService,
-                                 service::TimerService *timerService,
                                  QWidget *parent)
         : QWidget(parent),
           settings(settings),
           frameTimer(frameTimer),
-          calibrationService(calibrationService),
-          timerService(timerService) {
+          calibrationService(calibrationService) {
         initComponents();
     }
 
@@ -33,11 +32,11 @@ namespace gui::timer {
             auto *group = new QGroupBox();
             group->setProperty("class", "themeable");
             group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            rootLayout->addWidget(group);
-            // group layout
             auto *groupLayout = new QVBoxLayout(group);
             groupLayout->setContentsMargins(0, 0, 0, 0);
             groupLayout->setSpacing(0);
+            rootLayout->addWidget(group);
+
             // form
             auto *form = new QWidget();
             form->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -47,42 +46,42 @@ namespace gui::timer {
             formLayout->setSpacing(10);
             // ----- calibration -----
             {
-                calibration = new QSpinBox();
-                calibration->setRange(INT_MIN, INT_MAX);
-                calibration->setValue(settings->getCalibration());
-                calibration->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(calibration, valueChanged, [this](const int calibration) {
-                    settings->setCalibration(calibration);
-                    updateTimer();
-                });
-                formLayout->addWidget(new QLabel("Calibration"), 0, 0);
-                formLayout->addWidget(calibration, 0, 1);
+                auto calibration = util::FieldSet<QSpinBox>(0, new QLabel("Calibration"), new QSpinBox);
+                calibration.field->setRange(INT_MIN, INT_MAX);
+                calibration.field->setValue(settings->getCalibration());
+                calibration.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(settings, &service::settings::Gen3TimerSettings::calibrationChanged,
+                        [calibration](const int value) {
+                            calibration.field->setValue(value);
+                        });
+                connect(calibration.field, valueChanged,
+                        [this](const int calibration) {
+                            settings->setCalibration(calibration);
+                            createStages();
+                        });
+                util::addFieldSet(formLayout, calibration);
             }
             // ----- preTimer -----
             {
-                preTimer = new QSpinBox();
-                preTimer->setRange(0, INT_MAX);
-                preTimer->setValue(settings->getPreTimer());
-                preTimer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(preTimer, valueChanged, [this](const int preTimer) {
+                auto preTimer = util::FieldSet<QSpinBox>(1, new QLabel("Pre-Timer"), new QSpinBox);
+                preTimer.field->setRange(0, INT_MAX);
+                preTimer.field->setValue(settings->getPreTimer());
+                connect(preTimer.field, valueChanged, [this](const int preTimer) {
                     settings->setPreTimer(preTimer);
-                    updateTimer();
+                    createStages();
                 });
-                formLayout->addWidget(new QLabel("Pre-Timer"), 1, 0);
-                formLayout->addWidget(preTimer, 1, 1);
+                util::addFieldSet(formLayout, preTimer);
             }
             // ----- targetFrame -----
             {
-                targetFrame = new QSpinBox();
-                targetFrame->setRange(0, INT_MAX);
-                targetFrame->setValue(settings->getTargetFrame());
-                targetFrame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                connect(targetFrame, valueChanged, [this](const int targetFrame) {
+                auto targetFrame = util::FieldSet<QSpinBox>(2, new QLabel("Target Frame"), new QSpinBox);
+                targetFrame.field->setRange(0, INT_MAX);
+                targetFrame.field->setValue(settings->getTargetFrame());
+                connect(targetFrame.field, valueChanged, [this](const int targetFrame) {
                     settings->setTargetFrame(targetFrame);
-                    updateTimer();
+                    createStages();
                 });
-                formLayout->addWidget(new QLabel("Target Frame"), 2, 0);
-                formLayout->addWidget(targetFrame, 2, 1);
+                util::addFieldSet(formLayout, targetFrame);
             }
         }
         // ----- frameHit -----
@@ -91,25 +90,27 @@ namespace gui::timer {
             rootLayout->addLayout(form);
             form->setSpacing(10);
 
-            frameHit = new QSpinBox();
-            frameHit->setRange(0, INT_MAX);
-            frameHit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-            form->addWidget(new QLabel("Frame Hit"), 0, 0);
-            form->addWidget(frameHit, 0, 1);
+            this->frameHit = new QSpinBox();
+            auto frameHit = util::FieldSet<QSpinBox>(0, new QLabel("Frame Hit"), this->frameHit);
+            frameHit.field->setRange(0, INT_MAX);
+            util::addFieldSet(form, frameHit);
         }
     }
 
-    void Gen3TimerPane::calibrateTimer() {
-        const int calibration = frameTimer->calibrate(
-            targetFrame->value(),
-            frameHit->value()
+    std::shared_ptr<std::vector<int>> Gen3TimerPane::createStages() {
+        return frameTimer->createStages(
+            settings->getPreTimer(),
+            settings->getTargetFrame(),
+            settings->getCalibration()
         );
-        this->calibration->setValue(this->calibration->value() + calibration);
     }
 
-    void Gen3TimerPane::updateTimer() {
-        timerService->setStages(
-            frameTimer->createStages(preTimer->value(), targetFrame->value(), calibration->value())
-        );
+    void Gen3TimerPane::calibrate() {
+        settings->setCalibration(settings->getCalibration() + getCalibration());
+        frameHit->setValue(0);
+    }
+
+    int Gen3TimerPane::getCalibration() const {
+        return frameTimer->calibrate(settings->getTargetFrame(), frameHit->value());
     }
 }

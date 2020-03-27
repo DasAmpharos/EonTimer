@@ -7,9 +7,9 @@
 
 #include <QWidget>
 #include <services/settings/Gen3TimerSettings.h>
+#include <services/timers/FrameTimer.h>
 #include <services/CalibrationService.h>
 #include <services/TimerService.h>
-#include <services/timers/FrameTimer.h>
 #include <QSpinBox>
 
 namespace gui::timer {
@@ -19,24 +19,21 @@ namespace gui::timer {
         service::settings::Gen3TimerSettings *settings;
         const service::timer::FrameTimer *frameTimer;
         const service::CalibrationService *calibrationService;
-        service::TimerService *timerService;
-        QSpinBox *calibration;
-        QSpinBox *preTimer;
-        QSpinBox *targetFrame;
         QSpinBox *frameHit;
     public:
         Gen3TimerPane(service::settings::Gen3TimerSettings *settings,
                       const service::timer::FrameTimer *frameTimer,
                       const service::CalibrationService *calibrationService,
-                      service::TimerService *timerService,
                       QWidget *parent = nullptr);
 
-        void calibrateTimer();
+        std::shared_ptr<std::vector<int>> createStages();
 
-        void updateTimer();
+        void calibrate();
 
     private:
         void initComponents();
+
+        int getCalibration() const;
     };
 }
 

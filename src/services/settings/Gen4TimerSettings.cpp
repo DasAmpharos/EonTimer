@@ -11,7 +11,7 @@ namespace service::settings {
         const char *CALIBRATED_SECOND = "gen4/calibratedSecond";
         const char *TARGET_DELAY = "gen4/targetDelay";
         const char *TARGET_SECOND = "gen4/targetSecond";
-        
+
         namespace Defaults {
             const int CALIBRATED_DELAY = 500;
             const int CALIBRATED_SECOND = 14;
@@ -20,39 +20,52 @@ namespace service::settings {
         }
     }
 
-    Gen4TimerSettings::Gen4TimerSettings(QSettings *settings)
-        : settings(settings) {
+    Gen4TimerSettings::Gen4TimerSettings(QSettings *settings, QObject *parent)
+        : QObject(parent),
+          settings(settings) {
     }
 
     int Gen4TimerSettings::getCalibratedDelay() const {
         return settings->value(Gen4Fields::CALIBRATED_DELAY, Gen4Fields::Defaults::CALIBRATED_DELAY).toInt();
     }
 
-    void Gen4TimerSettings::setCalibratedDelay(int calibratedDelay) {
-        settings->setValue(Gen4Fields::CALIBRATED_DELAY, calibratedDelay);
+    void Gen4TimerSettings::setCalibratedDelay(const int calibratedDelay) {
+        if (getCalibratedDelay() != calibratedDelay) {
+            settings->setValue(Gen4Fields::CALIBRATED_DELAY, calibratedDelay);
+            emit calibratedDelayChanged(calibratedDelay);
+        }
     }
 
     int Gen4TimerSettings::getCalibratedSecond() const {
         return settings->value(Gen4Fields::CALIBRATED_SECOND, Gen4Fields::Defaults::CALIBRATED_SECOND).toInt();
     }
 
-    void Gen4TimerSettings::setCalibratedSecond(int calibratedSecond) {
-        settings->setValue(Gen4Fields::CALIBRATED_SECOND, calibratedSecond);
+    void Gen4TimerSettings::setCalibratedSecond(const int calibratedSecond) {
+        if (getCalibratedSecond() != calibratedSecond) {
+            settings->setValue(Gen4Fields::CALIBRATED_SECOND, calibratedSecond);
+            emit calibratedSecondChanged(calibratedSecond);
+        }
     }
 
     int Gen4TimerSettings::getTargetDelay() const {
         return settings->value(Gen4Fields::TARGET_DELAY, Gen4Fields::Defaults::TARGET_DELAY).toInt();
     }
 
-    void Gen4TimerSettings::setTargetDelay(int targetDelay) {
-        settings->setValue(Gen4Fields::TARGET_DELAY, targetDelay);
+    void Gen4TimerSettings::setTargetDelay(const int targetDelay) {
+        if (getTargetDelay() != targetDelay) {
+            settings->setValue(Gen4Fields::TARGET_DELAY, targetDelay);
+            emit targetDelayChanged(targetDelay);
+        }
     }
 
     int Gen4TimerSettings::getTargetSecond() const {
         return settings->value(Gen4Fields::TARGET_SECOND, Gen4Fields::Defaults::TARGET_SECOND).toInt();
     }
 
-    void Gen4TimerSettings::setTargetSecond(int targetSecond) {
-        settings->setValue(Gen4Fields::TARGET_SECOND, targetSecond);
+    void Gen4TimerSettings::setTargetSecond(const int targetSecond) {
+        if (getTargetSecond() != targetSecond) {
+            settings->setValue(Gen4Fields::TARGET_SECOND, targetSecond);
+            emit targetSecondChanged(targetSecond);
+        }
     }
 }
