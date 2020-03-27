@@ -10,9 +10,9 @@
 namespace service::timer {
     class FrameTimer {
     private:
-        CalibrationService *calibrationService;
+        const CalibrationService *calibrationService;
     public:
-        explicit FrameTimer(CalibrationService *calibrationService);
+        explicit FrameTimer(const CalibrationService *calibrationService);
 
         const std::shared_ptr<std::vector<int>> createStages(int preTimer, int targetFrame, int calibration) const;
 

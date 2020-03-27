@@ -5,7 +5,7 @@
 #include "FrameTimer.h"
 
 namespace service::timer {
-    FrameTimer::FrameTimer(CalibrationService *calibrationService)
+    FrameTimer::FrameTimer(const CalibrationService *calibrationService)
         : calibrationService(calibrationService) {
     }
 

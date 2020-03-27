@@ -27,11 +27,11 @@ namespace gui::timer {
         QSpinBox *calibratedSecond;
         QSpinBox *delayHit;
     public:
-        explicit Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
-                               const service::timer::DelayTimer *delayTimer,
-                               const service::CalibrationService *calibrationService,
-                               service::TimerService *timerService,
-                               QWidget *parent = nullptr);
+        Gen4TimerPane(service::settings::Gen4TimerSettings *settings,
+                      const service::timer::DelayTimer *delayTimer,
+                      const service::CalibrationService *calibrationService,
+                      service::TimerService *timerService,
+                      QWidget *parent = nullptr);
 
         void calibrateTimer();
 

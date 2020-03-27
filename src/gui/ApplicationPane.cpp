@@ -3,11 +3,9 @@
 //
 
 #include "ApplicationPane.h"
-#include <QGridLayout>
 #include <QPushButton>
 #include <QFontDatabase>
 #include <gui/dialogs/SettingsDialog.h>
-#include <iostream>
 
 namespace gui {
     namespace Fields {
@@ -28,13 +26,15 @@ namespace gui {
           timerSettings(timerSettings),
           actionSettings(actionSettings),
           timerService(timerService) {
-        auto *calibrationService = new service::CalibrationService(timerSettings);
-        auto *secondTimer = new service::timer::SecondTimer();
-        auto *delayTimer = new service::timer::DelayTimer(secondTimer, calibrationService);
-        auto *entralinkTimer = new service::timer::EntralinkTimer(delayTimer);
-        auto *enhancedEntralinkTimer = new service::timer::EnhancedEntralinkTimer(entralinkTimer);
+        const auto *calibrationService = new service::CalibrationService(timerSettings);
+        const auto *secondTimer = new service::timer::SecondTimer();
+        const auto *frameTimer = new service::timer::FrameTimer(calibrationService);
+        const auto *delayTimer = new service::timer::DelayTimer(secondTimer, calibrationService);
+        const auto *entralinkTimer = new service::timer::EntralinkTimer(delayTimer);
+        const auto *enhancedEntralinkTimer = new service::timer::EnhancedEntralinkTimer(entralinkTimer);
         auto *gen5TimerSettings = new service::settings::Gen5TimerSettings(settings);
         auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
+        auto *gen3TimerSettings = new service::settings::Gen3TimerSettings(settings);
 
         timerDisplayPane = new TimerDisplayPane(timerService);
         gen5TimerPane = new timer::Gen5TimerPane(gen5TimerSettings,
@@ -47,10 +47,10 @@ namespace gui {
                                                  delayTimer,
                                                  calibrationService,
                                                  timerService);
-        connect(timerService, &service::TimerService::activated, [this](const bool activated) {
-            this->gen5TimerPane->setEnabled(!activated);
-            this->gen4TimerPane->setEnabled(!activated);
-        });
+        gen3TimerPane = new timer::Gen3TimerPane(gen3TimerSettings,
+                                                 frameTimer,
+                                                 calibrationService,
+                                                 timerService);
         initComponents();
     }
 
@@ -71,12 +71,16 @@ namespace gui {
         {
             auto *tabPane = new QTabWidget();
             tabPane->setProperty("class", "themeable");
+            connect(timerService, &service::TimerService::activated, [tabPane](const bool activated) {
+                tabPane->setEnabled(!activated);
+            });
             connect(tabPane, &QTabWidget::currentChanged, [this](const int index) {
                 setSelectedTab((uint) index);
             });
             layout->addWidget(tabPane, 0, 1, 2, 2);
             tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");
+            tabPane->addTab(gen3TimerPane, "3");
             tabPane->setCurrentIndex(getSelectedTab());
             // tabPane->addTab(gen5TimerPane, "5");
             // tabPane->addTab(gen3TimerPane, "3");
@@ -156,6 +160,9 @@ namespace gui {
             case GEN4:
                 gen4TimerPane->updateTimer();
                 break;
+            case GEN3:
+                gen3TimerPane->updateTimer();
+                break;
         }
     }
 
@@ -166,6 +173,9 @@ namespace gui {
                 break;
             case GEN4:
                 gen4TimerPane->calibrateTimer();
+                break;
+            case GEN3:
+                gen3TimerPane->calibrateTimer();
                 break;
         }
     }
