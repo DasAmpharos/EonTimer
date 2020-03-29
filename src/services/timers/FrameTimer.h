@@ -6,6 +6,8 @@
 #define EONTIMER_FRAMETIMER_H
 
 #include <services/CalibrationService.h>
+#include <memory>
+#include <vector>
 
 namespace service::timer {
     class FrameTimer {
