@@ -76,6 +76,9 @@ namespace model::timer {
     }
 
     void Gen3TimerModel::setFrameHit(int frameHit) {
-        this->frameHit = frameHit;
+        if (this->frameHit != frameHit) {
+            this->frameHit = frameHit;
+            emit frameHitChanged(frameHit);
+        }
     }
 }

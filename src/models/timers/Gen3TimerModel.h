@@ -42,6 +42,7 @@ namespace model::timer {
         void preTimerChanged(int value);
         void targetFrameChanged(int value);
         void calibrationChanged(int value);
+        void frameHitChanged(int value);
         // @formatter:on
     };
 }
