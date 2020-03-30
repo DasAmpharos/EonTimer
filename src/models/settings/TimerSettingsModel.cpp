@@ -32,7 +32,7 @@ namespace model::settings {
     void TimerSettingsModel::sync(QSettings *settings) const {
         settings->beginGroup(TimerSettingsFields::GROUP);
         settings->setValue(TimerSettingsFields::CONSOLE, model::indexOf(console));
-        settings->setValue(TimerSettingsFields::REFRESH_INTERVAL, refreshInterval.count());
+        settings->setValue(TimerSettingsFields::REFRESH_INTERVAL, static_cast<int>(refreshInterval.count()));
         settings->setValue(TimerSettingsFields::PRECISION_CALIBRATION_ENABLED, precisionCalibrationEnabled);
         settings->endGroup();
     }

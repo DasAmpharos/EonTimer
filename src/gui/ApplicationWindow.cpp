@@ -51,6 +51,8 @@ namespace gui {
         addStylesheet(stylesheet, ":/css/main.css");
 #if defined(__APPLE__)
         addStylesheet(stylesheet, ":/css/macos.css");
+#elif defined(__linux__)
+        addStylesheet(stylesheet, ":/css/linux.css");
 #endif
         setStyleSheet(stylesheet);
 

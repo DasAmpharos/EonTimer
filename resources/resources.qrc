@@ -4,6 +4,9 @@
         <file>css/main.css</file>
     </qresource>
     <qresource>
+        <file>css/linux.css</file>
+    </qresource>
+    <qresource>
         <file>css/macos.css</file>
     </qresource>
     <qresource>

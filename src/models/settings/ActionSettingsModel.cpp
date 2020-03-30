@@ -32,7 +32,7 @@ namespace model::settings {
     void ActionSettingsModel::sync(QSettings *settings) const {
         settings->beginGroup(ActionSettingsFields::GROUP);
         settings->setValue(ActionSettingsFields::SOUND, model::indexOf(sound));
-        settings->setValue(ActionSettingsFields::INTERVAL, interval.count());
+        settings->setValue(ActionSettingsFields::INTERVAL, static_cast<int>(interval.count()));
         settings->setValue(ActionSettingsFields::COUNT, count);
         settings->endGroup();
     }
