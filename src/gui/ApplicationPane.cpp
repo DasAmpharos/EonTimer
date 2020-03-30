@@ -6,7 +6,6 @@
 #include <QPushButton>
 #include <QFontDatabase>
 #include <gui/dialogs/SettingsDialog.h>
-#include <models/timers/CustomTimerModel.h>
 
 namespace gui {
     const uint GEN5 = 0;
@@ -53,9 +52,9 @@ namespace gui {
                                                  frameTimer,
                                                  calibrationService);
         customTimerPane = new timer::CustomTimerPane(customTimerModel);
-        connect(gen5TimerModel, &model::timer::Gen5TimerModel::modeChanged,
-                [this, timerService] {
-                    timerService->setStages(gen5TimerPane->createStages());
+        connect(gen5TimerPane, &timer::Gen5TimerPane::timerChanged,
+                [timerService](std::shared_ptr<std::vector<int>> stages) {
+                    timerService->setStages(stages);
                 });
         initComponents();
     }
@@ -95,7 +94,7 @@ namespace gui {
         // ----- settingsBtn -----
         {
             auto *settingsBtn = new QPushButton();
-            settingsBtn->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+            settingsBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             const auto id = QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
             const auto family = QFontDatabase::applicationFontFamilies(id)[0];
             settingsBtn->setFont(QFont(family));

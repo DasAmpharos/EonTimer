@@ -51,6 +51,11 @@ namespace gui::timer {
         int getEntralinkCalibration() const;
 
         int getAdvancesCalibration() const;
+
+        // @formatter:off
+    signals:
+        void timerChanged(std::shared_ptr<std::vector<int>> stages);
+        // @formatter:on
     };
 }
 

@@ -20,6 +20,16 @@ namespace service {
         return static_cast<int>(std::round(delays * framerate));
     }
 
+    int CalibrationService::calibrateToDelays(const int milliseconds) const {
+        return timerSettings->isPrecisionCalibrationEnabled()
+               ? milliseconds : toDelays(milliseconds);
+    }
+
+    int CalibrationService::calibrateToMilliseconds(int delays) const {
+        return timerSettings->isPrecisionCalibrationEnabled()
+               ? delays : toMilliseconds(delays);
+    }
+
     int CalibrationService::createCalibration(const int delays, const int seconds) const {
         return toMilliseconds(delays - toDelays(seconds * 1000));
     }

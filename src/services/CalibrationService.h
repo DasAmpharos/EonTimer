@@ -18,6 +18,10 @@ namespace service {
 
         int toMilliseconds(int delays) const;
 
+        int calibrateToDelays(int milliseconds) const;
+
+        int calibrateToMilliseconds(int delays) const;
+
         int createCalibration(int delays, int seconds) const;
     };
 }

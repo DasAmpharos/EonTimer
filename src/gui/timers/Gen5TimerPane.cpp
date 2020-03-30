@@ -44,6 +44,7 @@ namespace gui::timer {
             connect(mode.field, QOverload<int>::of(&QComboBox::currentIndexChanged),
                     [this](const int currentIndex) {
                         model->setMode(model::gen5TimerModes()[currentIndex]);
+                        emit timerChanged(createStages());
                     });
             util::addFieldSet(form, mode);
         }
@@ -77,7 +78,7 @@ namespace gui::timer {
                 connect(calibration->field, valueChanged,
                         [this](const int calibration) {
                             model->setCalibration(calibration);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 util::addFieldSet(form, *calibration);
             }
@@ -89,7 +90,7 @@ namespace gui::timer {
                 connect(targetDelay->field, valueChanged,
                         [this](const int targetDelay) {
                             model->setTargetDelay(targetDelay);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 connect(model, &model::timer::Gen5TimerModel::modeChanged,
                         [setVisible, form, targetDelay](const model::Gen5TimerMode mode) {
@@ -105,7 +106,7 @@ namespace gui::timer {
                 connect(targetSecond->field, valueChanged,
                         [this](const int targetSecond) {
                             model->setTargetSecond(targetSecond);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 util::addFieldSet(form, *targetSecond);
             }
@@ -118,7 +119,7 @@ namespace gui::timer {
                 connect(entralinkCalibration->field, valueChanged,
                         [this](const int entralinkCalibration) {
                             model->setEntralinkCalibration(entralinkCalibration);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 connect(model, &model::timer::Gen5TimerModel::modeChanged,
                         [setVisible, form, entralinkCalibration](const model::Gen5TimerMode mode) {
@@ -135,7 +136,7 @@ namespace gui::timer {
                 connect(frameCalibration->field, valueChanged,
                         [this](const int frameCalibration) {
                             model->setFrameCalibration(frameCalibration);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 connect(model, &model::timer::Gen5TimerModel::modeChanged,
                         [setVisible, form, frameCalibration](const model::Gen5TimerMode mode) {
@@ -151,7 +152,7 @@ namespace gui::timer {
                 connect(targetAdvances->field, valueChanged,
                         [this](const int targetAdvances) {
                             model->setTargetAdvances(targetAdvances);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 connect(model, &model::timer::Gen5TimerModel::modeChanged,
                         [setVisible, form, targetAdvances](const model::Gen5TimerMode mode) {
@@ -212,25 +213,25 @@ namespace gui::timer {
     std::shared_ptr<std::vector<int>> Gen5TimerPane::createStages() {
         std::shared_ptr<std::vector<int>> stages;
         switch (model->getMode()) {
+            case model::Gen5TimerMode::STANDARD:
+                stages = secondTimer->createStages(
+                    model->getTargetSecond(),
+                    calibrationService->calibrateToMilliseconds(model->getCalibration())
+                );
+                break;
             case model::Gen5TimerMode::C_GEAR:
                 stages = delayTimer->createStages(
                     model->getTargetDelay(),
                     model->getTargetSecond(),
-                    model->getCalibration()
-                );
-                break;
-            case model::Gen5TimerMode::STANDARD:
-                stages = secondTimer->createStages(
-                    model->getTargetSecond(),
-                    model->getCalibration()
+                    calibrationService->calibrateToMilliseconds(model->getCalibration())
                 );
                 break;
             case model::Gen5TimerMode::ENTRALINK:
                 stages = entralinkTimer->createStages(
                     model->getTargetDelay(),
                     model->getTargetSecond(),
-                    model->getCalibration(),
-                    model->getEntralinkCalibration()
+                    calibrationService->calibrateToMilliseconds(model->getCalibration()),
+                    calibrationService->calibrateToMilliseconds(model->getEntralinkCalibration())
                 );
                 break;
             case model::Gen5TimerMode::ENTRALINK_PLUS:
@@ -238,8 +239,8 @@ namespace gui::timer {
                     model->getTargetDelay(),
                     model->getTargetSecond(),
                     model->getTargetAdvances(),
-                    model->getCalibration(),
-                    model->getEntralinkCalibration(),
+                    calibrationService->calibrateToMilliseconds(model->getCalibration()),
+                    calibrationService->calibrateToMilliseconds(model->getEntralinkCalibration()),
                     model->getFrameCalibration()
                 );
                 break;
@@ -249,19 +250,25 @@ namespace gui::timer {
 
     void Gen5TimerPane::calibrate() {
         switch (model->getMode()) {
-            case model::Gen5TimerMode::C_GEAR:
-                model->setCalibration(model->getCalibration() + getDelayCalibration());
-                break;
             case model::Gen5TimerMode::STANDARD:
-                model->setCalibration(model->getCalibration() + getSecondCalibration());
+                model->setCalibration(model->getCalibration() +
+                                      calibrationService->calibrateToDelays(getSecondCalibration()));
+                break;
+            case model::Gen5TimerMode::C_GEAR:
+                model->setCalibration(model->getCalibration() +
+                                      calibrationService->calibrateToDelays(getDelayCalibration()));
                 break;
             case model::Gen5TimerMode::ENTRALINK:
-                model->setCalibration(model->getCalibration() + getSecondCalibration());
-                model->setEntralinkCalibration(model->getEntralinkCalibration() + getEntralinkCalibration());
+                model->setCalibration(model->getCalibration() +
+                                      calibrationService->calibrateToDelays(getSecondCalibration()));
+                model->setEntralinkCalibration(model->getEntralinkCalibration() +
+                                               calibrationService->calibrateToDelays(getEntralinkCalibration()));
                 break;
             case model::Gen5TimerMode::ENTRALINK_PLUS:
-                model->setCalibration(model->getCalibration() + getSecondCalibration());
-                model->setEntralinkCalibration(model->getEntralinkCalibration() + getEntralinkCalibration());
+                model->setCalibration(model->getCalibration() +
+                                      calibrationService->calibrateToDelays(getSecondCalibration()));
+                model->setEntralinkCalibration(model->getEntralinkCalibration() +
+                                               calibrationService->calibrateToDelays(getEntralinkCalibration()));
                 model->setFrameCalibration(model->getFrameCalibration() + getAdvancesCalibration());
                 break;
         }
