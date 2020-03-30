@@ -6,7 +6,7 @@
 #define EONTIMER_ACTIONSETTINGSPANE_H
 
 #include <QWidget>
-#include <services/settings/ActionSettings.h>
+#include <models/settings/ActionSettingsModel.h>
 #include <QSpinBox>
 #include <QComboBox>
 
@@ -14,12 +14,12 @@ namespace gui::settings {
     class ActionSettingsPane : public QWidget {
     Q_OBJECT
     private:
-        service::settings::ActionSettings *settings;
+        model::settings::ActionSettingsModel *settings;
         QComboBox *sound;
         QSpinBox *interval;
         QSpinBox *count;
     public:
-        ActionSettingsPane(service::settings::ActionSettings *settings,
+        explicit ActionSettingsPane(model::settings::ActionSettingsModel *settings,
                            QWidget *parent = nullptr);
 
         void updateSettings();

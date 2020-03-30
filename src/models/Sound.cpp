@@ -29,7 +29,18 @@ namespace model {
         }
     }
 
+    Sound sound(const uint index) {
+        return VALUES[index];
+    }
+
     const std::vector<Sound> &sounds() {
         return VALUES;
+    }
+
+    int indexOf(const Sound sound) {
+        for (uint i = 0; i < VALUES.size(); i++) {
+            if (sound == VALUES[i]) return i;
+        }
+        return -1;
     }
 }

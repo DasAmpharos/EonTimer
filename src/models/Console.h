@@ -18,7 +18,11 @@ namespace model {
 
     const char *getName(Console console);
 
+    Console console(int index);
+
     const std::vector<Console> &consoles();
+
+    int indexOf(Console console);
 }
 
 #endif //EONTIMER_CONSOLE_H

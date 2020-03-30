@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QFontDatabase>
 #include <gui/dialogs/SettingsDialog.h>
+#include <models/timers/CustomTimerModel.h>
 
 namespace gui {
     const uint GEN5 = 0;
@@ -17,8 +18,8 @@ namespace gui {
     }
 
     ApplicationPane::ApplicationPane(QSettings *settings,
-                                     service::settings::ActionSettings *actionSettings,
-                                     service::settings::TimerSettings *timerSettings,
+                                     model::settings::ActionSettingsModel *actionSettings,
+                                     model::settings::TimerSettingsModel *timerSettings,
                                      service::TimerService *timerService,
                                      QWidget *parent)
         : QWidget(parent),
@@ -26,9 +27,10 @@ namespace gui {
           timerSettings(timerSettings),
           actionSettings(actionSettings),
           timerService(timerService) {
-        auto *gen5TimerSettings = new service::settings::Gen5TimerSettings(settings);
-        auto *gen4TimerSettings = new service::settings::Gen4TimerSettings(settings);
-        auto *gen3TimerSettings = new service::settings::Gen3TimerSettings(settings);
+        auto *gen5TimerModel = new model::timer::Gen5TimerModel(settings);
+        auto *gen4TimerModel = new model::timer::Gen4TimerModel(settings);
+        auto *gen3TimerModel = new model::timer::Gen3TimerModel(settings);
+        auto *customTimerModel = new model::timer::CustomTimerModel(settings);
 
         const auto *calibrationService = new service::CalibrationService(timerSettings);
         const auto *secondTimer = new service::timer::SecondTimer();
@@ -38,19 +40,20 @@ namespace gui {
         const auto *enhancedEntralinkTimer = new service::timer::EnhancedEntralinkTimer(entralinkTimer);
 
         timerDisplayPane = new TimerDisplayPane(timerService);
-        gen5TimerPane = new timer::Gen5TimerPane(gen5TimerSettings,
+        gen5TimerPane = new timer::Gen5TimerPane(gen5TimerModel,
                                                  delayTimer,
                                                  secondTimer,
                                                  entralinkTimer,
                                                  enhancedEntralinkTimer,
                                                  calibrationService);
-        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerSettings,
+        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerModel,
                                                  delayTimer,
                                                  calibrationService);
-        gen3TimerPane = new timer::Gen3TimerPane(gen3TimerSettings,
+        gen3TimerPane = new timer::Gen3TimerPane(gen3TimerModel,
                                                  frameTimer,
                                                  calibrationService);
-        connect(gen5TimerSettings, &service::settings::Gen5TimerSettings::modeChanged,
+        customTimerPane = new timer::CustomTimerPane(customTimerModel);
+        connect(gen5TimerModel, &model::timer::Gen5TimerModel::modeChanged,
                 [this, timerService] {
                     timerService->setStages(gen5TimerPane->createStages());
                 });
@@ -86,28 +89,29 @@ namespace gui {
             tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");
             tabPane->addTab(gen3TimerPane, "3");
+            // tabPane->addTab(customTimerPane, "C");
             tabPane->setCurrentIndex(getSelectedTab());
         }
         // ----- settingsBtn -----
         {
             auto *settingsBtn = new QPushButton();
+            settingsBtn->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
+            const auto id = QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
+            const auto family = QFontDatabase::applicationFontFamilies(id)[0];
+            settingsBtn->setFont(QFont(family));
+            settingsBtn->setText("\uf013");
             connect(timerService, &service::TimerService::activated,
                     [settingsBtn](const bool activated) {
                         settingsBtn->setEnabled(!activated);
                     });
             connect(settingsBtn, &QPushButton::clicked,
                     [this] {
-                        dialog::SettingsDialog(timerSettings, actionSettings, this)
-                            .exec();
+                        auto settingsDialog = dialog::SettingsDialog(timerSettings, actionSettings, this);
+                        if (settingsDialog.exec() == QDialog::Accepted) {
+                            timerSettings->sync(settings);
+                            actionSettings->sync(settings);
+                        }
                     });
-            const auto id = QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
-            const auto family = QFontDatabase::applicationFontFamilies(id)[0];
-            settingsBtn->setFont(QFont(family));
-            settingsBtn->setText("\uf013");
-            settingsBtn->setSizePolicy(
-                QSizePolicy::Fixed,
-                QSizePolicy::Fixed
-            );
             layout->addWidget(settingsBtn, 2, 0);
         }
         // ----- updateBtn -----

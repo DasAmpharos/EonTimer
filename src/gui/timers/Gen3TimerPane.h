@@ -6,7 +6,7 @@
 #define EONTIMER_GEN3TIMERPANE_H
 
 #include <QWidget>
-#include <services/settings/Gen3TimerSettings.h>
+#include <models/timers/Gen3TimerModel.h>
 #include <services/timers/FrameTimer.h>
 #include <services/CalibrationService.h>
 #include <services/TimerService.h>
@@ -16,12 +16,11 @@ namespace gui::timer {
     class Gen3TimerPane : public QWidget {
     Q_OBJECT
     private:
-        service::settings::Gen3TimerSettings *settings;
+        model::timer::Gen3TimerModel *model;
         const service::timer::FrameTimer *frameTimer;
         const service::CalibrationService *calibrationService;
-        QSpinBox *frameHit;
     public:
-        Gen3TimerPane(service::settings::Gen3TimerSettings *settings,
+        Gen3TimerPane(model::timer::Gen3TimerModel *model,
                       const service::timer::FrameTimer *frameTimer,
                       const service::CalibrationService *calibrationService,
                       QWidget *parent = nullptr);

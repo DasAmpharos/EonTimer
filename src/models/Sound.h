@@ -6,6 +6,7 @@
 #define EONTIMER_SOUND_H
 
 #include <vector>
+#include <QtGlobal>
 
 namespace model {
     enum Sound {
@@ -14,7 +15,11 @@ namespace model {
 
     const char *getName(Sound sound);
 
+    Sound sound(uint index);
+
     const std::vector<Sound> &sounds();
+
+    int indexOf(Sound sound);
 }
 
 #endif //EONTIMER_SOUND_H

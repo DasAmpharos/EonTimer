@@ -32,6 +32,10 @@ namespace model {
         }
     }
 
+    Gen5TimerMode gen5TimerMode(int index) {
+        return VALUES[index];
+    }
+
     const std::vector<Gen5TimerMode> &gen5TimerModes() {
         return VALUES;
     }

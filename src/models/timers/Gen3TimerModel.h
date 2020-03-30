@@ -2,19 +2,24 @@
 // Created by Dylan Meadows on 2020-03-26.
 //
 
-#ifndef EONTIMER_GEN3TIMERSETTINGS_H
-#define EONTIMER_GEN3TIMERSETTINGS_H
+#ifndef EONTIMER_GEN3TIMERMODEL_H
+#define EONTIMER_GEN3TIMERMODEL_H
 
 #include <QObject>
 #include <QSettings>
 
-namespace service::settings {
-    class Gen3TimerSettings : public QObject {
+namespace model::timer {
+    class Gen3TimerModel : public QObject {
     Q_OBJECT
     private:
-        QSettings *settings;
+        int preTimer;
+        int targetFrame;
+        int calibration;
+        int frameHit;
     public:
-        explicit Gen3TimerSettings(QSettings *settings, QObject *parent = nullptr);
+        explicit Gen3TimerModel(QSettings *settings, QObject *parent = nullptr);
+
+        void sync(QSettings *settings) const;
 
         int getPreTimer() const;
 
@@ -28,6 +33,10 @@ namespace service::settings {
 
         void setCalibration(int calibration);
 
+        int getFrameHit() const;
+
+        void setFrameHit(int frameHit);
+
         // @formatter:off
     signals:
         void preTimerChanged(int value);
@@ -37,4 +46,4 @@ namespace service::settings {
     };
 }
 
-#endif //EONTIMER_GEN3TIMERSETTINGS_H
+#endif //EONTIMER_GEN3TIMERMODEL_H

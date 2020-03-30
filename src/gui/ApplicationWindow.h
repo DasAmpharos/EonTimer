@@ -7,8 +7,8 @@
 
 #include <QMainWindow>
 #include <QSettings>
-#include <services/settings/ActionSettings.h>
-#include <services/settings/TimerSettings.h>
+#include <models/settings/ActionSettingsModel.h>
+#include <models/settings/TimerSettingsModel.h>
 #include <services/TimerService.h>
 #include "ApplicationPane.h"
 
@@ -17,8 +17,8 @@ namespace gui {
     Q_OBJECT
     private:
         QSettings *settings;
-        service::settings::ActionSettings *actionSettings;
-        service::settings::TimerSettings *timerSettings;
+        model::settings::ActionSettingsModel *actionSettings;
+        model::settings::TimerSettingsModel *timerSettings;
         service::TimerService *timerService;
         ApplicationPane *applicationPane;
     public:

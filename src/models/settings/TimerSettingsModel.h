@@ -2,19 +2,23 @@
 // Created by Dylan Meadows on 2020-03-15.
 //
 
-#ifndef EONTIMER_TIMERSETTINGS_H
-#define EONTIMER_TIMERSETTINGS_H
+#ifndef EONTIMER_TIMERSETTINGSMODEL_H
+#define EONTIMER_TIMERSETTINGSMODEL_H
 
 #include <QSettings>
 #include <models/Console.h>
 #include <chrono>
 
-namespace service::settings {
-    class TimerSettings {
+namespace model::settings {
+    class TimerSettingsModel {
     private:
-        QSettings *settings;
+        model::Console console;
+        std::chrono::milliseconds refreshInterval;
+        bool precisionCalibrationEnabled;
     public:
-        explicit TimerSettings(QSettings *settings);
+        explicit TimerSettingsModel(QSettings *settings);
+
+        void sync(QSettings *settings) const;
 
         model::Console getConsole() const;
 
@@ -31,4 +35,4 @@ namespace service::settings {
 }
 
 
-#endif //EONTIMER_TIMERSETTINGS_H
+#endif //EONTIMER_TIMERSETTINGSMODEL_H

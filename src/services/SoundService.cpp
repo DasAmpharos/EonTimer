@@ -10,7 +10,7 @@ namespace service {
 
     static sf::Sound *loadSound(const char *filename);
 
-    SoundService::SoundService(const settings::ActionSettings *actionSettings,
+    SoundService::SoundService(const model::settings::ActionSettingsModel *actionSettings,
                                QObject *parent)
         : QObject(parent),
           actionSettings(actionSettings) {

@@ -6,7 +6,7 @@
 #define EONTIMER_TIMERSETTINGSPANE_H
 
 #include <QWidget>
-#include <services/settings/TimerSettings.h>
+#include <models/settings/TimerSettingsModel.h>
 #include <QComboBox>
 #include <QSpinBox>
 #include <QCheckBox>
@@ -14,12 +14,12 @@
 namespace gui::settings {
     class TimerSettingsPane : public QWidget {
     private:
-        service::settings::TimerSettings *settings;
+        model::settings::TimerSettingsModel *model;
         QComboBox *console;
         QCheckBox *precisionCalibrationEnabled;
         QSpinBox *refreshInterval;
     public:
-        TimerSettingsPane(service::settings::TimerSettings *settings,
+        TimerSettingsPane(model::settings::TimerSettingsModel *model,
                           QWidget *parent = nullptr);
 
         void updateSettings();

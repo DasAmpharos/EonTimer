@@ -2,17 +2,17 @@
 // Created by Dylan Meadows on 2020-03-10.
 //
 
-#ifndef EONTIMER_CALIBRATIONHELPER_H
-#define EONTIMER_CALIBRATIONHELPER_H
+#ifndef EONTIMER_CALIBRATIONSERVICE_H
+#define EONTIMER_CALIBRATIONSERVICE_H
 
-#include <services/settings/TimerSettings.h>
+#include <models/settings/TimerSettingsModel.h>
 
 namespace service {
     class CalibrationService {
     private:
-        const settings::TimerSettings *timerSettings;
+        const model::settings::TimerSettingsModel *timerSettings;
     public:
-        explicit CalibrationService(const settings::TimerSettings *timerSettings);
+        explicit CalibrationService(const model::settings::TimerSettingsModel *timerSettings);
 
         int toDelays(int milliseconds) const;
 
@@ -22,4 +22,4 @@ namespace service {
     };
 }
 
-#endif //EONTIMER_CALIBRATIONHELPER_H
+#endif //EONTIMER_CALIBRATIONSERVICE_H

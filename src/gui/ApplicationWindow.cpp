@@ -33,8 +33,8 @@ namespace gui {
     ApplicationWindow::ApplicationWindow(QWidget *parent)
         : QMainWindow(parent) {
         settings = new QSettings(this);
-        actionSettings = new service::settings::ActionSettings(settings);
-        timerSettings = new service::settings::TimerSettings(settings);
+        actionSettings = new model::settings::ActionSettingsModel(settings);
+        timerSettings = new model::settings::TimerSettingsModel(settings);
         timerService = new service::TimerService(timerSettings, actionSettings, this);
         applicationPane = new ApplicationPane(settings, actionSettings, timerSettings, timerService, this);
         initComponents();

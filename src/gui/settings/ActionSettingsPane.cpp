@@ -7,7 +7,7 @@
 #include <QLabel>
 
 namespace gui::settings {
-    ActionSettingsPane::ActionSettingsPane(service::settings::ActionSettings *settings, QWidget *parent)
+    ActionSettingsPane::ActionSettingsPane(model::settings::ActionSettingsModel *settings, QWidget *parent)
         : QWidget(parent),
           settings(settings) {
         initComponents();

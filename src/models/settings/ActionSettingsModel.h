@@ -2,19 +2,23 @@
 // Created by Dylan Meadows on 2020-03-15.
 //
 
-#ifndef EONTIMER_ACTIONSETTINGS_H
-#define EONTIMER_ACTIONSETTINGS_H
+#ifndef EONTIMER_ACTIONSETTINGSMODEL_H
+#define EONTIMER_ACTIONSETTINGSMODEL_H
 
 #include <QSettings>
 #include <models/Sound.h>
 #include <chrono>
 
-namespace service::settings {
-    class ActionSettings {
+namespace model::settings {
+    class ActionSettingsModel {
     private:
-        QSettings *settings;
+        model::Sound sound;
+        std::chrono::milliseconds interval;
+        uint count;
     public:
-        explicit ActionSettings(QSettings *settings);
+        explicit ActionSettingsModel(QSettings *settings);
+
+        void sync(QSettings *settings) const;
 
         model::Sound getSound() const;
 
@@ -31,4 +35,4 @@ namespace service::settings {
 }
 
 
-#endif //EONTIMER_ACTIONSETTINGS_H
+#endif //EONTIMER_ACTIONSETTINGSMODEL_H

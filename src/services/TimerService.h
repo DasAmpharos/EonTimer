@@ -9,8 +9,8 @@
 #include <QThread>
 #include <memory>
 #include <vector>
-#include <services/settings/TimerSettings.h>
-#include <services/settings/ActionSettings.h>
+#include <models/settings/TimerSettingsModel.h>
+#include <models/settings/ActionSettingsModel.h>
 #include <models/TimerState.h>
 
 namespace service {
@@ -20,12 +20,12 @@ namespace service {
         bool running;
         QThread *timerThread;
         std::shared_ptr<std::vector<int>> stages;
-        settings::TimerSettings *timerSettings;
-        settings::ActionSettings *actionSettings;
+        model::settings::TimerSettingsModel *timerSettings;
+        model::settings::ActionSettingsModel *actionSettings;
 
     public:
-        explicit TimerService(settings::TimerSettings *timerSettings,
-                              settings::ActionSettings *actionSettings,
+        explicit TimerService(model::settings::TimerSettingsModel *timerSettings,
+                              model::settings::ActionSettingsModel *actionSettings,
                               QObject *parent = nullptr);
 
         ~TimerService() override;

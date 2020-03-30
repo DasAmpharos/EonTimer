@@ -70,12 +70,12 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/models/TimerState.h
     src/services/CalibrationService.cpp
     src/services/CalibrationService.h
-    src/services/settings/ActionSettings.cpp
-    src/services/settings/ActionSettings.h
-    src/services/settings/Gen4TimerSettings.cpp
-    src/services/settings/Gen4TimerSettings.h
-    src/services/settings/TimerSettings.cpp
-    src/services/settings/TimerSettings.h
+    src/models/settings/ActionSettingsModel.cpp
+    src/models/settings/ActionSettingsModel.h
+    src/models/timers/Gen4TimerModel.cpp
+    src/models/timers/Gen4TimerModel.h
+    src/models/settings/TimerSettingsModel.cpp
+    src/models/settings/TimerSettingsModel.h
     src/services/SoundService.cpp
     src/services/SoundService.h
     src/services/timers/DelayTimer.cpp
@@ -88,8 +88,8 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/util/Functions.h
     src/gui/timers/Gen5TimerPane.cpp
     src/gui/timers/Gen5TimerPane.h
-    src/services/settings/Gen5TimerSettings.cpp
-    src/services/settings/Gen5TimerSettings.h
+    src/models/timers/Gen5TimerModel.cpp
+    src/models/timers/Gen5TimerModel.h
     src/models/Gen5TimerMode.cpp
     src/models/Gen5TimerMode.h
     src/services/timers/EntralinkTimer.cpp
@@ -99,5 +99,5 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/services/timers/EnhancedEntralinkTimer.cpp
     src/services/timers/EnhancedEntralinkTimer.h
     src/gui/util/FieldSet.h
-    src/services/settings/Gen3TimerSettings.cpp src/services/settings/Gen3TimerSettings.h src/gui/timers/Gen3TimerPane.cpp src/gui/timers/Gen3TimerPane.h)
+    src/models/timers/Gen3TimerModel.cpp src/models/timers/Gen3TimerModel.h src/gui/timers/Gen3TimerPane.cpp src/gui/timers/Gen3TimerPane.h src/models/timers/CustomTimerModel.cpp src/models/timers/CustomTimerModel.h src/gui/timers/CustomTimerPane.cpp src/gui/timers/CustomTimerPane.h)
 target_link_libraries(EonTimer Qt5::Widgets sfml-audio)

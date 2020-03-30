@@ -61,7 +61,18 @@ namespace model {
         }
     }
 
+    Console console(int index) {
+        return VALUES[index];
+    }
+
     const std::vector<Console> &consoles() {
         return VALUES;
+    }
+
+    int indexOf(Console console) {
+        for (int i = 0; i < VALUES.size(); i++) {
+            if (console == VALUES[i]) return i;
+        }
+        return -1;
     }
 }

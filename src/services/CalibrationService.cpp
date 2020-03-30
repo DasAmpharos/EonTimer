@@ -6,7 +6,7 @@
 #include <cmath>
 
 namespace service {
-    CalibrationService::CalibrationService(const settings::TimerSettings *timerSettings)
+    CalibrationService::CalibrationService(const model::settings::TimerSettingsModel *timerSettings)
         : timerSettings(timerSettings) {
     }
 

@@ -2,19 +2,25 @@
 // Created by Dylan Meadows on 2020-03-17.
 //
 
-#ifndef EONTIMER_GEN4TIMERSETTINGS_H
-#define EONTIMER_GEN4TIMERSETTINGS_H
+#ifndef EONTIMER_GEN4TIMERMODEL_H
+#define EONTIMER_GEN4TIMERMODEL_H
 
 #include <QObject>
 #include <QSettings>
 
-namespace service::settings {
-    class Gen4TimerSettings : public QObject {
+namespace model::timer {
+    class Gen4TimerModel : public QObject {
     Q_OBJECT
     private:
-        QSettings *settings;
+        int calibratedDelay;
+        int calibratedSecond;
+        int targetDelay;
+        int targetSecond;
+        int delayHit;
     public:
-        explicit Gen4TimerSettings(QSettings *settings, QObject *parent = nullptr);
+        explicit Gen4TimerModel(QSettings *settings, QObject *parent = nullptr);
+
+        void sync(QSettings *settings) const;
 
         int getCalibratedDelay() const;
 
@@ -32,6 +38,10 @@ namespace service::settings {
 
         void setTargetSecond(int targetSecond);
 
+        int getDelayHit() const;
+
+        void setDelayHit(int delayHit);
+
         // @formatter:off
     signals:
         void calibratedDelayChanged(int calibratedDelay);
@@ -42,4 +52,4 @@ namespace service::settings {
     };
 }
 
-#endif //EONTIMER_GEN4TIMERSETTINGS_H
+#endif //EONTIMER_GEN4TIMERMODEL_H

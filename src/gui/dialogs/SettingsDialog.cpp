@@ -8,8 +8,8 @@
 #include <QPushButton>
 
 namespace gui::dialog {
-    SettingsDialog::SettingsDialog(service::settings::TimerSettings *timerSettings,
-                                   service::settings::ActionSettings *actionSettings,
+    SettingsDialog::SettingsDialog(model::settings::TimerSettingsModel *timerSettings,
+                                   model::settings::ActionSettingsModel *actionSettings,
                                    QWidget *parent)
         : QDialog(parent),
           timerSettings(timerSettings),

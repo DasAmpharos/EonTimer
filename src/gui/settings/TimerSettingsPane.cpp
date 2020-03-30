@@ -8,9 +8,9 @@
 #include <QLabel>
 
 namespace gui::settings {
-    TimerSettingsPane::TimerSettingsPane(service::settings::TimerSettings *settings, QWidget *parent)
+    TimerSettingsPane::TimerSettingsPane(model::settings::TimerSettingsModel *model, QWidget *parent)
         : QWidget(parent),
-          settings(settings) {
+          model(model) {
         initComponents();
     }
 
@@ -24,7 +24,7 @@ namespace gui::settings {
             for (auto &mConsole : model::consoles()) {
                 console->addItem(model::getName(mConsole), mConsole);
             }
-            console->setCurrentText(model::getName(settings->getConsole()));
+            console->setCurrentText(model::getName(model->getConsole()));
             console->setSizePolicy(
                 QSizePolicy::Expanding,
                 QSizePolicy::Fixed
@@ -35,7 +35,7 @@ namespace gui::settings {
             refreshInterval = new QSpinBox();
             layout->addRow("Refresh Interval", refreshInterval);
             refreshInterval->setRange(1, 1000);
-            refreshInterval->setValue(static_cast<int>(settings->getRefreshInterval().count()));
+            refreshInterval->setValue(static_cast<int>(model->getRefreshInterval().count()));
             refreshInterval->setSizePolicy(
                 QSizePolicy::Expanding,
                 QSizePolicy::Fixed
@@ -45,14 +45,14 @@ namespace gui::settings {
         {
             precisionCalibrationEnabled = new QCheckBox();
             layout->addRow("Precision Calibration", precisionCalibrationEnabled);
-            precisionCalibrationEnabled->setChecked(settings->isPrecisionCalibrationEnabled());
+            precisionCalibrationEnabled->setChecked(model->isPrecisionCalibrationEnabled());
             precisionCalibrationEnabled->setTristate(false);
         }
     }
 
     void TimerSettingsPane::updateSettings() {
-        settings->setConsole(model::consoles()[console->currentIndex()]);
-        settings->setRefreshInterval(std::chrono::milliseconds(refreshInterval->value()));
-        settings->setPrecisionCalibrationEnabled(precisionCalibrationEnabled->isChecked());
+        model->setConsole(model::consoles()[console->currentIndex()]);
+        model->setRefreshInterval(std::chrono::milliseconds(refreshInterval->value()));
+        model->setPrecisionCalibrationEnabled(precisionCalibrationEnabled->isChecked());
     }
 }

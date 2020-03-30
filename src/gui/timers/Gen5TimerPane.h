@@ -6,7 +6,7 @@
 #define EONTIMER_GEN5TIMERPANE_H
 
 #include <QWidget>
-#include <services/settings/Gen5TimerSettings.h>
+#include <models/timers/Gen5TimerModel.h>
 #include <services/timers/DelayTimer.h>
 #include <services/timers/SecondTimer.h>
 #include <services/timers/EntralinkTimer.h>
@@ -22,17 +22,14 @@ namespace gui::timer {
     class Gen5TimerPane : public QWidget {
     Q_OBJECT
     private:
-        service::settings::Gen5TimerSettings *settings;
+        model::timer::Gen5TimerModel *model;
         const service::timer::DelayTimer *delayTimer;
         const service::timer::SecondTimer *secondTimer;
         const service::timer::EntralinkTimer *entralinkTimer;
         const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer;
         const service::CalibrationService *calibrationService;
-        QSpinBox *delayHit;
-        QSpinBox *secondHit;
-        QSpinBox *advancesHit;
     public:
-        explicit Gen5TimerPane(service::settings::Gen5TimerSettings *settings,
+        explicit Gen5TimerPane(model::timer::Gen5TimerModel *model,
                                const service::timer::DelayTimer *delayTimer,
                                const service::timer::SecondTimer *secondTimer,
                                const service::timer::EntralinkTimer *entralinkTimer,

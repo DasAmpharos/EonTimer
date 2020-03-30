@@ -12,14 +12,14 @@
 using namespace std::literals::chrono_literals;
 
 namespace service {
-    TimerService::TimerService(settings::TimerSettings *timerSettings,
-                               settings::ActionSettings *actionSettings,
+    TimerService::TimerService(model::settings::TimerSettingsModel *timerSettings,
+                               model::settings::ActionSettingsModel *actionSettings,
                                QObject *parent)
         : QObject(parent),
           timerSettings(timerSettings),
           actionSettings(actionSettings),
           running(false) {
-        auto *sounds = new service::SoundService(actionSettings, this);
+        auto *sounds = new SoundService(actionSettings, this);
         connect(this, &TimerService::actionTriggered, [sounds] {
             sounds->play();
         });
