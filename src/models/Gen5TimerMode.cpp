@@ -2,7 +2,6 @@
 // Created by Dylan Meadows on 2020-03-19.
 //
 
-#include <ntsid.h>
 #include "Gen5TimerMode.h"
 
 namespace model {
