@@ -99,5 +99,12 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/services/timers/EnhancedEntralinkTimer.cpp
     src/services/timers/EnhancedEntralinkTimer.h
     src/gui/util/FieldSet.h
-    src/models/timers/Gen3TimerModel.cpp src/models/timers/Gen3TimerModel.h src/gui/timers/Gen3TimerPane.cpp src/gui/timers/Gen3TimerPane.h src/models/timers/CustomTimerModel.cpp src/models/timers/CustomTimerModel.h src/gui/timers/CustomTimerPane.cpp src/gui/timers/CustomTimerPane.h)
+    src/models/timers/Gen3TimerModel.cpp
+    src/models/timers/Gen3TimerModel.h
+    src/gui/timers/Gen3TimerPane.cpp
+    src/gui/timers/Gen3TimerPane.h
+    src/models/timers/CustomTimerModel.cpp
+    src/models/timers/CustomTimerModel.h
+    src/gui/timers/CustomTimerPane.cpp
+    src/gui/timers/CustomTimerPane.h)
 target_link_libraries(EonTimer Qt5::Widgets sfml-audio)
