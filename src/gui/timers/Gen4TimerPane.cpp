@@ -54,7 +54,7 @@ namespace gui::timer {
                 connect(calibratedDelay.field, valueChanged,
                         [this](const int value) {
                             model->setCalibratedDelay(value);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 util::addFieldSet(formLayout, calibratedDelay);
             }
@@ -67,7 +67,7 @@ namespace gui::timer {
                 connect(calibratedSecond.field, valueChanged,
                         [this](const int value) {
                             model->setCalibratedSecond(value);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 util::addFieldSet(formLayout, calibratedSecond);
             }
@@ -84,7 +84,7 @@ namespace gui::timer {
                 connect(targetDelay.field, valueChanged,
                         [this](const int value) {
                             model->setTargetDelay(value);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 util::addFieldSet(formLayout, targetDelay);
             }
@@ -97,7 +97,7 @@ namespace gui::timer {
                 connect(targetSecond.field, valueChanged,
                         [this](const int value) {
                             model->setTargetSecond(value);
-                            createStages();
+                            emit timerChanged(createStages());
                         });
                 util::addFieldSet(formLayout, targetSecond);
             }

@@ -33,6 +33,9 @@ namespace gui::timer {
         void initComponents();
 
         int getCalibration() const;
+
+    signals:
+        void timerChanged(std::shared_ptr<std::vector<int>> stages);
     };
 }
 

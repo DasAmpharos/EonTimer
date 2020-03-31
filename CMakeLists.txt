@@ -39,6 +39,7 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 set(CMAKE_PREFIX_PATH "/usr/local/opt/qt/lib/cmake")
 find_package(Qt5Widgets REQUIRED)
 find_package(SFML 2.5 COMPONENTS audio REQUIRED)
+find_package(ICU 65.1 COMPONENTS uc i18n REQUIRED)
 
 add_executable(${CMAKE_PROJECT_NAME}
     resources/resources.qrc
@@ -107,4 +108,4 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/models/timers/CustomTimerModel.h
     src/gui/timers/CustomTimerPane.cpp
     src/gui/timers/CustomTimerPane.h)
-target_link_libraries(EonTimer Qt5::Widgets sfml-audio)
+target_link_libraries(EonTimer Qt5::Widgets sfml-audio ICU::uc ICU::i18n)
