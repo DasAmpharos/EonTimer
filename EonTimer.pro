@@ -9,6 +9,14 @@ VERSION = 3.0.0
 QMAKE_TARGET_DESCRIPTION = EonTimer
 QMAKE_TARGET_COPYRIGHT = dylmeadows
 
+DEFINES += APP_NAME=\\\"$$TARGET\\\"
+DEFINES += VERSION=\\\"$$VERSION\\\"
+
+CONFIG += c++1z
+CONFIG += conan_basic_setup
+include(conanbuildinfo.pri)
+INCLUDEPATH += src
+
 RESOURCES += \
     resources/resources.qrc
 

@@ -13,7 +13,7 @@ namespace service::timer {
         return stages;
     }
 
-    const int SecondTimer::createStage1(const int targetSecond, const int calibration) const {
+    int SecondTimer::createStage1(const int targetSecond, const int calibration) const {
         return util::functions::toMinimumLength(targetSecond * 1000 + calibration + 200);
     }
 

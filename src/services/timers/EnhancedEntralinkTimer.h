@@ -24,11 +24,11 @@ namespace service::timer {
                      int entralinkCalibration,
                      int frameCalibration) const;
 
-        const int createStage1(int targetDelay, int targetSecond, int calibration) const;
+        int createStage1(int targetDelay, int targetSecond, int calibration) const;
 
-        const int createStage2(int targetDelay, int calibration, int entralinkCalibration) const;
+        int createStage2(int targetDelay, int calibration, int entralinkCalibration) const;
 
-        const int createStage3(int targetAdvances, int frameCalibration) const;
+        int createStage3(int targetAdvances, int frameCalibration) const;
 
         int calibrate(int targetAdvances, int actualAdvances) const;
     };
