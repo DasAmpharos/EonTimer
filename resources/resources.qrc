@@ -10,6 +10,9 @@
         <file>css/macos.css</file>
     </qresource>
     <qresource>
+        <file>css/windows.css</file>
+    </qresource>
+    <qresource>
         <file>fonts/FontAwesome.ttf</file>
     </qresource>
     <qresource>

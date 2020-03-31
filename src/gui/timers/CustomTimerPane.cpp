@@ -39,7 +39,7 @@ namespace gui::timer {
         rootLayout->addWidget(inputField, 1, 0);
 
         auto *addButton = new QPushButton("+");
-        connect(addButton, &QPushButton::clicked, [list, model, inputField, this] {
+        connect(addButton, &QPushButton::clicked, [list, model, inputField] {
             auto index = model->index(list->size(), 0);
             model->setData(index, inputField->value(), Qt::DisplayRole);
         });

@@ -53,7 +53,7 @@ namespace gui::timer {
                 connect(model, SIGNAL(calibrationChanged(int)), calibration.field, SLOT(setValue(int)));
                 connect(calibration.field, valueChanged, [this](const int calibration) {
                     model->setCalibration(calibration);
-                    createStages();
+                    emit timerChanged(createStages());
                 });
                 util::addFieldSet(formLayout, calibration);
             }
@@ -65,7 +65,7 @@ namespace gui::timer {
                 connect(model, SIGNAL(preTimerChanged(int)), preTimer.field, SLOT(setValue(int)));
                 connect(preTimer.field, valueChanged, [this](const int preTimer) {
                     model->setPreTimer(preTimer);
-                    createStages();
+                    emit timerChanged(createStages());
                 });
                 util::addFieldSet(formLayout, preTimer);
             }
@@ -77,7 +77,7 @@ namespace gui::timer {
                 connect(model, SIGNAL(targetFrameChanged(int)), targetFrame.field, SLOT(setValue(int)));
                 connect(targetFrame.field, valueChanged, [this](const int targetFrame) {
                     model->setTargetFrame(targetFrame);
-                    createStages();
+                    emit timerChanged(createStages());
                 });
                 util::addFieldSet(formLayout, targetFrame);
             }

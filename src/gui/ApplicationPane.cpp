@@ -23,8 +23,8 @@ namespace gui {
                                      QWidget *parent)
         : QWidget(parent),
           settings(settings),
-          timerSettings(timerSettings),
           actionSettings(actionSettings),
+          timerSettings(timerSettings),
           timerService(timerService) {
         auto *gen5TimerModel = new model::timer::Gen5TimerModel(settings);
         auto *gen4TimerModel = new model::timer::Gen4TimerModel(settings);
@@ -53,6 +53,14 @@ namespace gui {
                                                  calibrationService);
         customTimerPane = new timer::CustomTimerPane(customTimerModel);
         connect(gen5TimerPane, &timer::Gen5TimerPane::timerChanged,
+                [timerService](std::shared_ptr<std::vector<int>> stages) {
+                    timerService->setStages(stages);
+                });
+        connect(gen4TimerPane, &timer::Gen4TimerPane::timerChanged,
+                [timerService](std::shared_ptr<std::vector<int>> stages) {
+                    timerService->setStages(stages);
+                });
+        connect(gen3TimerPane, &timer::Gen3TimerPane::timerChanged,
                 [timerService](std::shared_ptr<std::vector<int>> stages) {
                     timerService->setStages(stages);
                 });
@@ -135,7 +143,7 @@ namespace gui {
                         startStopBtn->setText(activated ? "Stop" : "Start");
                     });
             connect(startStopBtn, &QPushButton::clicked,
-                    [this, startStopBtn] {
+                    [this] {
                         if (!timerService->isRunning()) {
                             timerService->start();
                         } else {

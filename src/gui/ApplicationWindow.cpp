@@ -53,6 +53,8 @@ namespace gui {
         addStylesheet(stylesheet, ":/css/macos.css");
 #elif defined(__linux__)
         addStylesheet(stylesheet, ":/css/linux.css");
+#elif defined(__MINGW32__)
+        addStylesheet(stylesheet, ":/css/windows.css");
 #endif
         setStyleSheet(stylesheet);
 
@@ -81,7 +83,7 @@ namespace gui {
         }
     }
 
-    void ApplicationWindow::closeEvent(QCloseEvent *event) {
+    void ApplicationWindow::closeEvent(QCloseEvent*) {
         settings->sync();
     }
 
