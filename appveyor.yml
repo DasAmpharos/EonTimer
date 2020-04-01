@@ -1,59 +1,62 @@
 environment:
-    matrix:
-    # - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
-    #   OS: linux
-    # - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-    #   OS: macOS
+  matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      QTPATH: C:\Qt\5.14\msvc2017_64
       OS: win64
-      VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      QTPATH: C:\Qt\5.14\msvc2017_64
       VCVARSALL: x64
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      QTPATH: C:\Qt\5.14\msvc2017
-      OS: win32
       VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      SFML_URL: https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      OS: win32
+      QTPATH: C:\Qt\5.14\msvc2017
       VCVARSALL: x86
-  
+      VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      SFML_URL: https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-32-bit.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      OS: macOS
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+      OS: linux
+
 install:
-    - git submodule update --init --recursive
-    - cmd: set PATH=C:\msys64\usr\bin;%PATH%
-    - cmd: bash -lc "pacman -Sy"
-    - cmd: bash -lc "pacman --needed -S bash pacman pacman-mirrors msys2-runtime"
-    - cmd: bash -lc "pacman -S --needed --noconfirm base-devel git wget p7zip"
-    - cmd: bash -lc "pacman -S --needed --noconfirm perl ruby python2 mingw-w64-i686-toolchain mingw-w64-x86_64-toolchain"
-    - cmd: bash -lc "pacman -S --needed --noconfirm mingw-w64-i686-qt-creator mingw-w64-x86_64-qt-creator"
-    - cmd: bash -lc "pacman -S --needed --noconfirm mingw-w64-i686-qt5-static mingw-w64-x86_64-qt5-static"
-    # - sh: sh .ci/install.sh 
-    
+  - git submodule update --init --recursive
+  # Windows
+  - cmd: set PATH=C:\msys64\usr\bin;%PATH%
+  - cmd: appveyor DownloadFile "%SFML_URL%" -FileName "SFML-2.5.1-%OS%.zip"
+  - cmd: 7z x SFML-2.5.1-%OS%.zip
+  # macOS / linux
+  - sh: sh .ci/install.sh
+
 before_build:
-    - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
-    - cmd: call %VCVARSALLPATH% %VCVARSALL%
-    
+  # Windows
+  - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
+  - cmd: call %VCVARSALLPATH% %VCVARSALL%
+
 build_script:
-    - cmd: bash -lc "qmake EonTimer.pro"
-    - cmd: bash -lc "make -j %NUMBER_OF_PROCESSORS%"
-    # - sh: .ci/build.sh
-      
+  - qmake EonTimer.pro
+  # Windows
+  - cmd: jom -j %NUMBER_OF_PROCESSORS%
+  # macOS / linux
+  - sh: .ci/build.sh
+
 after_build:
-#       # Windows
-#       - cmd: md PokeFinder-windows
-#       - cmd: move release\PokeFinder.exe PokeFinder-windows\PokeFinder.exe 
-#       - cmd: windeployqt --release --no-translations --no-angle --no-plugins --no-opengl-sw PokeFinder-windows\PokeFinder.exe
-#       - cmd: del PokeFinder-windows\vc_redist*.exe
-#       - cmd: xcopy /I %QTPATH%\plugins\platforms\qwindows.dll PokeFinder-windows\platforms\
-#       - cmd: xcopy /I %QTPATH%\plugins\styles\qwindowsvistastyle.dll PokeFinder-windows\styles\
-#       - cmd: xcopy /I %OpenSSL%\libcrypto*.dll PokeFinder-windows\
-#       - cmd: xcopy /I %OpenSSL%\libssl*.dll PokeFinder-windows\
-#       - cmd: 7z a PokeFinder-%OS%.zip PokeFinder-windows\
-#       - cmd: sha256sum PokeFinder-%OS%.zip > PokeFinder-%OS%.zip.sha256
-  # Linux/macOS
-  # - sh: .ci/after_build.sh
-      
+  # Windows
+  - cmd: md EonTimer-windows
+  - cmd: move release\EonTimer.exe EonTimer-windows\EonTimer.exe
+  - cmd: windeployqt --release --no-translations --no-angle --no-plugins --no-opengl-sw EonTimer-windows\EonTimer.exe
+  - cmd: del EonTimer-windows\vc_redist*.exe
+  - cmd: xcopy /I %QTPATH%\plugins\platforms\qwindows.dll EonTimer-windows\platforms\
+  - cmd: xcopy /I %QTPATH%\plugins\styles\qwindowsvistastyle.dll EonTimer-windows\styles\
+  - cmd: xcopy /I SFML-2.5.1\bin\sfml-audio-2.dll EonTimer-windows\
+  - cmd: xcopy /I SFML-2.5.1\bin\sfml-system-2.dll EonTimer-windows\
+  - cmd: xcopy /I SFML-2.5.1\bin\openal32.dll EonTimer-windows\
+  - cmd: 7z a EonTimer-%OS%.zip EonTimer-windows\
+  - cmd: sha256sum EonTimer-%OS%.zip > EonTimer-%OS%.zip.sha256
+  # macOS / linux
+  - sh: .ci/after_build.sh
+
 artifacts:
-- path: EonTimer-%OS%.zip
-- path: EonTimer-%OS%.zip.sha256
-  
+  - path: EonTimer-%OS%.zip
+  - path: EonTimer-%OS%.zip.sha256
 #   deploy:
 #       provider: GitHub
 #       description: ''

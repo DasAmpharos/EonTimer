@@ -29,9 +29,9 @@ unix:!macx {
 }
 
 win32 {
-    LIBS += -L"/mingw64/lib"
-    INCLUDEPATH += /mingw64/include/SFML
-    DEPENDPATH += /mingw64/include/SFML
+    LIBS += -L"SFML-2.5.1\lib"
+    INCLUDEPATH += "SFML-2.5.1\include"
+    DEPENDPATH += "SFML-2.5.1\include"
 }
 
 CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system
