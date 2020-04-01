@@ -35,7 +35,7 @@ namespace service::timer {
     }
 
     int EnhancedEntralinkTimer::createStage3(const int targetAdvances, const int frameCalibration) const {
-        return static_cast<const int>(round(targetAdvances / ENTRALINK_FRAME_RATE) * 1000 + frameCalibration);
+        return static_cast<int>(round(targetAdvances / ENTRALINK_FRAME_RATE) * 1000 + frameCalibration);
     }
 
     int EnhancedEntralinkTimer::calibrate(int targetAdvances, int actualAdvances) const {

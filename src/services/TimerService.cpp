@@ -16,9 +16,9 @@ namespace service {
                                model::settings::ActionSettingsModel *actionSettings,
                                QObject *parent)
         : QObject(parent),
+          running(false),
           timerSettings(timerSettings),
-          actionSettings(actionSettings),
-          running(false) {
+          actionSettings(actionSettings) {
         auto *sounds = new SoundService(actionSettings, this);
         connect(this, &TimerService::actionTriggered, [sounds] {
             sounds->play();

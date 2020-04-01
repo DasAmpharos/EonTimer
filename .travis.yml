@@ -21,7 +21,7 @@ addons:
 
 script:
   - qmake EonTimer.pro
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then make -j $(nproc)                   ; fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then make -j $(nproc)                  ; fi
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then make -j $(sysctl -n hw.physicalcpu) ; fi
 # before_deploy:
 #   - /usr/local/Cellar/qt/5.13.2/bin/macdeployqt EonTimer.app -dmg -verbose=2
