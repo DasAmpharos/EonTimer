@@ -17,7 +17,8 @@ addons:
             - sfml
 
 before_install:
-    - |- case $TRAVIS_OS_NAME in
+    - |- 
+    case $TRAVIS_OS_NAME in
     linux)
         apt-get install -y qt5-default sfml
         ;;
@@ -29,7 +30,8 @@ before_install:
 
 script:
   - qmake EonTimer.pro
-  - |- case $TRAVIS_OS_NAME in
+  - |- 
+    case $TRAVIS_OS_NAME in
     linux)
         make -j $(nproc)
         ;;
