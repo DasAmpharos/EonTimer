@@ -3,9 +3,9 @@
 echo $OS
 case $OS in
   linux)
-    sh linux/install.sh
+    sh .ci/linux/install.sh
     ;;  
   macOS)
-    sh macos/install.sh
+    sh .ci/macos/install.sh
     ;;
 esac

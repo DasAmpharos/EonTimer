@@ -2,6 +2,8 @@ environment:
     matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       OS: linux
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      OS: macOS
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       QTPATH: C:\Qt\5.14\msvc2017_64
       OS: win64
@@ -12,22 +14,19 @@ environment:
       OS: win32
       VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
       VCVARSALL: x86
-    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-      OS: macOS
   
 install:
-    - git submodule update --init --recursive    
+    - git submodule update --init --recursive
+    - sh: sh .ci/install.sh  
     
 before_build:
     # Windows
     - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
     - cmd: call %VCVARSALLPATH% %VCVARSALL%
-    # Linux/macOS
-    - sh: .ci/install.sh
     
 build_script:
-    - qmake EonTimer.pro
     # Windows
+    - cmd: qmake EonTimer.pro
     - cmd: jom -j %NUMBER_OF_PROCESSORS%
     # Linux/macOS
     - sh: .ci/build.sh
