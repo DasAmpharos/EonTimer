@@ -31,7 +31,7 @@ build_script:
     # Linux/macOS
     - sh: .ci/build.sh
       
-#   after_build:
+after_build:
 #       # Windows
 #       - cmd: md PokeFinder-windows
 #       - cmd: move release\PokeFinder.exe PokeFinder-windows\PokeFinder.exe 
@@ -43,13 +43,12 @@ build_script:
 #       - cmd: xcopy /I %OpenSSL%\libssl*.dll PokeFinder-windows\
 #       - cmd: 7z a PokeFinder-%OS%.zip PokeFinder-windows\
 #       - cmd: sha256sum PokeFinder-%OS%.zip > PokeFinder-%OS%.zip.sha256
-#       # Linux
-#       - sh: zip -r PokeFinder-linux.zip PokeFinder
-#       - sh: sha256sum PokeFinder-linux.zip > PokeFinder-linux.zip.sha256
+  # Linux/macOS
+  - sh: .ci/after_build.sh
       
-#   artifacts:
-#   - path: PokeFinder-%OS%.zip
-#   - path: PokeFinder-%OS%.zip.sha256
+artifacts:
+- path: PokeFinder-%OS%.zip
+- path: PokeFinder-%OS%.zip.sha256
   
 #   deploy:
 #       provider: GitHub
