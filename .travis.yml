@@ -16,10 +16,27 @@ addons:
             - qt5
             - sfml
 
+before_install:
+    - |- case $TRAVIS_OS_NAME in
+    linux)
+        apt-get install -y qt5-default sfml
+        ;;
+    osx)
+        brew install qt5 sfml
+        brew link --force qt5
+        ;;
+    esac
+
 script:
   - qmake EonTimer.pro
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then make -j $(sysctl -n hw.physicalcpu)
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then make -j $(nproc)
+  - |- case $TRAVIS_OS_NAME in
+    linux)
+        make -j $(nproc)
+        ;;
+    osx)
+        make -j $(sysctl -n hw.physicalcpu)
+        ;;
+    esac
 
 # before_deploy:
 #   - /usr/local/Cellar/qt/5.13.2/bin/macdeployqt EonTimer.app -dmg -verbose=2
