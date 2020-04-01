@@ -1,0 +1,62 @@
+environment:
+    matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+      OS: linux
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      QTPATH: C:\Qt\5.14\msvc2017_64
+      OS: win64
+      VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      VCVARSALL: x64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      QTPATH: C:\Qt\5.14\msvc2017
+      OS: win32
+      VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      VCVARSALL: x86
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      OS: macOS
+  
+install:
+    - git submodule update --init --recursive    
+    
+before_build:
+    # Windows
+    - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
+    - cmd: call %VCVARSALLPATH% %VCVARSALL%
+    # Linux/macOS
+    - sh: .ci/install.sh
+    
+build_script:
+    - qmake EonTimer.pro
+    # Windows
+    - cmd: jom -j %NUMBER_OF_PROCESSORS%
+    # Linux/macOS
+    - sh: .ci/build.sh
+      
+#   after_build:
+#       # Windows
+#       - cmd: md PokeFinder-windows
+#       - cmd: move release\PokeFinder.exe PokeFinder-windows\PokeFinder.exe 
+#       - cmd: windeployqt --release --no-translations --no-angle --no-plugins --no-opengl-sw PokeFinder-windows\PokeFinder.exe
+#       - cmd: del PokeFinder-windows\vc_redist*.exe
+#       - cmd: xcopy /I %QTPATH%\plugins\platforms\qwindows.dll PokeFinder-windows\platforms\
+#       - cmd: xcopy /I %QTPATH%\plugins\styles\qwindowsvistastyle.dll PokeFinder-windows\styles\
+#       - cmd: xcopy /I %OpenSSL%\libcrypto*.dll PokeFinder-windows\
+#       - cmd: xcopy /I %OpenSSL%\libssl*.dll PokeFinder-windows\
+#       - cmd: 7z a PokeFinder-%OS%.zip PokeFinder-windows\
+#       - cmd: sha256sum PokeFinder-%OS%.zip > PokeFinder-%OS%.zip.sha256
+#       # Linux
+#       - sh: zip -r PokeFinder-linux.zip PokeFinder
+#       - sh: sha256sum PokeFinder-linux.zip > PokeFinder-linux.zip.sha256
+      
+#   artifacts:
+#   - path: PokeFinder-%OS%.zip
+#   - path: PokeFinder-%OS%.zip.sha256
+  
+#   deploy:
+#       provider: GitHub
+#       description: ''
+#       auth_token:
+#           secure: u3c5wUq11csZ77TpgKMImu9U+ibNiviMcEpTuQXmqp1YGSHA/+u5FhqZ3KRZBAQX
+#       artifact: PokeFinder-%OS%.zip,PokeFinder-%OS%.zip.sha256
+#       on:
+#           APPVEYOR_REPO_TAG: true
