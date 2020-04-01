@@ -18,6 +18,9 @@ addons:
       - qt5
       - sfml
 
+before_script:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --force qt5 ; fi
+
 script:
   - qmake EonTimer.pro
   - if [ "TRAVIS_OS_NAME" = "linux" ]; then make -j $(nproc)                   ; fi
