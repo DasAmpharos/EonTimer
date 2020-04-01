@@ -47,8 +47,8 @@ after_build:
   - sh: .ci/after_build.sh
       
 artifacts:
-- path: PokeFinder-%OS%.zip
-- path: PokeFinder-%OS%.zip.sha256
+- path: EonTimer-%OS%.zip
+- path: EonTimer-%OS%.zip.sha256
   
 #   deploy:
 #       provider: GitHub
