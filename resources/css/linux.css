@@ -5,5 +5,5 @@ QTabWidget.themeable::pane {
 }
 
 QTabWidget::tab-bar {
-    alignment: center;
+    left: 5px;
 }
