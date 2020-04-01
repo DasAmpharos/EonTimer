@@ -6,7 +6,7 @@ matrix:
 
 install:
   - brew update
-  - brew install qt5
+  - brew install qt5 sfml
   - brew link --force qt5
 
 script:

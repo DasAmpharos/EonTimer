@@ -17,8 +17,6 @@ install:
     - git submodule update --init --recursive    
     
 before_build:
-    # macOS
-    - sh: brew install qt5 sfml
     # Windows
     - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
     - cmd: call %VCVARSALLPATH% %VCVARSALL%
