@@ -16,8 +16,9 @@ CONFIG += c++17
 INCLUDEPATH += src
 
 macx {
-    LIBS += -L"/usr/local/Cellar/sfml/2.5.1/lib"
-    INCLUDEPATH += /usr/local/Cellar/sfml/2.5.1/include
+    SFML_VERSION = $$system(ls /usr/local/Cellar/sfml)
+    LIBS += -L"/usr/local/Cellar/sfml/${SFML_VERSION}/lib"
+    INCLUDEPATH += /usr/local/Cellar/sfml/${SFML_VERSION}/include
     DEPENDPATH += /usr/local/Cellar/sfml/2.5.1/include
 }
 
