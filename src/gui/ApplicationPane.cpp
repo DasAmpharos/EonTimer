@@ -118,7 +118,7 @@ namespace gui {
                             timerSettings->sync(settings);
                             actionSettings->sync(settings);
                         }
-                        delete settingsDialogj;
+                        delete settingsDialog;
                     });
             layout->addWidget(settingsBtn, 2, 0);
         }
