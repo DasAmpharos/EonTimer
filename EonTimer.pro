@@ -9,15 +9,19 @@ QMAKE_TARGET_DESCRIPTION = EonTimer
 QMAKE_TARGET_COPYRIGHT = dylmeadows
 TEMPLATE = app
 
-# conan setup
-CONFIG += conan_basic_setup
-include(conanbuildinfo.pri)
-
 DEFINES += APP_NAME=\\\"$$TARGET\\\"
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
 CONFIG += c++17
 INCLUDEPATH += src
+
+macx {
+    LIBS += -L"/usr/local/Cellar/sfml/2.5.1/lib"
+    CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system
+    CONFIG(debug, debug|release): LIBS += -lsfml-audio-d -lsfml-graphics-d -lsfml-network-d -lsfml-window-d -lsfml-system-d
+    INCLUDEPATH += /usr/local/Cellar/sfml/2.5.1/include
+    DEPENDPATH += /usr/local/Cellar/sfml/2.5.1/include
+}
 
 RESOURCES += \
     resources/resources.qrc
@@ -30,6 +34,7 @@ HEADERS += \
     src/gui/timers/Gen3TimerPane.h \
     src/gui/timers/Gen4TimerPane.h \
     src/gui/timers/Gen5TimerPane.h \
+    src/gui/timers/CustomTimerPane.h \
     src/gui/util/FieldSet.h \
     src/gui/util/FontHelper.h \
     src/gui/ApplicationPane.h \
@@ -40,6 +45,7 @@ HEADERS += \
     src/models/timers/Gen3TimerModel.h \
     src/models/timers/Gen4TimerModel.h \
     src/models/timers/Gen5TimerModel.h \
+    src/models/timers/CustomTimerModel.h \
     src/models/Console.h \
     src/models/Gen5TimerMode.h \
     src/models/Sound.h \
@@ -56,12 +62,12 @@ HEADERS += \
 
 SOURCES += \
     src/gui/dialogs/SettingsDialog.cpp \
-    src/gui/ApplicationPane.cpp \
     src/gui/settings/ActionSettingsPane.cpp \
     src/gui/settings/TimerSettingsPane.cpp \
     src/gui/timers/Gen3TimerPane.cpp \
     src/gui/timers/Gen4TimerPane.cpp \
     src/gui/timers/Gen5TimerPane.cpp \
+    src/gui/timers/CustomTimerPane.cpp \
     src/gui/util/FontHelper.cpp \
     src/gui/ApplicationPane.cpp \
     src/gui/ApplicationWindow.cpp \
@@ -71,6 +77,7 @@ SOURCES += \
     src/models/timers/Gen3TimerModel.cpp \
     src/models/timers/Gen4TimerModel.cpp \
     src/models/timers/Gen5TimerModel.cpp \
+    src/models/timers/CustomTimerModel.cpp \
     src/models/Console.cpp \
     src/models/Gen5TimerMode.cpp \
     src/models/Sound.cpp \
