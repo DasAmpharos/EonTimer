@@ -1,7 +1,5 @@
 environment:
   matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-    OS: macOS
   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
     QTPATH: C:\Qt\5.14\msvc2017_64
     OS: win64
@@ -36,8 +34,6 @@ build_script:
     - cmd: jom -j %NUMBER_OF_PROCESSORS%
     # Linux
     - sh: make -j $(nproc)
-    # macOS
-    - sh: make -j $(sysctl -n hw.phyiscalcpu)
     
 after_build:
     # Windows
@@ -54,9 +50,6 @@ after_build:
     # Linux
     - sh: zip -r EonTimer-linux.zip EonTimer
     - sh: sha256sum EonTimer-linux.zip > EonTimer-linux.zip.sha256
-    # macOS
-    - sh: zip -r EonTimer-macOS.zip EonTimer.app
-    - sh: shasum -a 256 EonTimer-macOS.zip > EonTimer-macOS.zip.sha256
     
 artifacts:
 - path: EonTimer-%OS%.zip
