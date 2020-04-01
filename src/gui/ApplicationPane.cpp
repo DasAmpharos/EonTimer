@@ -113,11 +113,12 @@ namespace gui {
                     });
             connect(settingsBtn, &QPushButton::clicked,
                     [this] {
-                        auto settingsDialog = dialog::SettingsDialog(timerSettings, actionSettings, this);
-                        if (settingsDialog.exec() == QDialog::Accepted) {
+                        auto *settingsDialog = new dialog::SettingsDialog(timerSettings, actionSettings, this);
+                        if (settingsDialog->exec() == QDialog::Accepted) {
                             timerSettings->sync(settings);
                             actionSettings->sync(settings);
                         }
+                        delete settingsDialogj;
                     });
             layout->addWidget(settingsBtn, 2, 0);
         }
