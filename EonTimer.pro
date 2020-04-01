@@ -13,6 +13,7 @@ DEFINES += APP_NAME=\\\"$$TARGET\\\"
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
 CONFIG += c++17
+QMAKE_CXXFLAGS += -std=c++17
 INCLUDEPATH += src
 
 macx {
