@@ -13,12 +13,12 @@ namespace service::timer {
     }
 
     const std::shared_ptr<std::vector<int>>
-    EnhancedEntralinkTimer::createStages(int targetDelay,
-                                         int targetSecond,
-                                         int targetAdvances,
-                                         int calibration,
-                                         int entralinkCalibration,
-                                         int frameCalibration) const {
+    EnhancedEntralinkTimer::createStages(const int targetDelay,
+                                         const int targetSecond,
+                                         const int targetAdvances,
+                                         const int calibration,
+                                         const int entralinkCalibration,
+                                         const int frameCalibration) const {
         std::shared_ptr<std::vector<int>> stages = std::make_shared<std::vector<int>>(3);
         (*stages)[0] = createStage1(targetDelay, targetSecond, calibration);
         (*stages)[1] = createStage2(targetDelay, calibration, entralinkCalibration);
@@ -26,15 +26,15 @@ namespace service::timer {
         return stages;
     }
 
-    const int EnhancedEntralinkTimer::createStage1(int targetDelay, int targetSecond, int calibration) const {
+    int EnhancedEntralinkTimer::createStage1(const int targetDelay, const int targetSecond, const int calibration) const {
         return entralinkTimer->createStage1(targetDelay, targetSecond, calibration);
     }
 
-    const int EnhancedEntralinkTimer::createStage2(int targetDelay, int calibration, int entralinkCalibration) const {
+    int EnhancedEntralinkTimer::createStage2(const int targetDelay, const int calibration, const int entralinkCalibration) const {
         return entralinkTimer->createStage2(targetDelay, calibration, entralinkCalibration);
     }
 
-    const int EnhancedEntralinkTimer::createStage3(int targetAdvances, int frameCalibration) const {
+    int EnhancedEntralinkTimer::createStage3(const int targetAdvances, const int frameCalibration) const {
         return static_cast<const int>(round(targetAdvances / ENTRALINK_FRAME_RATE) * 1000 + frameCalibration);
     }
 

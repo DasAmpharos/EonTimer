@@ -18,9 +18,9 @@ namespace service::timer {
 
         const std::shared_ptr<std::vector<int>> createStages(int preTimer, int targetFrame, int calibration) const;
 
-        const int createStage1(int preTimer) const;
+        int createStage1(int preTimer) const;
 
-        const int createStage2(int targetFrame, int calibration) const;
+        int createStage2(int targetFrame, int calibration) const;
 
         int calibrate(int targetFrame, int frameHit) const;
     };

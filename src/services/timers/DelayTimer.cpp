@@ -24,14 +24,14 @@ namespace service::timer {
         return stages;
     }
 
-    const int DelayTimer::createStage1(int targetDelay, int targetSecond, int calibration) const {
+    int DelayTimer::createStage1(const int targetDelay, const int targetSecond, const int calibration) const {
         return util::functions::toMinimumLength(
             secondTimer->createStage1(targetSecond, calibration) -
             calibrationService->toMilliseconds(targetDelay)
         );
     }
 
-    const int DelayTimer::createStage2(const int targetDelay, const int calibration) const {
+    int DelayTimer::createStage2(const int targetDelay, const int calibration) const {
         return calibrationService->toMilliseconds(targetDelay) - calibration;
     }
 

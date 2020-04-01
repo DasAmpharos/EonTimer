@@ -4,7 +4,6 @@
 
 #include "ApplicationWindow.h"
 #include <sstream>
-#include <app.h>
 #include <util/Functions.h>
 #include <QMenuBar>
 #include <gui/dialogs/SettingsDialog.h>
@@ -14,10 +13,7 @@
 namespace gui {
     const char *getTitle() {
         std::stringstream stream;
-        stream << APP_NAME << " " << APP_VERSION;
-        if (!::util::functions::equalsIgnoreCase(BUILD_TYPE, "release")) {
-            stream << " - git#" << GIT_COMMIT_HASH;
-        }
+        stream << APP_NAME << " " << VERSION;
         std::string title = stream.str();
         char *buffer = new char[title.capacity()];
         strcpy(buffer, title.c_str());
