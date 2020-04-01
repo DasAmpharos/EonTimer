@@ -1,9 +1,9 @@
 environment:
     matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
-      OS: linux
-    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
-      OS: macOS
+    # - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    #   OS: linux
+    # - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+    #   OS: macOS
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       QTPATH: C:\Qt\5.14\msvc2017_64
       OS: win64
@@ -17,19 +17,23 @@ environment:
   
 install:
     - git submodule update --init --recursive
-    - sh: sh .ci/install.sh  
+    - cmd: set PATH=C:\msys64\usr\bin;%PATH%
+    - cmd: bash -lc "pacman -Sy"
+    - cmd: bash -lc "pacman --needed -S bash pacman pacman-mirrors msys2-runtime"
+    - cmd: bash -lc "pacman -S --needed --noconfirm base-devel git wget p7zip"
+    - cmd: bash -lc "pacman -S --needed --noconfirm perl ruby python2 mingw-w64-i686-toolchain mingw-w64-x86_64-toolchain"
+    - cmd: bash -lc "pacman -S --needed --noconfirm mingw-w64-i686-qt-creator mingw-w64-x86_64-qt-creator"
+    - cmd: bash -lc "pacman -S --needed --noconfirm mingw-w64-i686-qt5-static mingw-w64-x86_64-qt5-static"
+    # - sh: sh .ci/install.sh 
     
 before_build:
-    # Windows
     - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
     - cmd: call %VCVARSALLPATH% %VCVARSALL%
     
 build_script:
-    # Windows
-    - cmd: qmake EonTimer.pro
-    - cmd: jom -j %NUMBER_OF_PROCESSORS%
-    # Linux/macOS
-    - sh: .ci/build.sh
+    - cmd: bash -lc "qmake EonTimer.pro"
+    - cmd: bash -lc "make -j %NUMBER_OF_PROCESSORS%"
+    # - sh: .ci/build.sh
       
 after_build:
 #       # Windows
@@ -44,7 +48,7 @@ after_build:
 #       - cmd: 7z a PokeFinder-%OS%.zip PokeFinder-windows\
 #       - cmd: sha256sum PokeFinder-%OS%.zip > PokeFinder-%OS%.zip.sha256
   # Linux/macOS
-  - sh: .ci/after_build.sh
+  # - sh: .ci/after_build.sh
       
 artifacts:
 - path: EonTimer-%OS%.zip

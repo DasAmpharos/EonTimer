@@ -9,12 +9,11 @@ QMAKE_TARGET_DESCRIPTION = EonTimer
 QMAKE_TARGET_COPYRIGHT = dylmeadows
 TEMPLATE = app
 
+CONFIG += c++17
+INCLUDEPATH += src
+
 DEFINES += APP_NAME=\\\"$$TARGET\\\"
 DEFINES += VERSION=\\\"$$VERSION\\\"
-
-CONFIG += c++17
-QMAKE_CXXFLAGS += -std=c++17
-INCLUDEPATH += src
 
 macx {
     SFML_VERSION = $$system(ls /usr/local/Cellar/sfml)
@@ -23,16 +22,16 @@ macx {
     DEPENDPATH += /usr/local/Cellar/sfml/$${SFML_VERSION}/include
 }
 
-win32 {
-    LIBS += -L"/mingw64/lib"
-    INCLUDEPATH += /mingw64/include/SFML
-    DEPENDPATH += /mingw64/include/SFML
-}
-
 unix:!macx {
     LIBS += -L"/usr/lib/x86_64-linux-gnu"
     INCLUDEPATH += /usr/include/SFML
     DEPENDPATH += /usr/include/SFML
+}
+
+win32 {
+    LIBS += -L"/mingw64/lib"
+    INCLUDEPATH += /mingw64/include/SFML
+    DEPENDPATH += /mingw64/include/SFML
 }
 
 CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo $OS
 case $OS in
   linux)
     sh .ci/linux/install.sh
