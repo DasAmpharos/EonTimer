@@ -4,17 +4,19 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 9):error("You need at lea
 QT += widgets
 
 TARGET = EonTimer
-TEMPLATE = app
 VERSION = 3.0.0
 QMAKE_TARGET_DESCRIPTION = EonTimer
 QMAKE_TARGET_COPYRIGHT = dylmeadows
+TEMPLATE = app
+
+# conan setup
+CONFIG += conan_basic_setup
+include(conanbuildinfo.pri)
 
 DEFINES += APP_NAME=\\\"$$TARGET\\\"
 DEFINES += VERSION=\\\"$$VERSION\\\"
 
-CONFIG += c++1z
-CONFIG += conan_basic_setup
-include(conanbuildinfo.pri)
+CONFIG += c++17
 INCLUDEPATH += src
 
 RESOURCES += \
