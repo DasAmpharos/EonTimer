@@ -9,12 +9,10 @@ matrix:
 
 addons:
   apt:
-    update: true
     packages:
       - qt5-default
       - libsfml-dev
   homebrew:
-    update: true
     packages:
       - qt5
       - sfml

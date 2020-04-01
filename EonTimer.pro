@@ -1,5 +1,5 @@
-lessThan(QT_MAJOR_VERSION, 5):error("You need at least Qt 5.9 to build EonTimer")
-equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 9):error("You need at least Qt 5.9 to build EonTimer")
+lessThan(QT_MAJOR_VERSION, 5):error("You need at least Qt 5.10 to build EonTimer")
+equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 10):error("You need at least Qt 5.10 to build EonTimer")
 
 QT += widgets
 
