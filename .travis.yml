@@ -20,6 +20,7 @@ addons:
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew link --force qt5 ; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ls /usr/local/Cellar/sfml ; fi
 
 script:
   - qmake EonTimer.pro
