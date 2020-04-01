@@ -17,9 +17,9 @@ INCLUDEPATH += src
 
 macx {
     SFML_VERSION = $$system(ls /usr/local/Cellar/sfml)
-    LIBS += -L"/usr/local/Cellar/sfml/${SFML_VERSION}/lib"
-    INCLUDEPATH += /usr/local/Cellar/sfml/${SFML_VERSION}/include
-    DEPENDPATH += /usr/local/Cellar/sfml/2.5.1/include
+    LIBS += -L"/usr/local/Cellar/sfml/$${SFML_VERSION}/lib"
+    INCLUDEPATH += /usr/local/Cellar/sfml/$${SFML_VERSION}/include
+    DEPENDPATH += /usr/local/Cellar/sfml/$${SFML_VERSION}/include
 }
 
 win32 {
@@ -28,7 +28,7 @@ win32 {
     DEPENDPATH += /mingw64/include/SFML
 }
 
-unix {
+unix:!macx {
     LIBS += -L"/usr/lib/x86_64-linux-gnu"
     INCLUDEPATH += /usr/include/SFML
     DEPENDPATH += /usr/include/SFML
