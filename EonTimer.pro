@@ -17,11 +17,18 @@ INCLUDEPATH += src
 
 macx {
     LIBS += -L"/usr/local/Cellar/sfml/2.5.1/lib"
-    CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system
-    CONFIG(debug, debug|release): LIBS += -lsfml-audio-d -lsfml-graphics-d -lsfml-network-d -lsfml-window-d -lsfml-system-d
     INCLUDEPATH += /usr/local/Cellar/sfml/2.5.1/include
     DEPENDPATH += /usr/local/Cellar/sfml/2.5.1/include
 }
+
+win32 {
+    LIBS += -L"/mingw64/lib"
+    INCLUDEPATH += /mingw64/include/SFML
+    DEPENDPATH += /mingw64/include/SFML
+}
+
+CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system
+CONFIG(debug, debug|release): LIBS += -lsfml-audio-d -lsfml-graphics-d -lsfml-network-d -lsfml-window-d -lsfml-system-d
 
 RESOURCES += \
     resources/resources.qrc
