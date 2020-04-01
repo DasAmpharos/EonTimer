@@ -2,21 +2,29 @@ language: cpp
 
 matrix:
   include:
+    - os: linux
+    - os: windows
     - os: osx
 
-install:
-  - brew update
-  - brew install qt5 sfml
-  - brew link --force qt5
+addons:
+    apt:
+        packages:
+            - qt5base-dev
+            - libsfml-dev
+    homebrew:
+        packages:
+            - qt5
+            - sfml
 
 script:
   - qmake EonTimer.pro
-  - make -j $(sysctl -n hw.physicalcpu)
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then make -j $(sysctl -n hw.physicalcpu)
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then make -j $(nproc)
 
-before_deploy:
-  - /usr/local/Cellar/qt/5.13.2/bin/macdeployqt EonTimer.app -dmg -verbose=2
-  - zip -r EonTimer-macOS.zip EonTimer.dmg
-  - shasum -a 256 EonTimer-macOS.zip > EonTimer-macOS.zip.sha256
+# before_deploy:
+#   - /usr/local/Cellar/qt/5.13.2/bin/macdeployqt EonTimer.app -dmg -verbose=2
+#   - zip -r EonTimer-macOS.zip EonTimer.dmg
+#   - shasum -a 256 EonTimer-macOS.zip > EonTimer-macOS.zip.sha256
 
 # deploy:
 #   provider: releases
