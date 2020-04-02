@@ -32,24 +32,23 @@ before_build:
   - cmd: call %VCVARSALLPATH% %VCVARSALL%
 
 build_script:
-  - qmake EonTimer.pro
   # Windows
+  - cmd: qmake EonTimer.pro
   - cmd: jom -j %NUMBER_OF_PROCESSORS%
   # macOS / linux
   - sh: .ci/build.sh
 
 after_build:
   # Windows
-  - cmd: md EonTimer-windows
-  - cmd: move release\EonTimer.exe EonTimer-windows\EonTimer.exe
-  - cmd: windeployqt --release --no-translations --no-angle --no-plugins --no-opengl-sw EonTimer-windows\EonTimer.exe
-  - cmd: del EonTimer-windows\vc_redist*.exe
-  - cmd: xcopy /I %QTPATH%\plugins\platforms\qwindows.dll EonTimer-windows\platforms\
-  - cmd: xcopy /I %QTPATH%\plugins\styles\qwindowsvistastyle.dll EonTimer-windows\styles\
-  - cmd: xcopy /I SFML-2.5.1\bin\sfml-audio-2.dll EonTimer-windows\
-  - cmd: xcopy /I SFML-2.5.1\bin\sfml-system-2.dll EonTimer-windows\
-  - cmd: xcopy /I SFML-2.5.1\bin\openal32.dll EonTimer-windows\
-  - cmd: 7z a EonTimer-%OS%.zip EonTimer-windows\
+  - cmd: md EonTimer
+  - cmd: move release\EonTimer.exe EonTimer\EonTimer.exe
+  - cmd: windeployqt --release --no-translations --no-angle --no-plugins --no-opengl-sw EonTimer\EonTimer.exe
+  - cmd: xcopy /I %QTPATH%\plugins\platforms\qwindows.dll EonTimer\platforms\
+  - cmd: xcopy /I %QTPATH%\plugins\styles\qwindowsvistastyle.dll EonTimer\styles\
+  - cmd: xcopy /I SFML-2.5.1\bin\openal32.dll EonTimer\
+  - cmd: xcopy /I SFML-2.5.1\bin\sfml-audio-2.dll EonTimer\
+  - cmd: xcopy /I SFML-2.5.1\bin\sfml-system-2.dll EonTimer\
+  - cmd: 7z a EonTimer-%OS%.zip EonTimer\
   - cmd: sha256sum EonTimer-%OS%.zip > EonTimer-%OS%.zip.sha256
   # macOS / linux
   - sh: .ci/after_build.sh
