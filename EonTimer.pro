@@ -1,5 +1,5 @@
-lessThan(QT_MAJOR_VERSION, 5):error("You need at least Qt 5.9 to build EonTimer")
-equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 9):error("You need at least Qt 5.9 to build EonTimer")
+lessThan(QT_MAJOR_VERSION, 5):error("You need at least Qt 5.10 to build EonTimer")
+equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 10):error("You need at least Qt 5.10 to build EonTimer")
 
 QT += widgets
 
@@ -9,28 +9,29 @@ QMAKE_TARGET_DESCRIPTION = EonTimer
 QMAKE_TARGET_COPYRIGHT = dylmeadows
 TEMPLATE = app
 
-DEFINES += APP_NAME=\\\"$$TARGET\\\"
-DEFINES += VERSION=\\\"$$VERSION\\\"
-
 CONFIG += c++17
 INCLUDEPATH += src
 
+DEFINES += APP_NAME=\\\"$$TARGET\\\"
+DEFINES += VERSION=\\\"$$VERSION\\\"
+
 macx {
-    LIBS += -L"/usr/local/Cellar/sfml/2.5.1/lib"
-    INCLUDEPATH += /usr/local/Cellar/sfml/2.5.1/include
-    DEPENDPATH += /usr/local/Cellar/sfml/2.5.1/include
+    SFML_VERSION = $$system(ls /usr/local/Cellar/sfml)
+    LIBS += -L"/usr/local/Cellar/sfml/$${SFML_VERSION}/lib"
+    INCLUDEPATH += /usr/local/Cellar/sfml/$${SFML_VERSION}/include
+    DEPENDPATH += /usr/local/Cellar/sfml/$${SFML_VERSION}/include
 }
 
-win32 {
-    LIBS += -L"/mingw64/lib"
-    INCLUDEPATH += /mingw64/include/SFML
-    DEPENDPATH += /mingw64/include/SFML
-}
-
-unix {
+unix:!macx {
     LIBS += -L"/usr/lib/x86_64-linux-gnu"
     INCLUDEPATH += /usr/include/SFML
     DEPENDPATH += /usr/include/SFML
+}
+
+win32 {
+    LIBS += -L"SFML-2.5.1\lib"
+    INCLUDEPATH += "SFML-2.5.1\include"
+    DEPENDPATH += "SFML-2.5.1\include"
 }
 
 CONFIG(release, debug|release): LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-window -lsfml-system

@@ -1,0 +1,58 @@
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      OS: win64
+      QTPATH: C:\Qt\5.14\msvc2017_64
+      VCVARSALL: x64
+      VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      SFML_URL: https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-64-bit.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      OS: win32
+      QTPATH: C:\Qt\5.14\msvc2017
+      VCVARSALL: x86
+      VCVARSALLPATH: C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat
+      SFML_URL: https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-32-bit.zip
+    - APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      OS: macOS
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+      OS: linux
+
+install:
+  - git submodule update --init --recursive
+  # Windows
+  - cmd: set PATH=C:\msys64\usr\bin;%PATH%
+  - cmd: appveyor DownloadFile "%SFML_URL%" -FileName "SFML-2.5.1-%OS%.zip"
+  - cmd: 7z x SFML-2.5.1-%OS%.zip
+  # macOS / linux
+  - sh: sh .ci/install.sh
+
+before_build:
+  # Windows
+  - cmd: set PATH=%QTPATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
+  - cmd: call %VCVARSALLPATH% %VCVARSALL%
+
+build_script:
+  # Windows
+  - cmd: qmake EonTimer.pro
+  - cmd: jom -j %NUMBER_OF_PROCESSORS%
+  # macOS / linux
+  - sh: .ci/build.sh
+
+after_build:
+  # Windows
+  - cmd: md EonTimer
+  - cmd: move release\EonTimer.exe EonTimer\EonTimer.exe
+  - cmd: windeployqt --release --no-translations --no-angle --no-plugins --no-opengl-sw EonTimer\EonTimer.exe
+  - cmd: xcopy /I %QTPATH%\plugins\platforms\qwindows.dll EonTimer\platforms\
+  - cmd: xcopy /I %QTPATH%\plugins\styles\qwindowsvistastyle.dll EonTimer\styles\
+  - cmd: xcopy /I SFML-2.5.1\bin\openal32.dll EonTimer\
+  - cmd: xcopy /I SFML-2.5.1\bin\sfml-audio-2.dll EonTimer\
+  - cmd: xcopy /I SFML-2.5.1\bin\sfml-system-2.dll EonTimer\
+  - cmd: 7z a EonTimer-%OS%.zip EonTimer\
+  - cmd: sha256sum EonTimer-%OS%.zip > EonTimer-%OS%.zip.sha256
+  # macOS / linux
+  - sh: .ci/after_build.sh
+
+artifacts:
+  - path: EonTimer-%OS%.zip
+  - path: EonTimer-%OS%.zip.sha256
