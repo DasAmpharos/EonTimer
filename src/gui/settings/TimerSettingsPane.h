@@ -5,11 +5,12 @@
 #ifndef EONTIMER_TIMERSETTINGSPANE_H
 #define EONTIMER_TIMERSETTINGSPANE_H
 
-#include <QWidget>
 #include <models/settings/TimerSettingsModel.h>
+
+#include <QCheckBox>
 #include <QComboBox>
 #include <QSpinBox>
-#include <QCheckBox>
+#include <QWidget>
 
 namespace gui::settings {
     class TimerSettingsPane : public QWidget {
@@ -18,14 +19,16 @@ namespace gui::settings {
         QComboBox *console;
         QCheckBox *precisionCalibrationEnabled;
         QSpinBox *refreshInterval;
+
     public:
         TimerSettingsPane(model::settings::TimerSettingsModel *model,
                           QWidget *parent = nullptr);
 
         void updateSettings();
+
     private:
         void initComponents();
     };
-}
+}  // namespace gui::settings
 
-#endif //EONTIMER_TIMERSETTINGSPANE_H
+#endif  // EONTIMER_TIMERSETTINGSPANE_H

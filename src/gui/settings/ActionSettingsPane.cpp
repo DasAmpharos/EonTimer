@@ -3,13 +3,14 @@
 //
 
 #include "ActionSettingsPane.h"
+
 #include <QFormLayout>
 #include <QLabel>
 
 namespace gui::settings {
-    ActionSettingsPane::ActionSettingsPane(model::settings::ActionSettingsModel *settings, QWidget *parent)
-        : QWidget(parent),
-          settings(settings) {
+    ActionSettingsPane::ActionSettingsPane(
+        model::settings::ActionSettingsModel *settings, QWidget *parent)
+        : QWidget(parent), settings(settings) {
         initComponents();
     }
 
@@ -25,10 +26,7 @@ namespace gui::settings {
                 sound->addItem(model::getName(mSound), mSound);
             }
             sound->setCurrentText(model::getName(settings->getSound()));
-            sound->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
+            sound->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addRow(label, sound);
         }
         // ----- interval -----
@@ -37,11 +35,9 @@ namespace gui::settings {
             label->setText("Interval");
             interval = new QSpinBox();
             interval->setRange(1, 1000);
-            interval->setValue(static_cast<int>(settings->getInterval().count()));
-            interval->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
+            interval->setValue(
+                static_cast<int>(settings->getInterval().count()));
+            interval->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addRow(label, interval);
         }
         // ----- count -----
@@ -51,10 +47,7 @@ namespace gui::settings {
             count = new QSpinBox;
             count->setRange(1, 50);
             count->setValue(settings->getCount());
-            count->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
+            count->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addRow(label, count);
         }
     }
@@ -64,4 +57,4 @@ namespace gui::settings {
         settings->setInterval(std::chrono::milliseconds(interval->value()));
         settings->setCount(static_cast<uint>(count->value()));
     }
-}
+}  // namespace gui::settings

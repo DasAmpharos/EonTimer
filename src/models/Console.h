@@ -8,9 +8,7 @@
 #include <vector>
 
 namespace model {
-    enum Console {
-        GBA, NDS, DSI, _3DS
-    };
+    enum Console { GBA, NDS, DSI, _3DS };
 
     double getFps(Console console);
 
@@ -23,6 +21,6 @@ namespace model {
     const std::vector<Console> &consoles();
 
     int indexOf(Console console);
-}
+}  // namespace model
 
-#endif //EONTIMER_CONSOLE_H
+#endif  // EONTIMER_CONSOLE_H

@@ -3,17 +3,20 @@
 //
 
 #include "ApplicationWindow.h"
-#include <sstream>
-#include <util/Functions.h>
-#include <QMenuBar>
-#include <gui/dialogs/SettingsDialog.h>
+
+#include <app.h>
 #include <gui/dialogs/AboutDialog.h>
+#include <gui/dialogs/SettingsDialog.h>
+#include <util/Functions.h>
+
 #include <QFile>
+#include <QMenuBar>
+#include <sstream>
 
 namespace gui {
     const char *getTitle() {
         std::stringstream stream;
-        stream << APP_NAME << " " << VERSION;
+        stream << APP_NAME << " " << APP_VERSION;
         std::string title = stream.str();
         char *buffer = new char[title.capacity()];
         strcpy(buffer, title.c_str());
@@ -31,14 +34,17 @@ namespace gui {
         settings = new QSettings(this);
         actionSettings = new model::settings::ActionSettingsModel(settings);
         timerSettings = new model::settings::TimerSettingsModel(settings);
-        timerService = new service::TimerService(timerSettings, actionSettings, this);
-        applicationPane = new ApplicationPane(settings, actionSettings, timerSettings, timerService, this);
+        timerService =
+            new service::TimerService(timerSettings, actionSettings, this);
+        applicationPane = new ApplicationPane(
+            settings, actionSettings, timerSettings, timerService, this);
         initComponents();
     }
 
     void ApplicationWindow::initComponents() {
         setWindowTitle(getTitle());
-        setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint |
+        setWindowFlags(Qt::Window | Qt::WindowTitleHint |
+                       Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint |
                        Qt::WindowMinimizeButtonHint);
         setCentralWidget(applicationPane);
         setFixedSize(525, 395);
@@ -70,21 +76,20 @@ namespace gui {
             {
                 auto *preferences = new QAction();
                 preferences->setMenuRole(QAction::PreferencesRole);
-                connect(preferences, SIGNAL(triggered(bool)), this, SLOT(onPreferencesTriggered()));
-                connect(timerService, &service::TimerService::activated, [preferences](const bool activated) {
-                    preferences->setEnabled(!activated);
-                });
+                connect(preferences, SIGNAL(triggered(bool)), this,
+                        SLOT(onPreferencesTriggered()));
+                connect(timerService, &service::TimerService::activated,
+                        [preferences](const bool activated) {
+                            preferences->setEnabled(!activated);
+                        });
                 menu->addAction(preferences);
             }
         }
     }
 
-    void ApplicationWindow::closeEvent(QCloseEvent*) {
-        settings->sync();
-    }
+    void ApplicationWindow::closeEvent(QCloseEvent *) { settings->sync(); }
 
     void ApplicationWindow::onPreferencesTriggered() {
-        gui::dialog::SettingsDialog(timerSettings, actionSettings, this)
-            .exec();
+        gui::dialog::SettingsDialog(timerSettings, actionSettings, this).exec();
     }
-}
+}  // namespace gui

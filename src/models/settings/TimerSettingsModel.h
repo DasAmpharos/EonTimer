@@ -5,8 +5,9 @@
 #ifndef EONTIMER_TIMERSETTINGSMODEL_H
 #define EONTIMER_TIMERSETTINGSMODEL_H
 
-#include <QSettings>
 #include <models/Console.h>
+
+#include <QSettings>
 #include <chrono>
 
 namespace model::settings {
@@ -15,6 +16,7 @@ namespace model::settings {
         model::Console console;
         std::chrono::milliseconds refreshInterval;
         bool precisionCalibrationEnabled;
+
     public:
         explicit TimerSettingsModel(QSettings *settings);
 
@@ -26,13 +28,13 @@ namespace model::settings {
 
         std::chrono::milliseconds getRefreshInterval() const;
 
-        void setRefreshInterval(const std::chrono::milliseconds &refreshInterval);
+        void setRefreshInterval(
+            const std::chrono::milliseconds &refreshInterval);
 
         bool isPrecisionCalibrationEnabled() const;
 
         void setPrecisionCalibrationEnabled(bool precisionCalibrationEnabled);
     };
-}
+}  // namespace model::settings
 
-
-#endif //EONTIMER_TIMERSETTINGSMODEL_H
+#endif  // EONTIMER_TIMERSETTINGSMODEL_H

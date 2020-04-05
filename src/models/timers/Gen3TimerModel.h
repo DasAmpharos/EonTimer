@@ -10,12 +10,13 @@
 
 namespace model::timer {
     class Gen3TimerModel : public QObject {
-    Q_OBJECT
+        Q_OBJECT
     private:
         int preTimer;
         int targetFrame;
         int calibration;
         int frameHit;
+
     public:
         explicit Gen3TimerModel(QSettings *settings, QObject *parent = nullptr);
 
@@ -45,6 +46,6 @@ namespace model::timer {
         void frameHitChanged(int value);
         // @formatter:on
     };
-}
+}  // namespace model::timer
 
-#endif //EONTIMER_GEN3TIMERMODEL_H
+#endif  // EONTIMER_GEN3TIMERMODEL_H

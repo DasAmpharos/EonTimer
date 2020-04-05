@@ -5,20 +5,22 @@
 #ifndef EONTIMER_APPLICATIONPANE_H
 #define EONTIMER_APPLICATIONPANE_H
 
-#include <QWidget>
-#include <QSettings>
 #include <models/settings/ActionSettingsModel.h>
 #include <models/settings/TimerSettingsModel.h>
 #include <services/TimerService.h>
+
+#include <QSettings>
+#include <QWidget>
+
 #include "TimerDisplayPane.h"
-#include "timers/Gen5TimerPane.h"
-#include "timers/Gen4TimerPane.h"
-#include "timers/Gen3TimerPane.h"
 #include "timers/CustomTimerPane.h"
+#include "timers/Gen3TimerPane.h"
+#include "timers/Gen4TimerPane.h"
+#include "timers/Gen5TimerPane.h"
 
 namespace gui {
     class ApplicationPane : public QWidget {
-    Q_OBJECT
+        Q_OBJECT
     private:
         QSettings *settings;
         model::settings::ActionSettingsModel *actionSettings;
@@ -29,6 +31,7 @@ namespace gui {
         timer::Gen4TimerPane *gen4TimerPane;
         timer::Gen3TimerPane *gen3TimerPane;
         timer::CustomTimerPane *customTimerPane;
+
     public:
         ApplicationPane(QSettings *settings,
                         model::settings::ActionSettingsModel *actionSettings,
@@ -50,7 +53,6 @@ namespace gui {
         void onUpdate();
         // @formatter:on
     };
-}
+}  // namespace gui
 
-
-#endif //EONTIMER_APPLICATIONPANE_H
+#endif  // EONTIMER_APPLICATIONPANE_H

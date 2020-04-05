@@ -20,7 +20,6 @@ environment:
 install:
   - git submodule update --init --recursive
   # Windows
-  - cmd: set PATH=C:\msys64\usr\bin;%PATH%
   - cmd: appveyor DownloadFile "%SFML_URL%" -FileName "SFML-2.5.1-%OS%.zip"
   - cmd: 7z x SFML-2.5.1-%OS%.zip
   # macOS / linux

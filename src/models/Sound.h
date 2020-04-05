@@ -5,13 +5,11 @@
 #ifndef EONTIMER_SOUND_H
 #define EONTIMER_SOUND_H
 
-#include <vector>
 #include <QtGlobal>
+#include <vector>
 
 namespace model {
-    enum Sound {
-        BEEP, DING, POP, TICK
-    };
+    enum Sound { BEEP, DING, POP, TICK };
 
     const char *getName(Sound sound);
 
@@ -20,6 +18,6 @@ namespace model {
     const std::vector<Sound> &sounds();
 
     int indexOf(Sound sound);
-}
+}  // namespace model
 
-#endif //EONTIMER_SOUND_H
+#endif  // EONTIMER_SOUND_H

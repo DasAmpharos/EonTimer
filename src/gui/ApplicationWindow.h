@@ -5,22 +5,25 @@
 #ifndef EONTIMER_APPLICATIONWINDOW_H
 #define EONTIMER_APPLICATIONWINDOW_H
 
-#include <QMainWindow>
-#include <QSettings>
 #include <models/settings/ActionSettingsModel.h>
 #include <models/settings/TimerSettingsModel.h>
 #include <services/TimerService.h>
+
+#include <QMainWindow>
+#include <QSettings>
+
 #include "ApplicationPane.h"
 
 namespace gui {
     class ApplicationWindow : public QMainWindow {
-    Q_OBJECT
+        Q_OBJECT
     private:
         QSettings *settings;
         model::settings::ActionSettingsModel *actionSettings;
         model::settings::TimerSettingsModel *timerSettings;
         service::TimerService *timerService;
         ApplicationPane *applicationPane;
+
     public:
         explicit ApplicationWindow(QWidget *parent = nullptr);
 
@@ -35,7 +38,6 @@ namespace gui {
         void onPreferencesTriggered();
         // @formatter:on
     };
-}
+}  // namespace gui
 
-
-#endif //EONTIMER_APPLICATIONWINDOW_H
+#endif  // EONTIMER_APPLICATIONWINDOW_H

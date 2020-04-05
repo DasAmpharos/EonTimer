@@ -15,18 +15,24 @@ namespace model::timer {
             const int PRE_TIMER = 5000;
             const int TARGET_FRAME = 1000;
             const int CALIBRATION = 0;
-        }
-    }
+        }  // namespace Defaults
+    }      // namespace Gen3Fields
 
     Gen3TimerModel::Gen3TimerModel(QSettings *settings, QObject *parent)
         : QObject(parent) {
         settings->beginGroup(Gen3Fields::GROUP);
-        preTimer = settings->value(Gen3Fields::PRE_TIMER,
-                                   Gen3Fields::Defaults::PRE_TIMER).toInt();
-        targetFrame = settings->value(Gen3Fields::TARGET_FRAME,
-                                      Gen3Fields::Defaults::TARGET_FRAME).toInt();
-        calibration = settings->value(Gen3Fields::CALIBRATION,
-                                      Gen3Fields::Defaults::CALIBRATION).toInt();
+        preTimer =
+            settings
+                ->value(Gen3Fields::PRE_TIMER, Gen3Fields::Defaults::PRE_TIMER)
+                .toInt();
+        targetFrame = settings
+                          ->value(Gen3Fields::TARGET_FRAME,
+                                  Gen3Fields::Defaults::TARGET_FRAME)
+                          .toInt();
+        calibration = settings
+                          ->value(Gen3Fields::CALIBRATION,
+                                  Gen3Fields::Defaults::CALIBRATION)
+                          .toInt();
         settings->endGroup();
     }
 
@@ -38,9 +44,7 @@ namespace model::timer {
         settings->endGroup();
     }
 
-    int Gen3TimerModel::getPreTimer() const {
-        return preTimer;
-    }
+    int Gen3TimerModel::getPreTimer() const { return preTimer; }
 
     void Gen3TimerModel::setPreTimer(int preTimer) {
         if (this->preTimer != preTimer) {
@@ -49,9 +53,7 @@ namespace model::timer {
         }
     }
 
-    int Gen3TimerModel::getTargetFrame() const {
-        return targetFrame;
-    }
+    int Gen3TimerModel::getTargetFrame() const { return targetFrame; }
 
     void Gen3TimerModel::setTargetFrame(int targetFrame) {
         if (this->targetFrame != targetFrame) {
@@ -60,9 +62,7 @@ namespace model::timer {
         }
     }
 
-    int Gen3TimerModel::getCalibration() const {
-        return calibration;
-    }
+    int Gen3TimerModel::getCalibration() const { return calibration; }
 
     void Gen3TimerModel::setCalibration(const int calibration) {
         if (this->calibration != calibration) {
@@ -71,9 +71,7 @@ namespace model::timer {
         }
     }
 
-    int Gen3TimerModel::getFrameHit() const {
-        return frameHit;
-    }
+    int Gen3TimerModel::getFrameHit() const { return frameHit; }
 
     void Gen3TimerModel::setFrameHit(int frameHit) {
         if (this->frameHit != frameHit) {
@@ -81,4 +79,4 @@ namespace model::timer {
             emit frameHitChanged(frameHit);
         }
     }
-}
+}  // namespace model::timer

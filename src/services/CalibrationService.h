@@ -11,8 +11,10 @@ namespace service {
     class CalibrationService {
     private:
         const model::settings::TimerSettingsModel *timerSettings;
+
     public:
-        explicit CalibrationService(const model::settings::TimerSettingsModel *timerSettings);
+        explicit CalibrationService(
+            const model::settings::TimerSettingsModel *timerSettings);
 
         int toDelays(int milliseconds) const;
 
@@ -24,6 +26,6 @@ namespace service {
 
         int createCalibration(int delays, int seconds) const;
     };
-}
+}  // namespace service
 
-#endif //EONTIMER_CALIBRATIONSERVICE_H
+#endif  // EONTIMER_CALIBRATIONSERVICE_H

@@ -15,31 +15,37 @@ namespace model::settings {
             const int SOUND = 0;
             const uint INTERVAL = 500;
             const uint COUNT = 6;
-        }
-    }
+        }  // namespace Defaults
+    }      // namespace ActionSettingsFields
 
     ActionSettingsModel::ActionSettingsModel(QSettings *settings) {
         settings->beginGroup(ActionSettingsFields::GROUP);
-        sound = model::sound(settings->value(ActionSettingsFields::SOUND,
-                                             ActionSettingsFields::Defaults::SOUND).toUInt());
-        interval = std::chrono::milliseconds(settings->value(ActionSettingsFields::INTERVAL,
-                                                             ActionSettingsFields::Defaults::INTERVAL).toULongLong());
-        count = settings->value(ActionSettingsFields::COUNT,
-                                ActionSettingsFields::Defaults::COUNT).toUInt();
+        sound = model::sound(settings
+                                 ->value(ActionSettingsFields::SOUND,
+                                         ActionSettingsFields::Defaults::SOUND)
+                                 .toUInt());
+        interval = std::chrono::milliseconds(
+            settings
+                ->value(ActionSettingsFields::INTERVAL,
+                        ActionSettingsFields::Defaults::INTERVAL)
+                .toULongLong());
+        count = settings
+                    ->value(ActionSettingsFields::COUNT,
+                            ActionSettingsFields::Defaults::COUNT)
+                    .toUInt();
         settings->endGroup();
     }
 
     void ActionSettingsModel::sync(QSettings *settings) const {
         settings->beginGroup(ActionSettingsFields::GROUP);
         settings->setValue(ActionSettingsFields::SOUND, model::indexOf(sound));
-        settings->setValue(ActionSettingsFields::INTERVAL, static_cast<int>(interval.count()));
+        settings->setValue(ActionSettingsFields::INTERVAL,
+                           static_cast<int>(interval.count()));
         settings->setValue(ActionSettingsFields::COUNT, count);
         settings->endGroup();
     }
 
-    model::Sound ActionSettingsModel::getSound() const {
-        return sound;
-    }
+    model::Sound ActionSettingsModel::getSound() const { return sound; }
 
     void ActionSettingsModel::setSound(const model::Sound sound) {
         this->sound = sound;
@@ -49,15 +55,14 @@ namespace model::settings {
         return interval;
     }
 
-    void ActionSettingsModel::setInterval(const std::chrono::milliseconds &interval) {
+    void ActionSettingsModel::setInterval(
+        const std::chrono::milliseconds &interval) {
         this->interval = interval;
     }
 
-    uint ActionSettingsModel::getCount() const {
-        return count;
-    }
+    uint ActionSettingsModel::getCount() const { return count; }
 
     void ActionSettingsModel::setCount(const uint count) {
         this->count = count;
     }
-}
+}  // namespace model::settings

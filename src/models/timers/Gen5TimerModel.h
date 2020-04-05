@@ -5,13 +5,14 @@
 #ifndef EONTIMER_GEN5TIMERMODEL_H
 #define EONTIMER_GEN5TIMERMODEL_H
 
+#include <models/Gen5TimerMode.h>
+
 #include <QObject>
 #include <QSettings>
-#include <models/Gen5TimerMode.h>
 
 namespace model::timer {
     class Gen5TimerModel : public QObject {
-    Q_OBJECT
+        Q_OBJECT
     private:
         model::Gen5TimerMode mode;
         int calibration;
@@ -23,6 +24,7 @@ namespace model::timer {
         int delayHit;
         int secondHit;
         int advancesHit;
+
     public:
         explicit Gen5TimerModel(QSettings *settings, QObject *parent = nullptr);
 
@@ -79,7 +81,6 @@ namespace model::timer {
         void targetAdvancesChanged(int value);
         // @formatter:on
     };
-}
+}  // namespace model::timer
 
-
-#endif //EONTIMER_GEN5TIMERMODEL_H
+#endif  // EONTIMER_GEN5TIMERMODEL_H

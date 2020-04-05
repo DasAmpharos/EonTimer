@@ -15,6 +15,6 @@ namespace model {
         const std::chrono::milliseconds &duration;
         const std::chrono::milliseconds &remaining;
     };
-}
+}  // namespace model
 
-#endif //EONTIMER_TIMERSTATE_H
+#endif  // EONTIMER_TIMERSTATE_H

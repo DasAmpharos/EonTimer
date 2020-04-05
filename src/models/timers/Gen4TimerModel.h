@@ -10,13 +10,14 @@
 
 namespace model::timer {
     class Gen4TimerModel : public QObject {
-    Q_OBJECT
+        Q_OBJECT
     private:
         int calibratedDelay;
         int calibratedSecond;
         int targetDelay;
         int targetSecond;
         int delayHit;
+
     public:
         explicit Gen4TimerModel(QSettings *settings, QObject *parent = nullptr);
 
@@ -50,6 +51,6 @@ namespace model::timer {
         void targetSecondChanged(int targetSecond);
         // @formatter:on
     };
-}
+}  // namespace model::timer
 
-#endif //EONTIMER_GEN4TIMERMODEL_H
+#endif  // EONTIMER_GEN4TIMERMODEL_H

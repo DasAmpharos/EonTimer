@@ -11,13 +11,13 @@
 namespace service::timer {
     class SecondTimer {
     public:
-        const std::shared_ptr<std::vector<int>> createStages(int targetSecond, int calibration) const;
+        const std::shared_ptr<std::vector<int>> createStages(
+            int targetSecond, int calibration) const;
 
         int createStage1(int targetSecond, int calibration) const;
 
         int calibrate(int targetSecond, int secondHit) const;
     };
-}
+}  // namespace service::timer
 
-
-#endif //EONTIMER_SECONDTIMER_H
+#endif  // EONTIMER_SECONDTIMER_H
