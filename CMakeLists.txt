@@ -14,6 +14,11 @@ configure_file(
 )
 include_directories(${CMAKE_BINARY_DIR}/generated)
 
+IF (WIN32)
+    message("Windows build detected")
+    set(SFML_DIR "./SFML-2.5.1/lib/cmake/SFML")
+ENDIF()
+
 set(CMAKE_PREFIX_PATH "/usr/local/opt/qt/lib/cmake")
 find_package(Qt5Widgets REQUIRED)
 find_package(SFML 2.5 COMPONENTS audio REQUIRED)

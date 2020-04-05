@@ -32,8 +32,9 @@ before_build:
 
 build_script:
   # Windows
-  - cmake -DCMAKE_BUILD_TYPE=RELEASE
-  - cmd: jom -j %NUMBER_OF_PROCESSORS%
+  - cmake -DCMAKE_BUILD_TYPE=RELEASE .
+  - cmd: dir
+  - cmd: msbuild EonTimer.sln /t:Build /p:Configuration=Release
   # macOS / linux
   - sh: .ci/build.sh
 
