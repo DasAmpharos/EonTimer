@@ -9,11 +9,12 @@
 #include <gui/dialogs/SettingsDialog.h>
 #include <gui/dialogs/AboutDialog.h>
 #include <QFile>
+#include <app.h>
 
 namespace gui {
     const char *getTitle() {
         std::stringstream stream;
-        stream << APP_NAME << " " << VERSION;
+        stream << APP_NAME << " " << APP_VERSION;
         std::string title = stream.str();
         char *buffer = new char[title.capacity()];
         strcpy(buffer, title.c_str());
