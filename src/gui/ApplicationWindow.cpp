@@ -13,6 +13,7 @@
 #include <QMenuBar>
 #include <sstream>
 
+
 namespace gui {
     const char *getTitle() {
         std::stringstream stream;
