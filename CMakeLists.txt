@@ -98,7 +98,9 @@ set(SOURCES
 
 if (APPLE)
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES})
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/macos/Info.plist)
 else()
     add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
 endif()
+
 target_link_libraries(EonTimer Qt5::Widgets sfml-audio)
