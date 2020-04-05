@@ -5,11 +5,12 @@
 #ifndef EONTIMER_SETTINGSDIALOG_H
 #define EONTIMER_SETTINGSDIALOG_H
 
-#include <QDialog>
-#include <models/settings/TimerSettingsModel.h>
+#include <gui/settings/ActionSettingsPane.h>
 #include <gui/settings/TimerSettingsPane.h>
 #include <models/settings/ActionSettingsModel.h>
-#include <gui/settings/ActionSettingsPane.h>
+#include <models/settings/TimerSettingsModel.h>
+
+#include <QDialog>
 
 namespace gui::dialog {
     class SettingsDialog : public QDialog {
@@ -18,15 +19,16 @@ namespace gui::dialog {
         model::settings::ActionSettingsModel *actionSettings;
         settings::TimerSettingsPane *timerSettingsPane;
         settings::ActionSettingsPane *actionSettingsPane;
+
     public:
-        explicit SettingsDialog(model::settings::TimerSettingsModel *timerSettings,
-                                model::settings::ActionSettingsModel *actionSettings,
-                                QWidget *parent = nullptr);
+        explicit SettingsDialog(
+            model::settings::TimerSettingsModel *timerSettings,
+            model::settings::ActionSettingsModel *actionSettings,
+            QWidget *parent = nullptr);
 
     private:
         void initComponents();
     };
-}
+}  // namespace gui::dialog
 
-
-#endif //EONTIMER_SETTINGSDIALOG_H
+#endif  // EONTIMER_SETTINGSDIALOG_H

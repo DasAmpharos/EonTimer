@@ -10,4 +10,4 @@ namespace gui::util::font {
         font.setPointSize(fontSize);
         widget->setFont(font);
     }
-}
+}  // namespace gui::util::font

@@ -3,9 +3,11 @@
 //
 
 #include "ApplicationPane.h"
-#include <QPushButton>
-#include <QFontDatabase>
+
 #include <gui/dialogs/SettingsDialog.h>
+
+#include <QFontDatabase>
+#include <QPushButton>
 
 namespace gui {
     const uint GEN5 = 0;
@@ -16,11 +18,11 @@ namespace gui {
         const char *SELECTED_TAB = "selectedTab";
     }
 
-    ApplicationPane::ApplicationPane(QSettings *settings,
-                                     model::settings::ActionSettingsModel *actionSettings,
-                                     model::settings::TimerSettingsModel *timerSettings,
-                                     service::TimerService *timerService,
-                                     QWidget *parent)
+    ApplicationPane::ApplicationPane(
+        QSettings *settings,
+        model::settings::ActionSettingsModel *actionSettings,
+        model::settings::TimerSettingsModel *timerSettings,
+        service::TimerService *timerService, QWidget *parent)
         : QWidget(parent),
           settings(settings),
           actionSettings(actionSettings),
@@ -31,25 +33,25 @@ namespace gui {
         auto *gen3TimerModel = new model::timer::Gen3TimerModel(settings);
         auto *customTimerModel = new model::timer::CustomTimerModel(settings);
 
-        const auto *calibrationService = new service::CalibrationService(timerSettings);
+        const auto *calibrationService =
+            new service::CalibrationService(timerSettings);
         const auto *secondTimer = new service::timer::SecondTimer();
-        const auto *frameTimer = new service::timer::FrameTimer(calibrationService);
-        const auto *delayTimer = new service::timer::DelayTimer(secondTimer, calibrationService);
-        const auto *entralinkTimer = new service::timer::EntralinkTimer(delayTimer);
-        const auto *enhancedEntralinkTimer = new service::timer::EnhancedEntralinkTimer(entralinkTimer);
+        const auto *frameTimer =
+            new service::timer::FrameTimer(calibrationService);
+        const auto *delayTimer =
+            new service::timer::DelayTimer(secondTimer, calibrationService);
+        const auto *entralinkTimer =
+            new service::timer::EntralinkTimer(delayTimer);
+        const auto *enhancedEntralinkTimer =
+            new service::timer::EnhancedEntralinkTimer(entralinkTimer);
 
         timerDisplayPane = new TimerDisplayPane(timerService);
-        gen5TimerPane = new timer::Gen5TimerPane(gen5TimerModel,
-                                                 delayTimer,
-                                                 secondTimer,
-                                                 entralinkTimer,
-                                                 enhancedEntralinkTimer,
+        gen5TimerPane = new timer::Gen5TimerPane(
+            gen5TimerModel, delayTimer, secondTimer, entralinkTimer,
+            enhancedEntralinkTimer, calibrationService);
+        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerModel, delayTimer,
                                                  calibrationService);
-        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerModel,
-                                                 delayTimer,
-                                                 calibrationService);
-        gen3TimerPane = new timer::Gen3TimerPane(gen3TimerModel,
-                                                 frameTimer,
+        gen3TimerPane = new timer::Gen3TimerPane(gen3TimerModel, frameTimer,
                                                  calibrationService);
         customTimerPane = new timer::CustomTimerPane(customTimerModel);
         connect(gen5TimerPane, &timer::Gen5TimerPane::timerChanged,
@@ -75,10 +77,8 @@ namespace gui {
         // ----- timerDisplayPane -----
         {
             layout->addWidget(timerDisplayPane, 0, 0);
-            timerDisplayPane->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
+            timerDisplayPane->setSizePolicy(QSizePolicy::Expanding,
+                                            QSizePolicy::Fixed);
         }
         // ----- tabPane -----
         {
@@ -89,9 +89,7 @@ namespace gui {
                         tabPane->setEnabled(!activated);
                     });
             connect(tabPane, &QTabWidget::currentChanged,
-                    [this](const int index) {
-                        setSelectedTab((uint) index);
-                    });
+                    [this](const int index) { setSelectedTab((uint) index); });
             layout->addWidget(tabPane, 0, 1, 2, 2);
             tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");
@@ -103,7 +101,8 @@ namespace gui {
         {
             auto *settingsBtn = new QPushButton();
             settingsBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-            const auto id = QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
+            const auto id =
+                QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
             const auto family = QFontDatabase::applicationFontFamilies(id)[0];
             settingsBtn->setFont(QFont(family));
             settingsBtn->setText("\uf013");
@@ -111,15 +110,15 @@ namespace gui {
                     [settingsBtn](const bool activated) {
                         settingsBtn->setEnabled(!activated);
                     });
-            connect(settingsBtn, &QPushButton::clicked,
-                    [this] {
-                        auto *settingsDialog = new dialog::SettingsDialog(timerSettings, actionSettings, this);
-                        if (settingsDialog->exec() == QDialog::Accepted) {
-                            timerSettings->sync(settings);
-                            actionSettings->sync(settings);
-                        }
-                        delete settingsDialog;
-                    });
+            connect(settingsBtn, &QPushButton::clicked, [this] {
+                auto *settingsDialog = new dialog::SettingsDialog(
+                    timerSettings, actionSettings, this);
+                if (settingsDialog->exec() == QDialog::Accepted) {
+                    timerSettings->sync(settings);
+                    actionSettings->sync(settings);
+                }
+                delete settingsDialog;
+            });
             layout->addWidget(settingsBtn, 2, 0);
         }
         // ----- updateBtn -----
@@ -131,10 +130,8 @@ namespace gui {
                         updateBtn->setEnabled(!activated);
                     });
             layout->addWidget(updateBtn, 2, 1);
-            updateBtn->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
+            updateBtn->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
         }
         // ----- startStopBtn -----
         {
@@ -143,20 +140,17 @@ namespace gui {
                     [startStopBtn](const bool activated) {
                         startStopBtn->setText(activated ? "Stop" : "Start");
                     });
-            connect(startStopBtn, &QPushButton::clicked,
-                    [this] {
-                        if (!timerService->isRunning()) {
-                            timerService->start();
-                        } else {
-                            timerService->stop();
-                        }
-                    });
+            connect(startStopBtn, &QPushButton::clicked, [this] {
+                if (!timerService->isRunning()) {
+                    timerService->start();
+                } else {
+                    timerService->stop();
+                }
+            });
             layout->addWidget(startStopBtn, 2, 2);
             startStopBtn->setDefault(true);
-            startStopBtn->setSizePolicy(
-                QSizePolicy::Expanding,
-                QSizePolicy::Fixed
-            );
+            startStopBtn->setSizePolicy(QSizePolicy::Expanding,
+                                        QSizePolicy::Fixed);
         }
     }
 
@@ -202,4 +196,4 @@ namespace gui {
         settings->setValue(Fields::SELECTED_TAB, selectedTab);
         updateTimer();
     }
-}
+}  // namespace gui

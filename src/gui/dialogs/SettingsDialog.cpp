@@ -3,14 +3,15 @@
 //
 
 #include "SettingsDialog.h"
-#include <QVBoxLayout>
-#include <QTabWidget>
+
 #include <QPushButton>
+#include <QTabWidget>
+#include <QVBoxLayout>
 
 namespace gui::dialog {
-    SettingsDialog::SettingsDialog(model::settings::TimerSettingsModel *timerSettings,
-                                   model::settings::ActionSettingsModel *actionSettings,
-                                   QWidget *parent)
+    SettingsDialog::SettingsDialog(
+        model::settings::TimerSettingsModel *timerSettings,
+        model::settings::ActionSettingsModel *actionSettings, QWidget *parent)
         : QDialog(parent),
           timerSettings(timerSettings),
           actionSettings(actionSettings) {
@@ -19,13 +20,15 @@ namespace gui::dialog {
 
     void SettingsDialog::initComponents() {
         setWindowTitle("Preferences");
-        setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
+        setWindowFlags(Qt::Dialog | Qt::WindowTitleHint |
+                       Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
         auto *layout = new QGridLayout(this);
         layout->setVerticalSpacing(10);
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
-            actionSettingsPane = new settings::ActionSettingsPane(actionSettings);
+            actionSettingsPane =
+                new settings::ActionSettingsPane(actionSettings);
             timerSettingsPane = new settings::TimerSettingsPane(timerSettings);
             tabPane->addTab(actionSettingsPane, "Action");
             tabPane->addTab(timerSettingsPane, "Timer");
@@ -34,15 +37,14 @@ namespace gui::dialog {
         // ----- cancelButton -----
         {
             auto *cancelButton = new QPushButton("Cancel");
-            connect(cancelButton, &QPushButton::clicked, [this]() {
-               done(QDialog::Rejected);
-            });
+            connect(cancelButton, &QPushButton::clicked,
+                    [this] { done(QDialog::Rejected); });
             layout->addWidget(cancelButton, 1, 0);
         }
         // ----- okButton -----
         {
             auto *okButton = new QPushButton("OK");
-            connect(okButton, &QPushButton::clicked, [this]() {
+            connect(okButton, &QPushButton::clicked, [this] {
                 actionSettingsPane->updateSettings();
                 timerSettingsPane->updateSettings();
                 done(QDialog::Accepted);
@@ -51,4 +53,4 @@ namespace gui::dialog {
             okButton->setDefault(true);
         }
     }
-}
+}  // namespace gui::dialog

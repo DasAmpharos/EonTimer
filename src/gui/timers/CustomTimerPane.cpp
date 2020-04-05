@@ -3,18 +3,19 @@
 //
 
 #include "CustomTimerPane.h"
+
 #include <QGridLayout>
 #include <QListView>
-#include <QSpinBox>
-#include <QPushButton>
 #include <QListWidget>
-#include <iostream>
+#include <QPushButton>
+#include <QSpinBox>
 #include <QStringListModel>
+#include <iostream>
 
 namespace gui::timer {
-    CustomTimerPane::CustomTimerPane(model::timer::CustomTimerModel *model, QWidget *parent)
-        : QWidget(parent),
-          model(model) {
+    CustomTimerPane::CustomTimerPane(model::timer::CustomTimerModel *model,
+                                     QWidget *parent)
+        : QWidget(parent), model(model) {
         initComponents();
     }
 
@@ -50,4 +51,4 @@ namespace gui::timer {
         removeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         rootLayout->addWidget(removeButton, 1, 2);
     }
-}
+}  // namespace gui::timer

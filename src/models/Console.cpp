@@ -9,16 +9,14 @@ namespace model {
     const double NDS_FPS = 59.8261;
     const double GBA_FRAMERATE = 1000 / GBA_FPS;
     const double NDS_FRAMERATE = 1000 / NDS_FPS;
-    const std::vector<Console> VALUES{Console::GBA,
-                                      Console::NDS,
-                                      Console::DSI,
+    const std::vector<Console> VALUES{Console::GBA, Console::NDS, Console::DSI,
                                       Console::_3DS};
     namespace names {
         const char *GBA = "GBA";
         const char *NDS = "NDS";
         const char *DSI = "DSI";
         const char *_3DS = "3DS";
-    }
+    }  // namespace names
 
     double getFps(const Console console) {
         switch (console) {
@@ -61,13 +59,9 @@ namespace model {
         }
     }
 
-    Console console(int index) {
-        return VALUES[index];
-    }
+    Console console(int index) { return VALUES[index]; }
 
-    const std::vector<Console> &consoles() {
-        return VALUES;
-    }
+    const std::vector<Console> &consoles() { return VALUES; }
 
     int indexOf(Console console) {
         for (int i = 0; i < VALUES.size(); i++) {
@@ -75,4 +69,4 @@ namespace model {
         }
         return -1;
     }
-}
+}  // namespace model

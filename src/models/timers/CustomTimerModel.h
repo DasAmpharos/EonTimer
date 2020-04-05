@@ -12,11 +12,13 @@
 
 namespace model::timer {
     class CustomTimerModel : public QObject {
-    Q_OBJECT
+        Q_OBJECT
     private:
         QList<int> stages;
+
     public:
-        explicit CustomTimerModel(QSettings *settings, QObject *parent = nullptr);
+        explicit CustomTimerModel(QSettings *settings,
+                                  QObject *parent = nullptr);
 
         void sync(QSettings *settings) const;
 
@@ -24,6 +26,6 @@ namespace model::timer {
 
         void setStages(QList<int> &stages);
     };
-}
+}  // namespace model::timer
 
-#endif //EONTIMER_CUSTOMTIMERMODEL_H
+#endif  // EONTIMER_CUSTOMTIMERMODEL_H

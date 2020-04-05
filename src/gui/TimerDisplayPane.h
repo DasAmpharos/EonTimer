@@ -5,9 +5,10 @@
 #ifndef EONTIMER_TIMERDISPLAYPANE_H
 #define EONTIMER_TIMERDISPLAYPANE_H
 
+#include <services/TimerService.h>
+
 #include <QGroupBox>
 #include <QLabel>
-#include <services/TimerService.h>
 
 namespace gui {
     class TimerDisplayPane : public QGroupBox {
@@ -17,14 +18,14 @@ namespace gui {
     private:
         void initComponents();
 
-        const QString formatTime(const std::chrono::milliseconds &milliseconds) const;
+        const QString formatTime(
+            const std::chrono::milliseconds &milliseconds) const;
 
     private:
         QLabel *currentStage;
         QLabel *minutesBeforeTarget;
         QLabel *nextStage;
     };
-}
+}  // namespace gui
 
-
-#endif //EONTIMER_TIMERDISPLAYPANE_H
+#endif  // EONTIMER_TIMERDISPLAYPANE_H

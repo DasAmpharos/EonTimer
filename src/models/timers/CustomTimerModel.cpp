@@ -11,19 +11,17 @@ namespace model::timer {
 
     CustomTimerModel::CustomTimerModel(QSettings *settings, QObject *parent)
         : QObject(parent) {
-        stages = settings->value(CustomTimerFields::STAGES)
-            .value<QList<int>>();
+        stages = settings->value(CustomTimerFields::STAGES).value<QList<int>>();
     }
 
     void CustomTimerModel::sync(QSettings *settings) const {
-        settings->setValue(CustomTimerFields::STAGES, QVariant::fromValue(stages));
+        settings->setValue(CustomTimerFields::STAGES,
+                           QVariant::fromValue(stages));
     }
 
-    QList<int> &CustomTimerModel::getStages() {
-        return stages;
-    }
+    QList<int> &CustomTimerModel::getStages() { return stages; }
 
     void CustomTimerModel::setStages(QList<int> &stages) {
         this->stages = QList<int>(stages);
     }
-}
+}  // namespace model::timer

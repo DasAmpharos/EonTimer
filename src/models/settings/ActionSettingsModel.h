@@ -5,8 +5,9 @@
 #ifndef EONTIMER_ACTIONSETTINGSMODEL_H
 #define EONTIMER_ACTIONSETTINGSMODEL_H
 
-#include <QSettings>
 #include <models/Sound.h>
+
+#include <QSettings>
 #include <chrono>
 
 namespace model::settings {
@@ -15,6 +16,7 @@ namespace model::settings {
         model::Sound sound;
         std::chrono::milliseconds interval;
         uint count;
+
     public:
         explicit ActionSettingsModel(QSettings *settings);
 
@@ -32,7 +34,6 @@ namespace model::settings {
 
         void setCount(uint count);
     };
-}
+}  // namespace model::settings
 
-
-#endif //EONTIMER_ACTIONSETTINGSMODEL_H
+#endif  // EONTIMER_ACTIONSETTINGSMODEL_H

@@ -5,17 +5,18 @@
 #ifndef EONTIMER_TIMERSERVICE_H
 #define EONTIMER_TIMERSERVICE_H
 
+#include <models/TimerState.h>
+#include <models/settings/ActionSettingsModel.h>
+#include <models/settings/TimerSettingsModel.h>
+
 #include <QObject>
 #include <QThread>
 #include <memory>
 #include <vector>
-#include <models/settings/TimerSettingsModel.h>
-#include <models/settings/ActionSettingsModel.h>
-#include <models/TimerState.h>
 
 namespace service {
     class TimerService : public QObject {
-    Q_OBJECT
+        Q_OBJECT
     private:
         bool running;
         QThread *timerThread;
@@ -24,9 +25,10 @@ namespace service {
         model::settings::ActionSettingsModel *actionSettings;
 
     public:
-        explicit TimerService(model::settings::TimerSettingsModel *timerSettings,
-                              model::settings::ActionSettingsModel *actionSettings,
-                              QObject *parent = nullptr);
+        explicit TimerService(
+            model::settings::TimerSettingsModel *timerSettings,
+            model::settings::ActionSettingsModel *actionSettings,
+            QObject *parent = nullptr);
 
         ~TimerService() override;
 
@@ -43,17 +45,19 @@ namespace service {
 
         void run();
 
-        std::chrono::milliseconds runStage(uint8_t stageIndex, std::chrono::milliseconds elapsed);
+        std::chrono::milliseconds runStage(uint8_t stageIndex,
+                                           std::chrono::milliseconds elapsed);
 
         // @formatter:off
     signals:
         void activated(bool);
         void actionTriggered();
         void stateChanged(const model::TimerState &state);
-        void minutesBeforeTargetChanged(const std::chrono::minutes &minutesBeforeTarget);
+        void minutesBeforeTargetChanged(
+            const std::chrono::minutes &minutesBeforeTarget);
         void nextStageChanged(const std::chrono::milliseconds &nextStage);
         // @formatter:on
     };
-}
+}  // namespace service
 
-#endif //EONTIMER_TIMERSERVICE_H
+#endif  // EONTIMER_TIMERSERVICE_H

@@ -11,4 +11,4 @@ namespace gui::util::font {
     void setFontSize(QWidget *widget, int fontSize);
 }
 
-#endif //EONTIMER_FONTHELPER_H
+#endif  // EONTIMER_FONTHELPER_H

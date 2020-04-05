@@ -2,10 +2,11 @@
 // Created by Dylan Meadows on 2020-03-10.
 //
 
+#include "TimerDisplayPane.h"
+
+#include <QFontDatabase>
 #include <QGroupBox>
 #include <QVBoxLayout>
-#include "TimerDisplayPane.h"
-#include <QFontDatabase>
 
 namespace gui {
     TimerDisplayPane::TimerDisplayPane(service::TimerService *timerService)
@@ -16,9 +17,11 @@ namespace gui {
                     this->currentStage->setText(formatTime(state.remaining));
                 });
         minutesBeforeTarget = new QLabel("0");
-        connect(timerService, &service::TimerService::minutesBeforeTargetChanged,
+        connect(timerService,
+                &service::TimerService::minutesBeforeTargetChanged,
                 [this](const std::chrono::minutes &minutesBeforeTarget) {
-                    this->minutesBeforeTarget->setText(QString::number(minutesBeforeTarget.count()));
+                    this->minutesBeforeTarget->setText(
+                        QString::number(minutesBeforeTarget.count()));
                 });
         nextStage = new QLabel("0:000");
         connect(timerService, &service::TimerService::nextStageChanged,
@@ -38,8 +41,10 @@ namespace gui {
             {
                 rootLayout->addWidget(currentStage);
                 rootLayout->setAlignment(currentStage, Qt::AlignLeft);
-                const int font = QFontDatabase::addApplicationFont(":/fonts/RobotoMono-Regular.ttf");
-                const QString family = QFontDatabase::applicationFontFamilies(font)[0];
+                const int font = QFontDatabase::addApplicationFont(
+                    ":/fonts/RobotoMono-Regular.ttf");
+                const QString family =
+                    QFontDatabase::applicationFontFamilies(font)[0];
                 currentStage->setFont(QFont(family, 36));
             }
             // ----- minutesBeforeTarget -----
@@ -63,7 +68,8 @@ namespace gui {
         }
     }
 
-    const QString TimerDisplayPane::formatTime(const std::chrono::milliseconds &milliseconds) const {
+    const QString TimerDisplayPane::formatTime(
+        const std::chrono::milliseconds &milliseconds) const {
         const auto ms = milliseconds.count();
         if (ms > 0) {
             return QString::number(ms / 1000) + ":" +
@@ -74,4 +80,4 @@ namespace gui {
             return "0:000";
         }
     }
-}
+}  // namespace gui

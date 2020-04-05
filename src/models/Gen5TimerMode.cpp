@@ -5,16 +5,15 @@
 #include "Gen5TimerMode.h"
 
 namespace model {
-    const std::vector<Gen5TimerMode> VALUES{Gen5TimerMode::STANDARD,
-                                            Gen5TimerMode::C_GEAR,
-                                            Gen5TimerMode::ENTRALINK,
-                                            Gen5TimerMode::ENTRALINK_PLUS};
+    const std::vector<Gen5TimerMode> VALUES{
+        Gen5TimerMode::STANDARD, Gen5TimerMode::C_GEAR,
+        Gen5TimerMode::ENTRALINK, Gen5TimerMode::ENTRALINK_PLUS};
     namespace names {
         const char *STANDARD = "Standard";
         const char *C_GEAR = "C-Gear";
         const char *ENTRALINK = "Entralink";
         const char *ENTRALINK_PLUS = "Entralink+";
-    }
+    }  // namespace names
 
     const char *getName(const Gen5TimerMode mode) {
         switch (mode) {
@@ -31,13 +30,9 @@ namespace model {
         }
     }
 
-    Gen5TimerMode gen5TimerMode(int index) {
-        return VALUES[index];
-    }
+    Gen5TimerMode gen5TimerMode(int index) { return VALUES[index]; }
 
-    const std::vector<Gen5TimerMode> &gen5TimerModes() {
-        return VALUES;
-    }
+    const std::vector<Gen5TimerMode> &gen5TimerModes() { return VALUES; }
 
     int indexOf(const Gen5TimerMode mode) {
         for (int i = 0; i < VALUES.size(); i++) {
@@ -45,4 +40,4 @@ namespace model {
         }
         return -1;
     }
-}
+}  // namespace model
