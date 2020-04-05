@@ -5,14 +5,12 @@
 #include "ApplicationWindow.h"
 
 #include <app.h>
-#include <gui/dialogs/AboutDialog.h>
 #include <gui/dialogs/SettingsDialog.h>
 #include <util/Functions.h>
 
 #include <QFile>
 #include <QMenuBar>
 #include <sstream>
-
 
 namespace gui {
     const char *getTitle() {
