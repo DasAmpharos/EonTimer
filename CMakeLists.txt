@@ -32,8 +32,6 @@ find_package(SFML 2.4 COMPONENTS audio REQUIRED)
 
 set(SOURCES 
     resources/resources.qrc
-    src/app.h.in
-    src/main.cpp
     src/gui/ApplicationPane.cpp
     src/gui/ApplicationPane.h
     src/gui/ApplicationWindow.cpp
@@ -94,7 +92,10 @@ set(SOURCES
     src/models/timers/CustomTimerModel.cpp
     src/models/timers/CustomTimerModel.h
     src/gui/timers/CustomTimerPane.cpp
-    src/gui/timers/CustomTimerPane.h)
+    src/gui/timers/CustomTimerPane.h
+    src/app.h.in
+    src/main.cpp
+)
 
 if (APPLE)
     add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES})
