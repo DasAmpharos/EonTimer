@@ -32,7 +32,7 @@ before_build:
 
 build_script:
   # Windows
-  - cmd: qmake EonTimer.pro
+  - cmake -DCMAKE_BUILD_TYPE=RELEASE
   - cmd: jom -j %NUMBER_OF_PROCESSORS%
   # macOS / linux
   - sh: .ci/build.sh
