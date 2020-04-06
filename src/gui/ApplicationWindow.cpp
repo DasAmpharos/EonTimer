@@ -54,7 +54,7 @@ namespace gui {
         addStylesheet(stylesheet, ":/css/macos.css");
 #elif defined(__linux__)
         addStylesheet(stylesheet, ":/css/linux.css");
-#elif defined(__MINGW32__)
+#elif defined(_WIN32)
         addStylesheet(stylesheet, ":/css/windows.css");
 #endif
         setStyleSheet(stylesheet);

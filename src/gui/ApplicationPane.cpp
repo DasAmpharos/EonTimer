@@ -105,7 +105,7 @@ namespace gui {
                 QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf");
             const auto family = QFontDatabase::applicationFontFamilies(id)[0];
             settingsBtn->setFont(QFont(family));
-            settingsBtn->setText("\uf013");
+            settingsBtn->setText(QChar(0xf013));
             connect(timerService, &service::TimerService::activated,
                     [settingsBtn](const bool activated) {
                         settingsBtn->setEnabled(!activated);
