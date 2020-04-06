@@ -22,17 +22,15 @@ namespace gui {
         QSettings *settings,
         model::settings::ActionSettingsModel *actionSettings,
         model::settings::TimerSettingsModel *timerSettings,
+        model::timer::Gen5TimerModel *gen5Timer,
+        model::timer::Gen4TimerModel *gen4Timer,
+        model::timer::Gen3TimerModel *gen3Timer,
         service::TimerService *timerService, QWidget *parent)
         : QWidget(parent),
           settings(settings),
           actionSettings(actionSettings),
           timerSettings(timerSettings),
           timerService(timerService) {
-        auto *gen5TimerModel = new model::timer::Gen5TimerModel(settings);
-        auto *gen4TimerModel = new model::timer::Gen4TimerModel(settings);
-        auto *gen3TimerModel = new model::timer::Gen3TimerModel(settings);
-        auto *customTimerModel = new model::timer::CustomTimerModel(settings);
-
         const auto *calibrationService =
             new service::CalibrationService(timerSettings);
         const auto *secondTimer = new service::timer::SecondTimer();
@@ -47,13 +45,12 @@ namespace gui {
 
         timerDisplayPane = new TimerDisplayPane(timerService);
         gen5TimerPane = new timer::Gen5TimerPane(
-            gen5TimerModel, delayTimer, secondTimer, entralinkTimer,
+            gen5Timer, delayTimer, secondTimer, entralinkTimer,
             enhancedEntralinkTimer, calibrationService);
-        gen4TimerPane = new timer::Gen4TimerPane(gen4TimerModel, delayTimer,
-                                                 calibrationService);
-        gen3TimerPane = new timer::Gen3TimerPane(gen3TimerModel, frameTimer,
-                                                 calibrationService);
-        customTimerPane = new timer::CustomTimerPane(customTimerModel);
+        gen4TimerPane =
+            new timer::Gen4TimerPane(gen4Timer, delayTimer, calibrationService);
+        gen3TimerPane =
+            new timer::Gen3TimerPane(gen3Timer, frameTimer, calibrationService);
         connect(gen5TimerPane, &timer::Gen5TimerPane::timerChanged,
                 [timerService](std::shared_ptr<std::vector<int>> stages) {
                     timerService->setStages(stages);
@@ -94,7 +91,6 @@ namespace gui {
             tabPane->addTab(gen5TimerPane, "5");
             tabPane->addTab(gen4TimerPane, "4");
             tabPane->addTab(gen3TimerPane, "3");
-            // tabPane->addTab(customTimerPane, "C");
             tabPane->setCurrentIndex(getSelectedTab());
         }
         // ----- settingsBtn -----

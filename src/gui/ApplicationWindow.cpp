@@ -33,10 +33,14 @@ namespace gui {
         settings = new QSettings(this);
         actionSettings = new model::settings::ActionSettingsModel(settings);
         timerSettings = new model::settings::TimerSettingsModel(settings);
+        gen5Timer = new model::timer::Gen5TimerModel(settings);
+        gen4Timer = new model::timer::Gen4TimerModel(settings);
+        gen3Timer = new model::timer::Gen3TimerModel(settings);
         timerService =
             new service::TimerService(timerSettings, actionSettings, this);
         applicationPane = new ApplicationPane(
-            settings, actionSettings, timerSettings, timerService, this);
+            settings, actionSettings, timerSettings, gen5Timer, gen4Timer,
+            gen3Timer, timerService, this);
         initComponents();
     }
 
@@ -75,8 +79,11 @@ namespace gui {
             {
                 auto *preferences = new QAction();
                 preferences->setMenuRole(QAction::PreferencesRole);
-                connect(preferences, SIGNAL(triggered(bool)), this,
-                        SLOT(onPreferencesTriggered()));
+                connect(preferences, &QAction::triggered, [this] {
+                    auto dialog = gui::dialog::SettingsDialog(
+                        timerSettings, actionSettings, this);
+                    dialog.exec();
+                });
                 connect(timerService, &service::TimerService::activated,
                         [preferences](const bool activated) {
                             preferences->setEnabled(!activated);
@@ -86,9 +93,13 @@ namespace gui {
         }
     }
 
-    void ApplicationWindow::closeEvent(QCloseEvent *) { settings->sync(); }
-
-    void ApplicationWindow::onPreferencesTriggered() {
-        gui::dialog::SettingsDialog(timerSettings, actionSettings, this).exec();
+    void ApplicationWindow::closeEvent(QCloseEvent *) {
+        actionSettings->sync(settings);
+        timerSettings->sync(settings);
+        gen5Timer->sync(settings);
+        gen4Timer->sync(settings);
+        gen3Timer->sync(settings);
+        settings->sync();
     }
+
 }  // namespace gui
