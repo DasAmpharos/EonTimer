@@ -9,7 +9,7 @@ set QT_PATH=C:\Qt\5.14\msvc2017_64
 set PATH=%QT_PATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
 
 call C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat x64
-cmake -G "NMake Makefiles JOM" .
+cmake -G "NMake Makefiles JOM" -DCMAKE_BUILD_TYPE=Release .
 jom -j %NUMBER_OF_PROCESSORS%
 exit
 
@@ -19,6 +19,6 @@ set QT_PATH=C:\Qt\5.14\msvc2017
 set PATH=%QT_PATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
 
 call C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat x86
-cmake -G "NMake Makefiles JOM" .
+cmake -G "NMake Makefiles JOM" -DCMAKE_BUILD_TYPE=Release .
 jom -j %NUMBER_OF_PROCESSORS%
 exit
