@@ -14,14 +14,24 @@ configure_file(
 )
 include_directories(${CMAKE_BINARY_DIR}/generated)
 
+if (UNIX AND NOT APPLE)
+    message("-- Linux build detected")
+    set(Qt5Widgets_DIR "/opt/qt514/lib/cmake/Qt5Widgets")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};/usr/share/SFML/cmake/Modules")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+endif()
+
+if (WIN32)
+    message("-- Windows build detected")
+    set(SFML_DIR "./SFML-2.5.1/lib/cmake/SFML")
+endif()
+
 set(CMAKE_PREFIX_PATH "/usr/local/opt/qt/lib/cmake")
 find_package(Qt5Widgets REQUIRED)
-find_package(SFML 2.5 COMPONENTS audio REQUIRED)
+find_package(SFML 2.4 COMPONENTS audio REQUIRED)
 
-add_executable(${CMAKE_PROJECT_NAME}
+set(SOURCES 
     resources/resources.qrc
-    src/app.h.in
-    src/main.cpp
     src/gui/ApplicationPane.cpp
     src/gui/ApplicationPane.h
     src/gui/ApplicationWindow.cpp
@@ -82,5 +92,16 @@ add_executable(${CMAKE_PROJECT_NAME}
     src/models/timers/CustomTimerModel.cpp
     src/models/timers/CustomTimerModel.h
     src/gui/timers/CustomTimerPane.cpp
-    src/gui/timers/CustomTimerPane.h)
+    src/gui/timers/CustomTimerPane.h
+    src/app.h.in
+    src/main.cpp
+)
+
+if (APPLE)
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES})
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/macos/Info.plist)
+else()
+    add_executable(${CMAKE_PROJECT_NAME} ${SOURCES})
+endif()
+
 target_link_libraries(EonTimer Qt5::Widgets sfml-audio)
