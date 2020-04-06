@@ -7,6 +7,9 @@
 
 #include <models/settings/ActionSettingsModel.h>
 #include <models/settings/TimerSettingsModel.h>
+#include <models/timers/Gen3TimerModel.h>
+#include <models/timers/Gen4TimerModel.h>
+#include <models/timers/Gen5TimerModel.h>
 #include <services/TimerService.h>
 
 #include <QMainWindow>
@@ -21,6 +24,9 @@ namespace gui {
         QSettings *settings;
         model::settings::ActionSettingsModel *actionSettings;
         model::settings::TimerSettingsModel *timerSettings;
+        model::timer::Gen5TimerModel *gen5Timer;
+        model::timer::Gen4TimerModel *gen4Timer;
+        model::timer::Gen3TimerModel *gen3Timer;
         service::TimerService *timerService;
         ApplicationPane *applicationPane;
 
@@ -32,11 +38,6 @@ namespace gui {
 
     protected:
         void closeEvent(QCloseEvent *event) override;
-
-        // @formatter:off
-    private slots:
-        void onPreferencesTriggered();
-        // @formatter:on
     };
 }  // namespace gui
 

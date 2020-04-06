@@ -36,6 +36,9 @@ namespace gui {
         ApplicationPane(QSettings *settings,
                         model::settings::ActionSettingsModel *actionSettings,
                         model::settings::TimerSettingsModel *timerSettings,
+                        model::timer::Gen5TimerModel *gen5Timer,
+                        model::timer::Gen4TimerModel *gen4Timer,
+                        model::timer::Gen3TimerModel *gen3Timer,
                         service::TimerService *timerService,
                         QWidget *parent = nullptr);
 
