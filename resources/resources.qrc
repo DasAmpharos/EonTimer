@@ -1,7 +1,7 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource>
-        <file>css/main.css</file>
+        <file>styles/main.css</file>
     </qresource>
     <qresource>
         <file>css/linux.css</file>

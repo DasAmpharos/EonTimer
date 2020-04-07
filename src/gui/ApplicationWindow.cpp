@@ -53,7 +53,7 @@ namespace gui {
         setFixedSize(525, 395);
 
         QString stylesheet;
-        addStylesheet(stylesheet, ":/css/main.css");
+        addStylesheet(stylesheet, ":/styles/main.css");
 #if defined(__APPLE__)
         addStylesheet(stylesheet, ":/css/macos.css");
 #elif defined(__linux__)

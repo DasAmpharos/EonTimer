@@ -33,7 +33,7 @@ namespace gui::timer {
         {
             // group
             auto *group = new QGroupBox();
-            group->setProperty("class", "themeable");
+            group->setProperty("class", "themeable-panel themeable-border");
             group->setSizePolicy(QSizePolicy::Expanding,
                                  QSizePolicy::Expanding);
             auto *groupLayout = new QVBoxLayout(group);

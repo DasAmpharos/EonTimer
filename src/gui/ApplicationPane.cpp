@@ -80,7 +80,7 @@ namespace gui {
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
-            tabPane->setProperty("class", "themeable");
+            tabPane->setProperty("class", "themeable-panel themeable-border");
             connect(timerService, &service::TimerService::activated,
                     [tabPane](const bool activated) {
                         tabPane->setEnabled(!activated);

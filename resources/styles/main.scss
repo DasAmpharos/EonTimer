@@ -1,0 +1,130 @@
+$theme-panel-border-color: white;
+$theme-panel-background-color: rgba(255, 255, 255, 0.5);
+$theme-button-color: black;
+$theme-button-background-color: rgb(230, 230, 230);
+$theme-primary-button-color: black;
+$theme-primary-button-background-color: rgb(225, 235, 240);
+$theme-focus: rgb(3, 159, 211);
+
+// derived variables
+$theme-primary-button-border-color: desaturate(
+  $color:
+    darken(
+      $color: $theme-primary-button-background-color,
+      $amount: 20,
+    ),
+  $amount: 10,
+);
+$theme-button-border-color: desaturate(
+  $color:
+    darken(
+      $color: $theme-button-background-color,
+      $amount: 20,
+    ),
+  $amount: 10,
+);
+
+.themeable-panel,
+QTabWidget.themeable-panel::pane {
+  background-color: $theme-panel-background-color;
+}
+
+.themeable-border,
+QTabWidget.themeable-border::pane {
+  border: 2px solid $theme-panel-border-color;
+  border-radius: 5px;
+}
+
+QScrollArea.themeable-panel {
+  background-color: transparent;
+}
+
+QPushButton {
+  background-color: $theme-button-background-color;
+  border: 1px solid $theme-button-border-color;
+  color: $theme-button-color;
+  border-radius: 4px;
+  padding: 3px;
+  min-width: 80px;
+}
+
+QPushButton:checked:selected {
+  background: #1464a0;
+  color: #32414b;
+}
+
+QPushButton::menu-indicator {
+  subcontrol-origin: padding;
+  subcontrol-position: bottom right;
+  bottom: 4px;
+}
+
+QPushButton:pressed {
+  background-color: #19232d;
+  border: 1px solid #19232d;
+}
+
+QPushButton:pressed:hover {
+  border: 1px solid #148cd2;
+}
+
+QPushButton:hover {
+  border: 1px solid #148cd2;
+  color: #f0f0f0;
+}
+
+QPushButton:selected {
+  background: #1464a0;
+  color: #32414b;
+}
+
+QPushButton:hover {
+  border: 1px solid #148cd2;
+  color: #f0f0f0;
+}
+
+QPushButton:focus {
+  border: 1px solid #1464a0;
+}
+
+// QPushButton:hover {
+//   color: lighten($color: $theme-button-color, $amount: 10);
+//   background-color: lighten($color: $theme-button-background-color, $amount: 3);
+//   border-color: lighten($color: $theme-button-border-color, $amount: 3);
+// }
+
+// QPushButton:focus {
+//   border: 2px solid $theme-focus;
+// }
+
+// QPushButton:checked,
+// QPushButton:pressed:hover {
+//   background-color: darken($color: $theme-button-background-color, $amount: 3);
+//   border: 2px solid $theme-focus;
+// }
+
+// QPushButton:default {
+//   color: $theme-primary-button-color;
+//   border: 1px solid $theme-primary-button-border-color;
+//   background-color: $theme-primary-button-background-color;
+// }
+
+// QPushButton:default:pressed:hover {
+//   background-color: saturate(
+//     $color: darken($color: $theme-primary-button-background-color, $amount: 10),
+//     $amount: 50
+//   );
+//   border-color: saturate(
+//     $color: darken($color: $theme-primary-button-border-color, $amount: 10),
+//     $amount: 50
+//   );
+// }
+
+// QPushButton:default:hover {
+//   color: lighten($color: $theme-primary-button-color, $amount: 10);
+//   background-color: lighten(
+//     $color: $theme-primary-button-background-color,
+//     $amount: 3
+//   );
+//   border-color: lighten($color: $theme-primary-button-border-color, $amount: 3);
+// }
