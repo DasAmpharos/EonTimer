@@ -1,0 +1,12 @@
+QTabWidget {
+  &.themeable-panel {
+    &::pane {
+      position: absolute;
+      padding-top: 14px;
+    }
+  }
+
+  &::tab-bar {
+    left: 5px;
+  }
+}

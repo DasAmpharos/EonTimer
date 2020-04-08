@@ -54,12 +54,12 @@ namespace gui {
 
         QString stylesheet;
         addStylesheet(stylesheet, ":/styles/main.css");
-#if defined(__APPLE__)
-        addStylesheet(stylesheet, ":/css/macos.css");
-#elif defined(__linux__)
-        addStylesheet(stylesheet, ":/css/linux.css");
+#if defined(__linux__)
+        addStylesheet(stylesheet, ":/styles/platform/linux.css");
+#elif defined(__APPLE__)
+        addStylesheet(stylesheet, ":/styles/platform/macos.css");
 #elif defined(_WIN32)
-        addStylesheet(stylesheet, ":/css/windows.css");
+        addStylesheet(stylesheet, ":/styles/platform/windows.css");
 #endif
         setStyleSheet(stylesheet);
 

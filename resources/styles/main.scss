@@ -1,12 +1,14 @@
-$theme-panel-border-color: white;
-$theme-panel-background-color: rgba(255, 255, 255, 0.5);
-$theme-button-color: black;
-$theme-button-background-color: rgb(230, 230, 230);
-$theme-primary-button-color: black;
-$theme-primary-button-background-color: rgb(225, 235, 240);
-$theme-focus: rgb(3, 159, 211);
+@import 'variables';
 
 // derived variables
+$theme-button-border-color: desaturate(
+  $color:
+    darken(
+      $color: $theme-button-background-color,
+      $amount: 20,
+    ),
+  $amount: 10,
+);
 $theme-primary-button-border-color: desaturate(
   $color:
     darken(
@@ -15,10 +17,10 @@ $theme-primary-button-border-color: desaturate(
     ),
   $amount: 10,
 );
-$theme-button-border-color: desaturate(
+$theme-control-border-color: desaturate(
   $color:
     darken(
-      $color: $theme-button-background-color,
+      $color: $theme-control-background-color,
       $amount: 20,
     ),
   $amount: 10,
@@ -46,85 +48,144 @@ QPushButton {
   border-radius: 4px;
   padding: 3px;
   min-width: 80px;
+
+  &:pressed {
+    &:hover {
+      background-color: darken(
+        $color: $theme-button-background-color,
+        $amount: 10
+      );
+      border: 2px solid $theme-focus;
+    }
+  }
+
+  &:hover {
+    color: lighten($color: $theme-button-color, $amount: 10);
+    background-color: lighten(
+      $color: $theme-button-background-color,
+      $amount: 3
+    );
+    border-color: lighten($color: $theme-button-border-color, $amount: 3);
+  }
+
+  &:focus {
+    border: 2px solid $theme-focus;
+  }
+
+  &:default {
+    color: $theme-primary-button-color;
+    border: 1px solid $theme-primary-button-border-color;
+    background-color: $theme-primary-button-background-color;
+
+    &:pressed {
+      &:hover {
+        background-color: saturate(
+          $color:
+            darken($color: $theme-primary-button-background-color, $amount: 10),
+          $amount: 50
+        );
+        border: 2px solid $theme-focus;
+      }
+    }
+
+    &:hover {
+      color: lighten($color: $theme-primary-button-color, $amount: 10);
+      background-color: lighten(
+        $color: $theme-primary-button-background-color,
+        $amount: 5
+      );
+      border-color: lighten(
+        $color: $theme-primary-button-border-color,
+        $amount: 5
+      );
+    }
+
+    &:focus {
+      border: 2px solid $theme-focus;
+    }
+  }
 }
 
-QPushButton:checked:selected {
-  background: #1464a0;
-  color: #32414b;
+QComboBox {
+  border-radius: 3px;
+  border: 1px solid $theme-control-border-color;
+  background-color: $theme-control-background-color;
+  padding: 1px 18px 1px 3px;
+
+  &::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 1.25em;
+
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-left: 1px solid $theme-control-border-color;
+    background-color: $theme-control-background-color;
+  }
+
+  &:focus {
+    border: 2px solid $theme-focus;
+  }
 }
 
-QPushButton::menu-indicator {
-  subcontrol-origin: padding;
-  subcontrol-position: bottom right;
-  bottom: 4px;
+QSpinBox {
+  border-radius: 3px;
+  border: 1px solid $theme-control-border-color;
+  background-color: $theme-control-background-color;
+  padding: 1px 18px 1px 3px;
+
+  &::up-button {
+    width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+    border-left: 1px solid $theme-button-border-color;
+    border-bottom: 1px solid $theme-button-border-color;
+    subcontrol-origin: border;
+    subcontrol-position: top right; /* position at the top right corner */
+
+    &:hover {
+      border: 1px solid $theme-focus;
+      border-top-right-radius: 3px;
+    }
+
+    &:pressed {
+      border-image: url(:/images/spinup_pressed.png) 1;
+    }
+  }
+
+  &::up-arrow {
+    image: url(:/svg/caret-up.svg);
+    width: 12px;
+    height: 12px;
+
+    &:off,
+    &:disabled {
+      /* off state when value is max */
+    }
+  }
+
+  &::down-button {
+    width: 16px;
+    border-left: 1px solid $theme-button-border-color;
+    subcontrol-origin: border;
+    subcontrol-position: bottom right; /* position at bottom right corner */
+
+    &:pressed {
+      border-image: url(:/images/spindown_pressed.png) 1;
+    }
+
+    &:hover {
+      border-image: url(:/images/spindown_hover.png) 1;
+    }
+  }
+
+  &::down-arrow {
+    image: url(:/svg/caret-down.svg);
+    width: 12px;
+    height: 12px;
+  }
+
+  &::off,
+  &::disabled {
+    /* off state when value in min */
+    image: url(:/images/down_arrow_disabled.png);
+  }
 }
-
-QPushButton:pressed {
-  background-color: #19232d;
-  border: 1px solid #19232d;
-}
-
-QPushButton:pressed:hover {
-  border: 1px solid #148cd2;
-}
-
-QPushButton:hover {
-  border: 1px solid #148cd2;
-  color: #f0f0f0;
-}
-
-QPushButton:selected {
-  background: #1464a0;
-  color: #32414b;
-}
-
-QPushButton:hover {
-  border: 1px solid #148cd2;
-  color: #f0f0f0;
-}
-
-QPushButton:focus {
-  border: 1px solid #1464a0;
-}
-
-// QPushButton:hover {
-//   color: lighten($color: $theme-button-color, $amount: 10);
-//   background-color: lighten($color: $theme-button-background-color, $amount: 3);
-//   border-color: lighten($color: $theme-button-border-color, $amount: 3);
-// }
-
-// QPushButton:focus {
-//   border: 2px solid $theme-focus;
-// }
-
-// QPushButton:checked,
-// QPushButton:pressed:hover {
-//   background-color: darken($color: $theme-button-background-color, $amount: 3);
-//   border: 2px solid $theme-focus;
-// }
-
-// QPushButton:default {
-//   color: $theme-primary-button-color;
-//   border: 1px solid $theme-primary-button-border-color;
-//   background-color: $theme-primary-button-background-color;
-// }
-
-// QPushButton:default:pressed:hover {
-//   background-color: saturate(
-//     $color: darken($color: $theme-primary-button-background-color, $amount: 10),
-//     $amount: 50
-//   );
-//   border-color: saturate(
-//     $color: darken($color: $theme-primary-button-border-color, $amount: 10),
-//     $amount: 50
-//   );
-// }
-
-// QPushButton:default:hover {
-//   color: lighten($color: $theme-primary-button-color, $amount: 10);
-//   background-color: lighten(
-//     $color: $theme-primary-button-background-color,
-//     $amount: 3
-//   );
-//   border-color: lighten($color: $theme-primary-button-border-color, $amount: 3);
-// }
