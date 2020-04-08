@@ -13,7 +13,6 @@
 #include <QWidget>
 
 #include "TimerDisplayPane.h"
-#include "timers/CustomTimerPane.h"
 #include "timers/Gen3TimerPane.h"
 #include "timers/Gen4TimerPane.h"
 #include "timers/Gen5TimerPane.h"
@@ -30,7 +29,6 @@ namespace gui {
         timer::Gen5TimerPane *gen5TimerPane;
         timer::Gen4TimerPane *gen4TimerPane;
         timer::Gen3TimerPane *gen3TimerPane;
-        timer::CustomTimerPane *customTimerPane;
 
     public:
         ApplicationPane(QSettings *settings,

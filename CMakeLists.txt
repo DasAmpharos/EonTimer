@@ -89,10 +89,6 @@ set(SOURCES
     src/models/timers/Gen3TimerModel.h
     src/gui/timers/Gen3TimerPane.cpp
     src/gui/timers/Gen3TimerPane.h
-    src/models/timers/CustomTimerModel.cpp
-    src/models/timers/CustomTimerModel.h
-    src/gui/timers/CustomTimerPane.cpp
-    src/gui/timers/CustomTimerPane.h
     src/app.h.in
     src/main.cpp
 )
