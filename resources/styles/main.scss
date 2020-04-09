@@ -1,39 +1,55 @@
-@import 'variables';
+@import "variables";
 
-// derived variables
-$theme-button-border-color: desaturate(
-  $color:
-    darken(
-      $color: $theme-button-background-color,
-      $amount: 20,
-    ),
+$COLOR_FOREGROUND_DARK: black;
+$COLOR_FOREGROUND_NORMAL: lighten(
+  $color: $COLOR_FOREGROUND_DARK,
+  $amount: 5,
+);
+$COLOR_FOREGROUND_LIGHT: lighten(
+  $color: $COLOR_FOREGROUND_DARK,
   $amount: 10,
 );
-$theme-primary-button-border-color: desaturate(
-  $color:
-    darken(
-      $color: $theme-primary-button-background-color,
-      $amount: 20,
-    ),
+
+$COLOR_BACKGROUND_LIGHT: white;
+$COLOR_BACKGROUND_NORMAL: darken(
+  $color: $COLOR_BACKGROUND_LIGHT,
+  $amount: 5,
+);
+$COLOR_BACKGROUND_DARK: darken(
+  $color: $COLOR_BACKGROUND_LIGHT,
   $amount: 10,
 );
-$theme-control-border-color: desaturate(
-  $color:
-    darken(
-      $color: $theme-control-background-color,
-      $amount: 20,
-    ),
-  $amount: 10,
-);
+
+$PANEL_BACKGROUND_COLOR: rgba(255, 255, 255, 0.5);
+$PANEL_BORDER_COLOR: white;
+
+$COLOR_SELECTION_DARK: #14506e;
+$COLOR_SELECTION_NORMAL: #1464a0;
+$COLOR_SELECTION_LIGHT: #148cd2;
+
+$OPACITY_TOOLTIP: 230;
+$SIZE_BORDER_RADIUS: 4px;
+
+$BORDER_LIGHT: 1px solid darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 10);
+$BORDER_NORMAL: 1px solid darken($color: $COLOR_BACKGROUND_NORMAL, $amount: 10);
+$BORDER_DARK: 1px solid darken($color: $COLOR_BACKGROUND_DARK, $amount: 10);
+
+$BORDER_SELECTION_LIGHT: 1px solid $COLOR_SELECTION_LIGHT;
+$BORDER_SELECTION_NORMAL: 1px solid $COLOR_SELECTION_NORMAL;
+$BORDER_SELECTION_DARK: 1px solid $COLOR_SELECTION_DARK;
 
 .themeable-panel,
 QTabWidget.themeable-panel::pane {
-  background-color: $theme-panel-background-color;
+  background-color: $PANEL_BACKGROUND_COLOR;
+}
+
+QTabWidget.themeable-panel::pane {
+  padding-top: 10px;
 }
 
 .themeable-border,
 QTabWidget.themeable-border::pane {
-  border: 2px solid $theme-panel-border-color;
+  border: 2px solid $PANEL_BORDER_COLOR;
   border-radius: 5px;
 }
 
@@ -41,151 +57,519 @@ QScrollArea.themeable-panel {
   background-color: transparent;
 }
 
+QLabel {
+  color: $COLOR_FOREGROUND_DARK;
+
+  &:disabled {
+    color: $COLOR_FOREGROUND_LIGHT;
+  }
+}
+
 QPushButton {
-  background-color: $theme-button-background-color;
-  border: 1px solid $theme-button-border-color;
-  color: $theme-button-color;
-  border-radius: 4px;
+  background-color: $COLOR_BACKGROUND_LIGHT;
+  border: $BORDER_NORMAL;
+  color: $COLOR_FOREGROUND_LIGHT;
+  border-radius: $SIZE_BORDER_RADIUS;
   padding: 3px;
+  outline: none;
+  /* Issue #194 - Special case of QPushButton inside dialogs, for better UI */
   min-width: 80px;
 
+  &:disabled {
+    background-color: $COLOR_BACKGROUND_NORMAL;
+    border: $BORDER_NORMAL;
+    color: $COLOR_FOREGROUND_DARK;
+    border-radius: $SIZE_BORDER_RADIUS;
+    padding: 3px;
+  }
+
+  &:checked {
+    background-color: $COLOR_BACKGROUND_NORMAL;
+    border: $BORDER_NORMAL;
+    border-radius: $SIZE_BORDER_RADIUS;
+    padding: 3px;
+    outline: none;
+
+    &:disabled {
+      background-color: $COLOR_BACKGROUND_DARK;
+      border: $BORDER_NORMAL;
+      color: $COLOR_FOREGROUND_DARK;
+      border-radius: $SIZE_BORDER_RADIUS;
+      padding: 3px;
+      outline: none;
+    }
+
+    &:selected {
+      background: $COLOR_SELECTION_NORMAL;
+      color: $COLOR_BACKGROUND_NORMAL;
+    }
+  }
+
+  &::menu-indicator {
+    subcontrol-origin: padding;
+    subcontrol-position: bottom right;
+    bottom: 4px;
+  }
+
   &:pressed {
+    background-color: $COLOR_BACKGROUND_DARK;
+    border: $BORDER_DARK;
+
     &:hover {
-      background-color: darken(
-        $color: $theme-button-background-color,
-        $amount: 10
-      );
-      border: 2px solid $theme-focus;
+      border: $BORDER_SELECTION_LIGHT;
     }
   }
 
   &:hover {
-    color: lighten($color: $theme-button-color, $amount: 10);
-    background-color: lighten(
-      $color: $theme-button-background-color,
-      $amount: 3
-    );
-    border-color: lighten($color: $theme-button-border-color, $amount: 3);
+    border: $BORDER_SELECTION_LIGHT;
+    color: $COLOR_FOREGROUND_LIGHT;
+  }
+
+  &:selected {
+    background: $COLOR_SELECTION_NORMAL;
+    color: $COLOR_BACKGROUND_NORMAL;
+  }
+
+  &:hover {
+    border: $BORDER_SELECTION_LIGHT;
+    color: $COLOR_FOREGROUND_LIGHT;
   }
 
   &:focus {
-    border: 2px solid $theme-focus;
-  }
-
-  &:default {
-    color: $theme-primary-button-color;
-    border: 1px solid $theme-primary-button-border-color;
-    background-color: $theme-primary-button-background-color;
-
-    &:pressed {
-      &:hover {
-        background-color: saturate(
-          $color:
-            darken($color: $theme-primary-button-background-color, $amount: 10),
-          $amount: 50
-        );
-        border: 2px solid $theme-focus;
-      }
-    }
-
-    &:hover {
-      color: lighten($color: $theme-primary-button-color, $amount: 10);
-      background-color: lighten(
-        $color: $theme-primary-button-background-color,
-        $amount: 5
-      );
-      border-color: lighten(
-        $color: $theme-primary-button-border-color,
-        $amount: 5
-      );
-    }
-
-    &:focus {
-      border: 2px solid $theme-focus;
-    }
+    border: $BORDER_SELECTION_NORMAL;
   }
 }
 
 QComboBox {
-  border-radius: 3px;
-  border: 1px solid $theme-control-border-color;
-  background-color: $theme-control-background-color;
-  padding: 1px 18px 1px 3px;
+  border: $BORDER_NORMAL;
+  border-radius: $SIZE_BORDER_RADIUS;
+  selection-background-color: $COLOR_SELECTION_NORMAL;
+  padding-left: 4px;
+  padding-right: 36px;
+  /* 4 + 16*2 See scrollbar size */
+
+  /* Fixes #103, #111 */
+  min-height: 1.5em;
+
+  /* padding-top: 2px;     removed to fix #132 */
+  /* padding-bottom: 2px;  removed to fix #132 */
+  /* min-width: 75px;      removed to fix #109 */
+
+  QAbstractItemView {
+    border: $BORDER_NORMAL;
+    border-radius: 0;
+    background-color: $COLOR_BACKGROUND_DARK;
+    selection-background-color: $COLOR_SELECTION_NORMAL;
+
+    &:hover {
+      background-color: $COLOR_BACKGROUND_DARK;
+      color: $COLOR_FOREGROUND_LIGHT;
+    }
+
+    &:selected {
+      background: $COLOR_SELECTION_NORMAL;
+      color: $COLOR_BACKGROUND_NORMAL;
+    }
+
+    &:alternate {
+      background: $COLOR_BACKGROUND_DARK;
+    }
+  }
+
+  &:disabled {
+    background-color: $COLOR_BACKGROUND_DARK;
+    color: $COLOR_FOREGROUND_DARK;
+  }
+
+  &:hover {
+    border: $BORDER_SELECTION_LIGHT;
+  }
+
+  &:focus {
+    border: $BORDER_SELECTION_NORMAL;
+  }
+
+  &:on {
+    selection-background-color: $COLOR_SELECTION_NORMAL;
+  }
+
+  /* Needed to remove indicator - fix #132 */
+  &::indicator {
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    selection-background-color: transparent;
+    color: transparent;
+    selection-color: transparent;
+
+    /* Needed to remove indicator - fix #132 */
+    &:alternate {
+      background: $COLOR_BACKGROUND_DARK;
+    }
+  }
+
+  &::item {
+    &:alternate {
+      background: $COLOR_BACKGROUND_DARK;
+    }
+
+    &:checked {
+      font-weight: bold;
+    }
+
+    &:selected {
+      border: 0px solid transparent;
+    }
+  }
 
   &::drop-down {
     subcontrol-origin: padding;
     subcontrol-position: top right;
-    width: 1.25em;
-
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    border-left: 1px solid $theme-control-border-color;
-    background-color: $theme-control-background-color;
-  }
-
-  &:focus {
-    border: 2px solid $theme-focus;
-  }
-}
-
-QSpinBox {
-  border-radius: 3px;
-  border: 1px solid $theme-control-border-color;
-  background-color: $theme-control-background-color;
-  padding: 1px 18px 1px 3px;
-
-  &::up-button {
-    width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
-    border-left: 1px solid $theme-button-border-color;
-    border-bottom: 1px solid $theme-button-border-color;
-    subcontrol-origin: border;
-    subcontrol-position: top right; /* position at the top right corner */
-
-    &:hover {
-      border: 1px solid $theme-focus;
-      border-top-right-radius: 3px;
-    }
-
-    &:pressed {
-      border-image: url(:/images/spinup_pressed.png) 1;
-    }
-  }
-
-  &::up-arrow {
-    image: url(:/svg/caret-up.svg);
     width: 12px;
-    height: 12px;
-
-    &:off,
-    &:disabled {
-      /* off state when value is max */
-    }
-  }
-
-  &::down-button {
-    width: 16px;
-    border-left: 1px solid $theme-button-border-color;
-    subcontrol-origin: border;
-    subcontrol-position: bottom right; /* position at bottom right corner */
-
-    &:pressed {
-      border-image: url(:/images/spindown_pressed.png) 1;
-    }
-
-    &:hover {
-      border-image: url(:/images/spindown_hover.png) 1;
-    }
+    border-left: 1px solid $COLOR_BACKGROUND_NORMAL;
   }
 
   &::down-arrow {
     image: url(:/svg/caret-down.svg);
+    height: 8px;
+    width: 8px;
+
+    &:on,
+    &:hover,
+    &:focus {
+      image: url(:/svg/caret-down.svg);
+    }
+  }
+}
+
+QAbstractSpinBox {
+  color: $COLOR_FOREGROUND_DARK;
+  background-color: $COLOR_BACKGROUND_LIGHT;
+  border: $BORDER_NORMAL;
+
+  /* This fixes 103, 111 */
+  padding-top: 2px;
+
+  /* This fixes 103, 111 */
+  padding-bottom: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: $SIZE_BORDER_RADIUS;
+  /* min-width: 5px; removed to fix 109 */
+
+  &:up-button {
+    background-color: transparent $COLOR_BACKGROUND_DARK;
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    border-left: $BORDER_NORMAL;
+    border-bottom: $BORDER_NORMAL;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 1px;
     width: 12px;
-    height: 12px;
+    margin-bottom: -1px;
   }
 
-  &::off,
-  &::disabled {
-    /* off state when value in min */
-    image: url(:/images/down_arrow_disabled.png);
+  &::up-arrow,
+  &::up-arrow:disabled,
+  &::up-arrow:off {
+    image: url(:/svg/caret-up.svg);
+    height: 8px;
+    width: 8px;
+  }
+
+  &::up-arrow:hover {
+    image: url(:/svg/caret-up.svg);
+  }
+
+  &:down-button {
+    background-color: transparent $COLOR_BACKGROUND_DARK;
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    border-left: $BORDER_NORMAL;
+    border-top: $BORDER_NORMAL;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin: 1px;
+    width: 12px;
+    margin-top: -1px;
+  }
+
+  &::down-arrow,
+  &::down-arrow:disabled,
+  &::down-arrow:off {
+    image: url(:/svg/caret-down.svg);
+    height: 8px;
+    width: 8px;
+  }
+
+  &::down-arrow:hover {
+    image: url(:/svg/caret-down.svg);
+  }
+
+  &:hover {
+    border: $BORDER_SELECTION_LIGHT;
+    color: $COLOR_FOREGROUND_LIGHT;
+  }
+
+  &:focus {
+    border: $BORDER_SELECTION_NORMAL;
+  }
+
+  &:selected {
+    background: $COLOR_SELECTION_NORMAL;
+    color: $COLOR_BACKGROUND_NORMAL;
+  }
+}
+
+QTabWidget {
+  padding: 2px;
+  selection-background-color: $COLOR_BACKGROUND_DARK;
+
+  &::pane {
+    border: $BORDER_NORMAL;
+    border-radius: $SIZE_BORDER_RADIUS;
+    background-color: $COLOR_BACKGROUND_DARK;
+    margin: 0px;
+    /* Fixes double border inside pane with pyqt5 */
+    padding: 0px;
+
+    &:selected {
+      background-color: $COLOR_BACKGROUND_NORMAL;
+      border: 1px solid $COLOR_SELECTION_NORMAL;
+    }
+  }
+}
+
+QTabBar {
+  qproperty-drawbase: 0;
+  border-radius: $SIZE_BORDER_RADIUS;
+  margin: 0px;
+  padding: 2px;
+  border: 0;
+  /* left: 5px; move to the right by 5px - removed for fix */
+}
+
+QTabBar {
+  &::tab {
+      &:top:selected:disabled {
+          border-bottom: 3px solid $COLOR_SELECTION_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+      }
+
+      &:bottom:selected:disabled {
+          border-top: 3px solid $COLOR_SELECTION_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+      }
+
+      &:left:selected:disabled {
+          border-right: 3px solid $COLOR_SELECTION_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+      }
+
+      &:right:selected:disabled {
+          border-left: 3px solid $COLOR_SELECTION_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+      }
+
+      /* !selected and disabled ----------------------------------------- */
+      &:top:!selected:disabled {
+          border-bottom: 3px solid $COLOR_BACKGROUND_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_DARK;
+      }
+
+      &:bottom:!selected:disabled {
+          border-top: 3px solid $COLOR_BACKGROUND_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_DARK;
+      }
+
+      &:left:!selected:disabled {
+          border-right: 3px solid $COLOR_BACKGROUND_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_DARK;
+      }
+
+      &:right:!selected:disabled {
+          border-left: 3px solid $COLOR_BACKGROUND_DARK;
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_DARK;
+      }
+
+      /* selected ------------------------------------------------------- */
+      &:top:!selected {
+          border-bottom: 2px solid $COLOR_BACKGROUND_DARK;
+          margin-top: 2px;
+      }
+
+      &:bottom:!selected {
+          border-top: 2px solid $COLOR_BACKGROUND_DARK;
+          margin-bottom: 3px;
+      }
+
+      &:left:!selected {
+          border-left: 2px solid $COLOR_BACKGROUND_DARK;
+          margin-right: 2px;
+      }
+
+      &:right:!selected {
+          border-right: 2px solid $COLOR_BACKGROUND_DARK;
+          margin-left: 2px;
+      }
+
+      &:top {
+          background-color: $COLOR_BACKGROUND_NORMAL;
+          color: $COLOR_FOREGROUND_LIGHT;
+          margin-left: 2px;
+          padding-left: 4px;
+          padding-right: 4px;
+          padding-top: 2px;
+          padding-bottom: 2px;
+          min-width: 2em;
+          border-bottom: 3px solid $COLOR_BACKGROUND_NORMAL;
+          border-top-left-radius: 3px;
+          border-top-right-radius: 3px;
+
+          &:selected {
+              background-color: $COLOR_BACKGROUND_LIGHT;
+              color: $COLOR_FOREGROUND_LIGHT;
+              border-bottom: 3px solid $COLOR_SELECTION_NORMAL;
+              border-top-left-radius: 3px;
+              border-top-right-radius: 3px;
+          }
+
+          &:!selected:hover {
+              border: $BORDER_SELECTION_LIGHT;
+              border-bottom: 3px solid $COLOR_SELECTION_LIGHT;
+
+              /* Fixes spyder-ide/spyder#9766 */
+              padding-left: 4px;
+              padding-right: 4px;
+          }
+      }
+
+      &:bottom {
+          color: $COLOR_FOREGROUND_LIGHT;
+          border-top: 3px solid $COLOR_BACKGROUND_NORMAL;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+          margin-left: 2px;
+          padding-left: 4px;
+          padding-right: 4px;
+          padding-top: 2px;
+          padding-bottom: 2px;
+          border-bottom-left-radius: 3px;
+          border-bottom-right-radius: 3px;
+          min-width: 1em;
+
+          &:selected {
+              color: $COLOR_FOREGROUND_LIGHT;
+              background-color: $COLOR_BACKGROUND_LIGHT;
+              border-top: 3px solid $COLOR_SELECTION_NORMAL;
+              border-bottom-left-radius: 3px;
+              border-bottom-right-radius: 3px;
+          }
+
+          &:!selected:hover {
+              border: $BORDER_SELECTION_LIGHT;
+              border-top: 3px solid $COLOR_SELECTION_LIGHT;
+
+              /* Fixes spyder-ide/spyder#9766 */
+              padding-left: 4px;
+              padding-right: 4px;
+          }
+
+      }
+
+      &:left {
+          color: $COLOR_FOREGROUND_LIGHT;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+          margin-top: 2px;
+          padding-left: 2px;
+          padding-right: 2px;
+          padding-top: 4px;
+          padding-bottom: 4px;
+          border-top-left-radius: 3px;
+          border-bottom-left-radius: 3px;
+          min-height: 5px;
+
+          &:selected {
+              color: $COLOR_FOREGROUND_LIGHT;
+              background-color: $COLOR_BACKGROUND_LIGHT;
+              border-right: 3px solid $COLOR_SELECTION_NORMAL;
+          }
+
+          &:!selected:hover {
+              border: $BORDER_SELECTION_LIGHT;
+              border-right: 3px solid $COLOR_SELECTION_LIGHT;
+              padding: 0px;
+          }
+      }
+
+      &:right {
+          color: $COLOR_FOREGROUND_LIGHT;
+          background-color: $COLOR_BACKGROUND_NORMAL;
+          margin-top: 2px;
+          padding-left: 2px;
+          padding-right: 2px;
+          padding-top: 4px;
+          padding-bottom: 4px;
+          border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+          min-height: 5px;
+
+          &:selected {
+              color: $COLOR_FOREGROUND_LIGHT;
+              background-color: $COLOR_BACKGROUND_LIGHT;
+              border-left: 3px solid $COLOR_SELECTION_NORMAL;
+
+          }
+
+          &:!selected:hover {
+              border: $BORDER_SELECTION_LIGHT;
+              border-left: 3px solid $COLOR_SELECTION_LIGHT;
+              padding: 0px;
+          }
+      }
+
+    }
+
+  QToolButton {
+      /* Fixes #136 */
+      background-color: $COLOR_BACKGROUND_NORMAL;
+      height: 12px;
+      width: 12px;
+
+      &:pressed {
+          background-color: $COLOR_BACKGROUND_NORMAL;
+
+          &:hover {
+              border: $BORDER_SELECTION_LIGHT;
+          }
+      }
+
+      &::left-arrow {
+          &:enabled {
+              image: url(:/svg/caret-left.svg);
+          }
+
+          &:disabled {
+              image: url(:/svg/caret-left.svg);
+          }
+      }
+
+      &::right-arrow {
+          &:enabled {
+              image: url(:/svg/caret-right.svg);
+          }
+
+          &:disabled {
+              image: url(:/svg/caret-right.svg);
+          }
+      }
   }
 }

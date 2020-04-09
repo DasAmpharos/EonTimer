@@ -39,4 +39,16 @@
     <qresource>
         <file>svg/caret-down.svg</file>
     </qresource>
+    <qresource>
+        <file>svg/caret-left.svg</file>
+    </qresource>
+    <qresource>
+        <file>svg/caret-right.svg</file>
+    </qresource>
+    <qresource>
+        <file>svg/minus.svg</file>
+    </qresource>
+    <qresource>
+        <file>svg/plus.svg</file>
+    </qresource>
 </RCC>
