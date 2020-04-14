@@ -1,43 +1,5 @@
 @import "variables";
 
-$COLOR_FOREGROUND_DARK: black;
-$COLOR_FOREGROUND_NORMAL: lighten(
-  $color: $COLOR_FOREGROUND_DARK,
-  $amount: 5,
-);
-$COLOR_FOREGROUND_LIGHT: lighten(
-  $color: $COLOR_FOREGROUND_DARK,
-  $amount: 10,
-);
-
-$COLOR_BACKGROUND_LIGHT: white;
-$COLOR_BACKGROUND_NORMAL: darken(
-  $color: $COLOR_BACKGROUND_LIGHT,
-  $amount: 5,
-);
-$COLOR_BACKGROUND_DARK: darken(
-  $color: $COLOR_BACKGROUND_LIGHT,
-  $amount: 10,
-);
-
-$PANEL_BACKGROUND_COLOR: rgba(255, 255, 255, 0.5);
-$PANEL_BORDER_COLOR: white;
-
-$COLOR_SELECTION_DARK: #14506e;
-$COLOR_SELECTION_NORMAL: #1464a0;
-$COLOR_SELECTION_LIGHT: #148cd2;
-
-$OPACITY_TOOLTIP: 230;
-$SIZE_BORDER_RADIUS: 4px;
-
-$BORDER_LIGHT: 1px solid darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 10);
-$BORDER_NORMAL: 1px solid darken($color: $COLOR_BACKGROUND_NORMAL, $amount: 10);
-$BORDER_DARK: 1px solid darken($color: $COLOR_BACKGROUND_DARK, $amount: 10);
-
-$BORDER_SELECTION_LIGHT: 1px solid $COLOR_SELECTION_LIGHT;
-$BORDER_SELECTION_NORMAL: 1px solid $COLOR_SELECTION_NORMAL;
-$BORDER_SELECTION_DARK: 1px solid $COLOR_SELECTION_DARK;
-
 .themeable-panel,
 QTabWidget.themeable-panel::pane {
   background-color: $PANEL_BACKGROUND_COLOR;
@@ -61,54 +23,53 @@ QLabel {
   color: $COLOR_FOREGROUND_DARK;
 
   &:disabled {
-    color: $COLOR_FOREGROUND_LIGHT;
+    color: $COLOR_FOREGROUND_DARK_DISABLED;
   }
 }
 
 QPushButton {
+  padding: 3px;
+  min-width: 80px;
+  color: $COLOR_FOREGROUND_LIGHT;
   background-color: $COLOR_BACKGROUND_LIGHT;
   border: $BORDER_NORMAL;
-  color: $COLOR_FOREGROUND_LIGHT;
   border-radius: $SIZE_BORDER_RADIUS;
-  padding: 3px;
   outline: none;
-  /* Issue #194 - Special case of QPushButton inside dialogs, for better UI */
-  min-width: 80px;
 
   &:disabled {
-    background-color: $COLOR_BACKGROUND_NORMAL;
-    border: $BORDER_NORMAL;
-    color: $COLOR_FOREGROUND_DARK;
-    border-radius: $SIZE_BORDER_RADIUS;
     padding: 3px;
+    color: $COLOR_FOREGROUND_DARK_DISABLED;
+    background-color: $COLOR_BACKGROUND_LIGHT_DISABLED;
+    border: $BORDER_NORMAL;
+    border-radius: $SIZE_BORDER_RADIUS;
   }
 
   &:checked {
+    padding: 3px;
     background-color: $COLOR_BACKGROUND_NORMAL;
     border: $BORDER_NORMAL;
     border-radius: $SIZE_BORDER_RADIUS;
-    padding: 3px;
     outline: none;
 
     &:disabled {
+      padding: 3px;
+      color: $COLOR_FOREGROUND_DARK;
       background-color: $COLOR_BACKGROUND_DARK;
       border: $BORDER_NORMAL;
-      color: $COLOR_FOREGROUND_DARK;
       border-radius: $SIZE_BORDER_RADIUS;
-      padding: 3px;
       outline: none;
     }
 
     &:selected {
-      background: $COLOR_SELECTION_NORMAL;
       color: $COLOR_BACKGROUND_NORMAL;
+      background: $BORDER_SELECTION_COLOR_NORMAL;
     }
   }
 
   &::menu-indicator {
+    bottom: 4px;
     subcontrol-origin: padding;
     subcontrol-position: bottom right;
-    bottom: 4px;
   }
 
   &:pressed {
@@ -121,18 +82,18 @@ QPushButton {
   }
 
   &:hover {
-    border: $BORDER_SELECTION_LIGHT;
     color: $COLOR_FOREGROUND_LIGHT;
+    border: $BORDER_SELECTION_LIGHT;
   }
 
   &:selected {
-    background: $COLOR_SELECTION_NORMAL;
     color: $COLOR_BACKGROUND_NORMAL;
+    background: $BORDER_SELECTION_COLOR_NORMAL;
   }
 
   &:hover {
-    border: $BORDER_SELECTION_LIGHT;
     color: $COLOR_FOREGROUND_LIGHT;
+    border: $BORDER_SELECTION_LIGHT;
   }
 
   &:focus {
@@ -141,44 +102,28 @@ QPushButton {
 }
 
 QComboBox {
-  border: $BORDER_NORMAL;
-  border-radius: $SIZE_BORDER_RADIUS;
-  selection-background-color: $COLOR_SELECTION_NORMAL;
   padding-left: 4px;
   padding-right: 36px;
-  /* 4 + 16*2 See scrollbar size */
-
-  /* Fixes #103, #111 */
   min-height: 1.5em;
-
-  /* padding-top: 2px;     removed to fix #132 */
-  /* padding-bottom: 2px;  removed to fix #132 */
-  /* min-width: 75px;      removed to fix #109 */
+  border: $BORDER_NORMAL;
+  border-radius: $SIZE_BORDER_RADIUS;
+  selection-background-color: $BORDER_SELECTION_COLOR_NORMAL;
 
   QAbstractItemView {
-    border: $BORDER_NORMAL;
-    border-radius: 0;
-    background-color: $COLOR_BACKGROUND_DARK;
-    selection-background-color: $COLOR_SELECTION_NORMAL;
-
-    &:hover {
-      background-color: $COLOR_BACKGROUND_DARK;
-      color: $COLOR_FOREGROUND_LIGHT;
-    }
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: $SIZE_BORDER_RADIUS;
 
     &:selected {
-      background: $COLOR_SELECTION_NORMAL;
       color: $COLOR_BACKGROUND_NORMAL;
-    }
-
-    &:alternate {
-      background: $COLOR_BACKGROUND_DARK;
+      background: $BORDER_SELECTION_COLOR_NORMAL;
     }
   }
 
   &:disabled {
-    background-color: $COLOR_BACKGROUND_DARK;
-    color: $COLOR_FOREGROUND_DARK;
+    color: $COLOR_FOREGROUND_DARK_DISABLED;
+    background-color: $COLOR_BACKGROUND_LIGHT_DISABLED;
+    border: $BORDER_NORMAL_DISABLED;
   }
 
   &:hover {
@@ -190,126 +135,131 @@ QComboBox {
   }
 
   &:on {
-    selection-background-color: $COLOR_SELECTION_NORMAL;
+    selection-background-color: $BORDER_SELECTION_COLOR_NORMAL;
   }
 
-  /* Needed to remove indicator - fix #132 */
   &::indicator {
-    border: none;
-    border-radius: 0;
+    color: transparent;
     background-color: transparent;
     selection-background-color: transparent;
-    color: transparent;
     selection-color: transparent;
+    border: none;
+    border-radius: 0;
 
-    /* Needed to remove indicator - fix #132 */
     &:alternate {
       background: $COLOR_BACKGROUND_DARK;
     }
   }
 
   &::item {
-    &:alternate {
-      background: $COLOR_BACKGROUND_DARK;
-    }
-
     &:checked {
-      font-weight: bold;
+      color: white;
+      background-color: $BORDER_SELECTION_COLOR_NORMAL;
     }
 
     &:selected {
-      border: 0px solid transparent;
+      border: $BORDER_SELECTION_NORMAL;
     }
   }
 
   &::drop-down {
+    width: 12px;
+    border-left: $BORDER_NORMAL;
     subcontrol-origin: padding;
     subcontrol-position: top right;
-    width: 12px;
-    border-left: 1px solid $COLOR_BACKGROUND_NORMAL;
+
+    &:disabled {
+      border-left: $BORDER_NORMAL_DISABLED;
+    }
   }
 
   &::down-arrow {
-    image: url(:/svg/caret-down.svg);
-    height: 8px;
     width: 8px;
+    height: 8px;
+    image: url(:/svg/caret-down.svg);
 
-    &:on,
-    &:hover,
-    &:focus {
-      image: url(:/svg/caret-down.svg);
+    &:disabled {
+      image: url(:/svg/disabled/caret-down.svg)
     }
   }
 }
 
 QAbstractSpinBox {
+  padding: 2px 4px 2px 4px;
   color: $COLOR_FOREGROUND_DARK;
   background-color: $COLOR_BACKGROUND_LIGHT;
   border: $BORDER_NORMAL;
-
-  /* This fixes 103, 111 */
-  padding-top: 2px;
-
-  /* This fixes 103, 111 */
-  padding-bottom: 2px;
-  padding-left: 4px;
-  padding-right: 4px;
   border-radius: $SIZE_BORDER_RADIUS;
-  /* min-width: 5px; removed to fix 109 */
+
+  &:disabled {
+    color: $COLOR_FOREGROUND_DARK_DISABLED;
+    background-color: $COLOR_BACKGROUND_LIGHT_DISABLED;
+    border: $BORDER_NORMAL_DISABLED;
+  }
 
   &:up-button {
+    margin: 1px;
+    margin-bottom: -1px;
+    width: 12px;
     background-color: transparent $COLOR_BACKGROUND_DARK;
-    subcontrol-origin: border;
-    subcontrol-position: top right;
     border-left: $BORDER_NORMAL;
     border-bottom: $BORDER_NORMAL;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    margin: 1px;
-    width: 12px;
-    margin-bottom: -1px;
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+
+    &:disabled {
+      border-left: $BORDER_NORMAL_DISABLED;
+      border-bottom: $BORDER_NORMAL_DISABLED;
+    }
   }
 
   &::up-arrow,
-  &::up-arrow:disabled,
+  &::up-arrow:hover,
   &::up-arrow:off {
-    image: url(:/svg/caret-up.svg);
-    height: 8px;
     width: 8px;
+    height: 8px;
+    image: url(:/svg/caret-up.svg);
   }
 
-  &::up-arrow:hover {
-    image: url(:/svg/caret-up.svg);
+  &::up-arrow:disabled {
+    image: url(:/svg/disabled/caret-up.svg);
   }
 
   &:down-button {
+    width: 12px;
+    margin: 1px;
+    margin-top: -1px;
     background-color: transparent $COLOR_BACKGROUND_DARK;
-    subcontrol-origin: border;
-    subcontrol-position: bottom right;
     border-left: $BORDER_NORMAL;
     border-top: $BORDER_NORMAL;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    margin: 1px;
-    width: 12px;
-    margin-top: -1px;
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+
+    &:disabled {
+      border-left: $BORDER_NORMAL_DISABLED;
+      border-top: $BORDER_NORMAL_DISABLED;
+    }
   }
 
   &::down-arrow,
-  &::down-arrow:disabled,
+  &::down-arrow:hover,
   &::down-arrow:off {
-    image: url(:/svg/caret-down.svg);
-    height: 8px;
     width: 8px;
+    height: 8px;
+    image: url(:/svg/caret-down.svg);
   }
 
-  &::down-arrow:hover {
-    image: url(:/svg/caret-down.svg);
+  &::down-arrow:disabled {
+    image: url(:/svg/disabled/caret-down.svg);
   }
 
   &:hover {
-    border: $BORDER_SELECTION_LIGHT;
     color: $COLOR_FOREGROUND_LIGHT;
+    border: $BORDER_SELECTION_LIGHT;
   }
 
   &:focus {
@@ -317,8 +267,8 @@ QAbstractSpinBox {
   }
 
   &:selected {
-    background: $COLOR_SELECTION_NORMAL;
     color: $COLOR_BACKGROUND_NORMAL;
+    background: $BORDER_SELECTION_COLOR_NORMAL;
   }
 }
 
@@ -327,249 +277,76 @@ QTabWidget {
   selection-background-color: $COLOR_BACKGROUND_DARK;
 
   &::pane {
+    margin: 0;
+    padding: 0;
+    background-color: $COLOR_BACKGROUND_DARK;
     border: $BORDER_NORMAL;
     border-radius: $SIZE_BORDER_RADIUS;
-    background-color: $COLOR_BACKGROUND_DARK;
-    margin: 0px;
-    /* Fixes double border inside pane with pyqt5 */
-    padding: 0px;
 
     &:selected {
       background-color: $COLOR_BACKGROUND_NORMAL;
-      border: 1px solid $COLOR_SELECTION_NORMAL;
+      border: $BORDER_SELECTION_NORMAL;
     }
+  }
+
+  &::tab-bar {
+    left: 5px;
   }
 }
 
 QTabBar {
-  qproperty-drawbase: 0;
-  border-radius: $SIZE_BORDER_RADIUS;
-  margin: 0px;
+  margin: 0;
   padding: 2px;
-  border: 0;
-  /* left: 5px; move to the right by 5px - removed for fix */
+  border: none;
+  border-radius: $SIZE_BORDER_RADIUS;
 }
 
 QTabBar {
   &::tab {
-      &:top:selected:disabled {
-          border-bottom: 3px solid $COLOR_SELECTION_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-      }
-
-      &:bottom:selected:disabled {
-          border-top: 3px solid $COLOR_SELECTION_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-      }
-
-      &:left:selected:disabled {
-          border-right: 3px solid $COLOR_SELECTION_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-      }
-
-      &:right:selected:disabled {
-          border-left: 3px solid $COLOR_SELECTION_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-      }
-
-      /* !selected and disabled ----------------------------------------- */
-      &:top:!selected:disabled {
-          border-bottom: 3px solid $COLOR_BACKGROUND_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_DARK;
-      }
-
-      &:bottom:!selected:disabled {
-          border-top: 3px solid $COLOR_BACKGROUND_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_DARK;
-      }
-
-      &:left:!selected:disabled {
-          border-right: 3px solid $COLOR_BACKGROUND_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_DARK;
-      }
-
-      &:right:!selected:disabled {
-          border-left: 3px solid $COLOR_BACKGROUND_DARK;
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_DARK;
-      }
-
-      /* selected ------------------------------------------------------- */
-      &:top:!selected {
-          border-bottom: 2px solid $COLOR_BACKGROUND_DARK;
-          margin-top: 2px;
-      }
-
-      &:bottom:!selected {
-          border-top: 2px solid $COLOR_BACKGROUND_DARK;
-          margin-bottom: 3px;
-      }
-
-      &:left:!selected {
-          border-left: 2px solid $COLOR_BACKGROUND_DARK;
-          margin-right: 2px;
-      }
-
-      &:right:!selected {
-          border-right: 2px solid $COLOR_BACKGROUND_DARK;
-          margin-left: 2px;
-      }
-
-      &:top {
-          background-color: $COLOR_BACKGROUND_NORMAL;
-          color: $COLOR_FOREGROUND_LIGHT;
-          margin-left: 2px;
-          padding-left: 4px;
-          padding-right: 4px;
-          padding-top: 2px;
-          padding-bottom: 2px;
-          min-width: 2em;
-          border-bottom: 3px solid $COLOR_BACKGROUND_NORMAL;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
-
-          &:selected {
-              background-color: $COLOR_BACKGROUND_LIGHT;
-              color: $COLOR_FOREGROUND_LIGHT;
-              border-bottom: 3px solid $COLOR_SELECTION_NORMAL;
-              border-top-left-radius: 3px;
-              border-top-right-radius: 3px;
-          }
-
-          &:!selected:hover {
-              border: $BORDER_SELECTION_LIGHT;
-              border-bottom: 3px solid $COLOR_SELECTION_LIGHT;
-
-              /* Fixes spyder-ide/spyder#9766 */
-              padding-left: 4px;
-              padding-right: 4px;
-          }
-      }
-
-      &:bottom {
-          color: $COLOR_FOREGROUND_LIGHT;
-          border-top: 3px solid $COLOR_BACKGROUND_NORMAL;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-          margin-left: 2px;
-          padding-left: 4px;
-          padding-right: 4px;
-          padding-top: 2px;
-          padding-bottom: 2px;
-          border-bottom-left-radius: 3px;
-          border-bottom-right-radius: 3px;
-          min-width: 1em;
-
-          &:selected {
-              color: $COLOR_FOREGROUND_LIGHT;
-              background-color: $COLOR_BACKGROUND_LIGHT;
-              border-top: 3px solid $COLOR_SELECTION_NORMAL;
-              border-bottom-left-radius: 3px;
-              border-bottom-right-radius: 3px;
-          }
-
-          &:!selected:hover {
-              border: $BORDER_SELECTION_LIGHT;
-              border-top: 3px solid $COLOR_SELECTION_LIGHT;
-
-              /* Fixes spyder-ide/spyder#9766 */
-              padding-left: 4px;
-              padding-right: 4px;
-          }
-
-      }
-
-      &:left {
-          color: $COLOR_FOREGROUND_LIGHT;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-          margin-top: 2px;
-          padding-left: 2px;
-          padding-right: 2px;
-          padding-top: 4px;
-          padding-bottom: 4px;
-          border-top-left-radius: 3px;
-          border-bottom-left-radius: 3px;
-          min-height: 5px;
-
-          &:selected {
-              color: $COLOR_FOREGROUND_LIGHT;
-              background-color: $COLOR_BACKGROUND_LIGHT;
-              border-right: 3px solid $COLOR_SELECTION_NORMAL;
-          }
-
-          &:!selected:hover {
-              border: $BORDER_SELECTION_LIGHT;
-              border-right: 3px solid $COLOR_SELECTION_LIGHT;
-              padding: 0px;
-          }
-      }
-
-      &:right {
-          color: $COLOR_FOREGROUND_LIGHT;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-          margin-top: 2px;
-          padding-left: 2px;
-          padding-right: 2px;
-          padding-top: 4px;
-          padding-bottom: 4px;
-          border-top-right-radius: 3px;
-          border-bottom-right-radius: 3px;
-          min-height: 5px;
-
-          &:selected {
-              color: $COLOR_FOREGROUND_LIGHT;
-              background-color: $COLOR_BACKGROUND_LIGHT;
-              border-left: 3px solid $COLOR_SELECTION_NORMAL;
-
-          }
-
-          &:!selected:hover {
-              border: $BORDER_SELECTION_LIGHT;
-              border-left: 3px solid $COLOR_SELECTION_LIGHT;
-              padding: 0px;
-          }
-      }
-
-    }
-
-  QToolButton {
-      /* Fixes #136 */
+    &:top {
+      min-width: 2.5em;
+      margin-left: 2px;
+      padding: 2px 4px 2px 4px;
+      color: $COLOR_FOREGROUND_LIGHT;
       background-color: $COLOR_BACKGROUND_NORMAL;
-      height: 12px;
-      width: 12px;
+      border-bottom: 3px solid $COLOR_BACKGROUND_NORMAL;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
 
-      &:pressed {
+      &:selected {
+        color: $COLOR_FOREGROUND_LIGHT;
+        background-color: $COLOR_BACKGROUND_LIGHT;
+        border-bottom: 3px solid $BORDER_SELECTION_COLOR_NORMAL;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+
+        &:disabled {
+          color: $COLOR_FOREGROUND_DARK;
           background-color: $COLOR_BACKGROUND_NORMAL;
-
-          &:hover {
-              border: $BORDER_SELECTION_LIGHT;
-          }
+          border-bottom: 3px solid $BORDER_SELECTION_COLOR_DARK;
+        }
       }
 
-      &::left-arrow {
-          &:enabled {
-              image: url(:/svg/caret-left.svg);
-          }
+      &:!selected {
+        margin-top: 2px;
+        border-top: 1px solid $COLOR_BACKGROUND_DARK;
+        border-left: 1px solid $COLOR_BACKGROUND_DARK;
+        border-right: 1px solid $COLOR_BACKGROUND_DARK;
+        border-bottom: 2px solid $COLOR_BACKGROUND_DARK;
 
-          &:disabled {
-              image: url(:/svg/caret-left.svg);
-          }
+        &:disabled {
+          color: $COLOR_FOREGROUND_DARK;
+          background-color: $COLOR_BACKGROUND_DARK;
+          border-bottom: 3px solid $COLOR_BACKGROUND_DARK;
+        }
+
+        &:hover {
+          padding-left: 4px;
+          padding-right: 4px;
+          border: $BORDER_SELECTION_LIGHT;
+          border-bottom: 3px solid $BORDER_SELECTION_COLOR_LIGHT;
+        }
       }
-
-      &::right-arrow {
-          &:enabled {
-              image: url(:/svg/caret-right.svg);
-          }
-
-          &:disabled {
-              image: url(:/svg/caret-right.svg);
-          }
-      }
+    }
   }
 }

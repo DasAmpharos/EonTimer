@@ -90,6 +90,11 @@ namespace gui::timer {
                             model->setCalibration(calibration);
                             emit timerChanged(createStages());
                         });
+                connect(model,
+                        &model::timer::Gen5TimerModel::calibrationChanged,
+                        [calibration](const int value) {
+                            calibration->field->setValue(value);
+                        });
                 util::addFieldSet(form, *calibration);
             }
             // ----- targetDelay -----
@@ -108,6 +113,11 @@ namespace gui::timer {
                          targetDelay](const model::Gen5TimerMode mode) {
                             setVisible(form, *targetDelay,
                                        mode != model::Gen5TimerMode::STANDARD);
+                        });
+                connect(model,
+                        &model::timer::Gen5TimerModel::calibrationChanged,
+                        [targetDelay](const int value) {
+                            targetDelay->field->setValue(value);
                         });
                 util::addFieldSet(form, *targetDelay);
             }

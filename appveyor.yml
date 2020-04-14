@@ -20,6 +20,8 @@ install:
 before_build:
   - cmd: set PATH=%QT_PATH%\bin;C:\Qt\Tools\QtCreator\bin;%PATH%
   - cmd: call C:\"Program Files (x86)\Microsoft Visual Studio"\2019\Community\VC\Auxiliary\Build\vcvarsall.bat %ARCH%
+  - cmd: .ci/before_build.bat
+  - sh: .ci/before_build.sh
 
 build_script:
   - cmd: .ci/build.bat

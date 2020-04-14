@@ -25,30 +25,15 @@
         <file>styles/main.css</file>
     </qresource>
     <qresource>
-        <file>styles/platform/linux.css</file>
-    </qresource>
-    <qresource>
-        <file>styles/platform/macos.css</file>
-    </qresource>
-    <qresource>
-        <file>styles/platform/windows.css</file>
+        <file>svg/caret-down.svg</file>
     </qresource>
     <qresource>
         <file>svg/caret-up.svg</file>
     </qresource>
     <qresource>
-        <file>svg/caret-down.svg</file>
+        <file>svg/disabled/caret-down.svg</file>
     </qresource>
     <qresource>
-        <file>svg/caret-left.svg</file>
-    </qresource>
-    <qresource>
-        <file>svg/caret-right.svg</file>
-    </qresource>
-    <qresource>
-        <file>svg/minus.svg</file>
-    </qresource>
-    <qresource>
-        <file>svg/plus.svg</file>
+        <file>svg/disabled/caret-up.svg</file>
     </qresource>
 </RCC>
