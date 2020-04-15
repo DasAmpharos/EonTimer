@@ -1,18 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
     <qresource>
-        <file>css/main.css</file>
-    </qresource>
-    <qresource>
-        <file>css/linux.css</file>
-    </qresource>
-    <qresource>
-        <file>css/macos.css</file>
-    </qresource>
-    <qresource>
-        <file>css/windows.css</file>
-    </qresource>
-    <qresource>
         <file>fonts/FontAwesome.ttf</file>
     </qresource>
     <qresource>
@@ -32,5 +20,20 @@
     </qresource>
     <qresource>
         <file>sounds/tick.wav</file>
+    </qresource>
+    <qresource>
+        <file>styles/main.css</file>
+    </qresource>
+    <qresource>
+        <file>svg/caret-down.svg</file>
+    </qresource>
+    <qresource>
+        <file>svg/caret-up.svg</file>
+    </qresource>
+    <qresource>
+        <file>svg/disabled/caret-down.svg</file>
+    </qresource>
+    <qresource>
+        <file>svg/disabled/caret-up.svg</file>
     </qresource>
 </RCC>

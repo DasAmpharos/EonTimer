@@ -53,14 +53,14 @@ namespace gui {
         setFixedSize(525, 395);
 
         QString stylesheet;
-        addStylesheet(stylesheet, ":/css/main.css");
-#if defined(__APPLE__)
-        addStylesheet(stylesheet, ":/css/macos.css");
-#elif defined(__linux__)
-        addStylesheet(stylesheet, ":/css/linux.css");
-#elif defined(_WIN32)
-        addStylesheet(stylesheet, ":/css/windows.css");
-#endif
+        addStylesheet(stylesheet, ":/styles/main.css");
+// #if defined(__linux__)
+//         addStylesheet(stylesheet, ":/styles/platform/linux.css");
+// #elif defined(__APPLE__)
+//         addStylesheet(stylesheet, ":/styles/platform/macos.css");
+// #elif defined(_WIN32)
+//         addStylesheet(stylesheet, ":/styles/platform/windows.css");
+// #endif
         setStyleSheet(stylesheet);
 
         // background image

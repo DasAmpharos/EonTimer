@@ -55,7 +55,7 @@ namespace gui::timer {
         // ----- timer fields -----
         {
             auto *scrollPane = new QWidget();
-            scrollPane->setProperty("class", "bg-transparent-white");
+            scrollPane->setProperty("class", "themeable-panel");
             scrollPane->setSizePolicy(QSizePolicy::Expanding,
                                       QSizePolicy::Expanding);
             auto *scrollPaneLayout = new QVBoxLayout(scrollPane);
@@ -63,7 +63,8 @@ namespace gui::timer {
             scrollPaneLayout->setSpacing(10);
             auto *scrollArea = new QScrollArea();
             scrollArea->setFrameShape(QFrame::NoFrame);
-            scrollArea->setProperty("class", "themeable");
+            scrollArea->setProperty("class",
+                                    "themeable-panel themeable-border");
             scrollArea->setVerticalScrollBarPolicy(
                 Qt::ScrollBarPolicy::ScrollBarAsNeeded);
             scrollArea->setHorizontalScrollBarPolicy(
@@ -89,6 +90,11 @@ namespace gui::timer {
                             model->setCalibration(calibration);
                             emit timerChanged(createStages());
                         });
+                connect(model,
+                        &model::timer::Gen5TimerModel::calibrationChanged,
+                        [calibration](const int value) {
+                            calibration->field->setValue(value);
+                        });
                 util::addFieldSet(form, *calibration);
             }
             // ----- targetDelay -----
@@ -107,6 +113,11 @@ namespace gui::timer {
                          targetDelay](const model::Gen5TimerMode mode) {
                             setVisible(form, *targetDelay,
                                        mode != model::Gen5TimerMode::STANDARD);
+                        });
+                connect(model,
+                        &model::timer::Gen5TimerModel::calibrationChanged,
+                        [targetDelay](const int value) {
+                            targetDelay->field->setValue(value);
                         });
                 util::addFieldSet(form, *targetDelay);
             }
