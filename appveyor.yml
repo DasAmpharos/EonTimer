@@ -1,15 +1,15 @@
 environment:
   matrix:
-    - OS: win64
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      QT_PATH: C:\Qt\5.14\msvc2017_64
-      ARCH: x64
-    - OS: win32
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      QT_PATH: C:\Qt\5.14\msvc2017
-      ARCH: x86
-    - OS: macOS
-      APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+    # - OS: win64
+    #   APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    #   QT_PATH: C:\Qt\5.14\msvc2017_64
+    #   ARCH: x64
+    # - OS: win32
+    #   APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    #   QT_PATH: C:\Qt\5.14\msvc2017
+    #   ARCH: x86
+    # - OS: macOS
+    #   APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
     - OS: linux
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
 
