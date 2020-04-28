@@ -176,10 +176,10 @@ QComboBox {
   &::down-arrow {
     width: 8px;
     height: 8px;
-    image: url(:/svg/caret-down.svg);
+    image: url(:/png/caret-down.png);
 
     &:disabled {
-      image: url(:/svg/disabled/caret-down.svg)
+      image: url(:/png/disabled/caret-down.png)
     }
   }
 }
@@ -220,11 +220,11 @@ QAbstractSpinBox {
   &::up-arrow:off {
     width: 8px;
     height: 8px;
-    image: url(:/svg/caret-up.svg);
+    image: url(:/png/caret-up.png);
   }
 
   &::up-arrow:disabled {
-    image: url(:/svg/disabled/caret-up.svg);
+    image: url(:/png/disabled/caret-up.png);
   }
 
   &:down-button {
@@ -250,11 +250,11 @@ QAbstractSpinBox {
   &::down-arrow:off {
     width: 8px;
     height: 8px;
-    image: url(:/svg/caret-down.svg);
+    image: url(:/png/caret-down.png);
   }
 
   &::down-arrow:disabled {
-    image: url(:/svg/disabled/caret-down.svg);
+    image: url(:/png/disabled/caret-down.png);
   }
 
   &:hover {

@@ -25,15 +25,15 @@
         <file>styles/main.css</file>
     </qresource>
     <qresource>
-        <file>svg/caret-down.svg</file>
+        <file>png/caret-down.png</file>
     </qresource>
     <qresource>
-        <file>svg/caret-up.svg</file>
+        <file>png/caret-up.png</file>
     </qresource>
     <qresource>
-        <file>svg/disabled/caret-down.svg</file>
+        <file>png/disabled/caret-down.png</file>
     </qresource>
     <qresource>
-        <file>svg/disabled/caret-up.svg</file>
+        <file>png/disabled/caret-up.png</file>
     </qresource>
 </RCC>
