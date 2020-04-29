@@ -17,7 +17,7 @@ namespace gui {
         std::stringstream stream;
         stream << APP_NAME << " " << APP_VERSION;
         std::string title = stream.str();
-        char *buffer = new char[title.capacity()];
+        auto *buffer = new char[title.capacity()];
         strcpy(buffer, title.c_str());
         return buffer;
     }
@@ -54,13 +54,6 @@ namespace gui {
 
         QString stylesheet;
         addStylesheet(stylesheet, ":/styles/main.css");
-// #if defined(__linux__)
-//         addStylesheet(stylesheet, ":/styles/platform/linux.css");
-// #elif defined(__APPLE__)
-//         addStylesheet(stylesheet, ":/styles/platform/macos.css");
-// #elif defined(_WIN32)
-//         addStylesheet(stylesheet, ":/styles/platform/windows.css");
-// #endif
         setStyleSheet(stylesheet);
 
         // background image
