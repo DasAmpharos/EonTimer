@@ -79,6 +79,9 @@ namespace model::timer {
         void targetDelayChanged(int value);
         void targetSecondChanged(int value);
         void targetAdvancesChanged(int value);
+        void delayHitChanged(int value);
+        void secondHitChanged(int value);
+        void advancesHitChanged(int value);
         // @formatter:on
     };
 }  // namespace model::timer

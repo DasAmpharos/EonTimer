@@ -87,6 +87,9 @@ namespace model::timer {
     int Gen4TimerModel::getDelayHit() const { return delayHit; }
 
     void Gen4TimerModel::setDelayHit(int delayHit) {
-        this->delayHit = delayHit;
+        if (this->delayHit != delayHit) {
+            this->delayHit = delayHit;
+            emit delayHitChanged(delayHit);
+        }
     }
 }  // namespace model::timer

@@ -49,6 +49,7 @@ namespace model::timer {
         void calibratedSecondChanged(int calibratedSecond);
         void targetDelayChanged(int targetDelay);
         void targetSecondChanged(int targetSecond);
+        void delayHitChanged(int delayHit);
         // @formatter:on
     };
 }  // namespace model::timer
