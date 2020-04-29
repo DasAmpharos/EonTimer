@@ -1,3 +1,3 @@
 #!/bin/bash
 
-find . -iname "*.h" -o -iname "*.cpp" | xargs clang-format -i
+find $1 -iname "*.h" -o -iname "*.cpp" | xargs clang-format -i
