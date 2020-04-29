@@ -49,66 +49,69 @@ namespace gui::timer {
             formLayout->setSpacing(10);
             // ----- calibration -----
             {
-                auto calibration = util::FieldSet<QSpinBox>(
-                    0, new QLabel("Calibration"), new QSpinBox);
-                calibration.field->setRange(INT_MIN, INT_MAX);
-                calibration.field->setValue(model->getCalibration());
-                calibration.field->setSizePolicy(QSizePolicy::Expanding,
-                                                 QSizePolicy::Fixed);
-                connect(model, SIGNAL(calibrationChanged(int)),
-                        calibration.field, SLOT(setValue(int)));
-                connect(calibration.field, valueChanged,
-                        [this](const int calibration) {
-                            model->setCalibration(calibration);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, calibration);
+                auto *field = new QSpinBox;
+                auto fieldSet = util::FieldSet<QSpinBox>(
+                    0, new QLabel("Calibration"), field);
+                field->setRange(INT_MIN, INT_MAX);
+                field->setValue(model->getCalibration());
+                field->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
+                connect(model, SIGNAL(calibrationChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int calibration) {
+                    model->setCalibration(calibration);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
             // ----- preTimer -----
             {
-                auto preTimer = util::FieldSet<QSpinBox>(
-                    1, new QLabel("Pre-Timer"), new QSpinBox);
-                preTimer.field->setRange(0, INT_MAX);
-                preTimer.field->setValue(model->getPreTimer());
-                connect(model, SIGNAL(preTimerChanged(int)), preTimer.field,
+                auto *field = new QSpinBox;
+                auto fieldSet =
+                    util::FieldSet<QSpinBox>(1, new QLabel("Pre-Timer"), field);
+                field->setRange(0, INT_MAX);
+                field->setValue(model->getPreTimer());
+                connect(model, SIGNAL(preTimerChanged(int)), field,
                         SLOT(setValue(int)));
-                connect(preTimer.field, valueChanged,
-                        [this](const int preTimer) {
-                            model->setPreTimer(preTimer);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, preTimer);
+                connect(field, valueChanged, [this](const int preTimer) {
+                    model->setPreTimer(preTimer);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
             // ----- targetFrame -----
             {
-                auto targetFrame = util::FieldSet<QSpinBox>(
-                    2, new QLabel("Target Frame"), new QSpinBox);
-                targetFrame.field->setRange(0, INT_MAX);
-                targetFrame.field->setValue(model->getTargetFrame());
-                connect(model, SIGNAL(targetFrameChanged(int)),
-                        targetFrame.field, SLOT(setValue(int)));
-                connect(targetFrame.field, valueChanged,
-                        [this](const int targetFrame) {
-                            model->setTargetFrame(targetFrame);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, targetFrame);
+                auto *field = new QSpinBox;
+                auto fieldSet = util::FieldSet<QSpinBox>(
+                    2, new QLabel("Target Frame"), field);
+                field->setRange(0, INT_MAX);
+                field->setValue(model->getTargetFrame());
+                connect(model, SIGNAL(targetFrameChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int targetFrame) {
+                    model->setTargetFrame(targetFrame);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
         }
-        // ----- frameHit -----
+        // ----- calibration fields -----
         {
             auto *form = new QGridLayout();
             rootLayout->addLayout(form);
             form->setSpacing(10);
-
-            auto frameHit = util::FieldSet<QSpinBox>(0, new QLabel("Frame Hit"),
-                                                     new QSpinBox);
-            frameHit.field->setRange(0, INT_MAX);
-            connect(model, SIGNAL(frameHitChanged(int)), frameHit.field,
-                    SLOT(setValue(int)));
-            connect(frameHit.field, valueChanged,
-                    [this](const int value) { model->setFrameHit(value); });
-            util::addFieldSet(form, frameHit);
+            // ----- frameHit -----
+            {
+                auto *field = new QSpinBox;
+                auto fieldSet =
+                    util::FieldSet<QSpinBox>(0, new QLabel("Frame Hit"), field);
+                field->setRange(0, INT_MAX);
+                connect(model, SIGNAL(frameHitChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged,
+                        [this](const int value) { model->setFrameHit(value); });
+                util::addFieldSet(form, fieldSet);
+            }
         }
     }
 

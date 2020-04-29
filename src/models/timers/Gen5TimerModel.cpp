@@ -141,18 +141,27 @@ namespace model::timer {
     int Gen5TimerModel::getDelayHit() const { return delayHit; }
 
     void Gen5TimerModel::setDelayHit(const int delayHit) {
-        this->delayHit = delayHit;
+        if (this->delayHit != delayHit) {
+            this->delayHit = delayHit;
+            emit delayHitChanged(delayHit);
+        }
     }
 
     int Gen5TimerModel::getSecondHit() const { return secondHit; }
 
     void Gen5TimerModel::setSecondHit(const int secondHit) {
-        this->secondHit = secondHit;
+        if (this->secondHit != secondHit) {
+            this->secondHit = secondHit;
+            emit secondHitChanged(secondHit);
+        }
     }
 
     int Gen5TimerModel::getAdvancesHit() const { return advancesHit; }
 
     void Gen5TimerModel::setAdvancesHit(const int advancesHit) {
-        this->advancesHit = advancesHit;
+        if (this->advancesHit != advancesHit) {
+            this->advancesHit = advancesHit;
+            emit advancesHitChanged(advancesHit);
+        }
     }
 }  // namespace model::timer

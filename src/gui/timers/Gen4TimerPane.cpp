@@ -50,82 +50,92 @@ namespace gui::timer {
             formLayout->setSpacing(10);
             // ----- calibratedDelay -----
             {
-                auto calibratedDelay = util::FieldSet<QSpinBox>(
-                    0, new QLabel("Calibrated Delay"), new QSpinBox);
-                calibratedDelay.field->setRange(INT_MIN, INT_MAX);
-                calibratedDelay.field->setValue(model->getCalibratedDelay());
-                calibratedDelay.field->setSizePolicy(QSizePolicy::Expanding,
-                                                     QSizePolicy::Fixed);
-                connect(calibratedDelay.field, valueChanged,
-                        [this](const int value) {
-                            model->setCalibratedDelay(value);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, calibratedDelay);
+                auto *field = new QSpinBox;
+                auto fieldSet = util::FieldSet<QSpinBox>(
+                    0, new QLabel("Calibrated Delay"), field);
+                field->setRange(INT_MIN, INT_MAX);
+                field->setValue(model->getCalibratedDelay());
+                field->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
+                connect(model, SIGNAL(calibratedDelayChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int value) {
+                    model->setCalibratedDelay(value);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
             // ----- calibratedSecond -----
             {
-                auto calibratedSecond = util::FieldSet<QSpinBox>(
-                    1, new QLabel("Calibrated Second"), new QSpinBox);
-                calibratedSecond.field->setRange(INT_MIN, INT_MAX);
-                calibratedSecond.field->setValue(model->getCalibratedSecond());
-                calibratedSecond.field->setSizePolicy(QSizePolicy::Expanding,
-                                                      QSizePolicy::Fixed);
-                connect(calibratedSecond.field, valueChanged,
-                        [this](const int value) {
-                            model->setCalibratedSecond(value);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, calibratedSecond);
+                auto *field = new QSpinBox;
+                auto fieldSet = util::FieldSet<QSpinBox>(
+                    1, new QLabel("Calibrated Second"), field);
+                field->setRange(INT_MIN, INT_MAX);
+                field->setValue(model->getCalibratedSecond());
+                field->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
+                connect(model, SIGNAL(calibratedSecondChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int value) {
+                    model->setCalibratedSecond(value);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
             // ----- targetDelay -----
             {
-                auto targetDelay = util::FieldSet<QSpinBox>(
-                    2, new QLabel("Target Delay"), new QSpinBox);
-                targetDelay.field->setRange(0, INT_MAX);
-                targetDelay.field->setValue(model->getTargetDelay());
-                targetDelay.field->setSizePolicy(QSizePolicy::Expanding,
-                                                 QSizePolicy::Fixed);
-                connect(model,
-                        &model::timer::Gen4TimerModel::targetDelayChanged,
-                        [targetDelay](const int value) {
-                            targetDelay.field->setValue(value);
-                        });
-                connect(targetDelay.field, valueChanged,
-                        [this](const int value) {
-                            model->setTargetDelay(value);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, targetDelay);
+                auto *field = new QSpinBox;
+                auto fieldSet = util::FieldSet<QSpinBox>(
+                    2, new QLabel("Target Delay"), field);
+                field->setRange(0, INT_MAX);
+                field->setValue(model->getTargetDelay());
+                field->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
+                connect(model, SIGNAL(targetDelayChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int value) {
+                    model->setTargetDelay(value);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
             // ----- targetSecond -----
             {
-                auto targetSecond = util::FieldSet<QSpinBox>(
-                    3, new QLabel("Target Second"), new QSpinBox);
-                targetSecond.field->setRange(0, 59);
-                targetSecond.field->setValue(model->getTargetSecond());
-                targetSecond.field->setSizePolicy(QSizePolicy::Expanding,
-                                                  QSizePolicy::Fixed);
-                connect(targetSecond.field, valueChanged,
-                        [this](const int value) {
-                            model->setTargetSecond(value);
-                            emit timerChanged(createStages());
-                        });
-                util::addFieldSet(formLayout, targetSecond);
+                auto *field = new QSpinBox;
+                auto fieldSet = util::FieldSet<QSpinBox>(
+                    3, new QLabel("Target Second"), field);
+                field->setRange(0, 59);
+                field->setValue(model->getTargetSecond());
+                field->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
+                connect(model, SIGNAL(targetSecondChanged(int)), field,
+                        SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int value) {
+                    model->setTargetSecond(value);
+                    emit timerChanged(createStages());
+                });
+                util::addFieldSet(formLayout, fieldSet);
             }
             rootLayout->addWidget(group);
         }
-        // ----- delayHit -----
+        // ----- calibration fields -----
         {
-            // TODO
-            auto *layout = new QFormLayout();
-            layout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+            auto *layout = new QGridLayout();
             rootLayout->addLayout(layout);
-
-            delayHit = new QSpinBox();
-            delayHit->setRange(0, INT_MAX);
-            delayHit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-            layout->addRow("Delay Hit", delayHit);
+            // ----- delayHit -----
+            {
+                auto *field = new QSpinBox;
+                auto fieldSet =
+                    util::FieldSet<QSpinBox>(0, new QLabel("Delay Hit"), field);
+                field->setRange(0, INT_MAX);
+                field->setSizePolicy(QSizePolicy::Expanding,
+                                     QSizePolicy::Fixed);
+                connect(field, valueChanged,
+                        [this](const int value) { model->setDelayHit(value); });
+                connect(model, SIGNAL(delayHitChanged(int)), field,
+                        SLOT(setValue(int)));
+                util::addFieldSet(layout, fieldSet);
+            }
         }
         createStages();
     }
@@ -134,8 +144,8 @@ namespace gui::timer {
         model->setCalibratedDelay(
             model->getCalibratedDelay() +
             calibrationService->toDelays(delayTimer->calibrate(
-                model->getTargetDelay(), delayHit->value())));
-        delayHit->setValue(0);
+                model->getTargetDelay(), model->getDelayHit())));
+        model->setDelayHit(0);
     }
 
     std::shared_ptr<std::vector<int>> Gen4TimerPane::createStages() {

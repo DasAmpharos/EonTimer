@@ -19,7 +19,6 @@ namespace gui::timer {
         model::timer::Gen4TimerModel *model;
         const service::timer::DelayTimer *delayTimer;
         const service::CalibrationService *calibrationService;
-        QSpinBox *delayHit;
 
     public:
         Gen4TimerPane(model::timer::Gen4TimerModel *model,
