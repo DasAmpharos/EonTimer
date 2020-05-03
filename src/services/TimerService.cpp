@@ -1,14 +1,18 @@
-#include <utility>
-
 //
 // Created by Dylan Meadows on 2020-03-10.
 //
 
+#include "TimerService.h"
+
+#include <util/Clock.h>
+#include <util/Functions.h>
+
 #include <QThreadPool>
+#include <iostream>
 #include <stack>
+#include <utility>
 
 #include "SoundService.h"
-#include "TimerService.h"
 
 using namespace std::literals::chrono_literals;
 
@@ -74,58 +78,63 @@ namespace service {
     }
 
     void TimerService::run() {
-        auto preElapsed = 0ms;
+        auto preElapsed = 0us;
         uint8_t stageIndex = 0;
         while (running && stageIndex < stages->size()) {
             auto currentStage =
-                std::chrono::milliseconds((*stages)[stageIndex]);
-            preElapsed = runStage(stageIndex, preElapsed) - currentStage;
+                std::chrono::duration_cast<std::chrono::microseconds>(
+                    std::chrono::milliseconds((*stages)[stageIndex]));
+            preElapsed = runStage(currentStage, preElapsed) - currentStage;
             stageIndex++;
         }
+
         running = false;
         emit activated(false);
         reset();
     }
 
-    std::chrono::milliseconds TimerService::runStage(
-        const uint8_t stageIndex, const std::chrono::milliseconds preElapsed) {
-        const auto period = timerSettings->getRefreshInterval();
-        const auto currentStage =
-            std::chrono::milliseconds((*stages)[stageIndex]);
+    std::chrono::microseconds TimerService::runStage(
+        const std::chrono::microseconds stage,
+        const std::chrono::microseconds preElapsed) {
+        util::Clock clock;
+        const auto period =
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                timerSettings->getRefreshInterval());
 
-        std::stack<std::chrono::milliseconds> actionStack;
+        std::stack<std::chrono::microseconds> actionStack;
         const auto actionInterval = actionSettings->getInterval();
         for (uint i = 0; i < actionSettings->getCount(); i++) {
-            actionStack.push(actionInterval * i);
+            actionStack.push(
+                std::chrono::duration_cast<std::chrono::microseconds>(
+                    actionInterval * i));
         }
 
         auto ticks = 0;
         auto elapsed = preElapsed;
         auto adjustedPeriod = period;
-        auto lastTimestamp = std::chrono::high_resolution_clock::now();
-        while (running && elapsed < currentStage) {
-            const auto nextAction = actionStack.top();
-            const auto remainingUntilAction =
-                currentStage - elapsed - nextAction;
+        auto nextAction = actionStack.top();
+        while (running && elapsed < stage) {
+            const auto remainingUntilAction = stage - elapsed - nextAction;
             if (remainingUntilAction < adjustedPeriod)
                 adjustedPeriod = remainingUntilAction;
-            std::this_thread::sleep_for(
-                std::chrono::duration_cast<std::chrono::nanoseconds>(
-                    adjustedPeriod));
+            std::this_thread::sleep_for(adjustedPeriod);
 
-            const auto now = std::chrono::high_resolution_clock::now();
-            const auto delta =
-                std::chrono::duration_cast<std::chrono::milliseconds>(
-                    now - lastTimestamp);
-            const auto remaining = currentStage - elapsed - delta;
+            const auto delta = clock.tick();
+            const auto remaining = stage - elapsed - delta;
             if (remaining <= nextAction) {
                 emit actionTriggered();
                 actionStack.pop();
+                if (!actionStack.empty()) {
+                    nextAction = actionStack.top();
+                }
             }
             if (ticks % 4 == 0)
-                emit stateChanged(model::TimerState(currentStage, remaining));
+                emit stateChanged(model::TimerState(
+                    std::chrono::duration_cast<std::chrono::milliseconds>(
+                        stage),
+                    std::chrono::duration_cast<std::chrono::milliseconds>(
+                        remaining)));
             adjustedPeriod -= delta - period;
-            lastTimestamp = now;
             elapsed += delta;
             ticks++;
         }

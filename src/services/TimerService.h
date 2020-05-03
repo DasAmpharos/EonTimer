@@ -45,8 +45,8 @@ namespace service {
 
         void run();
 
-        std::chrono::milliseconds runStage(uint8_t stageIndex,
-                                           std::chrono::milliseconds elapsed);
+        std::chrono::microseconds runStage(std::chrono::microseconds stage,
+                                           std::chrono::microseconds elapsed);
 
         // @formatter:off
     signals:
