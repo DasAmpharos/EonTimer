@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace model {
-    enum Console { GBA, NDS, DSI, _3DS };
+    enum Console { GBA, NDS, NDS_GBA, DSI, _3DS };
 
     double getFps(Console console);
 
