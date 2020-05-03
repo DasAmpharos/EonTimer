@@ -112,6 +112,7 @@ namespace gui {
                 if (settingsDialog->exec() == QDialog::Accepted) {
                     timerSettings->sync(settings);
                     actionSettings->sync(settings);
+                    updateTimer();
                 }
                 delete settingsDialog;
             });
