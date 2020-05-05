@@ -17,7 +17,7 @@ namespace model::timer {
 
         namespace Defaults {
             const int MODE = 0;
-            const int CALIBRATION = 95;
+            const int CALIBRATION = -95;
             const int FRAME_CALIBRATION = 0;
             const int ENTRALINK_CALIBRATION = 256;
             const int TARGET_DELAY = 1200;
