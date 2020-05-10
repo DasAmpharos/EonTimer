@@ -1,10 +1,14 @@
-# EonTimer
+<div align="center">
+<img src="./docs/icon.svg" width="128"/>
+
+### EonTimer
+A port of the Pokémon RNG Timer originally written by
+[ToastPlusOne](https://bitbucket.org/ToastPlusOne/eontimer/downloads/).
+
 ![version](https://img.shields.io/badge/EonTimer-v2.0.1-blue.svg)
 [![Build status](https://ci.appveyor.com/api/projects/status/ln2fbgp58lpu56ht/branch/master?svg=true)](https://ci.appveyor.com/project/dylmeadows/eontimer/branch/master)
 
-
-A port of the Pokémon RNG Timer originally written by
-[ToastPlusOne](https://bitbucket.org/ToastPlusOne/eontimer/downloads/).
+</div>
 
 ## Releases
 The latest release can be downloaded under the [releases](https://github.com/dylmeadows/EonTimer/releases) section of the EonTimer repository.
