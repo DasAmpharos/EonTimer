@@ -6,11 +6,14 @@
 
 #include <QFontDatabase>
 #include <QGroupBox>
+#include <QStyle>
 #include <QVBoxLayout>
 
 namespace gui {
-    TimerDisplayPane::TimerDisplayPane(service::TimerService *timerService)
-        : QGroupBox(nullptr) {
+    TimerDisplayPane::TimerDisplayPane(
+        service::TimerService *timerService,
+        const model::settings::ActionSettingsModel *actionSettings)
+        : QGroupBox(nullptr), actionSettings(actionSettings) {
         currentStage = new QLabel("0:000");
         connect(timerService, &service::TimerService::stateChanged,
                 [this](const model::TimerState &state) {
@@ -28,6 +31,9 @@ namespace gui {
                 [this](const std::chrono::milliseconds &nextStage) {
                     this->nextStage->setText(formatTime(nextStage));
                 });
+        connect(timerService, &service::TimerService::actionTriggered, this,
+                &TimerDisplayPane::activate);
+        connect(&timer, &QTimer::timeout, this, &TimerDisplayPane::deactivate);
         initComponents();
     }
 
@@ -45,6 +51,7 @@ namespace gui {
                     ":/fonts/RobotoMono-Regular.ttf");
                 const QString family =
                     QFontDatabase::applicationFontFamilies(font)[0];
+                currentStage->setObjectName("currentStageLbl");
                 currentStage->setFont(QFont(family, 36));
             }
             // ----- minutesBeforeTarget -----
@@ -80,4 +87,33 @@ namespace gui {
             return "0:000";
         }
     }
+
+    void TimerDisplayPane::updateCurrentStageLbl() {
+        currentStage->setProperty("active", isActive);
+        QStyle *style = currentStage->style();
+        style->unpolish(currentStage);
+        style->polish(currentStage);
+    }
+
+    bool TimerDisplayPane::isVisualCueEnabled() const {
+        const auto mode = actionSettings->getMode();
+        return mode == model::ActionMode::VISUAL ||
+               mode == model::ActionMode::AV;
+    }
+
+    void TimerDisplayPane::activate() {
+        if (isVisualCueEnabled() && !isActive) {
+            isActive = true;
+            updateCurrentStageLbl();
+            timer.start(75);
+        }
+    }
+
+    void TimerDisplayPane::deactivate() {
+        if (isVisualCueEnabled() && isActive) {
+            isActive = false;
+            updateCurrentStageLbl();
+        }
+    }
+
 }  // namespace gui

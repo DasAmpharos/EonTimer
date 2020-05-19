@@ -7,7 +7,9 @@
 
 #include <models/settings/ActionSettingsModel.h>
 
+#include <QColor>
 #include <QComboBox>
+#include <QPushButton>
 #include <QSpinBox>
 #include <QWidget>
 
@@ -16,9 +18,11 @@ namespace gui::settings {
         Q_OBJECT
     private:
         model::settings::ActionSettingsModel *settings;
+        QComboBox *mode;
         QComboBox *sound;
         QSpinBox *interval;
         QSpinBox *count;
+        QColor color;
 
     public:
         explicit ActionSettingsPane(
@@ -29,6 +33,8 @@ namespace gui::settings {
 
     private:
         void initComponents();
+
+        void setIconColor(QPushButton *btn, const QColor &color);
     };
 }  // namespace gui::settings
 

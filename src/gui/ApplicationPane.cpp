@@ -43,7 +43,7 @@ namespace gui {
         const auto *enhancedEntralinkTimer =
             new service::timer::EnhancedEntralinkTimer(entralinkTimer);
 
-        timerDisplayPane = new TimerDisplayPane(timerService);
+        timerDisplayPane = new TimerDisplayPane(timerService, actionSettings);
         gen5TimerPane = new timer::Gen5TimerPane(
             gen5Timer, delayTimer, secondTimer, entralinkTimer,
             enhancedEntralinkTimer, calibrationService);

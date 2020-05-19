@@ -48,6 +48,8 @@ set(SOURCES
         src/gui/timers/Gen4TimerPane.h
         src/gui/util/FontHelper.cpp
         src/gui/util/FontHelper.h
+        src/models/ActionMode.cpp
+        src/models/ActionMode.h
         src/models/Console.cpp
         src/models/Console.h
         src/models/Sound.cpp
