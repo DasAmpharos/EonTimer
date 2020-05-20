@@ -9,26 +9,22 @@
 #include <QVBoxLayout>
 
 namespace gui::dialog {
-    SettingsDialog::SettingsDialog(
-        model::settings::TimerSettingsModel *timerSettings,
-        model::settings::ActionSettingsModel *actionSettings, QWidget *parent)
-        : QDialog(parent),
-          timerSettings(timerSettings),
-          actionSettings(actionSettings) {
+    SettingsDialog::SettingsDialog(model::settings::TimerSettingsModel *timerSettings,
+                                   model::settings::ActionSettingsModel *actionSettings,
+                                   QWidget *parent)
+        : QDialog(parent), timerSettings(timerSettings), actionSettings(actionSettings) {
         initComponents();
     }
 
     void SettingsDialog::initComponents() {
         setWindowTitle("Preferences");
-        setWindowFlags(Qt::Dialog | Qt::WindowTitleHint |
-                       Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
+        setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
         auto *layout = new QGridLayout(this);
         layout->setVerticalSpacing(10);
         // ----- tabPane -----
         {
             auto *tabPane = new QTabWidget();
-            actionSettingsPane =
-                new settings::ActionSettingsPane(actionSettings);
+            actionSettingsPane = new settings::ActionSettingsPane(actionSettings);
             timerSettingsPane = new settings::TimerSettingsPane(timerSettings);
             tabPane->addTab(actionSettingsPane, "Action");
             tabPane->addTab(timerSettingsPane, "Timer");
@@ -37,8 +33,7 @@ namespace gui::dialog {
         // ----- cancelButton -----
         {
             auto *cancelButton = new QPushButton("Cancel");
-            connect(cancelButton, &QPushButton::clicked,
-                    [this] { done(QDialog::Rejected); });
+            connect(cancelButton, &QPushButton::clicked, [this] { done(QDialog::Rejected); });
             layout->addWidget(cancelButton, 1, 0);
         }
         // ----- okButton -----

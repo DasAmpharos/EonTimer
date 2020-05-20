@@ -25,10 +25,9 @@ namespace service {
         model::settings::ActionSettingsModel *actionSettings;
 
     public:
-        explicit TimerService(
-            model::settings::TimerSettingsModel *timerSettings,
-            model::settings::ActionSettingsModel *actionSettings,
-            QObject *parent = nullptr);
+        explicit TimerService(model::settings::TimerSettingsModel *timerSettings,
+                              model::settings::ActionSettingsModel *actionSettings,
+                              QObject *parent = nullptr);
 
         ~TimerService() override;
 
@@ -45,16 +44,14 @@ namespace service {
 
         void run();
 
-        std::chrono::microseconds runStage(std::chrono::microseconds stage,
-                                           std::chrono::microseconds elapsed);
+        std::chrono::microseconds runStage(std::chrono::microseconds stage, std::chrono::microseconds elapsed);
 
         // @formatter:off
     signals:
         void activated(bool);
         void actionTriggered();
         void stateChanged(const model::TimerState &state);
-        void minutesBeforeTargetChanged(
-            const std::chrono::minutes &minutesBeforeTarget);
+        void minutesBeforeTargetChanged(const std::chrono::minutes &minutesBeforeTarget);
         void nextStageChanged(const std::chrono::milliseconds &nextStage);
         // @formatter:on
     };

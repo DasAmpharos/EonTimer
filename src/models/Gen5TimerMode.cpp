@@ -6,8 +6,7 @@
 
 namespace model {
     const std::vector<Gen5TimerMode> VALUES{
-        Gen5TimerMode::STANDARD, Gen5TimerMode::C_GEAR,
-        Gen5TimerMode::ENTRALINK, Gen5TimerMode::ENTRALINK_PLUS};
+        Gen5TimerMode::STANDARD, Gen5TimerMode::C_GEAR, Gen5TimerMode::ENTRALINK, Gen5TimerMode::ENTRALINK_PLUS};
     namespace names {
         const char *STANDARD = "Standard";
         const char *C_GEAR = "C-Gear";

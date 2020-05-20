@@ -7,8 +7,7 @@
 #include <string>
 
 namespace model {
-    const std::vector<Sound> VALUES{Sound::BEEP, Sound::DING, Sound::TICK,
-                                    Sound::POP};
+    const std::vector<Sound> VALUES{Sound::BEEP, Sound::DING, Sound::TICK, Sound::POP};
     namespace names {
         const char *BEEP = "Beep";
         const char *DING = "Ding";

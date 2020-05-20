@@ -13,8 +13,7 @@ namespace service {
         const model::settings::TimerSettingsModel *timerSettings;
 
     public:
-        explicit CalibrationService(
-            const model::settings::TimerSettingsModel *timerSettings);
+        explicit CalibrationService(const model::settings::TimerSettingsModel *timerSettings);
 
         int toDelays(int milliseconds) const;
 

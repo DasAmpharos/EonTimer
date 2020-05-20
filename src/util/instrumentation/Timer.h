@@ -16,8 +16,7 @@ namespace util::instrumentation {
 
     private:
         const char *operation;
-        std::chrono::time_point<std::chrono::high_resolution_clock>
-            startTimePoint;
+        std::chrono::time_point<std::chrono::high_resolution_clock> startTimePoint;
         bool running;
 
         void stop();

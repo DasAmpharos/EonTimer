@@ -5,8 +5,7 @@
 #include "ActionMode.h"
 
 namespace model {
-    const std::vector<ActionMode> VALUES{ActionMode::AUDIO, ActionMode::VISUAL,
-                                         ActionMode::AV};
+    const std::vector<ActionMode> VALUES{ActionMode::AUDIO, ActionMode::VISUAL, ActionMode::AV};
 
     namespace names {
         const char* AUDIO = "Audio";

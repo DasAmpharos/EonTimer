@@ -28,26 +28,28 @@ namespace gui {
         css.append(file.readAll());
     }
 
-    ApplicationWindow::ApplicationWindow(QWidget *parent)
-        : QMainWindow(parent) {
+    ApplicationWindow::ApplicationWindow(QWidget *parent) : QMainWindow(parent) {
         settings = new QSettings(this);
         actionSettings = new model::settings::ActionSettingsModel(settings);
         timerSettings = new model::settings::TimerSettingsModel(settings);
         gen5Timer = new model::timer::Gen5TimerModel(settings);
         gen4Timer = new model::timer::Gen4TimerModel(settings);
         gen3Timer = new model::timer::Gen3TimerModel(settings);
-        timerService =
-            new service::TimerService(timerSettings, actionSettings, this);
-        applicationPane = new ApplicationPane(
-            settings, actionSettings, timerSettings, gen5Timer, gen4Timer,
-            gen3Timer, timerService, this);
+        timerService = new service::TimerService(timerSettings, actionSettings, this);
+        applicationPane = new ApplicationPane(settings,
+                                              actionSettings,
+                                              timerSettings,
+                                              gen5Timer,
+                                              gen4Timer,
+                                              gen3Timer,
+                                              timerService,
+                                              this);
         initComponents();
     }
 
     void ApplicationWindow::initComponents() {
         setWindowTitle(getTitle());
-        setWindowFlags(Qt::Window | Qt::WindowTitleHint |
-                       Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint |
+        setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint |
                        Qt::WindowMinimizeButtonHint);
         setCentralWidget(applicationPane);
         setFixedSize(525, 395);
@@ -73,14 +75,12 @@ namespace gui {
                 auto *preferences = new QAction();
                 preferences->setMenuRole(QAction::PreferencesRole);
                 connect(preferences, &QAction::triggered, [this] {
-                    auto dialog = gui::dialog::SettingsDialog(
-                        timerSettings, actionSettings, this);
+                    auto dialog = gui::dialog::SettingsDialog(timerSettings, actionSettings, this);
                     dialog.exec();
                 });
-                connect(timerService, &service::TimerService::activated,
-                        [preferences](const bool activated) {
-                            preferences->setEnabled(!activated);
-                        });
+                connect(timerService, &service::TimerService::activated, [preferences](const bool activated) {
+                    preferences->setEnabled(!activated);
+                });
                 menu->addAction(preferences);
             }
         }

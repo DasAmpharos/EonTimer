@@ -18,21 +18,11 @@ namespace model::timer {
         }  // namespace Defaults
     }      // namespace Gen3Fields
 
-    Gen3TimerModel::Gen3TimerModel(QSettings *settings, QObject *parent)
-        : QObject(parent) {
+    Gen3TimerModel::Gen3TimerModel(QSettings *settings, QObject *parent) : QObject(parent) {
         settings->beginGroup(Gen3Fields::GROUP);
-        preTimer =
-            settings
-                ->value(Gen3Fields::PRE_TIMER, Gen3Fields::Defaults::PRE_TIMER)
-                .toInt();
-        targetFrame = settings
-                          ->value(Gen3Fields::TARGET_FRAME,
-                                  Gen3Fields::Defaults::TARGET_FRAME)
-                          .toInt();
-        calibration = settings
-                          ->value(Gen3Fields::CALIBRATION,
-                                  Gen3Fields::Defaults::CALIBRATION)
-                          .toInt();
+        preTimer = settings->value(Gen3Fields::PRE_TIMER, Gen3Fields::Defaults::PRE_TIMER).toInt();
+        targetFrame = settings->value(Gen3Fields::TARGET_FRAME, Gen3Fields::Defaults::TARGET_FRAME).toInt();
+        calibration = settings->value(Gen3Fields::CALIBRATION, Gen3Fields::Defaults::CALIBRATION).toInt();
         settings->endGroup();
     }
 

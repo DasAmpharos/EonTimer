@@ -28,8 +28,7 @@ namespace model::settings {
 
         std::chrono::milliseconds getRefreshInterval() const;
 
-        void setRefreshInterval(
-            const std::chrono::milliseconds &refreshInterval);
+        void setRefreshInterval(const std::chrono::milliseconds &refreshInterval);
 
         bool isPrecisionCalibrationEnabled() const;
 

@@ -21,9 +21,7 @@ namespace service {
         sf::Sound *mPop;
 
     public:
-        explicit SoundService(
-            const model::settings::ActionSettingsModel *actionSettings,
-            QObject *parent = nullptr);
+        explicit SoundService(const model::settings::ActionSettingsModel *actionSettings, QObject *parent = nullptr);
 
         // @formatter:off
     public slots:

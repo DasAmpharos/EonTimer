@@ -11,9 +11,7 @@ namespace service {
 
     static sf::Sound *loadSound(const char *filename);
 
-    SoundService::SoundService(
-        const model::settings::ActionSettingsModel *actionSettings,
-        QObject *parent)
+    SoundService::SoundService(const model::settings::ActionSettingsModel *actionSettings, QObject *parent)
         : QObject(parent), actionSettings(actionSettings) {
         mBeep = loadSound(":/sounds/beep.wav");
         mDing = loadSound(":/sounds/ding.wav");
@@ -45,8 +43,7 @@ namespace service {
         QResource resource(filename);
         auto *sound = new sf::Sound();
         auto *buffer = new sf::SoundBuffer();
-        buffer->loadFromMemory(resource.data(),
-                               static_cast<size_t>(resource.size()));
+        buffer->loadFromMemory(resource.data(), static_cast<size_t>(resource.size()));
         sound->setBuffer(*buffer);
         return sound;
     }

@@ -14,15 +14,13 @@
 namespace gui {
     class TimerDisplayPane : public QGroupBox {
     public:
-        TimerDisplayPane(
-            service::TimerService *timerService,
-            const model::settings::ActionSettingsModel *actionSettings);
+        TimerDisplayPane(service::TimerService *timerService,
+                         const model::settings::ActionSettingsModel *actionSettings);
 
     private:
         void initComponents();
 
-        const QString formatTime(
-            const std::chrono::milliseconds &milliseconds) const;
+        const QString formatTime(const std::chrono::milliseconds &milliseconds) const;
 
         void updateCurrentStageLbl();
 

@@ -11,8 +11,7 @@
 
 namespace gui::settings {
 
-    ActionSettingsPane::ActionSettingsPane(
-        model::settings::ActionSettingsModel *settings, QWidget *parent)
+    ActionSettingsPane::ActionSettingsPane(model::settings::ActionSettingsModel *settings, QWidget *parent)
         : QWidget(parent), settings(settings) {
         color = settings->getColor();
         initComponents();
@@ -62,8 +61,7 @@ namespace gui::settings {
             label->setText("Interval");
             interval = new QSpinBox();
             interval->setRange(1, 1000);
-            interval->setValue(
-                static_cast<int>(settings->getInterval().count()));
+            interval->setValue(static_cast<int>(settings->getInterval().count()));
             interval->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addRow(label, interval);
         }
@@ -87,8 +85,7 @@ namespace gui::settings {
         settings->setCount(static_cast<uint>(count->value()));
     }
 
-    void ActionSettingsPane::setIconColor(QPushButton *btn,
-                                          const QColor &color) {
+    void ActionSettingsPane::setIconColor(QPushButton *btn, const QColor &color) {
         if (color.isValid()) {
             QPixmap pixmap(64, 64);
             pixmap.fill(color);
