@@ -8,8 +8,7 @@
 #include <QLabel>
 
 namespace gui::settings {
-    ActionSettingsPane::ActionSettingsPane(
-        model::settings::ActionSettingsModel *settings, QWidget *parent)
+    ActionSettingsPane::ActionSettingsPane(model::settings::ActionSettingsModel *settings, QWidget *parent)
         : QWidget(parent), settings(settings) {
         initComponents();
     }
@@ -35,8 +34,7 @@ namespace gui::settings {
             label->setText("Interval");
             interval = new QSpinBox();
             interval->setRange(1, 1000);
-            interval->setValue(
-                static_cast<int>(settings->getInterval().count()));
+            interval->setValue(static_cast<int>(settings->getInterval().count()));
             interval->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
             layout->addRow(label, interval);
         }

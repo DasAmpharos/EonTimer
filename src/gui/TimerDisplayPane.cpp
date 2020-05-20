@@ -9,25 +9,22 @@
 #include <QVBoxLayout>
 
 namespace gui {
-    TimerDisplayPane::TimerDisplayPane(service::TimerService *timerService)
-        : QGroupBox(nullptr) {
+    TimerDisplayPane::TimerDisplayPane(service::TimerService *timerService) : QGroupBox(nullptr) {
         currentStage = new QLabel("0:000");
-        connect(timerService, &service::TimerService::stateChanged,
-                [this](const model::TimerState &state) {
-                    this->currentStage->setText(formatTime(state.remaining));
-                });
+        connect(timerService, &service::TimerService::stateChanged, [this](const model::TimerState &state) {
+            this->currentStage->setText(formatTime(state.remaining));
+        });
         minutesBeforeTarget = new QLabel("0");
         connect(timerService,
                 &service::TimerService::minutesBeforeTargetChanged,
                 [this](const std::chrono::minutes &minutesBeforeTarget) {
-                    this->minutesBeforeTarget->setText(
-                        QString::number(minutesBeforeTarget.count()));
+                    this->minutesBeforeTarget->setText(QString::number(minutesBeforeTarget.count()));
                 });
         nextStage = new QLabel("0:000");
-        connect(timerService, &service::TimerService::nextStageChanged,
-                [this](const std::chrono::milliseconds &nextStage) {
-                    this->nextStage->setText(formatTime(nextStage));
-                });
+        connect(
+            timerService,
+            &service::TimerService::nextStageChanged,
+            [this](const std::chrono::milliseconds &nextStage) { this->nextStage->setText(formatTime(nextStage)); });
         initComponents();
     }
 
@@ -41,10 +38,8 @@ namespace gui {
             {
                 rootLayout->addWidget(currentStage);
                 rootLayout->setAlignment(currentStage, Qt::AlignLeft);
-                const int font = QFontDatabase::addApplicationFont(
-                    ":/fonts/RobotoMono-Regular.ttf");
-                const QString family =
-                    QFontDatabase::applicationFontFamilies(font)[0];
+                const int font = QFontDatabase::addApplicationFont(":/fonts/RobotoMono-Regular.ttf");
+                const QString family = QFontDatabase::applicationFontFamilies(font)[0];
                 currentStage->setFont(QFont(family, 36));
             }
             // ----- minutesBeforeTarget -----
@@ -68,12 +63,10 @@ namespace gui {
         }
     }
 
-    const QString TimerDisplayPane::formatTime(
-        const std::chrono::milliseconds &milliseconds) const {
+    const QString TimerDisplayPane::formatTime(const std::chrono::milliseconds &milliseconds) const {
         const auto ms = milliseconds.count();
         if (ms > 0) {
-            return QString::number(ms / 1000) + ":" +
-                   QString::number(ms % 1000).rightJustified(3, '0');
+            return QString::number(ms / 1000) + ":" + QString::number(ms % 1000).rightJustified(3, '0');
         } else if (ms < 0) {
             return "?:???";
         } else {

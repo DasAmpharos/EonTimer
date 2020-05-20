@@ -5,14 +5,12 @@
 #include "FrameTimer.h"
 
 namespace service::timer {
-    FrameTimer::FrameTimer(const CalibrationService *calibrationService)
-        : calibrationService(calibrationService) {}
+    FrameTimer::FrameTimer(const CalibrationService *calibrationService) : calibrationService(calibrationService) {}
 
-    const std::shared_ptr<std::vector<int>> FrameTimer::createStages(
-        const int preTimer, const int targetFrame,
-        const int calibration) const {
-        std::shared_ptr<std::vector<int>> stages =
-            std::make_shared<std::vector<int>>(2);
+    const std::shared_ptr<std::vector<int>> FrameTimer::createStages(const int preTimer,
+                                                                     const int targetFrame,
+                                                                     const int calibration) const {
+        std::shared_ptr<std::vector<int>> stages = std::make_shared<std::vector<int>>(2);
         (*stages)[0] = createStage1(preTimer);
         (*stages)[1] = createStage2(targetFrame, calibration);
         return stages;
@@ -20,8 +18,7 @@ namespace service::timer {
 
     int FrameTimer::createStage1(const int preTimer) const { return preTimer; }
 
-    int FrameTimer::createStage2(const int targetFrame,
-                                 const int calibration) const {
+    int FrameTimer::createStage2(const int targetFrame, const int calibration) const {
         return calibrationService->toMilliseconds(targetFrame) + calibration;
     }
 

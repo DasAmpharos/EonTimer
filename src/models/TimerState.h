@@ -9,8 +9,7 @@
 
 namespace model {
     struct TimerState {
-        TimerState(const std::chrono::milliseconds &duration,
-                   const std::chrono::milliseconds &remaining);
+        TimerState(const std::chrono::milliseconds &duration, const std::chrono::milliseconds &remaining);
 
         const std::chrono::milliseconds &duration;
         const std::chrono::milliseconds &remaining;

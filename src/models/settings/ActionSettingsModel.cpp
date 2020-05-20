@@ -20,49 +20,31 @@ namespace model::settings {
 
     ActionSettingsModel::ActionSettingsModel(QSettings *settings) {
         settings->beginGroup(ActionSettingsFields::GROUP);
-        sound = model::sound(settings
-                                 ->value(ActionSettingsFields::SOUND,
-                                         ActionSettingsFields::Defaults::SOUND)
-                                 .toUInt());
+        sound =
+            model::sound(settings->value(ActionSettingsFields::SOUND, ActionSettingsFields::Defaults::SOUND).toUInt());
         interval = std::chrono::milliseconds(
-            settings
-                ->value(ActionSettingsFields::INTERVAL,
-                        ActionSettingsFields::Defaults::INTERVAL)
-                .toULongLong());
-        count = settings
-                    ->value(ActionSettingsFields::COUNT,
-                            ActionSettingsFields::Defaults::COUNT)
-                    .toUInt();
+            settings->value(ActionSettingsFields::INTERVAL, ActionSettingsFields::Defaults::INTERVAL).toULongLong());
+        count = settings->value(ActionSettingsFields::COUNT, ActionSettingsFields::Defaults::COUNT).toUInt();
         settings->endGroup();
     }
 
     void ActionSettingsModel::sync(QSettings *settings) const {
         settings->beginGroup(ActionSettingsFields::GROUP);
         settings->setValue(ActionSettingsFields::SOUND, model::indexOf(sound));
-        settings->setValue(ActionSettingsFields::INTERVAL,
-                           static_cast<int>(interval.count()));
+        settings->setValue(ActionSettingsFields::INTERVAL, static_cast<int>(interval.count()));
         settings->setValue(ActionSettingsFields::COUNT, count);
         settings->endGroup();
     }
 
     model::Sound ActionSettingsModel::getSound() const { return sound; }
 
-    void ActionSettingsModel::setSound(const model::Sound sound) {
-        this->sound = sound;
-    }
+    void ActionSettingsModel::setSound(const model::Sound sound) { this->sound = sound; }
 
-    std::chrono::milliseconds ActionSettingsModel::getInterval() const {
-        return interval;
-    }
+    std::chrono::milliseconds ActionSettingsModel::getInterval() const { return interval; }
 
-    void ActionSettingsModel::setInterval(
-        const std::chrono::milliseconds &interval) {
-        this->interval = interval;
-    }
+    void ActionSettingsModel::setInterval(const std::chrono::milliseconds &interval) { this->interval = interval; }
 
     uint ActionSettingsModel::getCount() const { return count; }
 
-    void ActionSettingsModel::setCount(const uint count) {
-        this->count = count;
-    }
+    void ActionSettingsModel::setCount(const uint count) { this->count = count; }
 }  // namespace model::settings
