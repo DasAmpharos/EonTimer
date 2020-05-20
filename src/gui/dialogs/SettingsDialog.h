@@ -21,10 +21,9 @@ namespace gui::dialog {
         settings::ActionSettingsPane *actionSettingsPane;
 
     public:
-        explicit SettingsDialog(
-            model::settings::TimerSettingsModel *timerSettings,
-            model::settings::ActionSettingsModel *actionSettings,
-            QWidget *parent = nullptr);
+        explicit SettingsDialog(model::settings::TimerSettingsModel *timerSettings,
+                                model::settings::ActionSettingsModel *actionSettings,
+                                QWidget *parent = nullptr);
 
     private:
         void initComponents();

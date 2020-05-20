@@ -21,8 +21,7 @@ namespace gui::settings {
         QSpinBox *refreshInterval;
 
     public:
-        TimerSettingsPane(model::settings::TimerSettingsModel *model,
-                          QWidget *parent = nullptr);
+        TimerSettingsPane(model::settings::TimerSettingsModel *model, QWidget *parent = nullptr);
 
         void updateSettings();
 

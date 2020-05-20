@@ -31,15 +31,13 @@ namespace gui::timer {
         const service::CalibrationService *calibrationService;
 
     public:
-        explicit Gen5TimerPane(
-            model::timer::Gen5TimerModel *model,
-            const service::timer::DelayTimer *delayTimer,
-            const service::timer::SecondTimer *secondTimer,
-            const service::timer::EntralinkTimer *entralinkTimer,
-            const service::timer::EnhancedEntralinkTimer
-                *enhancedEntralinkTimer,
-            const service::CalibrationService *calibrationService,
-            QWidget *parent = nullptr);
+        explicit Gen5TimerPane(model::timer::Gen5TimerModel *model,
+                               const service::timer::DelayTimer *delayTimer,
+                               const service::timer::SecondTimer *secondTimer,
+                               const service::timer::EntralinkTimer *entralinkTimer,
+                               const service::timer::EnhancedEntralinkTimer *enhancedEntralinkTimer,
+                               const service::CalibrationService *calibrationService,
+                               QWidget *parent = nullptr);
 
         std::shared_ptr<std::vector<int>> createStages();
 

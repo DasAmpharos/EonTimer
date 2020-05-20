@@ -21,24 +21,12 @@ namespace model::timer {
         }  // namespace Defaults
     }      // namespace Gen4Fields
 
-    Gen4TimerModel::Gen4TimerModel(QSettings *settings, QObject *parent)
-        : QObject(parent) {
-        calibratedDelay = settings
-                              ->value(Gen4Fields::CALIBRATED_DELAY,
-                                      Gen4Fields::Defaults::CALIBRATED_DELAY)
-                              .toInt();
-        calibratedSecond = settings
-                               ->value(Gen4Fields::CALIBRATED_SECOND,
-                                       Gen4Fields::Defaults::CALIBRATED_SECOND)
-                               .toInt();
-        targetDelay = settings
-                          ->value(Gen4Fields::TARGET_DELAY,
-                                  Gen4Fields::Defaults::TARGET_DELAY)
-                          .toInt();
-        targetSecond = settings
-                           ->value(Gen4Fields::TARGET_SECOND,
-                                   Gen4Fields::Defaults::TARGET_SECOND)
-                           .toInt();
+    Gen4TimerModel::Gen4TimerModel(QSettings *settings, QObject *parent) : QObject(parent) {
+        calibratedDelay = settings->value(Gen4Fields::CALIBRATED_DELAY, Gen4Fields::Defaults::CALIBRATED_DELAY).toInt();
+        calibratedSecond =
+            settings->value(Gen4Fields::CALIBRATED_SECOND, Gen4Fields::Defaults::CALIBRATED_SECOND).toInt();
+        targetDelay = settings->value(Gen4Fields::TARGET_DELAY, Gen4Fields::Defaults::TARGET_DELAY).toInt();
+        targetSecond = settings->value(Gen4Fields::TARGET_SECOND, Gen4Fields::Defaults::TARGET_SECOND).toInt();
     }
 
     void Gen4TimerModel::sync(QSettings *settings) const {

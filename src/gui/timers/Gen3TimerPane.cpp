@@ -11,14 +11,11 @@
 #include <QVBoxLayout>
 
 namespace gui::timer {
-    Gen3TimerPane::Gen3TimerPane(
-        model::timer::Gen3TimerModel *model,
-        const service::timer::FrameTimer *frameTimer,
-        const service::CalibrationService *calibrationService, QWidget *parent)
-        : QWidget(parent),
-          model(model),
-          frameTimer(frameTimer),
-          calibrationService(calibrationService) {
+    Gen3TimerPane::Gen3TimerPane(model::timer::Gen3TimerModel *model,
+                                 const service::timer::FrameTimer *frameTimer,
+                                 const service::CalibrationService *calibrationService,
+                                 QWidget *parent)
+        : QWidget(parent), model(model), frameTimer(frameTimer), calibrationService(calibrationService) {
         initComponents();
     }
 
@@ -33,8 +30,7 @@ namespace gui::timer {
             // group
             auto *group = new QGroupBox();
             group->setProperty("class", "themeable-panel themeable-border");
-            group->setSizePolicy(QSizePolicy::Expanding,
-                                 QSizePolicy::Expanding);
+            group->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
             auto *groupLayout = new QVBoxLayout(group);
             groupLayout->setContentsMargins(0, 0, 0, 0);
             groupLayout->setSpacing(0);
@@ -50,14 +46,11 @@ namespace gui::timer {
             // ----- calibration -----
             {
                 auto *field = new QSpinBox;
-                auto fieldSet = util::FieldSet<QSpinBox>(
-                    0, new QLabel("Calibration"), field);
+                auto fieldSet = util::FieldSet<QSpinBox>(0, new QLabel("Calibration"), field);
                 field->setRange(INT_MIN, INT_MAX);
                 field->setValue(model->getCalibration());
-                field->setSizePolicy(QSizePolicy::Expanding,
-                                     QSizePolicy::Fixed);
-                connect(model, SIGNAL(calibrationChanged(int)), field,
-                        SLOT(setValue(int)));
+                field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                connect(model, SIGNAL(calibrationChanged(int)), field, SLOT(setValue(int)));
                 connect(field, valueChanged, [this](const int calibration) {
                     model->setCalibration(calibration);
                     emit timerChanged(createStages());
@@ -67,12 +60,10 @@ namespace gui::timer {
             // ----- preTimer -----
             {
                 auto *field = new QSpinBox;
-                auto fieldSet =
-                    util::FieldSet<QSpinBox>(1, new QLabel("Pre-Timer"), field);
+                auto fieldSet = util::FieldSet<QSpinBox>(1, new QLabel("Pre-Timer"), field);
                 field->setRange(0, INT_MAX);
                 field->setValue(model->getPreTimer());
-                connect(model, SIGNAL(preTimerChanged(int)), field,
-                        SLOT(setValue(int)));
+                connect(model, SIGNAL(preTimerChanged(int)), field, SLOT(setValue(int)));
                 connect(field, valueChanged, [this](const int preTimer) {
                     model->setPreTimer(preTimer);
                     emit timerChanged(createStages());
@@ -82,12 +73,10 @@ namespace gui::timer {
             // ----- targetFrame -----
             {
                 auto *field = new QSpinBox;
-                auto fieldSet = util::FieldSet<QSpinBox>(
-                    2, new QLabel("Target Frame"), field);
+                auto fieldSet = util::FieldSet<QSpinBox>(2, new QLabel("Target Frame"), field);
                 field->setRange(0, INT_MAX);
                 field->setValue(model->getTargetFrame());
-                connect(model, SIGNAL(targetFrameChanged(int)), field,
-                        SLOT(setValue(int)));
+                connect(model, SIGNAL(targetFrameChanged(int)), field, SLOT(setValue(int)));
                 connect(field, valueChanged, [this](const int targetFrame) {
                     model->setTargetFrame(targetFrame);
                     emit timerChanged(createStages());
@@ -103,22 +92,17 @@ namespace gui::timer {
             // ----- frameHit -----
             {
                 auto *field = new QSpinBox;
-                auto fieldSet =
-                    util::FieldSet<QSpinBox>(0, new QLabel("Frame Hit"), field);
+                auto fieldSet = util::FieldSet<QSpinBox>(0, new QLabel("Frame Hit"), field);
                 field->setRange(0, INT_MAX);
-                connect(model, SIGNAL(frameHitChanged(int)), field,
-                        SLOT(setValue(int)));
-                connect(field, valueChanged,
-                        [this](const int value) { model->setFrameHit(value); });
+                connect(model, SIGNAL(frameHitChanged(int)), field, SLOT(setValue(int)));
+                connect(field, valueChanged, [this](const int value) { model->setFrameHit(value); });
                 util::addFieldSet(form, fieldSet);
             }
         }
     }
 
     std::shared_ptr<std::vector<int>> Gen3TimerPane::createStages() {
-        return frameTimer->createStages(model->getPreTimer(),
-                                        model->getTargetFrame(),
-                                        model->getCalibration());
+        return frameTimer->createStages(model->getPreTimer(), model->getTargetFrame(), model->getCalibration());
     }
 
     void Gen3TimerPane::calibrate() {
@@ -127,7 +111,6 @@ namespace gui::timer {
     }
 
     int Gen3TimerPane::getCalibration() const {
-        return frameTimer->calibrate(model->getTargetFrame(),
-                                     model->getFrameHit());
+        return frameTimer->calibrate(model->getTargetFrame(), model->getFrameHit());
     }
 }  // namespace gui::timer

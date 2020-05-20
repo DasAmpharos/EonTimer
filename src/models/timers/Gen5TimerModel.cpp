@@ -26,37 +26,17 @@ namespace model::timer {
         }  // namespace Defaults
     }      // namespace Gen5Fields
 
-    Gen5TimerModel::Gen5TimerModel(QSettings *settings, QObject *parent)
-        : QObject(parent) {
+    Gen5TimerModel::Gen5TimerModel(QSettings *settings, QObject *parent) : QObject(parent) {
         settings->beginGroup(Gen5Fields::GROUP);
-        mode = model::gen5TimerMode(
-            settings->value(Gen5Fields::MODE, Gen5Fields::Defaults::MODE)
-                .toInt());
-        calibration = settings
-                          ->value(Gen5Fields::CALIBRATION,
-                                  Gen5Fields::Defaults::CALIBRATION)
-                          .toInt();
-        frameCalibration = settings
-                               ->value(Gen5Fields::FRAME_CALIBRATION,
-                                       Gen5Fields::Defaults::FRAME_CALIBRATION)
-                               .toInt();
+        mode = model::gen5TimerMode(settings->value(Gen5Fields::MODE, Gen5Fields::Defaults::MODE).toInt());
+        calibration = settings->value(Gen5Fields::CALIBRATION, Gen5Fields::Defaults::CALIBRATION).toInt();
+        frameCalibration =
+            settings->value(Gen5Fields::FRAME_CALIBRATION, Gen5Fields::Defaults::FRAME_CALIBRATION).toInt();
         entralinkCalibration =
-            settings
-                ->value(Gen5Fields::ENTRALINK_CALIBRATION,
-                        Gen5Fields::Defaults::ENTRALINK_CALIBRATION)
-                .toInt();
-        targetDelay = settings
-                          ->value(Gen5Fields::TARGET_DELAY,
-                                  Gen5Fields::Defaults::TARGET_DELAY)
-                          .toInt();
-        targetSecond = settings
-                           ->value(Gen5Fields::TARGET_SECOND,
-                                   Gen5Fields::Defaults::TARGET_SECOND)
-                           .toInt();
-        targetAdvances = settings
-                             ->value(Gen5Fields::TARGET_ADVANCES,
-                                     Gen5Fields::Defaults::TARGET_ADVANCES)
-                             .toInt();
+            settings->value(Gen5Fields::ENTRALINK_CALIBRATION, Gen5Fields::Defaults::ENTRALINK_CALIBRATION).toInt();
+        targetDelay = settings->value(Gen5Fields::TARGET_DELAY, Gen5Fields::Defaults::TARGET_DELAY).toInt();
+        targetSecond = settings->value(Gen5Fields::TARGET_SECOND, Gen5Fields::Defaults::TARGET_SECOND).toInt();
+        targetAdvances = settings->value(Gen5Fields::TARGET_ADVANCES, Gen5Fields::Defaults::TARGET_ADVANCES).toInt();
         settings->endGroup();
     }
 
@@ -65,8 +45,7 @@ namespace model::timer {
         settings->setValue(Gen5Fields::MODE, model::indexOf(mode));
         settings->setValue(Gen5Fields::CALIBRATION, calibration);
         settings->setValue(Gen5Fields::FRAME_CALIBRATION, frameCalibration);
-        settings->setValue(Gen5Fields::ENTRALINK_CALIBRATION,
-                           entralinkCalibration);
+        settings->setValue(Gen5Fields::ENTRALINK_CALIBRATION, entralinkCalibration);
         settings->setValue(Gen5Fields::TARGET_DELAY, targetDelay);
         settings->setValue(Gen5Fields::TARGET_SECOND, targetSecond);
         settings->setValue(Gen5Fields::TARGET_ADVANCES, targetAdvances);
@@ -100,9 +79,7 @@ namespace model::timer {
         }
     }
 
-    int Gen5TimerModel::getEntralinkCalibration() const {
-        return entralinkCalibration;
-    }
+    int Gen5TimerModel::getEntralinkCalibration() const { return entralinkCalibration; }
 
     void Gen5TimerModel::setEntralinkCalibration(int entralinkCalibration) {
         if (this->entralinkCalibration != entralinkCalibration) {

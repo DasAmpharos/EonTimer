@@ -13,8 +13,7 @@
 namespace gui::util {
     template <typename T>
     struct FieldSet {
-        static_assert(std::is_base_of<QWidget, T>::value,
-                      "T must derive from QWidget");
+        static_assert(std::is_base_of<QWidget, T>::value, "T must derive from QWidget");
 
         QGridLayout *layout;
         const int rowIndex;
@@ -28,12 +27,9 @@ namespace gui::util {
     template <typename T>
     void addFieldSet(QGridLayout *layout, FieldSet<T> &fieldSet) {
         if (fieldSet.layout == nullptr) {
-            fieldSet.label->setSizePolicy(QSizePolicy::Fixed,
-                                          QSizePolicy::Fixed);
-            fieldSet.field->setSizePolicy(QSizePolicy::Expanding,
-                                          QSizePolicy::Fixed);
-            layout->addWidget(fieldSet.label, fieldSet.rowIndex, 0,
-                              Qt::AlignRight);
+            fieldSet.label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+            fieldSet.field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+            layout->addWidget(fieldSet.label, fieldSet.rowIndex, 0, Qt::AlignRight);
             layout->addWidget(fieldSet.field, fieldSet.rowIndex, 1);
             fieldSet.layout = layout;
         }
@@ -49,8 +45,7 @@ namespace gui::util {
     }
 
     template <typename T>
-    void setVisible(QGridLayout *layout, FieldSet<T> &fieldSet,
-                    const bool visible) {
+    void setVisible(QGridLayout *layout, FieldSet<T> &fieldSet, const bool visible) {
         if (visible) {
             show(layout, fieldSet);
         } else {

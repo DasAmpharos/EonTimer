@@ -21,9 +21,7 @@ namespace gui::settings {
         QSpinBox *count;
 
     public:
-        explicit ActionSettingsPane(
-            model::settings::ActionSettingsModel *settings,
-            QWidget *parent = nullptr);
+        explicit ActionSettingsPane(model::settings::ActionSettingsModel *settings, QWidget *parent = nullptr);
 
         void updateSettings();
 
