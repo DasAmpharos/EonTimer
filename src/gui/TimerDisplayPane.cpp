@@ -14,8 +14,12 @@ namespace gui {
                                        const model::settings::ActionSettingsModel *actionSettings)
         : QGroupBox(nullptr), actionSettings(actionSettings) {
         currentStage = new QLabel("0:000");
+        setVisualCue(actionSettings->getColor());
         connect(timerService, &service::TimerService::stateChanged, [this](const model::TimerState &state) {
-            this->currentStage->setText(formatTime(state.remaining));
+            currentStage->setText(formatTime(state.remaining));
+        });
+        connect(actionSettings, &model::settings::ActionSettingsModel::colorChanged, [this](const QColor &color) {
+            setVisualCue(color);
         });
         minutesBeforeTarget = new QLabel("0");
         connect(timerService,
@@ -85,6 +89,11 @@ namespace gui {
         QStyle *style = currentStage->style();
         style->unpolish(currentStage);
         style->polish(currentStage);
+    }
+
+    void TimerDisplayPane::setVisualCue(const QColor &color) {
+        const QString style = "#currentStageLbl[active=\"true\"]{ background-color: rgb(%1, %2, %3); }";
+        currentStage->setStyleSheet(style.arg(color.red()).arg(color.green()).arg(color.blue()));
     }
 
     bool TimerDisplayPane::isVisualCueEnabled() const {

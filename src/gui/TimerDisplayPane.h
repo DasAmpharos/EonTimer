@@ -24,6 +24,8 @@ namespace gui {
 
         void updateCurrentStageLbl();
 
+        void setVisualCue(const QColor &color);
+
         bool isVisualCueEnabled() const;
 
     private:

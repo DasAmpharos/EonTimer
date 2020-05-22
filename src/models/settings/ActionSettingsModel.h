@@ -13,13 +13,14 @@
 #include <chrono>
 
 namespace model::settings {
-    class ActionSettingsModel {
+    class ActionSettingsModel : public QObject {
+        Q_OBJECT
     private:
         model::ActionMode mode;
         model::Sound sound;
         QColor color;
-        std::chrono::milliseconds interval;
-        uint count;
+        unsigned int interval;
+        unsigned int count;
 
     public:
         explicit ActionSettingsModel(QSettings *settings);
@@ -38,13 +39,16 @@ namespace model::settings {
 
         void setColor(const QColor &color);
 
-        std::chrono::milliseconds getInterval() const;
+        unsigned int getInterval() const;
 
-        void setInterval(const std::chrono::milliseconds &interval);
+        void setInterval(unsigned int interval);
 
-        uint getCount() const;
+        unsigned getCount() const;
 
-        void setCount(uint count);
+        void setCount(unsigned int count);
+
+    signals:
+        void colorChanged(const QColor &color);
     };
 }  // namespace model::settings
 

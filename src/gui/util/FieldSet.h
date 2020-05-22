@@ -7,7 +7,6 @@
 
 #include <QGridLayout>
 #include <QWidget>
-#include <iostream>
 #include <type_traits>
 
 namespace gui::util {

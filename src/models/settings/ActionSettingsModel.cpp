@@ -18,20 +18,19 @@ namespace model::settings {
             const int MODE = 0;
             const int SOUND = 0;
             const QColor COLOR = Qt::blue;
-            const uint INTERVAL = 500;
-            const uint COUNT = 6;
+            const unsigned int INTERVAL = 500;
+            const unsigned int COUNT = 6;
         }  // namespace Defaults
     }      // namespace ActionSettingsFields
 
-    ActionSettingsModel::ActionSettingsModel(QSettings *settings) {
+    ActionSettingsModel::ActionSettingsModel(QSettings *settings) : QObject(nullptr) {
         settings->beginGroup(ActionSettingsFields::GROUP);
         mode = model::actionMode(
             settings->value(ActionSettingsFields::MODE, ActionSettingsFields::Defaults::MODE).toUInt());
         sound =
             model::sound(settings->value(ActionSettingsFields::SOUND, ActionSettingsFields::Defaults::SOUND).toUInt());
         color = settings->value(ActionSettingsFields::COLOR, ActionSettingsFields::Defaults::COLOR).value<QColor>();
-        interval = std::chrono::milliseconds(
-            settings->value(ActionSettingsFields::INTERVAL, ActionSettingsFields::Defaults::INTERVAL).toULongLong());
+        interval = settings->value(ActionSettingsFields::INTERVAL, ActionSettingsFields::Defaults::INTERVAL).toUInt();
         count = settings->value(ActionSettingsFields::COUNT, ActionSettingsFields::Defaults::COUNT).toUInt();
         settings->endGroup();
     }
@@ -40,7 +39,7 @@ namespace model::settings {
         settings->beginGroup(ActionSettingsFields::GROUP);
         settings->setValue(ActionSettingsFields::MODE, model::indexOf(mode));
         settings->setValue(ActionSettingsFields::SOUND, model::indexOf(sound));
-        settings->setValue(ActionSettingsFields::INTERVAL, static_cast<int>(interval.count()));
+        settings->setValue(ActionSettingsFields::INTERVAL, interval);
         settings->setValue(ActionSettingsFields::COUNT, count);
         settings->setValue(ActionSettingsFields::COLOR, color);
         settings->endGroup();
@@ -56,13 +55,18 @@ namespace model::settings {
 
     const QColor &ActionSettingsModel::getColor() const { return color; }
 
-    void ActionSettingsModel::setColor(const QColor &color) { this->color = color; }
+    void ActionSettingsModel::setColor(const QColor &color) {
+        if (this->color != color) {
+            this->color = color;
+            emit colorChanged(color);
+        }
+    }
 
-    std::chrono::milliseconds ActionSettingsModel::getInterval() const { return interval; }
+    unsigned int ActionSettingsModel::getInterval() const { return interval; }
 
-    void ActionSettingsModel::setInterval(const std::chrono::milliseconds &interval) { this->interval = interval; }
+    void ActionSettingsModel::setInterval(const unsigned int interval) { this->interval = interval; }
 
-    uint ActionSettingsModel::getCount() const { return count; }
+    unsigned int ActionSettingsModel::getCount() const { return count; }
 
-    void ActionSettingsModel::setCount(const uint count) { this->count = count; }
+    void ActionSettingsModel::setCount(const unsigned int count) { this->count = count; }
 }  // namespace model::settings

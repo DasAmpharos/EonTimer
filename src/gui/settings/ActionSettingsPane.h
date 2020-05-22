@@ -18,11 +18,11 @@ namespace gui::settings {
         Q_OBJECT
     private:
         model::settings::ActionSettingsModel *settings;
-        QComboBox *mode;
-        QComboBox *sound;
-        QSpinBox *interval;
-        QSpinBox *count;
+        int mode;
+        int sound;
         QColor color;
+        int interval;
+        int count;
 
     public:
         explicit ActionSettingsPane(model::settings::ActionSettingsModel *settings, QWidget *parent = nullptr);
@@ -33,6 +33,15 @@ namespace gui::settings {
         void initComponents();
 
         void setIconColor(QPushButton *btn, const QColor &color);
+
+    signals:
+        void modeChanged(int mode);
+
+    private slots:
+        void setMode(int mode);
+        void setSound(int sound);
+        void setInterval(int interval);
+        void setCount(int count);
     };
 }  // namespace gui::settings
 

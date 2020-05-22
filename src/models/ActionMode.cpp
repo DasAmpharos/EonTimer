@@ -30,7 +30,7 @@ namespace model {
 
     const std::vector<ActionMode>& actionModes() { return VALUES; }
 
-    int indexOf(const ActionMode mode) {
+    int indexOf(const ActionMode& mode) {
         for (unsigned int i = 0; i < VALUES.size(); i++) {
             if (mode == VALUES[i]) return i;
         }

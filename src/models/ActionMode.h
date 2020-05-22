@@ -16,7 +16,7 @@ namespace model {
 
     const std::vector<ActionMode> &actionModes();
 
-    int indexOf(ActionMode mode);
+    int indexOf(const ActionMode &mode);
 }  // namespace model
 
 #endif  // EONTIMER_ACTIONMODE_H
