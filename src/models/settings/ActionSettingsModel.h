@@ -5,34 +5,50 @@
 #ifndef EONTIMER_ACTIONSETTINGSMODEL_H
 #define EONTIMER_ACTIONSETTINGSMODEL_H
 
+#include <models/ActionMode.h>
 #include <models/Sound.h>
 
 #include <QSettings>
+#include <QtGui/QColor>
 #include <chrono>
 
 namespace model::settings {
-    class ActionSettingsModel {
+    class ActionSettingsModel : public QObject {
+        Q_OBJECT
     private:
+        model::ActionMode mode;
         model::Sound sound;
-        std::chrono::milliseconds interval;
-        uint count;
+        QColor color;
+        unsigned int interval;
+        unsigned int count;
 
     public:
         explicit ActionSettingsModel(QSettings *settings);
 
         void sync(QSettings *settings) const;
 
+        model::ActionMode getMode() const;
+
+        void setMode(model::ActionMode mode);
+
         model::Sound getSound() const;
 
         void setSound(model::Sound sound);
 
-        std::chrono::milliseconds getInterval() const;
+        const QColor &getColor() const;
 
-        void setInterval(const std::chrono::milliseconds &interval);
+        void setColor(const QColor &color);
 
-        uint getCount() const;
+        unsigned int getInterval() const;
 
-        void setCount(uint count);
+        void setInterval(unsigned int interval);
+
+        unsigned getCount() const;
+
+        void setCount(unsigned int count);
+
+    signals:
+        void colorChanged(const QColor &color);
     };
 }  // namespace model::settings
 

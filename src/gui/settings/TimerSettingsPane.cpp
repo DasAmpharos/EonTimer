@@ -6,7 +6,6 @@
 
 #include <QFormLayout>
 #include <QLabel>
-#include <iostream>
 
 namespace gui::settings {
     TimerSettingsPane::TimerSettingsPane(model::settings::TimerSettingsModel *model, QWidget *parent)

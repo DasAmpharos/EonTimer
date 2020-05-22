@@ -8,7 +8,6 @@
 #include <util/Functions.h>
 
 #include <QThreadPool>
-#include <iostream>
 #include <stack>
 #include <utility>
 
@@ -91,7 +90,7 @@ namespace service {
         const auto period = std::chrono::duration_cast<std::chrono::microseconds>(timerSettings->getRefreshInterval());
 
         std::stack<std::chrono::microseconds> actionStack;
-        const auto actionInterval = actionSettings->getInterval();
+        const auto actionInterval = std::chrono::milliseconds(actionSettings->getInterval());
         for (uint i = 0; i < actionSettings->getCount(); i++) {
             actionStack.push(std::chrono::duration_cast<std::chrono::microseconds>(actionInterval * i));
         }

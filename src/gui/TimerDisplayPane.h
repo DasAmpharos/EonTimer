@@ -9,21 +9,37 @@
 
 #include <QGroupBox>
 #include <QLabel>
+#include <QtCore/QTimer>
 
 namespace gui {
     class TimerDisplayPane : public QGroupBox {
     public:
-        explicit TimerDisplayPane(service::TimerService *timerService);
+        TimerDisplayPane(service::TimerService *timerService,
+                         const model::settings::ActionSettingsModel *actionSettings);
 
     private:
         void initComponents();
 
         const QString formatTime(const std::chrono::milliseconds &milliseconds) const;
 
+        void updateCurrentStageLbl();
+
+        void setVisualCue(const QColor &color);
+
+        bool isVisualCueEnabled() const;
+
     private:
         QLabel *currentStage;
         QLabel *minutesBeforeTarget;
         QLabel *nextStage;
+        const model::settings::ActionSettingsModel *actionSettings;
+        bool isActive;
+        QTimer timer;
+
+    private slots:
+        void activate();
+
+        void deactivate();
     };
 }  // namespace gui
 

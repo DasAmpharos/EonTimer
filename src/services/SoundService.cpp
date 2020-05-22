@@ -20,19 +20,22 @@ namespace service {
     }
 
     void SoundService::play() {
-        switch (actionSettings->getSound()) {
-            case model::Sound::BEEP:
-                mBeep->play();
-                break;
-            case model::Sound::DING:
-                mDing->play();
-                break;
-            case model::Sound::TICK:
-                mTick->play();
-                break;
-            case model::Sound::POP:
-                mPop->play();
-                break;
+        const auto mode = actionSettings->getMode();
+        if (mode == model::ActionMode::AUDIO || mode == model::ActionMode::AV) {
+            switch (actionSettings->getSound()) {
+                case model::Sound::BEEP:
+                    mBeep->play();
+                    break;
+                case model::Sound::DING:
+                    mDing->play();
+                    break;
+                case model::Sound::TICK:
+                    mTick->play();
+                    break;
+                case model::Sound::POP:
+                    mPop->play();
+                    break;
+            }
         }
     }
 
