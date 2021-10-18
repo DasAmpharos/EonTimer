@@ -9,7 +9,9 @@
 
 #include <QThreadPool>
 #include <stack>
+#include <chrono>
 #include <utility>
+#include <bits/atomic_timed_wait.h>
 
 #include "SoundService.h"
 
@@ -59,18 +61,18 @@ namespace service {
     }
 
     void TimerService::reset() {
-        auto totalTime = 0ms;
+        auto totalTime = std::chrono::microseconds(0);
         for (int stage : (*stages)) {
             totalTime += std::chrono::milliseconds(stage);
         }
         const auto currentStage = std::chrono::milliseconds((*stages)[0]);
         emit stateChanged(model::TimerState(currentStage, currentStage));
         emit minutesBeforeTargetChanged(std::chrono::duration_cast<std::chrono::minutes>(totalTime));
-        emit nextStageChanged(stages->size() >= 2 ? std::chrono::milliseconds((*stages)[1]) : 0ms);
+        emit nextStageChanged(stages->size() >= 2 ? std::chrono::milliseconds((*stages)[1]) : std::chrono::milliseconds(0));
     }
 
     void TimerService::run() {
-        auto preElapsed = 0us;
+        auto preElapsed = std::chrono::microseconds(0);
         uint8_t stageIndex = 0;
         while (running && stageIndex < stages->size()) {
             auto currentStage =

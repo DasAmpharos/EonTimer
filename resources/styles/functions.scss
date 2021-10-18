@@ -1,3 +1,0 @@
-@function alpha($color, $alpha: 1.0) {
-    @return rgba(red($color), green($color), blue($color), $alpha);
-}
