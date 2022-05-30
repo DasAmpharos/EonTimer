@@ -1,0 +1,6 @@
+# PyCharm
+.idea
+*.iml
+# python
+__pycache__
+venv
