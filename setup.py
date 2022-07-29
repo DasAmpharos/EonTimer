@@ -1,35 +1,27 @@
 #!/usr/bin/env python3
 
 import os
-
 from setuptools import find_packages, setup
 
-src = os.path.abspath('src')
-python = os.path.join(src, 'python')
-resources = os.path.join(src, 'resources')
+name = 'eon-timer'
+package_name = name.replace('-', '_')
+packages = find_packages(package_name)
+packages = list(map(lambda it: f'{package_name}.{it}', packages))
 
 
-def get_resources():
-    """ get list of resources to package together with the egg """
-    cwd = os.getcwd()
-    os.chdir(src)
+def get_package_data() -> dict[str, list[str]]:
+    pkg_path = os.path.join(package_name, 'res')
+    pkg_name = pkg_path.replace(os.path.pathsep, '.')
 
-    resources = []
-    for dirname, dirs, files in os.walk('resources'):
-        relname = os.path.sep.join(dirname.split(os.path.sep)[1:])
-        files = filter(lambda it: not it.endswith('.py'), files)
-        files = map(lambda it: os.path.join(relname, it), files)
-        resources.extend(list(files))
-
-    os.chdir(cwd)
-    return resources
+    files = os.listdir(pkg_path)
+    resources = list(filter(lambda it: not it.endswith('.py'), files))
+    return {pkg_name: resources}
 
 
 setup(
-    name='eon-timer',
+    name=name,
     version='0.0.1',
-    package_dir={"": python},
-    packages=find_packages(where=python),
-    package_data={"resources": get_resources()},
-    include_package_data=True
+    packages=packages,
+    include_package_data=True,
+    package_data=get_package_data()
 )

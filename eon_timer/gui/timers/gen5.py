@@ -1,22 +1,24 @@
+from typing import Optional
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 from util.constants import INT_MIN, INT_MAX
-from gui.util import setClass
+from ..util import set_class
 
 
 class TimerWidget(QWidget):
-    def __init__(self, parent: QWidget | None = None):
-        super().__init__(parent)
+    def __init__(self,
+                 parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent=parent)
         self.__init_components()
 
-    def __init_components(self):
-        QWidget.setClass = setClass
-        root_layout = QVBoxLayout(self)
+    def __init_components(self) -> None:
+        QWidget.set_class = set_class
+        root_layout = QVBoxLayout(parent=self)
         root_layout.setContentsMargins(10, 0, 10, 0)
         root_layout.setSpacing(10)
         # group
         group = QGroupBox()
-        group.setClass(['themeable-panel', 'themeable-border'])
+        group.set_class(['themeable-panel', 'themeable-border'])
         group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         root_layout.addWidget(group)
         # group_layout
@@ -59,4 +61,3 @@ class TimerWidget(QWidget):
         field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         form_layout.addWidget(label, 3, 0, Qt.AlignRight)
         form_layout.addWidget(field, 3, 1)
-        pass
