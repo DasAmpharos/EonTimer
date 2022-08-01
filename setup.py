@@ -23,7 +23,7 @@ def get_package_data() -> dict[str, list[str]]:
 
 setup(
     name=name,
-    version='0.0.1',
+    version='3.0.0',
     packages=packages,
     include_package_data=True,
     package_data=get_package_data()

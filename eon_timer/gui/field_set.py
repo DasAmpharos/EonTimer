@@ -1,11 +1,9 @@
 from dataclasses import dataclass
-from typing import Callable, Final, Optional
+from typing import Final, Optional
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLabel, QWidget
 
-AddWidget = Callable[[QWidget, int, int], None]
-RemoveWidget = Callable[[QWidget], None]
+from .form_layout import FormLayout
 
 
 @dataclass
@@ -13,20 +11,30 @@ class FieldSet:
     row: Final[int]
     field: Final[QWidget]
     label: Final[Optional[QLabel]]
+    layout: Final[FormLayout]
 
     def __init__(self,
                  row: int,
                  field: QWidget,
                  label: Optional[QLabel],
-                 add_widget: AddWidget,
-                 remove_widget: RemoveWidget,
-                 is_visible: bool = True) -> None:
+                 layout: FormLayout,
+                 enabled: bool = True,
+                 visible: bool = True) -> None:
         self.row = row
         self.field = field
         self.label = label
-        self.__add_widget = add_widget
-        self.__remove_widget = remove_widget
-        self.__visible = is_visible
+        self.layout = layout
+        self.__enabled = enabled
+        self.__visible = visible
+
+    @property
+    def enabled(self) -> bool:
+        return self.__enabled
+    
+    @enabled.setter
+    def enabled(self, value: bool) -> None:
+        if self.__enabled != value:
+            (self.enable if value else self.disable)()
 
     @property
     def visible(self) -> bool:
@@ -36,20 +44,29 @@ class FieldSet:
     def visible(self, value: bool) -> None:
         if self.__visible != value:
             (self.show if value else self.hide)()
-            self.__visible = value
+
+    def enable(self) -> None:
+        self.field.setEnabled(True)
+        if self.label is not None:
+            self.label.setEnabled(True)
+        self.__enabled = True
+    
+    def disable(self) -> None:
+        self.field.setEnabled(False)
+        if self.label is not None:
+            self.label.setEnabled(False)
+        self.__enabled = False
 
     def show(self) -> None:
-        col = 0
+        self.layout.set_row(self.row, self.field, self.label)
         if self.label is not None:
-            self.__add_widget(self.label, self.row, col, Qt.AlignRight)
             self.label.show()
-            col += 1
-        self.__add_widget(self.field, self.row, col)
         self.field.show()
+        self.__visible = True
 
     def hide(self) -> None:
+        self.layout.remove_row(self.row)
         if self.label is not None:
-            self.__remove_widget(self.label)
             self.label.hide()
-        self.__remove_widget(self.field)
         self.field.hide()
+        self.__visible = False

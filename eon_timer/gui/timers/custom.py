@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QWidget
+from eon_timer.gui.form_widget import FormWidget
 
 
-class TimerWidget(QWidget):
+class TimerWidget(FormWidget):
     pass
