@@ -2,6 +2,10 @@
   @return rgba(red($color), green($color), blue($color), $alpha);
 }
 
+$CARET_UP: "${caret_up}";
+$CARET_DOWN: "${caret_down}";
+$CARET_UP_DISABLED: "${caret_up_disabled}";
+$CARET_DOWN_DISABLED: "${caret_down_disabled}";
 $BACKGROUND_IMAGE: "${background_image}";
 
 $COLOR_FOREGROUND_DARK: black;
@@ -262,10 +266,10 @@ QComboBox {
   &::down-arrow {
     width: 8px;
     height: 8px;
-    image: url(:/png/caret-down.png);
+    image: url($CARET_DOWN);
 
     &:disabled {
-      image: url(:/png/disabled/caret-down.png);
+      image: url($CARET_DOWN_DISABLED);
     }
   }
 }
@@ -306,11 +310,11 @@ QAbstractSpinBox {
   &::up-arrow:off {
     width: 8px;
     height: 8px;
-    image: url(:/png/caret-up.png);
+    image: url($CARET_UP);
   }
 
   &::up-arrow:disabled {
-    image: url(:/png/disabled/caret-up.png);
+    image: url($CARET_UP_DISABLED);
   }
 
   &:down-button {
@@ -336,11 +340,11 @@ QAbstractSpinBox {
   &::down-arrow:off {
     width: 8px;
     height: 8px;
-    image: url(:/png/caret-down.png);
+    image: url($CARET_DOWN);
   }
 
   &::down-arrow:disabled {
-    image: url(:/png/disabled/caret-down.png);
+    image: url($CARET_DOWN);
   }
 
   &:hover {

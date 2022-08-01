@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
-import os
 import sys
 
-import pkg_resources
-import sass
 from PySide6.QtWidgets import QApplication
 
 from eon_timer.gui.app_window import AppWindow
