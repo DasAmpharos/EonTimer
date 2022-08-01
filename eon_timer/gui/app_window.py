@@ -1,16 +1,18 @@
 import functools
+from string import Template
 from typing import Optional
 
+import pkg_resources
 import PySide6.QtGui
+import sass
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
-from app_widget import AppWidget
+from .app_widget import AppWidget
 
 
 class AppWindow(QMainWindow):
-    def __init__(self,
-                 parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent=parent)
         self.app_widget = AppWidget(parent=self)
         self.__init_components()
@@ -28,6 +30,18 @@ class AppWindow(QMainWindow):
             ]))
         self.setCentralWidget(self.app_widget)
         self.setFixedSize(525, 395)
+
+        # style sheet
+        styleSheet = pkg_resources.resource_string(
+            'eon_timer.resources.styles', 'main.scss')
+        background_image_name = pkg_resources.resource_filename(
+            'eon_timer.resources.images', 'default_background.png')
+
+        template = Template(styleSheet.decode())
+        styleSheet = template.safe_substitute(
+            background_image=background_image_name)
+        styleSheet = sass.compile(string=styleSheet)
+        self.setStyleSheet(styleSheet)
 
         # ----- menu -----
         menu = QMenu()

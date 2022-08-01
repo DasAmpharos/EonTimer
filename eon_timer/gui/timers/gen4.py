@@ -1,63 +1,48 @@
 from typing import Optional
+
+from eon_timer.gui.form_layout import FormLayout
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
-from ...util.constants import INT_MIN, INT_MAX
+
+from ...util.constants import INT_MAX, INT_MIN
 from ..util import set_class
 
 
 class TimerWidget(QWidget):
-    def __init__(self,
-                 parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent=parent)
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
         self.__init_components()
 
     def __init_components(self) -> None:
         QWidget.set_class = set_class
-        root_layout = QVBoxLayout(parent=self)
-        root_layout.setContentsMargins(10, 0, 10, 0)
-        root_layout.setSpacing(10)
-        # group
-        group = QGroupBox()
-        group.set_class(['themeable-panel', 'themeable-border'])
-        group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        root_layout.addWidget(group)
-        # group_layout
-        group_layout = QVBoxLayout(parent=group)
-        group_layout.setContentsMargins(0, 0, 0, 0)
-        group_layout.setSpacing(0)
-        # form
-        form = QWidget()
-        form.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        group_layout.addWidget(form, 0, Qt.AlignTop)
-        # form_layout
-        form_layout = QGridLayout(form)
-        form_layout.setSpacing(10)
+        # ----- root_layout -----
+        root_layout = FormLayout(self)
+        root_layout.set_alignment(Qt.AlignTop)
+        root_layout.set_content_margins(10, 0, 10, 10)
+        # ----- form_group -----
+        form_group = QGroupBox()
+        root_layout.add_row(form_group)
+        form_layout = FormLayout(form_group)
+        form_layout.set_alignment(Qt.AlignTop)
+        form_group.set_class(['themeable-panel', 'themeable-border'])
+        form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- target_delay -----
         field = QSpinBox()
-        label = QLabel('Target Delay')
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 0, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 0, 1)
+        form_layout.add_row(field, 'Target Delay')
+        field.setRange(0, INT_MAX)
         # ----- target_second -----
         field = QSpinBox()
-        label = QLabel('Target Second')
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 1, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 1, 1)
+        form_layout.add_row(field, 'Target Second')
+        field.setRange(0, INT_MAX)
         # ----- calibrated_delay -----
         field = QSpinBox()
-        label = QLabel('Calibrated Delay')
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 2, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 2, 1)
+        form_layout.add_row(field, 'Calibrated Delay')
+        field.setRange(INT_MIN, INT_MAX)
         # ----- calibrated_second -----
         field = QSpinBox()
-        label = QLabel('Calibrated Second')
-        # field.setRange(INT_MIN, INT_MAX)
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 3, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 3, 1)
+        form_layout.add_row(field, 'Calibrated Second')
+        field.setRange(0, INT_MAX)
+        # ----- delay_hit -----
+        field = QSpinBox()
+        root_layout.add_row(field, 'Delay Hit')
+        field.setRange(0, INT_MAX)

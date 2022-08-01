@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 
 import pkg_resources
-from PySide6.QtQml import QQmlApplicationEngine
+import sass
 from PySide6.QtWidgets import QApplication
+
+from eon_timer.gui.app_window import AppWindow
 
 
 def main() -> int:
@@ -13,10 +16,9 @@ def main() -> int:
     app.setOrganizationName('DasAmpharos')
     app.setOrganizationDomain('io.github.dasampharos')
 
-    path = pkg_resources.resource_filename('eon_timer.res', 'main.qml')
-    engine = QQmlApplicationEngine()
-    engine.quit.connect(app.quit)
-    engine.load(path)
+    window = AppWindow()
+    window.show()
+
     return app.exec()
 
 

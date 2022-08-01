@@ -1,19 +1,22 @@
 from typing import Optional
+
+from eon_timer.gui.form_layout import FormLayout
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
-from util.constants import INT_MIN, INT_MAX
+
+from ...util.constants import INT_MAX, INT_MIN
 from ..util import set_class
 
 
 class TimerWidget(QWidget):
     def __init__(self,
                  parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent=parent)
+        super().__init__(parent)
         self.__init_components()
 
     def __init_components(self) -> None:
         QWidget.set_class = set_class
-        root_layout = QVBoxLayout(parent=self)
+        root_layout = QVBoxLayout(self)
         root_layout.setContentsMargins(10, 0, 10, 0)
         root_layout.setSpacing(10)
         # group
@@ -27,37 +30,20 @@ class TimerWidget(QWidget):
         group_layout.setSpacing(0)
         # form
         form = QWidget()
+        form_layout = FormLayout(form)
         form.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         group_layout.addWidget(form, 0, Qt.AlignTop)
-        # form_layout
-        form_layout = QGridLayout(form)
-        form_layout.setSpacing(10)
         # ----- target_delay -----
         field = QSpinBox()
-        label = QLabel('Target Delay')
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 0, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 0, 1)
+        field.setRange(0, INT_MAX)
+        form_layout.add_row(field, 'Target Delay')
         # ----- target_second -----
         field = QSpinBox()
-        label = QLabel('Target Second')
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 1, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 1, 1)
+        field.setRange(0, INT_MAX)
+        form_layout.add_row(field, 'Target Second')
         # ----- calibrated_delay -----
         field = QSpinBox()
-        label = QLabel('Calibrated Delay')
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 2, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 2, 1)
+        form_layout.add_row(field, 'Calibrated Delay')
         # ----- calibrated_second -----
         field = QSpinBox()
-        label = QLabel('Calibrated Second')
-        # field.setRange(INT_MIN, INT_MAX)
-        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        form_layout.addWidget(label, 3, 0, Qt.AlignRight)
-        form_layout.addWidget(field, 3, 1)
+        form_layout.add_row(field, 'Calibrated Second')

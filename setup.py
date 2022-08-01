@@ -10,11 +10,14 @@ packages = list(map(lambda it: f'{package_name}.{it}', packages))
 
 
 def get_package_data() -> dict[str, list[str]]:
-    pkg_path = os.path.join(package_name, 'res')
+    resources = []
+    pkg_path = os.path.join(package_name, 'resources')
+    for dirname, _, files in os.walk(pkg_path):
+        if '__pycache__' not in dirname:
+            files = filter(lambda it: not it.endswith('.py'), files)
+            file_paths = list(map(lambda it: os.path.join(dirname, it), files))
+            resources.extend(file_paths)
     pkg_name = pkg_path.replace(os.path.pathsep, '.')
-
-    files = os.listdir(pkg_path)
-    resources = list(filter(lambda it: not it.endswith('.py'), files))
     return {pkg_name: resources}
 
 
