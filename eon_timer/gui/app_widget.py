@@ -2,10 +2,10 @@ from typing import Optional
 
 from PySide6.QtWidgets import *
 
-from .timers.gen3 import TimerWidget as Gen3TimerWidget
-from .timers.gen4 import TimerWidget as Gen4TimerWidget
-from .timers.gen5 import TimerWidget as Gen5TimerWidget
-from .util import set_class
+from eon_timer.gui.timers.gen3 import TimerWidget as Gen3TimerWidget
+from eon_timer.gui.timers.gen4 import TimerWidget as Gen4TimerWidget
+from eon_timer.gui.timers.gen5 import TimerWidget as Gen5TimerWidget
+from eon_timer.gui import util
 
 
 class AppWidget(QWidget):
@@ -18,7 +18,7 @@ class AppWidget(QWidget):
         self.__init_components()
 
     def __init_components(self) -> None:
-        QWidget.set_class = set_class
+        QWidget.set_class = util.set_class
         # ----- root_layout -----
         root_layout = QGridLayout(self)
         root_layout.setColumnMinimumWidth(0, 215)
@@ -31,3 +31,10 @@ class AppWidget(QWidget):
         tab_widget.addTab(self.gen5_timer_widget, '5')
         tab_widget.addTab(self.gen4_timer_widget, '4')
         tab_widget.addTab(self.gen3_timer_widget, '3')
+        # ----- timer_btn -----
+        timer_btn = QPushButton('Start')
+        root_layout.addWidget(timer_btn, 3, 1)
+        # ----- update_btn -----
+        update_btn = QPushButton('Update')
+        root_layout.addWidget(update_btn, 3, 2)
+
