@@ -1,11 +1,12 @@
 from typing import Optional
 
-from PySide6.QtWidgets import *
-
+from eon_timer.gui import util
 from eon_timer.gui.timers.gen3 import TimerWidget as Gen3TimerWidget
 from eon_timer.gui.timers.gen4 import TimerWidget as Gen4TimerWidget
 from eon_timer.gui.timers.gen5 import TimerWidget as Gen5TimerWidget
-from eon_timer.gui import util
+from PySide6.QtWidgets import *
+
+from .timer_display_wdiget import TimerDisplayWidget
 
 
 class AppWidget(QWidget):
@@ -24,6 +25,12 @@ class AppWidget(QWidget):
         root_layout.setColumnMinimumWidth(0, 215)
         root_layout.setHorizontalSpacing(10)
         root_layout.setVerticalSpacing(10)
+        # ----- timer_display -----
+        timer_display = TimerDisplayWidget()
+        root_layout.addWidget(timer_display, 0, 0)
+        timer_display.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        timer_display.set_class(['themeable-panel', 'themeable-border'])
+        timer_display.setObjectName('timerDisplay')
         # ----- tab_widget -----
         tab_widget = QTabWidget()
         root_layout.addWidget(tab_widget, 0, 1, 2, 2)
@@ -37,4 +44,3 @@ class AppWidget(QWidget):
         # ----- update_btn -----
         update_btn = QPushButton('Update')
         root_layout.addWidget(update_btn, 3, 2)
-

@@ -56,6 +56,8 @@ class AppWindow(QMainWindow):
         )
         styleSheet = sass.compile(string=styleSheet)
         self.setStyleSheet(styleSheet)
+        with open('main.css', 'w') as file:
+            file.write(styleSheet)
 
         # ----- menu -----
         menu = QMenu()

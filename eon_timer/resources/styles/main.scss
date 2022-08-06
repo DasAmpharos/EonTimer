@@ -62,11 +62,13 @@ AppWindow {
   background-position: center;
 }
 
+#timerDisplay,
 .themeable-panel,
 QTabWidget.themeable-panel::pane {
   background-color: $PANEL_BACKGROUND_COLOR;
 }
 
+#timerDisplay,
 .themeable-border,
 QTabWidget.themeable-border::pane {
   border: 2px solid $PANEL_BORDER_COLOR;
