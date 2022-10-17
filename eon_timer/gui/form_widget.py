@@ -1,12 +1,9 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from enum import Enum
+from abc import abstractmethod
 from typing import Final, Optional
 
 from PySide6.QtWidgets import QLabel, QWidget
 
 from eon_timer.util import StrEnum
-
 from .field_set import FieldSet
 from .form_layout import FormLayout
 
@@ -32,7 +29,7 @@ class FormWidget(QWidget):
                    with_label: bool = True,
                    layout: Optional[FormLayout] = None) -> FieldSet:
         layout = layout or self.layout
-        label = QLabel(field.value) if with_label else None
+        label = QLabel(str(field)) if with_label else None
 
         row = layout.add_row(widget, label)
         field_set = FieldSet(row, widget, label, layout)

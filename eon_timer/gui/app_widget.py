@@ -6,7 +6,7 @@ from eon_timer.gui.timers.gen4 import TimerWidget as Gen4TimerWidget
 from eon_timer.gui.timers.gen5 import TimerWidget as Gen5TimerWidget
 from PySide6.QtWidgets import *
 
-from .timer_display_wdiget import TimerDisplayWidget
+from .timer_display_widget import TimerDisplayWidget
 
 
 class AppWidget(QWidget):
@@ -19,7 +19,6 @@ class AppWidget(QWidget):
         self.__init_components()
 
     def __init_components(self) -> None:
-        QWidget.set_class = util.set_class
         # ----- root_layout -----
         root_layout = QGridLayout(self)
         root_layout.setColumnMinimumWidth(0, 215)
@@ -29,12 +28,12 @@ class AppWidget(QWidget):
         timer_display = TimerDisplayWidget()
         root_layout.addWidget(timer_display, 0, 0)
         timer_display.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        timer_display.set_class(['themeable-panel', 'themeable-border'])
+        util.set_class(timer_display, ['themeable-panel', 'themeable-border'])
         timer_display.setObjectName('timerDisplay')
         # ----- tab_widget -----
         tab_widget = QTabWidget()
         root_layout.addWidget(tab_widget, 0, 1, 2, 2)
-        tab_widget.set_class(['themeable-panel', 'themeable-border'])
+        util.set_class(tab_widget, ['themeable-panel', 'themeable-border'])
         tab_widget.addTab(self.gen5_timer_widget, '5')
         tab_widget.addTab(self.gen4_timer_widget, '4')
         tab_widget.addTab(self.gen3_timer_widget, '3')

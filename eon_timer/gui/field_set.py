@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Final, Optional
 
 from PySide6.QtWidgets import QLabel, QWidget
@@ -6,13 +5,7 @@ from PySide6.QtWidgets import QLabel, QWidget
 from .form_layout import FormLayout
 
 
-@dataclass
 class FieldSet:
-    row: Final[int]
-    field: Final[QWidget]
-    label: Final[Optional[QLabel]]
-    layout: Final[FormLayout]
-
     def __init__(self,
                  row: int,
                  field: QWidget,
@@ -20,17 +13,17 @@ class FieldSet:
                  layout: FormLayout,
                  enabled: bool = True,
                  visible: bool = True) -> None:
-        self.row = row
-        self.field = field
-        self.label = label
-        self.layout = layout
+        self.row: Final[int] = row
+        self.field: Final[QWidget] = field
+        self.label: Final[Optional[QLabel]] = label
+        self.layout: Final[FormLayout] = layout
         self.__enabled = enabled
         self.__visible = visible
 
     @property
     def enabled(self) -> bool:
         return self.__enabled
-    
+
     @enabled.setter
     def enabled(self, value: bool) -> None:
         if self.__enabled != value:
@@ -50,7 +43,7 @@ class FieldSet:
         if self.label is not None:
             self.label.setEnabled(True)
         self.__enabled = True
-    
+
     def disable(self) -> None:
         self.field.setEnabled(False)
         if self.label is not None:

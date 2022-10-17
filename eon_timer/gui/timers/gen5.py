@@ -1,10 +1,10 @@
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtWidgets import QComboBox, QSizePolicy, QSpinBox
+
 from eon_timer.constants import INT_MAX, INT_MIN
-from eon_timer.gui import util
 from eon_timer.gui.form_widget import FormWidget
 from eon_timer.gui.scroll_widget import ScrollWidget
 from eon_timer.util import StrEnum
-from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import QComboBox, QSizePolicy, QSpinBox, QWidget
 
 
 class TimerWidget(FormWidget):
@@ -30,7 +30,6 @@ class TimerWidget(FormWidget):
         ENTRALINK_PLUS = 'Entralink+'
 
     def _init_components(self) -> None:
-        QWidget.set_class = util.set_class
         # ----- layout -----
         self.layout.set_alignment(Qt.AlignTop)
         self.layout.set_content_margins(10, 10, 10, 10)
@@ -39,7 +38,7 @@ class TimerWidget(FormWidget):
         self._add_field(self.Field.MODE, field)
         field.currentIndexChanged.connect(self.__on_mode_changed)
         for mode in self.Mode:
-            field.addItem(mode.value, mode)
+            field.addItem(str(mode), mode)
         # ----- scroll_area -----
         scroll_widget = ScrollWidget()
         scroll_widget.setSizePolicy(

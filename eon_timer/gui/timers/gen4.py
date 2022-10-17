@@ -1,9 +1,10 @@
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox
+
 from eon_timer.constants import INT_MAX, INT_MIN
 from eon_timer.gui import util
 from eon_timer.gui.form_layout import FormLayout
 from eon_timer.gui.form_widget import FormWidget
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox, QWidget
 
 
 class TimerWidget(FormWidget):
@@ -15,7 +16,6 @@ class TimerWidget(FormWidget):
         DELAY_HIT = 'Delay Hit'
 
     def _init_components(self) -> None:
-        QWidget.set_class = util.set_class
         # ----- layout -----
         self.layout.set_alignment(Qt.AlignTop)
         self.layout.set_content_margins(10, 10, 10, 10)
@@ -24,7 +24,7 @@ class TimerWidget(FormWidget):
         self.layout.add_row(form_group)
         form_layout = FormLayout(form_group)
         form_layout.set_alignment(Qt.AlignTop)
-        form_group.set_class(['themeable-panel', 'themeable-border'])
+        util.set_class(form_group, ['themeable-panel', 'themeable-border'])
         form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- target_delay -----
         field = QSpinBox()

@@ -33,7 +33,7 @@ class AppWindow(QMainWindow):
         self.setFixedSize(525, 395)
 
         # style sheet
-        styleSheet = pkg_resources.resource_string(
+        stylesheet = pkg_resources.resource_string(
             'eon_timer.resources.styles', 'main.scss')
         caret_up = pkg_resources.resource_filename(
             'eon_timer.resources.icons', 'caret-up.png')
@@ -46,18 +46,18 @@ class AppWindow(QMainWindow):
         background_image = pkg_resources.resource_filename(
             'eon_timer.resources.images', 'default_background.png')
 
-        template = Template(styleSheet.decode())
-        styleSheet = template.safe_substitute(
+        template = Template(stylesheet.decode())
+        stylesheet = template.safe_substitute(
             caret_up=self.__normalize_file(caret_up),
             caret_down=self.__normalize_file(caret_down),
             caret_up_disabled=self.__normalize_file(caret_up_disabled),
             caret_down_disabled=self.__normalize_file(caret_down_disabled),
             background_image=self.__normalize_file(background_image)
         )
-        styleSheet = sass.compile(string=styleSheet)
-        self.setStyleSheet(styleSheet)
+        stylesheet = sass.compile(string=stylesheet)
+        self.setStyleSheet(stylesheet)
         with open('main.css', 'w') as file:
-            file.write(styleSheet)
+            file.write(stylesheet)
 
         # ----- menu -----
         menu = QMenu()

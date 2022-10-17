@@ -14,10 +14,9 @@ class ScrollWidget(QScrollArea):
         self.__init_components()
 
     def __init_components(self) -> None:
-        QWidget.set_class = util.set_class
         # ----- scroll_pane -----
         scroll_pane = QWidget()
-        scroll_pane.set_class(['themeable-panel'])
+        util.set_class(scroll_pane, ['themeable-panel'])
         scroll_pane.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- scroll_pane_layout -----
         scroll_pane_layout = FormLayout(scroll_pane)
@@ -27,6 +26,6 @@ class ScrollWidget(QScrollArea):
         self.setFrameShape(QFrame.NoFrame)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.set_class(['themeable-panel themeable-border'])
+        util.set_class(self, ['themeable-panel', 'themeable-border'])
         self.setWidgetResizable(True)
         self.setWidget(scroll_pane)

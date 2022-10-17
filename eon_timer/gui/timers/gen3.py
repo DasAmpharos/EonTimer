@@ -1,13 +1,14 @@
 from typing import Optional
 
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtWidgets import (QComboBox, QGroupBox, QPushButton, QSizePolicy,
+                               QSpinBox, QWidget)
+
 from eon_timer.constants import INT_MAX, INT_MIN
 from eon_timer.gui import util
 from eon_timer.gui.form_layout import FormLayout
 from eon_timer.gui.form_widget import FormWidget
 from eon_timer.util import StrEnum
-from PySide6.QtCore import Qt, Slot
-from PySide6.QtWidgets import (QComboBox, QGroupBox, QPushButton, QSizePolicy,
-                               QSpinBox, QWidget)
 
 
 class TimerWidget(FormWidget):
@@ -28,7 +29,6 @@ class TimerWidget(FormWidget):
         super().__init__(parent)
 
     def _init_components(self) -> None:
-        QWidget.set_class = util.set_class
         # ----- layout -----
         self.layout.set_alignment(Qt.AlignTop)
         self.layout.set_content_margins(10, 10, 10, 10)
@@ -37,13 +37,13 @@ class TimerWidget(FormWidget):
         self._add_field(self.Field.MODE, field)
         field.currentIndexChanged.connect(self.__update)
         for mode in self.Mode:
-            field.addItem(mode.value, mode)
+            field.addItem(str(mode), mode)
         # ----- form_group -----
         form_group = QGroupBox()
         self.layout.add_row(form_group)
         form_layout = FormLayout(form_group)
         form_layout.set_alignment(Qt.AlignTop)
-        form_group.set_class(['themeable-panel', 'themeable-border'])
+        util.set_class(form_group, ['themeable-panel', 'themeable-border'])
         form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- pre_timer -----
         field = QSpinBox()
