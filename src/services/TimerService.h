@@ -13,6 +13,7 @@
 #include <QThread>
 #include <memory>
 #include <vector>
+#include <thread>
 
 namespace service {
     class TimerService : public QObject {
