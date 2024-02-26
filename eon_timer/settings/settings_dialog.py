@@ -1,29 +1,36 @@
-from typing import Optional
+from typing import Optional, Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QDialog, QGridLayout, QPushButton, QTabWidget,
                                QWidget)
 
+from . import SettingsConfig
 from .action_widget import ActionSettingsWidget
 from .timer_widget import TimerSettingsWidget
 
 
 class SettingsDialog(QDialog):
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self,
+                 config: SettingsConfig,
+                 parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
+        self.__action_settings_widget: Final[ActionSettingsWidget] = ActionSettingsWidget(config.action)
+        self.__timer_settings_widget: Final[TimerSettingsWidget] = TimerSettingsWidget(config.timer)
         self.__init_components()
 
     def __init_components(self) -> None:
         self.setWindowTitle('Preferences')
-        self.setWindowFlags(Qt.Dialog | Qt.WindowTitleHint |
-                            Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
+        self.setWindowFlags(Qt.Dialog |
+                            Qt.WindowTitleHint |
+                            Qt.CustomizeWindowHint |
+                            Qt.WindowCloseButtonHint)
         # ----- layout -----
         layout = QGridLayout(self)
         layout.setSpacing(10)
         # ----- tabs -----
         tabs = QTabWidget()
-        tabs.addTab(ActionSettingsWidget(), 'Action')
-        tabs.addTab(TimerSettingsWidget(), 'Timer')
+        tabs.addTab(self.__action_settings_widget, 'Action')
+        tabs.addTab(self.__timer_settings_widget, 'Timer')
         layout.addWidget(tabs, 0, 0, 1, 2)
         # ----- cancel button -----
         button = QPushButton('Cancel')
@@ -36,7 +43,10 @@ class SettingsDialog(QDialog):
         button.setDefault(True)
 
     def __on_accepted(self) -> None:
-        self.done(QDialog.Accepted)
+        self.__action_settings_widget.on_accepted()
+        self.__timer_settings_widget.on_accepted()
+        self.done(QDialog.DialogCode.Accepted)
 
     def __on_cancelled(self) -> None:
-        self.done(QDialog.Rejected)
+        self.__action_settings_widget.on_cancelled()
+        self.done(QDialog.DialogCode.Rejected)

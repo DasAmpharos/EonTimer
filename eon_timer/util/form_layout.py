@@ -50,3 +50,6 @@ class FormLayout:
 
     def set_alignment(self, alignment: Qt.AlignmentFlag) -> None:
         self.__layout.setAlignment(alignment)
+
+    def set_spacing(self, spacing: int):
+        self.__layout.setSpacing(spacing)

@@ -1,13 +1,15 @@
+from typing import Optional, Final
+
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox
+from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox, QWidget
 
-from eon_timer.constants import INT_MAX, INT_MIN
-from eon_timer.gui import util
-from eon_timer.gui.form_layout import FormLayout
-from eon_timer.gui.form_widget import FormWidget
+from eon_timer import util
+from eon_timer.gen4 import Gen4Config
+from eon_timer.util import FormLayout, FormWidget
+from eon_timer.util.constants import INT_MAX, INT_MIN
 
 
-class TimerWidget(FormWidget):
+class Gen4Widget(FormWidget):
     class Field(FormWidget.Field):
         TARGET_DELAY = 'Target Delay'
         TARGET_SECOND = 'Target Second'
@@ -15,9 +17,16 @@ class TimerWidget(FormWidget):
         CALIBRATED_SECOND = 'Calibrated Second'
         DELAY_HIT = 'Delay Hit'
 
+    def __init__(self,
+                 config: Gen4Config,
+                 parent: Optional[QWidget] = None) -> None:
+        self.config = config
+        super().__init__(parent)
+
     def _init_components(self) -> None:
+        self.setObjectName('gen4Widget')
         # ----- layout -----
-        self.layout.set_alignment(Qt.AlignTop)
+        self.layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self.layout.set_content_margins(10, 10, 10, 10)
         # ----- form_group -----
         form_group = QGroupBox()
@@ -28,25 +37,21 @@ class TimerWidget(FormWidget):
         form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- target_delay -----
         field = QSpinBox()
-        self._add_field(self.Field.TARGET_DELAY, field,
-                        layout=form_layout)
+        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout)
         field.setRange(0, INT_MAX)
         # ----- target_second -----
         field = QSpinBox()
-        self._add_field(self.Field.TARGET_SECOND, field,
-                        layout=form_layout)
+        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout)
         field.setRange(0, INT_MAX)
         # ----- calibrated_delay -----
         field = QSpinBox()
-        self._add_field(self.Field.CALIBRATED_DELAY, field,
-                        layout=form_layout)
+        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout)
         field.setRange(INT_MIN, INT_MAX)
         # ----- calibrated_second -----
         field = QSpinBox()
-        self._add_field(self.Field.CALIBRATED_SECOND, field,
-                        layout=form_layout)
+        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout)
         field.setRange(0, INT_MAX)
         # ----- delay_hit -----
         field = QSpinBox()
-        self._add_field(self.Field.DELAY_HIT, field)
+        self.add_field(self.Field.DELAY_HIT, field)
         field.setRange(0, INT_MAX)

@@ -1,9 +1,9 @@
 from abc import abstractmethod
+from enum import StrEnum
 from typing import Final, Optional
 
 from PySide6.QtWidgets import QLabel, QWidget
 
-from eon_timer.util import StrEnum
 from .field_set import FieldSet
 from .form_layout import FormLayout
 
@@ -23,11 +23,11 @@ class FormWidget(QWidget):
     def _init_components(self) -> None:
         pass
 
-    def _add_field(self,
-                   field: Field,
-                   widget: QWidget,
-                   with_label: bool = True,
-                   layout: Optional[FormLayout] = None) -> FieldSet:
+    def add_field(self,
+                  field: Field,
+                  widget: QWidget,
+                  with_label: bool = True,
+                  layout: Optional[FormLayout] = None) -> FieldSet:
         layout = layout or self.layout
         label = QLabel(str(field)) if with_label else None
 
@@ -36,7 +36,7 @@ class FormWidget(QWidget):
         self.field_sets[field] = field_set
         return field_set
 
-    def _set_visible(self, field: Field, visible: bool) -> None:
+    def set_visible(self, field: Field, visible: bool) -> None:
         field_set = self.field_sets.get(field, None)
         if field_set is not None:
             field_set.visible = visible

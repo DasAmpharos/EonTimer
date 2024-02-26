@@ -15,8 +15,8 @@ $COLOR_FOREGROUND_LIGHT: lighten($color: $COLOR_FOREGROUND_DARK, $amount: 10);
 
 /* background colors */
 $COLOR_BACKGROUND_LIGHT: white;
-$COLOR_BACKGROUND_NORMAL: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 5);
-$COLOR_BACKGROUND_DARK: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 10);
+$COLOR_BACKGROUND_NORMAL: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 10);
+$COLOR_BACKGROUND_DARK: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 20);
 
 /* panels */
 $PANEL_BACKGROUND_COLOR: withAlpha(white, 0.5);
@@ -359,9 +359,7 @@ QTabBar {
   padding: 2px;
   border: none;
   border-radius: $SIZE_BORDER_RADIUS;
-}
 
-QTabBar {
   &::tab {
     &:top {
       min-width: 2.5em;
@@ -369,44 +367,40 @@ QTabBar {
       padding: 2px 4px 2px 4px;
       color: $COLOR_FOREGROUND_LIGHT;
       background-color: $COLOR_BACKGROUND_NORMAL;
-      border-bottom: 3px solid $COLOR_BACKGROUND_NORMAL;
       border-top-left-radius: 3px;
       border-top-right-radius: 3px;
+      border-bottom: none;
 
       &:selected {
         color: $COLOR_FOREGROUND_LIGHT;
         background-color: $COLOR_BACKGROUND_LIGHT;
-        border-bottom: 3px solid $BORDER_SELECTION_COLOR_NORMAL;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
 
         &:disabled {
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_NORMAL;
-          border-bottom: 3px solid $BORDER_SELECTION_COLOR_DARK;
+          color: $COLOR_FOREGROUND_NORMAL_DISABLED;
+          background-color: $COLOR_BACKGROUND_NORMAL_DISABLED;
         }
       }
 
-      &:not(selected) {
-        margin-top: 2px;
-        border-top: 1px solid $COLOR_BACKGROUND_DARK;
-        border-left: 1px solid $COLOR_BACKGROUND_DARK;
-        border-right: 1px solid $COLOR_BACKGROUND_DARK;
-        border-bottom: 2px solid $COLOR_BACKGROUND_DARK;
-
-        &:disabled {
-          color: $COLOR_FOREGROUND_DARK;
-          background-color: $COLOR_BACKGROUND_DARK;
-          border-bottom: 3px solid $COLOR_BACKGROUND_DARK;
-        }
-
-        &:hover {
-          padding-left: 4px;
-          padding-right: 4px;
-          border: $BORDER_SELECTION_LIGHT;
-          border-bottom: 3px solid $BORDER_SELECTION_COLOR_LIGHT;
-        }
-      }
+      //&:not(selected) {
+      //  margin-top: 2px;
+      //  border-top: 1px solid $COLOR_BACKGROUND_DARK;
+      //  border-left: 1px solid $COLOR_BACKGROUND_DARK;
+      //  border-right: 1px solid $COLOR_BACKGROUND_DARK;
+      //  border-bottom: 2px solid $COLOR_BACKGROUND_DARK;
+      //
+      //  &:disabled {
+      //    color: $COLOR_FOREGROUND_DARK;
+      //    background-color: $COLOR_BACKGROUND_DARK;
+      //    border-bottom: 3px solid $COLOR_BACKGROUND_DARK;
+      //  }
+      //
+      //  &:hover {
+      //    padding-left: 4px;
+      //    padding-right: 4px;
+      //    border: $BORDER_SELECTION_LIGHT;
+      //    border-bottom: 3px solid $BORDER_SELECTION_COLOR_LIGHT;
+      //  }
+      //}
     }
   }
 }
