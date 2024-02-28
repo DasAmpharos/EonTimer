@@ -3,10 +3,10 @@ from typing import Optional, Final, Callable
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCheckBox, QComboBox, QSpinBox, QWidget
 
-from .timer_config import TimerSettingsConfig
-from .. import util
-from ..console import Console
-from ..util import FormWidget
+from .config import TimerConfig
+from eon_timer import util
+from eon_timer.settings.timer.console import Console
+from eon_timer.util import FormWidget
 
 
 class TimerSettingsWidget(FormWidget):
@@ -16,10 +16,10 @@ class TimerSettingsWidget(FormWidget):
         PRECISION_CALIBRATION = 'Precision Calibration'
 
     def __init__(self,
-                 config: TimerSettingsConfig,
+                 config: TimerConfig,
                  parent: Optional[QWidget] = None) -> None:
-        self.__config: Final[TimerSettingsConfig] = config
-        self.__changes: Final[TimerSettingsConfig] = config.model_copy()
+        self.__config: Final[TimerConfig] = config
+        self.__changes: Final[TimerConfig] = config.model_copy()
         super().__init__(parent)
 
     def _init_components(self) -> None:

@@ -2,12 +2,12 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from .action_color import ActionColor
-from .action_mode import ActionMode
-from .action_sound import ActionSound
+from eon_timer.settings.action.action_color import ActionColor
+from eon_timer.settings.action.action_mode import ActionMode
+from eon_timer.settings.action.action_sound import (ActionSound)
 
 
-class ActionSettingsConfig(BaseModel):
+class ActionConfig(BaseModel):
     mode: ActionMode = Field(default=ActionMode.AV)
     sound: ActionSound = Field(default=ActionSound.BEEP)
     color: ActionColor = Field(default_factory=lambda: ActionColor(r=0, g=0, b=255))

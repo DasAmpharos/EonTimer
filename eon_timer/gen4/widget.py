@@ -20,7 +20,7 @@ class Gen4Widget(FormWidget):
     def __init__(self,
                  config: Gen4Config,
                  parent: Optional[QWidget] = None) -> None:
-        self.config = config
+        self.__config: Final[Gen4Config] = config
         super().__init__(parent)
 
     def _init_components(self) -> None:
@@ -37,20 +37,24 @@ class Gen4Widget(FormWidget):
         form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- target_delay -----
         field = QSpinBox()
-        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout)
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.target_delay)
+        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout)
         # ----- target_second -----
         field = QSpinBox()
-        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout)
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.target_second)
+        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout)
         # ----- calibrated_delay -----
         field = QSpinBox()
-        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout)
         field.setRange(INT_MIN, INT_MAX)
+        field.setValue(self.__config.calibrated_delay)
+        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout)
         # ----- calibrated_second -----
         field = QSpinBox()
-        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout)
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.calibrated_second)
+        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout)
         # ----- delay_hit -----
         field = QSpinBox()
         self.add_field(self.Field.DELAY_HIT, field)

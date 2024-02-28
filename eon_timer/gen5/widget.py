@@ -1,4 +1,4 @@
-from typing import Optional, Callable
+from typing import Optional, Callable, Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QComboBox, QSizePolicy, QSpinBox, QWidget
@@ -29,7 +29,7 @@ class Gen5Widget(FormWidget):
     def __init__(self,
                  config: Gen5Config,
                  parent: Optional[QWidget] = None) -> None:
-        self.config = config
+        self.__config: Final[Gen5Config] = config
         super().__init__(parent)
 
     def _init_components(self) -> None:
@@ -39,7 +39,7 @@ class Gen5Widget(FormWidget):
         self.layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         mode_field = QComboBox()
-        util.add_items(mode_field, Gen5Config.Mode, self.config.mode)
+        util.add_items(mode_field, Gen5Config.Mode, self.__config.mode)
         self.add_field(self.Field.MODE, mode_field)
         # ----- scroll_area -----
         scroll_area = ScrollWidget()
@@ -55,26 +55,32 @@ class Gen5Widget(FormWidget):
         # ----- target_delay -----
         field = QSpinBox()
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.target_delay)
         form.add_field(self.Field.TARGET_DELAY, field)
         # ----- target_second -----
         field = QSpinBox()
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.target_second)
         form.add_field(self.Field.TARGET_SECOND, field)
         # ----- target_advances -----
         field = QSpinBox()
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.target_advances)
         form.add_field(self.Field.TARGET_ADVANCES, field)
         # ----- calibration -----
         field = QSpinBox()
         field.setRange(INT_MIN, INT_MAX)
+        field.setValue(self.__config.calibration)
         form.add_field(self.Field.CALIBRATION, field)
         # ----- entralink_calibration -----
         field = QSpinBox()
         field.setRange(INT_MIN, INT_MAX)
+        field.setValue(self.__config.entralink_calibration)
         form.add_field(self.Field.ENTRALINK_CALIBRATION, field)
         # ----- frame_calibration -----
         field = QSpinBox()
         field.setRange(INT_MIN, INT_MAX)
+        field.setValue(self.__config.frame_calibration)
         form.add_field(self.Field.FRAME_CALIBRATION, field)
         # ----- delay_hit -----
         field = QSpinBox()
@@ -89,7 +95,7 @@ class Gen5Widget(FormWidget):
         field.setRange(0, INT_MAX)
         self.add_field(self.Field.ADVANCES_HIT, field)
         # update field visibility
-        idx = Gen5Config.Mode.index_of(self.config.mode)
+        idx = Gen5Config.Mode.index_of(self.__config.mode)
         self.__on_mode_changed(form)(idx)
 
     @classmethod

@@ -1,7 +1,6 @@
 from enum import StrEnum
 
-import pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from eon_timer.util.enum import EnhancedEnum
 
@@ -11,7 +10,7 @@ class Gen3Config(BaseModel):
         STANDARD = 'Standard'
         VARIABLE_TARGET = 'Variable Target'
 
-    mode: Mode = pydantic.Field(default=Mode.STANDARD)
-    pre_timer: int = pydantic.Field(default=5000)
-    target_frame: int = pydantic.Field(default=1000)
-    calibration: int = pydantic.Field(default=0)
+    mode: Mode = Field(default=Mode.STANDARD)
+    pre_timer: int = Field(default=5000)
+    target_frame: int = Field(default=1000)
+    calibration: int = Field(default=0)

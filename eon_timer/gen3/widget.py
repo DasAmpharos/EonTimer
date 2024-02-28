@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QComboBox, QGroupBox, QPushButton, QSizePolicy,
@@ -22,7 +22,7 @@ class Gen3Widget(FormWidget):
     def __init__(self,
                  config: Gen3Config,
                  parent: Optional[QWidget] = None) -> None:
-        self.config = config
+        self.__config: Final[Gen3Config] = config
         super().__init__(parent)
 
     def _init_components(self) -> None:
@@ -32,7 +32,7 @@ class Gen3Widget(FormWidget):
         self.layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         field = QComboBox()
-        util.add_items(field, Gen3Config.Mode, self.config.mode)
+        util.add_items(field, Gen3Config.Mode, self.__config.mode)
         field.currentIndexChanged.connect(self.__on_mode_changed)
         self.add_field(self.Field.MODE, field)
 
@@ -46,16 +46,19 @@ class Gen3Widget(FormWidget):
         # ----- pre_timer -----
         field = QSpinBox()
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.pre_timer)
         self.add_field(self.Field.PRE_TIMER, field,
                        layout=form_layout)
         # ----- target_frame -----
         field = QSpinBox()
         field.setRange(0, INT_MAX)
+        field.setValue(self.__config.target_frame)
         self.add_field(self.Field.TARGET_FRAME, field,
                        layout=form_layout)
         # ----- calibration -----
         field = QSpinBox()
         field.setRange(INT_MIN, INT_MAX)
+        field.setValue(self.__config.calibration)
         self.add_field(self.Field.CALIBRATION, field,
                        layout=form_layout)
         # ----- set_target_frame_btn -----

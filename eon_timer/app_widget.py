@@ -9,7 +9,7 @@ from .gen3 import Gen3Widget
 from .gen4 import Gen4Widget
 from .gen5 import Gen5Widget
 from .resources import fonts
-from .settings.settings_dialog import SettingsDialog
+from .settings.dialog import SettingsDialog
 from .timer_widget import TimerWidget
 
 

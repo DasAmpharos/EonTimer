@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from .gen3 import Gen3Config
 from .gen4 import Gen4Config
 from .gen5 import Gen5Config
-from .settings import SettingsConfig
+from .config import SettingsConfig
 
 
 class AppConfig(BaseModel):

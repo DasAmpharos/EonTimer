@@ -5,8 +5,8 @@ from PySide6.QtWidgets import (QDialog, QGridLayout, QPushButton, QTabWidget,
                                QWidget)
 
 from . import SettingsConfig
-from .action_widget import ActionSettingsWidget
-from .timer_widget import TimerSettingsWidget
+from eon_timer.config.action.action_widget import ActionSettingsWidget
+from eon_timer.config.timer.timer_widget import TimerSettingsWidget
 
 
 class SettingsDialog(QDialog):

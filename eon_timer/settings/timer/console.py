@@ -1,6 +1,8 @@
 from enum import StrEnum
 from typing import Final
 
+from eon_timer.util.enum import EnhancedEnum
+
 GBA_FPS: Final[float] = 59.7275
 NDS_SLOT1_FPS: Final[float] = 59.8261
 NDS_SLOT2_FPS: Final[float] = 59.6555
@@ -10,7 +12,7 @@ NDS_SLOT1_FRAMERATE: Final[float] = 1000 / NDS_SLOT1_FPS
 NDS_SLOT2_FRAMERATE: Final[float] = 1000 / NDS_SLOT2_FPS
 
 
-class Console(StrEnum):
+class Console(EnhancedEnum, StrEnum):
     GBA = 'GBA'
     NDS_SLOT1 = 'NDS - Slot 1'
     NDS_SLOT2 = 'NDS - Slot 2'

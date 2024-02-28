@@ -1,15 +1,9 @@
-from enum import Enum, StrEnum
-from typing import Type, Self, override
+from enum import Enum
+from typing import Type, Self
 
 
 class EnhancedEnum(Enum):
     __cached_values = None
-
-    @classmethod
-    def values(cls: Type[Self]) -> tuple[Self, ...]:
-        if cls.__cached_values is None:
-            cls.__cached_values = tuple(cls)
-        return cls.__cached_values
 
     @classmethod
     def get(cls, index: int) -> Self:
@@ -21,8 +15,8 @@ class EnhancedEnum(Enum):
         values = cls.values()
         return values.index(e)
 
-
-class TestEnum(StrEnum, EnhancedEnum):
-    A = 'a'
-    B = 'b'
-    C = 'c'
+    @classmethod
+    def values(cls: Type[Self]) -> tuple[Self, ...]:
+        if cls.__cached_values is None:
+            cls.__cached_values = tuple(cls)
+        return cls.__cached_values

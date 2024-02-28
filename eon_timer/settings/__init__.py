@@ -1,4 +1,4 @@
-from .action_config import ActionSettingsConfig
-from .timer_config import TimerSettingsConfig
+from eon_timer.config.action.action_config import ActionConfig
+from eon_timer.config.timer.timer_config import TimerConfig
 
-from .settings_config import SettingsConfig
+from .config import SettingsConfig

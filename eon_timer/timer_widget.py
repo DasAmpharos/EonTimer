@@ -8,7 +8,7 @@ from eon_timer.resources import fonts
 
 
 class TimerWidget(QGroupBox):
-    def __init__(self, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.__init_components()
 

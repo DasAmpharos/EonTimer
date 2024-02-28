@@ -4,12 +4,12 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap, QColor
 from PySide6.QtWidgets import QComboBox, QPushButton, QSpinBox, QWidget, QColorDialog
 
+from eon_timer.settings.action.action_color import ActionColor
+from eon_timer.settings.action.action_mode import ActionMode
+from eon_timer.settings.action.action_sound import ActionSound
+from eon_timer.util import util, constants
 from eon_timer.util.form_widget import FormWidget
-from .action_color import ActionColor
-from .action_config import ActionSettingsConfig
-from .action_mode import ActionMode
-from .action_sound import ActionSound
-from ..util import constants, util
+from .config import ActionConfig
 
 
 class ActionSettingsWidget(FormWidget):
@@ -21,10 +21,10 @@ class ActionSettingsWidget(FormWidget):
         COUNT = 'Count'
 
     def __init__(self,
-                 config: ActionSettingsConfig,
+                 config: ActionConfig,
                  parent: Optional[QWidget] = None) -> None:
-        self.config: Final[ActionSettingsConfig] = config
-        self.changes: Final[ActionSettingsConfig] = config.model_copy()
+        self.config: Final[ActionConfig] = config
+        self.changes: Final[ActionConfig] = config.model_copy()
         super().__init__(parent)
 
     def _init_components(self) -> None:
