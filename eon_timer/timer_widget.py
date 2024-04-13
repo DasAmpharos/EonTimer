@@ -1,43 +1,66 @@
-from typing import Optional
+from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFontDatabase, QFont
-from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QGroupBox, QLabel, QGridLayout
 
-from eon_timer.resources import fonts
+from .app_state import AppState
+from .resources import fonts
+from .util import pyside
+from .util.injector import component
 
 
+@component()
 class TimerWidget(QGroupBox):
-    def __init__(self, parent: Optional[QWidget] = None):
-        super().__init__(parent)
+    def __init__(self, state: AppState):
+        super().__init__()
+        self.state: Final[AppState] = state
+        self.current_phase_lbl: Final[QLabel] = QLabel()
+        self.minutes_before_target_lbl: Final[QLabel] = QLabel()
+        self.next_phase_lbl: Final[QLabel] = QLabel()
         self.__init_components()
 
     def __init_components(self) -> None:
-        root_layout = QVBoxLayout(self)
-        root_layout.setAlignment(Qt.AlignTop)
-        root_layout.setSpacing(5)
-        # ----- current_stage -----
-        field = QLabel('0:00')
-        root_layout.addWidget(field)
-        field.setObjectName('currentStageLbl')
-        fontname = fonts.resource_filename('RobotoMono-Regular.ttf')
-        application_font = QFontDatabase.addApplicationFont(fontname)
-        font_families = QFontDatabase.applicationFontFamilies(application_font)
-        font_family = next(iter(font_families))
-        field.setFont(QFont(font_family, 36))
-        # ----- minutes_before_target -----
-        field = QLabel('0')
-        layout = QHBoxLayout()
+        layout = QGridLayout(self)
+        layout.setAlignment(Qt.AlignTop)
         layout.setSpacing(5)
-        root_layout.addLayout(layout)
-        root_layout.setAlignment(layout, Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(QLabel('Minutes Before Target:'))
-        layout.addWidget(field)
-        # ----- next_stage -----
-        field = QLabel('0:00')
-        layout = QHBoxLayout()
-        layout.setSpacing(5)
-        root_layout.addLayout(layout)
-        root_layout.setAlignment(layout, Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(QLabel('Next Stage:'))
-        layout.addWidget(field)
+
+        # ----- current_phase_lbl -----
+        self.current_phase_lbl.setText('0:00')
+        layout.addWidget(self.current_phase_lbl, 0, 0, 1, 2)
+        self.current_phase_lbl.setObjectName('currentPhaseLbl')
+        font_name = fonts.resource_filename('RobotoMono-Regular.ttf')
+        self.current_phase_lbl.setFont(pyside.get_font(font_name, 36))
+        # bind to property
+        self.state.current_phase_changed.connect(self.__on_current_phase_changed)
+        self.state.current_phase_elapsed_changed.connect(self.__on_current_phase_changed)
+        # ----- minutes_before_target_lbl -----
+        self.minutes_before_target_lbl.setText('0')
+        layout.addWidget(QLabel('Minutes Before Target:'), 1, 0, Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.minutes_before_target_lbl, 1, 1, Qt.AlignmentFlag.AlignLeft)
+        self.state.minutes_before_target_changed.connect(self.__on_minutes_before_target_changed)
+        # ----- next_phase_lbl -----
+        self.next_phase_lbl.setText('0:00')
+        layout.addWidget(QLabel('Next Phase:'), 2, 0, Qt.AlignmentFlag.AlignRight)
+        layout.addWidget(self.next_phase_lbl, 2, 1, Qt.AlignmentFlag.AlignLeft)
+        self.state.next_phase_changed.connect(self.__on_next_phase_changed)
+
+    def __on_current_phase_changed(self):
+        current_phase = self.state.current_phase
+        current_phase_elapsed = self.state.current_phase_elapsed
+        text = self.__format_time(current_phase - current_phase_elapsed)
+        self.current_phase_lbl.setText(text)
+
+    def __on_minutes_before_target_changed(self, new_value: int):
+        self.minutes_before_target_lbl.setText(str(new_value))
+
+    def __on_next_phase_changed(self, new_value: int):
+        self.next_phase_lbl.setText(self.__format_time(new_value))
+
+    @staticmethod
+    def __format_time(milliseconds: int | float) -> str:
+        if isinstance(milliseconds, float):
+            milliseconds = int(milliseconds)
+
+        seconds = milliseconds // 1000
+        milliseconds_part = milliseconds % 1000
+        return f'{seconds}:{milliseconds_part:03d}'

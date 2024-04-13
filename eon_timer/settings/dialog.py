@@ -1,21 +1,21 @@
-from typing import Optional, Final
+from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QDialog, QGridLayout, QPushButton, QTabWidget,
-                               QWidget)
+from PySide6.QtWidgets import (QDialog, QGridLayout, QPushButton, QTabWidget)
 
-from . import SettingsConfig
-from eon_timer.config.action.action_widget import ActionSettingsWidget
-from eon_timer.config.timer.timer_widget import TimerSettingsWidget
+from eon_timer import component
+from eon_timer.settings.action.widget import ActionSettingsWidget
+from eon_timer.settings.timer.widget import TimerSettingsWidget
 
 
+@component()
 class SettingsDialog(QDialog):
     def __init__(self,
-                 config: SettingsConfig,
-                 parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-        self.__action_settings_widget: Final[ActionSettingsWidget] = ActionSettingsWidget(config.action)
-        self.__timer_settings_widget: Final[TimerSettingsWidget] = TimerSettingsWidget(config.timer)
+                 action_settings_widget: ActionSettingsWidget,
+                 timer_settings_widget: TimerSettingsWidget) -> None:
+        super().__init__()
+        self.action_settings_widget: Final[ActionSettingsWidget] = action_settings_widget
+        self.timer_settings_widget: Final[TimerSettingsWidget] = timer_settings_widget
         self.__init_components()
 
     def __init_components(self) -> None:
@@ -29,8 +29,8 @@ class SettingsDialog(QDialog):
         layout.setSpacing(10)
         # ----- tabs -----
         tabs = QTabWidget()
-        tabs.addTab(self.__action_settings_widget, 'Action')
-        tabs.addTab(self.__timer_settings_widget, 'Timer')
+        tabs.addTab(self.action_settings_widget, 'Action')
+        tabs.addTab(self.timer_settings_widget, 'Timer')
         layout.addWidget(tabs, 0, 0, 1, 2)
         # ----- cancel button -----
         button = QPushButton('Cancel')
@@ -43,10 +43,11 @@ class SettingsDialog(QDialog):
         button.setDefault(True)
 
     def __on_accepted(self) -> None:
-        self.__action_settings_widget.on_accepted()
-        self.__timer_settings_widget.on_accepted()
+        self.action_settings_widget.on_accepted()
+        self.timer_settings_widget.on_accepted()
         self.done(QDialog.DialogCode.Accepted)
 
     def __on_cancelled(self) -> None:
-        self.__action_settings_widget.on_cancelled()
+        self.action_settings_widget.on_rejected()
+        self.timer_settings_widget.on_rejected()
         self.done(QDialog.DialogCode.Rejected)

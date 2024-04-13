@@ -1,4 +1,8 @@
-from typing import Final
-from . import util
+from PySide6.QtCore import QSettings
 
-PACKAGE: Final[str] = util.get_module_name(__file__)
+from eon_timer.util.injector.component import component
+
+
+@component()
+def __qsettings() -> QSettings:
+    return QSettings()

@@ -2,6 +2,7 @@ annotated-types==0.6.0
 libsass==0.23.0
 pydantic==2.6.1
 pydantic_core==2.16.2
+pygame==2.5.2
 PySide6==6.6.2
 PySide6_Addons==6.6.2
 PySide6_Essentials==6.6.2

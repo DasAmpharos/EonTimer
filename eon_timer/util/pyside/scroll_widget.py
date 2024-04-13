@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (QFrame,
                                QSizePolicy,
                                QWidget, QVBoxLayout)
 
-from . import util
+from eon_timer.util import pyside
 
 
 class ScrollWidget(QScrollArea):
@@ -18,7 +18,7 @@ class ScrollWidget(QScrollArea):
 
     def __init_components(self) -> None:
         # ----- scroll_pane -----
-        util.set_class(self.__scroll_pane, ['themeable-panel'])
+        pyside.set_class(self.__scroll_pane, ['themeable-panel'])
         self.__scroll_pane.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- scroll_pane_layout -----
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -28,5 +28,5 @@ class ScrollWidget(QScrollArea):
         self.setFrameShape(QFrame.Shape.NoFrame)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        util.set_class(self, ['themeable-panel', 'themeable-border'])
+        pyside.set_class(self, ['themeable-panel', 'themeable-border'])
         self.setWidgetResizable(True)

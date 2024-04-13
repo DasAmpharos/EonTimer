@@ -57,9 +57,7 @@ $COLOR_FOREGROUND_NORMAL_DISABLED: withAlpha($COLOR_FOREGROUND_NORMAL, $DISABLED
 $COLOR_BACKGROUND_NORMAL_DISABLED: withAlpha($COLOR_BACKGROUND_NORMAL, $DISABLED_ALPHA);
 
 AppWindow {
-  background-image: url($BACKGROUND_IMAGE);
-  background-repeat: no-repeat;
-  background-position: center;
+  border-image: url($BACKGROUND_IMAGE) 0 0 0 0 stretch stretch;
 }
 
 .themeable-panel,

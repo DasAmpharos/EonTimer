@@ -1,2 +1,2 @@
-from .config import Gen4Config
+from .model import Gen4Model
 from .widget import Gen4Widget

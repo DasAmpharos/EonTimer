@@ -1,13 +1,15 @@
 from typing import Final
 
-from eon_timer.timers.entralink_timer import EntralinkTimer
+from eon_timer.util.injector import component
+from .entralink_timer import EntralinkTimer
 
 
-class EntralinkTimerPlus:
+@component()
+class EnhancedEntralinkTimer:
     ENTRALINK_FRAME_RATE: Final[float] = 0.837148929
 
     def __init__(self, entralink_timer: EntralinkTimer):
-        self.__entralink_timer: Final[EntralinkTimer] = entralink_timer
+        self.entralink_timer: Final[EntralinkTimer] = entralink_timer
 
     def create(self,
                target_delay: int,
@@ -16,7 +18,7 @@ class EntralinkTimerPlus:
                calibration: int,
                entralink_calibration: int,
                frame_calibration: int) -> list[int]:
-        durations = self.__entralink_timer.create(target_delay, target_second, calibration, entralink_calibration)
+        durations = self.entralink_timer.create(target_delay, target_second, calibration, entralink_calibration)
         durations.append(round(target_advances / self.ENTRALINK_FRAME_RATE) * 1000 + frame_calibration)
         return durations
 

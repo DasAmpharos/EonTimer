@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Type, Self
+from typing import Self, Type
 
 
 class EnhancedEnum(Enum):

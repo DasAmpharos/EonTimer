@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
-import atexit
-import json
+import signal
 import sys
-from typing import Callable
 
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
-from eon_timer.app_config import AppConfig
 from eon_timer.app_window import AppWindow
+from eon_timer.util.injector.app_context import AppContext
 
 
 def main() -> int:
@@ -17,24 +16,16 @@ def main() -> int:
     app.setOrganizationName('DasAmpharos')
     app.setOrganizationDomain('io.github.dasampharos')
 
-    with open('config.json', 'r') as file:
-        config = json.load(file)
-        config = AppConfig(**config)
-    atexit.register(on_exit(config))
-    window = AppWindow(config)
-    window.show()
+    icon = QIcon()
+    icon.addFile('docs/icon.svg')
+    app.setWindowIcon(icon)
 
+    context = AppContext(['eon_timer'])
+    app_window = context.get_component(AppWindow)
+    app_window.show()
     return app.exec()
 
 
-def on_exit(config: AppConfig) -> Callable[[], None]:
-    def implementation():
-        with open('config.json', 'w') as file:
-            file.write(config.model_dump_json())
-
-    return implementation
-
-
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    sys.exit(main())

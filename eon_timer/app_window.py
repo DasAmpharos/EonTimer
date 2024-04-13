@@ -1,23 +1,22 @@
-import pkg_resources
 import sys
 from string import Template
-from typing import Optional, Final
+from typing import Final
 
+import pkg_resources
 import sass
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
-from .app_config import AppConfig
 from .app_widget import AppWidget
+from .util.injector import component
 
 
+@component()
 class AppWindow(QMainWindow):
     def __init__(self,
-                 config: AppConfig,
-                 parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent=parent)
-        self.config: Final[AppConfig] = config
-        self.app_widget: Final[AppWidget] = AppWidget(config, self)
+                 app_widget: AppWidget) -> None:
+        super().__init__()
+        self.app_widget: Final[AppWidget] = app_widget
         self.__init_components()
 
     def __init_components(self) -> None:
@@ -28,7 +27,7 @@ class AppWindow(QMainWindow):
                             Qt.WindowCloseButtonHint |
                             Qt.WindowMinimizeButtonHint)
         self.setCentralWidget(self.app_widget)
-        self.setFixedSize(525, 395)
+        self.setMinimumSize(525, 395)
 
         # style sheet
         stylesheet = pkg_resources.resource_string(
@@ -44,18 +43,18 @@ class AppWindow(QMainWindow):
         background_image = pkg_resources.resource_filename(
             'eon_timer.resources.images', 'default_background.png')
 
-        template = Template(stylesheet.decode())
-        stylesheet = template.safe_substitute(
-            caret_up=self.__normalize_file(caret_up),
-            caret_down=self.__normalize_file(caret_down),
-            caret_up_disabled=self.__normalize_file(caret_up_disabled),
-            caret_down_disabled=self.__normalize_file(caret_down_disabled),
-            background_image=self.__normalize_file(background_image)
-        )
-        stylesheet = sass.compile(string=stylesheet)
-        self.setStyleSheet(stylesheet)
-        with open('main.css', 'w') as file:
-            file.write(stylesheet)
+        # template = Template(stylesheet.decode())
+        # stylesheet = template.safe_substitute(
+        #     caret_up=self.__normalize_file(caret_up),
+        #     caret_down=self.__normalize_file(caret_down),
+        #     caret_up_disabled=self.__normalize_file(caret_up_disabled),
+        #     caret_down_disabled=self.__normalize_file(caret_down_disabled),
+        #     background_image=self.__normalize_file(background_image)
+        # )
+        # stylesheet = sass.compile(string=stylesheet)
+        # self.setStyleSheet(stylesheet)
+        # with open('main.css', 'w') as file:
+        #     file.write(stylesheet)
 
         # ----- menu -----
         menu = QMenu()

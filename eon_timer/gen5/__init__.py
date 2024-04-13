@@ -1,2 +1,2 @@
-from .config import Gen5Config
+from .model import Gen5Model
 from .widget import Gen5Widget
