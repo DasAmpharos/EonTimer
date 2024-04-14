@@ -1,6 +1,5 @@
 altgraph==0.17.4
 annotated-types==0.6.0
-eon-timer==3.0.0
 libsass==0.23.0
 macholib==1.16.3
 packaging==24.0
