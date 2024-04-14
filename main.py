@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import os
 import signal
 import sys
 
@@ -15,10 +15,7 @@ def main() -> int:
     app.setApplicationName('EonTimer')
     app.setOrganizationName('DasAmpharos')
     app.setOrganizationDomain('io.github.dasampharos')
-
-    icon = QIcon()
-    icon.addFile('docs/icon.svg')
-    app.setWindowIcon(icon)
+    app.setWindowIcon(QIcon('docs/icon.svg'))
 
     context = AppContext(['eon_timer'])
     app_window = context.get_component(AppWindow)
@@ -28,4 +25,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
     sys.exit(main())

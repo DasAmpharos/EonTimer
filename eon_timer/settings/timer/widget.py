@@ -49,7 +49,11 @@ class TimerSettingsWidget(FormWidget):
         pass
 
     def on_accepted(self):
-        pass
+        self.model.console.update(self.console)
+        self.model.refresh_interval.update(self.refresh_interval)
+        self.model.precision_calibration.update(self.precision_calibration)
 
     def on_rejected(self):
-        pass
+        self.console.update(self.model.console)
+        self.refresh_interval.update(self.model.refresh_interval)
+        self.precision_calibration.update(self.model.precision_calibration)

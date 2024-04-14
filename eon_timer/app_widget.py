@@ -5,13 +5,13 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
 from eon_timer.app_state import AppState
-from eon_timer.gen3.widget import Gen3Widget
-from eon_timer.gen4.widget import Gen4Widget
-from eon_timer.gen5.widget import Gen5Widget
 from eon_timer.phase_runner import PhaseRunner
 from eon_timer.resources import fonts
 from eon_timer.settings.dialog import SettingsDialog
 from eon_timer.timer_widget import TimerWidget
+from eon_timer.timers.gen3 import Gen3Widget
+from eon_timer.timers.gen4 import Gen4Widget
+from eon_timer.timers.gen5 import Gen5Widget
 from eon_timer.util import pyside
 from eon_timer.util.injector import component
 
@@ -65,7 +65,7 @@ class AppWidget(QWidget):
         # ----- settings_btn -----
         self.settings_btn.setText(chr(0xf013))
         layout.addWidget(self.settings_btn, 2, 0)
-        self.settings_btn.clicked.connect(self.__show_settings_dialog)
+        self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         font_name = fonts.resource_filename('FontAwesome.ttf')
         self.settings_btn.setFont(pyside.get_font(font_name))
@@ -80,16 +80,10 @@ class AppWidget(QWidget):
         self.timer_btn.clicked.connect(self.__on_timer_btn_clicked)
         self.timer_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.timer_btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-        # ----- phase_runner -----
-        self.phase_runner.activated.connect(
-            functools.partial(
-                self.__on_phase_runner_activated,
-                [
-                    self.tab_widget,
-                    self.settings_btn,
-                    self.update_btn
-                ]
-            )
+        # ----- running_changed -----
+        disable_on_run = [self.tab_widget, self.settings_btn, self.update_btn]
+        self.state.running_changed.connect(
+            functools.partial(self.__on_running_changed, disable_on_run)
         )
 
     def __update_timer(self):
@@ -100,7 +94,7 @@ class AppWidget(QWidget):
             self.state.phases = phases
 
     def __on_timer_btn_clicked(self):
-        if not self.phase_runner.running:
+        if not self.state.running:
             self.phase_runner.start()
         else:
             self.phase_runner.stop()
@@ -111,16 +105,12 @@ class AppWidget(QWidget):
         if calibrate is not None:
             calibrate()
 
-    def __show_settings_dialog(self) -> None:
-        if self.settings_dialog.exec() == QDialog.DialogCode.Accepted:
-            print('updating settings')
-        # dialog = SettingsDialog(self.config.settings, self)
-        # if dialog.exec() == QDialog.DialogCode.Accepted:
-        #     print('updating settings')
-
-    def __on_phase_runner_activated(self,
-                                    disable_on_run: list[QWidget],
-                                    activated: bool):
-        self.timer_btn.setText('Stop' if activated else 'Start')
+    def __on_running_changed(self, disable_on_run: list[QWidget], running: bool):
+        self.timer_btn.setText('Stop' if running else 'Start')
         for widget in disable_on_run:
-            widget.setEnabled(not activated)
+            widget.setEnabled(not running)
+
+    def __on_settings_btn_clicked(self):
+        result = self.settings_dialog.exec()
+        if result == QDialog.DialogCode.Accepted:
+            self.__update_timer()

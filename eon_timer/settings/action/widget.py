@@ -1,4 +1,5 @@
-from typing import Final, Callable
+import functools
+from typing import Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap, QColor
@@ -19,6 +20,7 @@ class ActionSettingsWidget(FormWidget):
         MODE = 'Mode'
         SOUND = 'Sound'
         COLOR = 'Color'
+        CUSTOM_SOUND = 'Custom Sound'
         INTERVAL = 'Interval'
         COUNT = 'Count'
 
@@ -27,6 +29,7 @@ class ActionSettingsWidget(FormWidget):
         self.mode: Final = Property(model.mode.get())
         self.sound: Final = Property(model.sound.get())
         self.color: Final = Property(model.color.get())
+        self.custom_sound: Final = Property(model.custom_sound.get())
         self.interval: Final = Property(model.interval.get())
         self.count: Final = Property(model.count.get())
         self.model: Final[ActionSettingsModel] = model
@@ -47,8 +50,8 @@ class ActionSettingsWidget(FormWidget):
         self.add_field(self.Field.SOUND, field)
         # ----- color -----
         field = QPushButton()
+        field.clicked.connect(functools.partial(self.__on_color_clicked, field))
         self.__set_icon_color(field, self.color)
-        field.clicked.connect(self.__on_color_clicked(field))
         self.add_field(self.Field.COLOR, field)
         # ----- interval -----
         field = QSpinBox()
@@ -64,15 +67,12 @@ class ActionSettingsWidget(FormWidget):
     def __init_listeners(self):
         pass
 
-    def __on_color_clicked(self, button: QPushButton) -> Callable[[], None]:
-        def implementation():
-            color = self.color.get()
-            color = QColorDialog.getColor(color, self)
-            if color.isValid():
-                self.color.set(color)
-                self.__set_icon_color(button, color)
-
-        return implementation
+    def __on_color_clicked(self, button: QPushButton) -> None:
+        color = self.color.get()
+        color = QColorDialog.getColor(color, self)
+        if color.isValid():
+            self.color.set(color)
+            self.__set_icon_color(button, color)
 
     @staticmethod
     def __set_icon_color(button: QPushButton,

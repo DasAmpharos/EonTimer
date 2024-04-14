@@ -13,7 +13,7 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox, ScrollWidget
 from eon_timer.util.pyside.form import FormWidget, FormLayout
 from .model import Gen5Model, Gen5Mode
-from ..timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
+from eon_timer.timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
 
 
 @component()

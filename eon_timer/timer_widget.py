@@ -25,12 +25,11 @@ class TimerWidget(QGroupBox):
         layout.setSpacing(5)
 
         # ----- current_phase_lbl -----
-        self.current_phase_lbl.setText('0:00')
+        self.current_phase_lbl.setText('0:000')
         layout.addWidget(self.current_phase_lbl, 0, 0, 1, 2)
         self.current_phase_lbl.setObjectName('currentPhaseLbl')
         font_name = fonts.resource_filename('RobotoMono-Regular.ttf')
         self.current_phase_lbl.setFont(pyside.get_font(font_name, 36))
-        # bind to property
         self.state.current_phase_changed.connect(self.__on_current_phase_changed)
         self.state.current_phase_elapsed_changed.connect(self.__on_current_phase_changed)
         # ----- minutes_before_target_lbl -----
@@ -39,7 +38,7 @@ class TimerWidget(QGroupBox):
         layout.addWidget(self.minutes_before_target_lbl, 1, 1, Qt.AlignmentFlag.AlignLeft)
         self.state.minutes_before_target_changed.connect(self.__on_minutes_before_target_changed)
         # ----- next_phase_lbl -----
-        self.next_phase_lbl.setText('0:00')
+        self.next_phase_lbl.setText('0:000')
         layout.addWidget(QLabel('Next Phase:'), 2, 0, Qt.AlignmentFlag.AlignRight)
         layout.addWidget(self.next_phase_lbl, 2, 1, Qt.AlignmentFlag.AlignLeft)
         self.state.next_phase_changed.connect(self.__on_next_phase_changed)

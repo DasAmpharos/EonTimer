@@ -3,7 +3,6 @@ from typing import Final
 from PySide6.QtCore import QObject, Signal
 
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property
 
 
 @component()
@@ -14,12 +13,16 @@ class AppState(QObject):
     minutes_before_target_changed: Final[Signal] = Signal(int)
     next_phase_changed: Final[Signal] = Signal(int)
 
+    running_changed: Final[Signal] = Signal(bool)
+    action_triggered: Final[Signal] = Signal()
+
     def __init__(self):
         super().__init__()
         self.__phases: list[int] = []
         self.__current_phase_index: int = 0
         self.__current_phase_elapsed: int = 0
         self.__resetting = False
+        self.__running = False
 
     @property
     def phases(self) -> list[int]:
@@ -28,7 +31,7 @@ class AppState(QObject):
     @phases.setter
     def phases(self, phases: list[int]):
         if self.__resetting or phases != self.__phases:
-            self.__phases = phases
+            self.__phases = list(phases)
             self.reset()
 
     @property
@@ -65,6 +68,19 @@ class AppState(QObject):
         if self.__resetting or new_value != self.__current_phase_elapsed:
             self.__current_phase_elapsed = new_value
             self.current_phase_elapsed_changed.emit(new_value)
+
+    @property
+    def running(self) -> bool:
+        return self.__running
+
+    @running.setter
+    def running(self, new_value: bool):
+        if new_value != self.__running:
+            self.__running = new_value
+            self.running_changed.emit(new_value)
+
+    def trigger_action(self):
+        self.action_triggered.emit()
 
     def reset(self):
         self.__resetting = True

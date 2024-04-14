@@ -4,7 +4,7 @@ import pkg_resources
 import pygame
 from PySide6.QtGui import QColor
 
-from eon_timer.phase_runner import PhaseRunner
+from eon_timer.app_state import AppState
 from eon_timer.settings.action.model import ActionSettingsModel, ActionSound, ActionMode
 from eon_timer.util.injector import component
 from eon_timer.util.properties.property_change import PropertyChangeEvent
@@ -13,7 +13,7 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 @component()
 class TimerActions:
     def __init__(self,
-                 phase_runner: PhaseRunner,
+                 state: AppState,
                  action_settings: ActionSettingsModel):
         self.__audio_action: Optional[Callable] = None
         self.__visual_action: Optional[Callable] = None
@@ -21,7 +21,7 @@ class TimerActions:
         self.action_settings: Final[ActionSettingsModel] = action_settings
         action_settings.sound.on_change(self.__on_sound_changed)
         action_settings.color.on_change(self.__on_color_changed)
-        phase_runner.action_triggered.connect(self.__trigger)
+        state.action_triggered.connect(self.__trigger)
 
         pygame.mixer.init()
         self.__predefined_sounds = {
