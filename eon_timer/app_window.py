@@ -1,14 +1,15 @@
+import importlib.resources
 import sys
 from string import Template
 from typing import Final
 
-import pkg_resources
 import sass
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
-from .app_widget import AppWidget
-from .util.injector import component
+from eon_timer import resources
+from eon_timer.app_widget import AppWidget
+from eon_timer.util.injector import component
 
 
 @component()
@@ -25,41 +26,29 @@ class AppWindow(QMainWindow):
                             Qt.WindowTitleHint |
                             Qt.CustomizeWindowHint |
                             Qt.WindowCloseButtonHint |
-                            Qt.WindowMinimizeButtonHint)
+                            Qt.WindowMinimizeButtonHint |
+                            Qt.WindowMaximizeButtonHint)
         self.setCentralWidget(self.app_widget)
         self.setMinimumSize(525, 395)
 
         # style sheet
-        stylesheet = pkg_resources.resource_string(
-            'eon_timer.resources.styles', 'main.scss')
-        caret_up = pkg_resources.resource_filename(
-            'eon_timer.resources.icons', 'caret-up.png')
-        caret_down = pkg_resources.resource_filename(
-            'eon_timer.resources.icons', 'caret-down.png')
-        caret_up_disabled = pkg_resources.resource_filename(
-            'eon_timer.resources.icons', 'caret-up-disabled.png')
-        caret_down_disabled = pkg_resources.resource_filename(
-            'eon_timer.resources.icons', 'caret-down-disabled.png')
-        background_image = pkg_resources.resource_filename(
-            'eon_timer.resources.images', 'default_background.png')
+        caret_up = resources.get_filepath('eon_timer.resources.icons', 'caret-up.png')
+        caret_down = resources.get_filepath('eon_timer.resources.icons', 'caret-down.png')
+        caret_up_disabled = resources.get_filepath('eon_timer.resources.icons', 'caret-up-disabled.png')
+        caret_down_disabled = resources.get_filepath('eon_timer.resources.icons', 'caret-down-disabled.png')
+        background_image = resources.get_filepath('eon_timer.resources.images', 'default_background.png')
+        stylesheet = importlib.resources.read_text('eon_timer.resources.styles', 'main.scss')
 
-        # template = Template(stylesheet.decode())
-        # stylesheet = template.safe_substitute(
-        #     caret_up=self.__normalize_file(caret_up),
-        #     caret_down=self.__normalize_file(caret_down),
-        #     caret_up_disabled=self.__normalize_file(caret_up_disabled),
-        #     caret_down_disabled=self.__normalize_file(caret_down_disabled),
-        #     background_image=self.__normalize_file(background_image)
-        # )
-        # stylesheet = sass.compile(string=stylesheet)
-        # self.setStyleSheet(stylesheet)
-        # with open('main.css', 'w') as file:
-        #     file.write(stylesheet)
-
-        # ----- menu -----
-        menu = QMenu()
-        menu_bar = QMenuBar()
-        menu_bar.addMenu(menu)
+        template = Template(stylesheet)
+        stylesheet = template.safe_substitute(
+            caret_up=self.__normalize_file(caret_up),
+            caret_down=self.__normalize_file(caret_down),
+            caret_up_disabled=self.__normalize_file(caret_up_disabled),
+            caret_down_disabled=self.__normalize_file(caret_down_disabled),
+            background_image=self.__normalize_file(background_image)
+        )
+        stylesheet = sass.compile(string=stylesheet)
+        self.setStyleSheet(stylesheet)
 
     @staticmethod
     def __normalize_file(filename: str) -> str:

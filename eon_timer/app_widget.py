@@ -4,9 +4,9 @@ from typing import Final
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
+from eon_timer import resources
 from eon_timer.app_state import AppState
 from eon_timer.phase_runner import PhaseRunner
-from eon_timer.resources import fonts
 from eon_timer.settings.dialog import SettingsDialog
 from eon_timer.timer_widget import TimerWidget
 from eon_timer.timers.gen3 import Gen3Widget
@@ -53,12 +53,12 @@ class AppWidget(QWidget):
         self.timer_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         # ----- tab_widget -----
         layout.addWidget(self.tab_widget, 0, 1, 2, 2)
+        pyside.set_class(self.tab_widget, ['themeable-panel', 'themeable-border'])
+        self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.tab_widget.currentChanged.connect(self.__update_timer)
         self.gen5_widget.timer_changed.connect(self.__update_timer)
         self.gen4_widget.timer_changed.connect(self.__update_timer)
         self.gen3_widget.timer_changed.connect(self.__update_timer)
-        pyside.set_class(self.tab_widget, ['themeable-panel', 'themeable-border'])
-        self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.tab_widget.addTab(self.gen5_widget, '5')
         self.tab_widget.addTab(self.gen4_widget, '4')
         self.tab_widget.addTab(self.gen3_widget, '3')
@@ -67,7 +67,7 @@ class AppWidget(QWidget):
         layout.addWidget(self.settings_btn, 2, 0)
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        font_name = fonts.resource_filename('FontAwesome.ttf')
+        font_name = resources.get_filepath('eon_timer.resources.fonts', 'FontAwesome.ttf')
         self.settings_btn.setFont(pyside.get_font(font_name))
         # ----- update_btn -----
         self.update_btn.setText('Update')

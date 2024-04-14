@@ -1,9 +1,9 @@
 from typing import Final, Callable, Optional
 
-import pkg_resources
 import pygame
 from PySide6.QtGui import QColor
 
+from eon_timer import resources
 from eon_timer.app_state import AppState
 from eon_timer.settings.action.model import ActionSettingsModel, ActionSound, ActionMode
 from eon_timer.util.injector import component
@@ -49,9 +49,9 @@ class TimerActions:
         pass
 
     @staticmethod
-    def __load_sound(package: str, filename: str):
-        resource_filename = pkg_resources.resource_filename(package, filename)
-        return pygame.mixer.Sound(resource_filename)
+    def __load_sound(package: str, resource: str):
+        filepath = resources.get_filepath(package, resource)
+        return pygame.mixer.Sound(filepath)
 
     def __trigger(self):
         self.__audio_action()
