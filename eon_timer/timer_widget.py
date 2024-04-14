@@ -1,3 +1,4 @@
+import importlib.resources
 from typing import Final
 
 from PySide6.QtCore import Qt
@@ -28,8 +29,8 @@ class TimerWidget(QGroupBox):
         self.current_phase_lbl.setText('0:000')
         layout.addWidget(self.current_phase_lbl, 0, 0, 1, 2)
         self.current_phase_lbl.setObjectName('currentPhaseLbl')
-        font_name = resources.get_filepath('eon_timer.resources.fonts', 'RobotoMono-Regular.ttf')
-        self.current_phase_lbl.setFont(pyside.get_font(font_name, 36))
+        font_data = importlib.resources.read_binary('eon_timer.resources.fonts', 'RobotoMono-Regular.ttf')
+        self.current_phase_lbl.setFont(pyside.get_font(font_data, 36))
         self.state.current_phase_changed.connect(self.__on_current_phase_changed)
         self.state.current_phase_elapsed_changed.connect(self.__on_current_phase_changed)
         # ----- minutes_before_target_lbl -----

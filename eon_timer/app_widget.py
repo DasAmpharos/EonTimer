@@ -1,4 +1,5 @@
 import functools
+import importlib.resources
 from typing import Final
 
 from PySide6.QtCore import Qt
@@ -67,8 +68,8 @@ class AppWidget(QWidget):
         layout.addWidget(self.settings_btn, 2, 0)
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        font_name = resources.get_filepath('eon_timer.resources.fonts', 'FontAwesome.ttf')
-        self.settings_btn.setFont(pyside.get_font(font_name))
+        font_data = importlib.resources.read_binary('eon_timer.resources.fonts', 'FontAwesome.ttf')
+        self.settings_btn.setFont(pyside.get_font(font_data))
         # ----- update_btn -----
         self.update_btn.setText('Update')
         layout.addWidget(self.update_btn, 2, 1)
