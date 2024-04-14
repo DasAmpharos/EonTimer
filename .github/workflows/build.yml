@@ -11,10 +11,10 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-latest
-          - ubuntu-latest
-          - windows-latest
-    runs-on: ${{ matrix.os }}
+          - macos
+          - ubuntu
+          - windows
+    runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -22,5 +22,21 @@ jobs:
         with:
           python-version: 3.12
       - run: pip install -r requirements.txt
-      - run: pyinstaller eon-timer.spec
-      - run: ls -l dist
+      - run: pyinstaller EonTimer.spec
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ matrix.os == 'macos' }}
+        with:
+          path: dist/EonTimer.app
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ matrix.os == 'ubuntu' }}
+        with:
+          path: dist/EonTimer
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ matrix.os == 'windows' }}
+        with:
+          path: dist/EonTimer.exe
+
+

@@ -3,7 +3,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='eon-timer',
+    name='EonTimer',
     version='3.0.0',
     packages=list(map(lambda it: f'eon_timer.{it}', find_packages('eon_timer'))),
     include_package_data=True,

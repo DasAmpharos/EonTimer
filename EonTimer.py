@@ -12,7 +12,7 @@ from eon_timer.util.injector.app_context import AppContext
 
 
 def main() -> int:
-    app = QApplication([])
+    app = QApplication(sys.argv)
     app.setApplicationName('EonTimer')
     app.setOrganizationName('DasAmpharos')
     app.setOrganizationDomain('io.github.dasampharos')
