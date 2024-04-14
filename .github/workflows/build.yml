@@ -18,29 +18,35 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: 3.12
           cache: pip
+
       - run: pip install -r requirements.txt
+
       - run: pyinstaller EonTimer.spec
+
+      - if: ${{ matrix.os == 'macos' }}
+        run: hdiutil create -format UDZO -srcfolder dist/EonTimer.app dist/EonTimer.dmg
 
       - uses: actions/upload-artifact@v4
         if: ${{ matrix.os == 'macos' }}
         with:
-          name: macos
-          path: dist/EonTimer.app
+          name: EonTimer-macos
+          path: dist/EonTimer.dmg
 
       - uses: actions/upload-artifact@v4
         if: ${{ matrix.os == 'ubuntu' }}
         with:
-          name: ubuntu
+          name: EonTimer-ubuntu
           path: dist/EonTimer
 
       - uses: actions/upload-artifact@v4
         if: ${{ matrix.os == 'windows' }}
         with:
-          name: windows
+          name: EonTimer-windows
           path: dist/EonTimer.exe
 
 
