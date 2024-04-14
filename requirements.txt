@@ -1,8 +1,14 @@
+altgraph==0.17.4
 annotated-types==0.6.0
+eon-timer==3.0.0
 libsass==0.23.0
+macholib==1.16.3
+packaging==24.0
 pydantic==2.6.1
 pydantic_core==2.16.2
 pygame==2.5.2
+pyinstaller==6.6.0
+pyinstaller-hooks-contrib==2024.4
 PySide6==6.6.2
 PySide6_Addons==6.6.2
 PySide6_Essentials==6.6.2
