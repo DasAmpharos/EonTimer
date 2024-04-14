@@ -7,3 +7,5 @@ venv
 # generated
 main.css
 config.json
+build/
+dist/
