@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./eon_timer/resources/icon.svg" width="128"/>
+<img src="./eon_timer/resources/icons/icon.svg" width="128"/>
 
 ### EonTimer
 A port of the Pokémon RNG Timer originally written by
