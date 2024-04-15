@@ -11,7 +11,7 @@ class Gen4Model(Settings):
     target_second = Property(50)
     calibrated_delay = Property(500)
     calibrated_second = Property(14)
-    delay_hit = Property(0, True)
+    delay_hit = Property(0, transient=True)
 
     @property
     @override

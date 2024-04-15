@@ -14,11 +14,11 @@ class Gen3Mode(EnhancedEnum, StrEnum):
 
 @component()
 class Gen3Model(Settings):
-    mode = Property(Gen3Mode.STANDARD)
+    mode = Property(Gen3Mode.STANDARD, value_type=str)
     pre_timer = Property(5000)
     target_frame = Property(1000)
     calibration = Property(0)
-    frame_hit = Property(0, True)
+    frame_hit = Property(0, transient=True)
 
     @property
     @override

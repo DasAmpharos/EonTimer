@@ -25,10 +25,10 @@ class ActionSound(EnhancedEnum, StrEnum):
 
 @component()
 class ActionSettingsModel(Settings):
-    mode: Final = Property(ActionMode.AV)
-    sound: Final = Property(ActionSound.BEEP)
+    mode: Final = Property(ActionMode.AV, value_type=str)
+    sound: Final = Property(ActionSound.BEEP, value_type=str)
     color: Final = Property(QColor(0, 0, 255))
-    custom_sound: Final = Property(None)
+    custom_sound: Final = Property(None, value_type=str)
     interval: Final = Property(500)
     count: Final = Property(6)
 

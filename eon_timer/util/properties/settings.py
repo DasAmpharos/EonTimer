@@ -1,3 +1,4 @@
+import typing
 from abc import abstractmethod
 from typing import override, Final
 
@@ -15,7 +16,7 @@ class Settings(CloseListener):
         for name, value in self_type.__dict__.items():
             if isinstance(value, Property):
                 if settings.contains(name):
-                    new_value = settings.value(name, None)
+                    new_value = settings.value(name, None, value.value_type)
                     value.set(new_value)
                 setattr(self, name, value)
         settings.endGroup()

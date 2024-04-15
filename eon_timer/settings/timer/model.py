@@ -45,7 +45,7 @@ class Console(EnhancedEnum, StrEnum):
 
 @component()
 class TimerSettingsModel(Settings):
-    console = Property(Console.NDS_SLOT1)
+    console = Property(Console.NDS_SLOT1, value_type=str)
     precision_calibration = Property(False)
     refresh_interval = Property(8)
 

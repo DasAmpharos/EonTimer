@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic, Self
+from typing import TypeVar, Generic, Self, Type, Final
 
 from .property_change import PropertyChangeEvent, PropertyChangeListener
 
@@ -6,7 +6,13 @@ T = TypeVar('T')
 
 
 class Property(Generic[T]):
-    def __init__(self, initial_value: T | None = None, transient: bool = False):
+    def __init__(self,
+                 initial_value: T | None = None,
+                 value_type: Type[T] | None = None,
+                 transient: bool = False):
+        if value_type is None and initial_value is None:
+            raise ValueError('value_type must be specified if initial_value is None')
+        self.value_type: Final[Type[T]] = value_type or type(initial_value)
         self.__change_listeners: list[PropertyChangeListener] = []
         self.__transient = transient
         self.__value = initial_value
