@@ -5,7 +5,6 @@ from typing import Final
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
-from eon_timer import resources
 from eon_timer.app_state import AppState
 from eon_timer.phase_runner import PhaseRunner
 from eon_timer.settings.dialog import SettingsDialog
