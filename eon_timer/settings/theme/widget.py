@@ -3,11 +3,11 @@ from typing import Final
 from PySide6.QtCore import Qt
 
 from eon_timer.util.injector import component
+from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
 from .model import ThemeSettingsModel, Theme
-from ...util.properties import bindings
 
 
 @component()
