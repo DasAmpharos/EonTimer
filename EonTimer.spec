@@ -13,7 +13,7 @@ a = Analysis(
         ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
         ('eon_timer/resources/styles/*.scss', 'eon_timer/resources/styles'),
     ],
-    hiddenimports=[],
+    hiddenimports=['eon_timer.theme_manager'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
