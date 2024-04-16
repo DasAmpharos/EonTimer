@@ -5,8 +5,8 @@
 A port of the Pokémon RNG Timer originally written by
 [ToastPlusOne](https://bitbucket.org/ToastPlusOne/eontimer/downloads/).
 
-![version](https://img.shields.io/badge/EonTimer-v3.0.0-blue.svg)
-[![Build status](https://ci.appveyor.com/api/projects/status/ln2fbgp58lpu56ht/branch/master?svg=true)](https://ci.appveyor.com/project/dylmeadows/eontimer/branch/master)
+![Version](https://img.shields.io/badge/EonTimer-v3.0.0-blue.svg)
+[![Build status](https://github.com/DasAmpharos/EonTimer/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/DasAmpharos/EonTimer/actions?query=event:push+branch:main)
 
 </div>
 
