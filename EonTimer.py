@@ -5,8 +5,8 @@ import sys
 
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
-from eon_timer import resources
 
+from eon_timer import resources
 from eon_timer.app_window import AppWindow
 from eon_timer.util.injector.app_context import AppContext
 
@@ -16,7 +16,7 @@ def main() -> int:
     app.setApplicationName('EonTimer')
     app.setOrganizationName('DasAmpharos')
     app.setOrganizationDomain('io.github.dasampharos')
-    icon_filepath = resources.get_filepath('eon_timer.resources.icons', 'icon.svg')
+    icon_filepath = resources.get_filepath('eon_timer.resources.images', 'icon-512.png')
     app.setWindowIcon(QIcon(icon_filepath))
 
     context = AppContext(['eon_timer'])

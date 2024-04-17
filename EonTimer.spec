@@ -7,11 +7,10 @@ a = Analysis(
     binaries=[],
     datas=[
         ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
-        ('eon_timer/resources/icons/*.png', 'eon_timer/resources/icons'),
-        ('eon_timer/resources/icons/*.svg', 'eon_timer/resources/icons'),
         ('eon_timer/resources/images/*.png', 'eon_timer/resources/images'),
+        ('eon_timer/resources/images/*.svg', 'eon_timer/resources/images'),
         ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
-        ('eon_timer/resources/styles/*.scss', 'eon_timer/resources/styles'),
+        ('eon_timer/resources/*.scss', 'eon_timer/resources'),
     ],
     hiddenimports=['eon_timer.theme_manager'],
     hookspath=[],
@@ -46,6 +45,6 @@ exe = EXE(
 app = BUNDLE(
     exe,
     name='EonTimer.app',
-    icon=None,
+    icon='eon_timer/resources/icons/icon-512.png',
     bundle_identifier=None,
 )
