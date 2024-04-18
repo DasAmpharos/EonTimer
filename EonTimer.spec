@@ -45,6 +45,6 @@ exe = EXE(
 app = BUNDLE(
     exe,
     name='EonTimer.app',
-    icon='eon_timer/resources/icons/icon-512.png',
+    icon='eon_timer/resources/images/icon-512.png',
     bundle_identifier=None,
 )
