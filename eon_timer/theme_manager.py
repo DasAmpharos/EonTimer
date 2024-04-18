@@ -32,12 +32,12 @@ class ThemeManager:
 
     def __load_default_style(self):
         # style sheet
-        caret_up = resources.get_filepath('eon_timer.resources.icons', 'caret-up.png')
-        caret_down = resources.get_filepath('eon_timer.resources.icons', 'caret-down.png')
-        caret_up_disabled = resources.get_filepath('eon_timer.resources.icons', 'caret-up-disabled.png')
-        caret_down_disabled = resources.get_filepath('eon_timer.resources.icons', 'caret-down-disabled.png')
-        background_image = resources.get_filepath('eon_timer.resources.images', 'default_background.png')
-        stylesheet = importlib.resources.read_text('eon_timer.resources.styles', 'main.scss')
+        caret_up = resources.get_filepath('eon_timer.resources.images', 'caret-up.png')
+        caret_down = resources.get_filepath('eon_timer.resources.images', 'caret-down.png')
+        caret_up_disabled = resources.get_filepath('eon_timer.resources.images', 'caret-up-disabled.png')
+        caret_down_disabled = resources.get_filepath('eon_timer.resources.images', 'caret-down-disabled.png')
+        background = resources.get_filepath('eon_timer.resources.images', 'background.png')
+        stylesheet = importlib.resources.read_text('eon_timer.resources', 'main.scss')
 
         template = Template(stylesheet)
         stylesheet = template.safe_substitute(
@@ -45,7 +45,7 @@ class ThemeManager:
             caret_down=self.__normalize_file(caret_down),
             caret_up_disabled=self.__normalize_file(caret_up_disabled),
             caret_down_disabled=self.__normalize_file(caret_down_disabled),
-            background_image=self.__normalize_file(background_image)
+            background_image=self.__normalize_file(background)
         )
         stylesheet = sass.compile(string=stylesheet)
         self.app_window.setStyleSheet(stylesheet)

@@ -9,9 +9,8 @@ setup(
     include_package_data=True,
     package_data={
         'eon_timer/resources/fonts': ['*.ttf'],
-        'eon_timer/resources/icons': ['*.png'],
-        'eon_timer/resources/images': ['*.png'],
+        'eon_timer/resources/images': ['*.png', '*.svg'],
         'eon_timer/resources/sounds': ['*.wav'],
-        'eon_timer/resources/styles': ['*.scss'],
+        'eon_timer/resources': ['*.scss'],
     }
 )
