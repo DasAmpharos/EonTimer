@@ -1,6 +1,5 @@
 import importlib.resources
 import sys
-import zipfile
 from string import Template
 from typing import Final
 
