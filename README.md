@@ -18,3 +18,11 @@ See the [Build from Source](https://github.com/dylmeadows/EonTimer/wiki/Build-fr
 
 ## License
 EonTimer is released under the [MIT License](LICENSE.md).
+
+## Credits
+
+### Icon Attribution
+
+- **Concept:** [DasAmpharos](https://github.com/DasAmpharos)
+- **Preliminary Renderings:** Provided by ChatGPT, OpenAI
+- **Final Design:** [dartanian3000](https://github.com/dartanian300)
