@@ -4,6 +4,7 @@ libsass==0.23.0
 macholib==1.16.3
 packaging==24.0
 pillow==10.3.0
+pip-autoremove==0.10.0
 pydantic==2.6.1
 pydantic_core==2.16.2
 pygame==2.5.2

@@ -1,5 +1,5 @@
 <div align="center">
-<img src="eon_timer/resources/images/icon.svg" width="128"/>
+<img src="docs/icon.svg" width="128"/>
 
 ### EonTimer
 A port of the Pokémon RNG Timer originally written by
@@ -25,4 +25,4 @@ EonTimer is released under the [MIT License](LICENSE.md).
 
 - **Concept:** [DasAmpharos](https://github.com/DasAmpharos)
 - **Preliminary Renderings:** Provided by ChatGPT, OpenAI
-- **Final Design:** [dartanian3000](https://github.com/dartanian300)
+- **Final Design:** [dartanian300](https://github.com/dartanian300)

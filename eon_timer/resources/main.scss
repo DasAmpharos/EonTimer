@@ -1,73 +1,52 @@
+/** SCSS PRIMARY COLORS */
+$primary-a0: #ffffff;
+$primary-a10: #c6c6c6;
+$primary-a20: #919191;
+$primary-a30: #5e5e5e;
+$primary-a40: #303030;
+/** SCSS ACCENT COLORS */
+$accent-a0: #148cd2;
+$accent-a5: darken($accent-a0, 5%);
+$accent-a10: #1e6ea4;
+$accent-a20: #1f5278;
+$accent-a30: #1b374f;
+$accent-a40: #141f2a;
+/** SCSS SEMANTIC COLORS */
+$danger-a0: #b41c2b;
+$success-a0: #009f42;
+$warning-a0: #cc8800;
+$info-a0: #388cfa;
+/** SCSS NEUTRAL COLORS */
+$neutral-a0: #ffffff;
+$neutral-a5: darken($neutral-a0, 10%);
+$neutral-a10: #c6c6c6;
+$neutral-a20: #919191;
+$neutral-a30: #5e5e5e;
+$neutral-a40: #303030;
+$neutral-a50: #000000;
+
+$border-radius: 5px;
+
 @function withAlpha($color, $alpha: 1) {
   @return rgba(red($color), green($color), blue($color), $alpha);
 }
 
-$CARET_UP: "${caret_up}";
-$CARET_DOWN: "${caret_down}";
-$CARET_UP_DISABLED: "${caret_up_disabled}";
-$CARET_DOWN_DISABLED: "${caret_down_disabled}";
-$BACKGROUND_IMAGE: "${background_image}";
-
-/* foreground colors */
-$COLOR_FOREGROUND_DARK: black;
-$COLOR_FOREGROUND_NORMAL: lighten($color: $COLOR_FOREGROUND_DARK, $amount: 5);
-$COLOR_FOREGROUND_LIGHT: lighten($color: $COLOR_FOREGROUND_DARK, $amount: 10);
-
-/* background colors */
-$COLOR_BACKGROUND_LIGHT: white;
-$COLOR_BACKGROUND_NORMAL: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 10);
-$COLOR_BACKGROUND_DARK: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 20);
-
-/* panels */
-$PANEL_BACKGROUND_COLOR: withAlpha(white, 0.5);
-$PANEL_BORDER_COLOR: white;
-
-/* border colors */
-$BORDER_COLOR_DARK: darken($color: $COLOR_BACKGROUND_DARK, $amount: 10);
-$BORDER_COLOR_LIGHT: darken($color: $COLOR_BACKGROUND_LIGHT, $amount: 10);
-$BORDER_COLOR_NORMAL: darken($color: $COLOR_BACKGROUND_NORMAL, $amount: 10);
-$BORDER_SELECTION_COLOR_DARK: #14506e;
-$BORDER_SELECTION_COLOR_LIGHT: #148cd2;
-$BORDER_SELECTION_COLOR_NORMAL: #1464a0;
-
-/* borders */
-$BORDER_DARK: 1px solid $BORDER_COLOR_DARK;
-$BORDER_LIGHT: 1px solid $BORDER_COLOR_LIGHT;
-$BORDER_NORMAL: 1px solid $BORDER_COLOR_NORMAL;
-$BORDER_SELECTION_DARK: 1px solid $BORDER_SELECTION_COLOR_DARK;
-$BORDER_SELECTION_LIGHT: 1px solid $BORDER_SELECTION_COLOR_LIGHT;
-$BORDER_SELECTION_NORMAL: 1px solid $BORDER_SELECTION_COLOR_NORMAL;
-
-$SIZE_BORDER_RADIUS: 4px;
-$OPACITY_TOOLTIP: 230;
-
-/** disabled **/
-$DISABLED_ALPHA: 0.3;
-$BORDER_COLOR_DARK_DISABLED: withAlpha($BORDER_COLOR_DARK, $DISABLED_ALPHA);
-$BORDER_COLOR_LIGHT_DISABLED: withAlpha($BORDER_COLOR_LIGHT, $DISABLED_ALPHA);
-$BORDER_COLOR_NORMAL_DISABLED: withAlpha($BORDER_COLOR_NORMAL, $DISABLED_ALPHA);
-$BORDER_DARK_DISABLED: 1px solid $BORDER_COLOR_DARK_DISABLED;
-$BORDER_LIGHT_DISABLED: 1px solid $BORDER_COLOR_LIGHT_DISABLED;
-$BORDER_NORMAL_DISABLED: 1px solid $BORDER_COLOR_NORMAL_DISABLED;
-$COLOR_FOREGROUND_DARK_DISABLED: withAlpha($COLOR_FOREGROUND_DARK, $DISABLED_ALPHA);
-$COLOR_BACKGROUND_DARK_DISABLED: withAlpha($COLOR_BACKGROUND_DARK, $DISABLED_ALPHA);
-$COLOR_FOREGROUND_LIGHT_DISABLED: withAlpha($COLOR_FOREGROUND_LIGHT, $DISABLED_ALPHA);
-$COLOR_BACKGROUND_LIGHT_DISABLED: withAlpha($COLOR_BACKGROUND_LIGHT, $DISABLED_ALPHA);
-$COLOR_FOREGROUND_NORMAL_DISABLED: withAlpha($COLOR_FOREGROUND_NORMAL, $DISABLED_ALPHA);
-$COLOR_BACKGROUND_NORMAL_DISABLED: withAlpha($COLOR_BACKGROUND_NORMAL, $DISABLED_ALPHA);
-
 AppWindow {
-  border-image: url($BACKGROUND_IMAGE) 0 0 0 0 stretch stretch;
+  border-image: url("${background}") 0 0 0 0 stretch stretch;
+}
+
+SettingsDialog {
+  background-color: $neutral-a10;
 }
 
 .themeable-panel,
 QTabWidget.themeable-panel::pane {
-  background-color: $PANEL_BACKGROUND_COLOR;
+  background-color: withAlpha($neutral-a0, 0.3);
 }
 
 .themeable-border,
 QTabWidget.themeable-border::pane {
-  border: 2px solid $PANEL_BORDER_COLOR;
+  border: 2px solid $neutral-a0;
   border-radius: 5px;
 }
 
@@ -76,329 +55,224 @@ QScrollArea.themeable-panel {
 }
 
 QLabel {
-  color: $COLOR_FOREGROUND_DARK;
+  color: $neutral-a40;
 
   &:disabled {
-    color: $COLOR_FOREGROUND_DARK_DISABLED;
+    color: $neutral-a20;
   }
 }
 
 QPushButton {
-  padding: 3px;
-  min-width: 80px;
-  color: $COLOR_FOREGROUND_LIGHT;
-  background-color: $COLOR_BACKGROUND_LIGHT;
-  border: $BORDER_NORMAL;
-  border-radius: $SIZE_BORDER_RADIUS;
+  min-width: 2em;
+  min-height: 1.5em;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  border: 1px solid $neutral-a10;
+  border-radius: $border-radius;
   outline: none;
 
   &:disabled {
-    padding: 3px;
-    color: $COLOR_FOREGROUND_DARK_DISABLED;
-    background-color: $COLOR_BACKGROUND_LIGHT_DISABLED;
-    border: $BORDER_NORMAL;
-    border-radius: $SIZE_BORDER_RADIUS;
-  }
-
-  &:checked {
-    padding: 3px;
-    background-color: $COLOR_BACKGROUND_NORMAL;
-    border: $BORDER_NORMAL;
-    border-radius: $SIZE_BORDER_RADIUS;
-    outline: none;
-
-    &:disabled {
-      padding: 3px;
-      color: $COLOR_FOREGROUND_DARK;
-      background-color: $COLOR_BACKGROUND_DARK;
-      border: $BORDER_NORMAL;
-      border-radius: $SIZE_BORDER_RADIUS;
-      outline: none;
-    }
-
-    &:selected {
-      color: $COLOR_BACKGROUND_NORMAL;
-      background: $BORDER_SELECTION_COLOR_NORMAL;
-    }
-  }
-
-  &::menu-indicator {
-    bottom: 4px;
-    subcontrol-origin: padding;
-    subcontrol-position: bottom right;
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
   }
 
   &:pressed {
-    background-color: $COLOR_BACKGROUND_DARK;
-    border: $BORDER_DARK;
-
-    &:hover {
-      border: $BORDER_SELECTION_LIGHT;
-    }
-  }
-
-  &:hover {
-    color: $COLOR_FOREGROUND_LIGHT;
-    border: $BORDER_SELECTION_LIGHT;
-  }
-
-  &:selected {
-    color: $COLOR_BACKGROUND_NORMAL;
-    background: $BORDER_SELECTION_COLOR_NORMAL;
-  }
-
-  &:hover {
-    color: $COLOR_FOREGROUND_LIGHT;
-    border: $BORDER_SELECTION_LIGHT;
+    background-color: $neutral-a10;
+    border: 1px solid $neutral-a20;
   }
 
   &:focus {
-    border: $BORDER_SELECTION_NORMAL;
+    color: $neutral-a0;
+    background-color: $accent-a0;
+    border: 1px solid $accent-a20;
+
+    &:pressed {
+      background-color: $accent-a5;
+      border: 1px solid $accent-a20;
+    }
   }
 }
 
 QComboBox {
-  padding-left: 4px;
-  padding-right: 36px;
+  min-width: 2em;
   min-height: 1.5em;
-  border: $BORDER_NORMAL;
-  border-radius: $SIZE_BORDER_RADIUS;
-  color: $COLOR_FOREGROUND_DARK;
-  background-color: $COLOR_BACKGROUND_LIGHT;
-  selection-background-color: $BORDER_SELECTION_COLOR_NORMAL;
-
-  QAbstractItemView {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-radius: $SIZE_BORDER_RADIUS;
-
-    &:selected {
-      color: $COLOR_BACKGROUND_NORMAL;
-      background: $BORDER_SELECTION_COLOR_NORMAL;
-    }
-  }
+  padding: 0 5px 0 5px;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  selection-color: $neutral-a0;
+  selection-background-color: $accent-a0;
+  border: 1px solid $neutral-a10;
+  border-radius: $border-radius;
+  outline: none;
 
   &:disabled {
-    color: $COLOR_FOREGROUND_DARK_DISABLED;
-    background-color: $COLOR_BACKGROUND_LIGHT_DISABLED;
-    border: $BORDER_NORMAL_DISABLED;
-  }
-
-  &:hover {
-    border: $BORDER_SELECTION_LIGHT;
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
   }
 
   &:focus {
-    border: $BORDER_SELECTION_NORMAL;
+    border: 1px solid $accent-a0;
   }
 
-  &:on {
-    selection-background-color: $BORDER_SELECTION_COLOR_NORMAL;
-  }
-
-  &::indicator {
-    color: transparent;
-    background-color: transparent;
-    selection-background-color: transparent;
-    selection-color: transparent;
-    border: none;
-    border-radius: 0;
-
-    &:alternate {
-      background: $COLOR_BACKGROUND_DARK;
-    }
-  }
-
-  &::item {
-    &:checked {
-      color: white;
-      background-color: $BORDER_SELECTION_COLOR_NORMAL;
-    }
-
-    &:selected {
-      border: $BORDER_SELECTION_NORMAL;
-    }
+  QAbstractItemView {
+    min-width: 2em;
+    min-height: 1.5em;
+    color: $neutral-a40;
+    background-color: $neutral-a0;
+    border-radius: $border-radius;
+    padding: $border-radius;
   }
 
   &::drop-down {
-    width: 12px;
-    border-left: $BORDER_NORMAL;
+    min-width: 1em;
+    border-left: 1px solid $neutral-a10;
+
     subcontrol-origin: padding;
     subcontrol-position: top right;
 
     &:disabled {
-      border-left: $BORDER_NORMAL_DISABLED;
+      border-left: 1px solid withAlpha($neutral-a10, 0.5);
+    }
+
+    &:pressed {
+      margin-top: -1px;
+      margin-bottom: -1px;
+      margin-right: -1px;
+      background-color: $neutral-a10;
+      border: 1px solid $accent-a0;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
     }
   }
 
   &::down-arrow {
-    width: 8px;
-    height: 8px;
-    image: url($CARET_DOWN);
+    width: 0.5em;
+    height: 0.5em;
+    image: url("${caret_down}");
 
     &:disabled {
-      image: url($CARET_DOWN_DISABLED);
+      image: url("${caret_down_disabled}");
     }
   }
 }
 
 QAbstractSpinBox {
-  padding: 2px 4px 2px 4px;
-  color: $COLOR_FOREGROUND_DARK;
-  background-color: $COLOR_BACKGROUND_LIGHT;
-  border: $BORDER_NORMAL;
-  border-radius: $SIZE_BORDER_RADIUS;
+  min-width: 2em;
+  min-height: 1em;
+  padding: 0.25em;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  border-radius: $border-radius;
+  border: 1px solid $neutral-a10;
 
   &:disabled {
-    color: $COLOR_FOREGROUND_DARK_DISABLED;
-    background-color: $COLOR_BACKGROUND_LIGHT_DISABLED;
-    border: $BORDER_NORMAL_DISABLED;
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
+  }
+
+  &:focus {
+    border: 1px solid $accent-a0;
   }
 
   &:up-button {
-    margin: 1px;
-    margin-bottom: -1px;
-    width: 12px;
-    background-color: transparent $COLOR_BACKGROUND_DARK;
-    border-left: $BORDER_NORMAL;
-    border-bottom: $BORDER_NORMAL;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    min-width: 1em;
+    margin-top: 1px;
+    margin-right: 1px;
+    border-left: 1px solid $neutral-a10;
+    border-bottom: 1px solid $neutral-a10;
+    border-top-right-radius: $border-radius;
+
     subcontrol-origin: border;
     subcontrol-position: top right;
 
     &:disabled {
-      border-left: $BORDER_NORMAL_DISABLED;
-      border-bottom: $BORDER_NORMAL_DISABLED;
+      border: 1px solid withAlpha($neutral-a10, 0.5);
+    }
+
+    &:pressed {
+      margin-top: 0;
+      margin-right: 0;
+      background-color: $neutral-a10;
+      border: 1px solid $accent-a0;
     }
   }
 
   &::up-arrow,
-  &::up-arrow:hover,
   &::up-arrow:off {
-    width: 8px;
-    height: 8px;
-    image: url($CARET_UP);
+    width: 0.5em;
+    height: 0.5em;
+    image: url("${caret_up}");
   }
 
   &::up-arrow:disabled {
-    image: url($CARET_UP_DISABLED);
+    image: url("${caret_up_disabled}");
   }
 
   &:down-button {
-    width: 12px;
-    margin: 1px;
-    margin-top: -1px;
-    background-color: transparent $COLOR_BACKGROUND_DARK;
-    border-left: $BORDER_NORMAL;
-    border-top: $BORDER_NORMAL;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    min-width: 1em;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    border-top: 1px solid $neutral-a10;
+    border-left: 1px solid $neutral-a10;
+    border-bottom-right-radius: $border-radius;
+
     subcontrol-origin: border;
     subcontrol-position: bottom right;
 
     &:disabled {
-      border-left: $BORDER_NORMAL_DISABLED;
-      border-top: $BORDER_NORMAL_DISABLED;
+      border: 1px solid withAlpha($neutral-a10, 0.5);
+    }
+
+    &:pressed {
+      margin-right: 0;
+      margin-bottom: 0;
+      background-color: $neutral-a10;
+      border: 1px solid $accent-a0;
+      border-bottom-right-radius: $border-radius;
     }
   }
 
   &::down-arrow,
-  &::down-arrow:hover,
   &::down-arrow:off {
-    width: 8px;
-    height: 8px;
-    image: url($CARET_DOWN);
+    width: 0.5em;
+    height: 0.5em;
+    image: url("${caret_down}");
   }
 
   &::down-arrow:disabled {
-    image: url($CARET_DOWN);
-  }
-
-  &:hover {
-    color: $COLOR_FOREGROUND_LIGHT;
-    border: $BORDER_SELECTION_LIGHT;
-  }
-
-  &:focus {
-    border: $BORDER_SELECTION_NORMAL;
-  }
-
-  &:selected {
-    color: $COLOR_BACKGROUND_NORMAL;
-    background: $BORDER_SELECTION_COLOR_NORMAL;
-  }
-}
-
-QTabWidget {
-  padding: 2px;
-  selection-background-color: $COLOR_BACKGROUND_DARK;
-
-  &::pane {
-    margin: 0;
-    padding: 0;
-    background-color: $COLOR_BACKGROUND_DARK;
-    border: $BORDER_NORMAL;
-    border-radius: $SIZE_BORDER_RADIUS;
-
-    &:selected {
-      background-color: $COLOR_BACKGROUND_NORMAL;
-      border: $BORDER_SELECTION_NORMAL;
-    }
-  }
-
-  &::tab-bar {
-    left: 5px;
+    image: url("${caret_down_disabled}");
   }
 }
 
 QTabBar {
   margin: 0;
-  padding: 2px;
+  padding: 1em;
   border: none;
-  border-radius: $SIZE_BORDER_RADIUS;
+  border-radius: $border-radius;
 
   &::tab {
-    &:top {
-      min-width: 2.5em;
-      margin-left: 2px;
-      padding: 2px 4px 2px 4px;
-      color: $COLOR_FOREGROUND_LIGHT;
-      background-color: $COLOR_BACKGROUND_NORMAL;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-      border-bottom: none;
+    min-width: 3em;
+    margin-left: 2px;
+    padding: 2px 4px 2px 4px;
+    color: $neutral-a40;
+    background-color: $neutral-a0;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
 
-      &:selected {
-        color: $COLOR_FOREGROUND_LIGHT;
-        background-color: $COLOR_BACKGROUND_LIGHT;
+    &:disabled {
+      color: withAlpha($neutral-a40, 0.5);
+      background-color: withAlpha($neutral-a5, 0.5);
+    }
 
-        &:disabled {
-          color: $COLOR_FOREGROUND_NORMAL_DISABLED;
-          background-color: $COLOR_BACKGROUND_NORMAL_DISABLED;
-        }
+    &:selected {
+      border-bottom: 3px solid $accent-a0;
+
+      &:disabled {
+        border-bottom: 3px solid withAlpha($accent-a0, 0.5);
       }
-
-      //&:not(selected) {
-      //  margin-top: 2px;
-      //  border-top: 1px solid $COLOR_BACKGROUND_DARK;
-      //  border-left: 1px solid $COLOR_BACKGROUND_DARK;
-      //  border-right: 1px solid $COLOR_BACKGROUND_DARK;
-      //  border-bottom: 2px solid $COLOR_BACKGROUND_DARK;
-      //
-      //  &:disabled {
-      //    color: $COLOR_FOREGROUND_DARK;
-      //    background-color: $COLOR_BACKGROUND_DARK;
-      //    border-bottom: 3px solid $COLOR_BACKGROUND_DARK;
-      //  }
-      //
-      //  &:hover {
-      //    padding-left: 4px;
-      //    padding-right: 4px;
-      //    border: $BORDER_SELECTION_LIGHT;
-      //    border-bottom: 3px solid $BORDER_SELECTION_COLOR_LIGHT;
-      //  }
-      //}
     }
   }
 }

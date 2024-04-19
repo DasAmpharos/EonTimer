@@ -8,7 +8,6 @@ a = Analysis(
     datas=[
         ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
         ('eon_timer/resources/images/*.png', 'eon_timer/resources/images'),
-        ('eon_timer/resources/images/*.svg', 'eon_timer/resources/images'),
         ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
         ('eon_timer/resources/*.scss', 'eon_timer/resources'),
     ],
