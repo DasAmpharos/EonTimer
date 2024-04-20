@@ -5,15 +5,14 @@ from typing import Final
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QSizePolicy, QSpinBox, QGroupBox
 
-from eon_timer.app_state import AppState
+from eon_timer.timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
-from eon_timer.util.pyside import EnumComboBox, ScrollWidget
+from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget, FormLayout
 from .model import Gen5Model, Gen5Mode
-from eon_timer.timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
 
 
 @component()
@@ -36,7 +35,6 @@ class Gen5Widget(FormWidget):
     timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
-                 state: AppState,
                  model: Gen5Model,
                  calibrator: Calibrator,
                  delay_timer: DelayTimer,
@@ -44,7 +42,6 @@ class Gen5Widget(FormWidget):
                  entralink_timer: EntralinkTimer,
                  enhanced_entralink_timer: EnhancedEntralinkTimer) -> None:
         super().__init__(None)
-        self.state: Final[AppState] = state
         self.model: Final[Gen5Model] = model
         self.calibrator: Final[Calibrator] = calibrator
         self.delay_timer: Final[DelayTimer] = delay_timer
@@ -174,3 +171,58 @@ class Gen5Widget(FormWidget):
             self.model.entralink_calibration.get(),
             self.model.frame_calibration.get()
         )
+
+    def calibrate(self):
+        if self.model.delay_hit.get() > 0:
+            mode = self.model.mode.get()
+            match mode:
+                case Gen5Mode.STANDARD:
+                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
+                case Gen5Mode.C_GEAR:
+                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.delay_calibration))
+                case (Gen5Mode.ENTRALINK,
+                      Gen5Mode.ENTRALINK_PLUS):
+                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
+                    self.model.entralink_calibration.add(
+                        self.calibrator.calibrate_to_delays(self.entralink_calibration)
+                    )
+                    if mode == Gen5Mode.ENTRALINK_PLUS:
+                        self.model.frame_calibration.add(self.advances_calibration)
+
+            self.model.delay_hit.set(0)
+            self.model.second_hit.set(0)
+            self.model.advances_hit.set(0)
+
+    def __can_calibrate(self) -> bool:
+        match self.model.mode.get():
+            case Gen5Mode.STANDARD:
+                return self.model.second_hit.get() > 0
+            case Gen5Mode.C_GEAR:
+                return self.model.delay_hit.get() > 0
+            case Gen5Mode.ENTRALINK:
+                return (self.model.delay_hit.get() > 0 and
+                        self.model.second_hit.get() > 0)
+            case Gen5Mode.ENTRALINK_PLUS:
+                return (self.model.delay_hit.get() > 0 and
+                        self.model.second_hit.get() > 0 and
+                        self.model.advances_hit.get() > 0)
+
+    @property
+    def delay_calibration(self) -> int:
+        return self.delay_timer.calibrate(self.model.target_delay.get(),
+                                          self.model.delay_hit.get())
+
+    @property
+    def second_calibration(self) -> int:
+        return self.second_timer.calibrate(self.model.target_second.get(),
+                                           self.model.second_hit.get())
+
+    @property
+    def entralink_calibration(self) -> int:
+        return self.entralink_timer.calibrate(self.model.target_delay.get(),
+                                              self.model.delay_hit.get() - self.second_calibration)
+
+    @property
+    def advances_calibration(self) -> int:
+        return self.enhanced_entralink_timer.calibrate(self.model.target_advances.get(),
+                                                       self.model.advances_hit.get())

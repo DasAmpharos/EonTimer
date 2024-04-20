@@ -5,7 +5,6 @@ from typing import Final
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy, QSpinBox
 
-from eon_timer.app_state import AppState
 from eon_timer.timers import FrameTimer
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
@@ -109,13 +108,13 @@ class Gen3Widget(FormWidget):
         )
 
     def calibrate(self):
-        calibration = self.model.calibration.get()
-        offset = self.frame_timer.calibrate(
-            self.model.target_frame.get(),
-            self.model.frame_hit.get()
-        )
-        self.model.calibration.set(calibration + offset)
-        self.model.frame_hit.set(0)
+        if self.model.frame_hit.get() > 0:
+            offset = self.frame_timer.calibrate(
+                self.model.target_frame.get(),
+                self.model.frame_hit.get()
+            )
+            self.model.calibration.add(offset)
+            self.model.frame_hit.set(0)
 
     def __on_mode_changed(self, event: PropertyChangeEvent[Gen3Mode]) -> None:
         self.set_visible(self.Field.SET_TARGET_FRAME,

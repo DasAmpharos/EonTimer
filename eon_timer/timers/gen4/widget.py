@@ -5,7 +5,6 @@ from typing import Final
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox
 
-from eon_timer.app_state import AppState
 from eon_timer.timers import Calibrator, DelayTimer
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
@@ -102,15 +101,15 @@ class Gen4Widget(FormWidget):
         )
 
     def calibrate(self):
-        calibration = self.calibrator.to_delays(
-            self.delay_timer.calibrate(
-                self.model.target_delay.get(),
-                self.model.delay_hit.get()
+        if self.model.delay_hit.get() > 0:
+            calibration = self.calibrator.to_delays(
+                self.delay_timer.calibrate(
+                    self.model.target_delay.get(),
+                    self.model.delay_hit.get()
+                )
             )
-        )
-        calibrated_delay = self.model.calibrated_delay.get() + calibration
-        self.model.calibrated_delay.set(calibrated_delay)
-        self.model.delay_hit.set(0)
+            self.model.calibrated_delay.add(calibration)
+            self.model.delay_hit.set(0)
 
     def get_calibration(self) -> int:
         return self.calibrator.create_calibration(

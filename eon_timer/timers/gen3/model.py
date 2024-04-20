@@ -3,7 +3,7 @@ from typing import override
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property
+from eon_timer.util.properties.property import Property, IntProperty
 from eon_timer.util.properties.settings import Settings
 
 
@@ -15,10 +15,10 @@ class Gen3Mode(EnhancedEnum, StrEnum):
 @component()
 class Gen3Model(Settings):
     mode = Property(Gen3Mode.STANDARD, value_type=str)
-    pre_timer = Property(5000)
-    target_frame = Property(1000)
-    calibration = Property(0)
-    frame_hit = Property(0, transient=True)
+    pre_timer = IntProperty(5000)
+    target_frame = IntProperty(1000)
+    calibration = IntProperty(0)
+    frame_hit = IntProperty(0, transient=True)
 
     @property
     @override
