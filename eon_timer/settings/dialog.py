@@ -22,7 +22,7 @@ class SettingsDialog(QDialog):
         self.__init_components()
 
     def __init_components(self) -> None:
-        self.setWindowTitle('Preferences')
+        self.setWindowTitle('Settings')
         self.setWindowFlags(Qt.Dialog |
                             Qt.WindowTitleHint |
                             Qt.CustomizeWindowHint |

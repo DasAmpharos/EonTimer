@@ -1,15 +1,18 @@
-import typing
 from abc import abstractmethod
 from typing import override, Final
 
-from PySide6.QtCore import QSettings, QObject
+from PySide6.QtCore import QSettings, Signal, QObject
 
 from .property import Property
 from ..injector.lifecycle import CloseListener
 
 
-class Settings(CloseListener):
+class Settings(QObject, CloseListener):
+    settings_changed: Final[Signal] = Signal()
+
     def __init__(self, settings: QSettings):
+        QObject.__init__(self, None)
+
         self_type = type(self)
         self.settings: Final[QSettings] = settings
         settings.beginGroup(self.group)

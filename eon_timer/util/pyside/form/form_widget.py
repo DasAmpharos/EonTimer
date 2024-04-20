@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from enum import StrEnum
 from typing import Final, Optional
 
@@ -22,13 +21,15 @@ class FormWidget(QWidget):
                   field: Field,
                   widget: QWidget,
                   with_label: bool = True,
-                  layout: Optional[FormLayout] = None) -> FieldSet:
+                  layout: Optional[FormLayout] = None,
+                  visible: bool = True) -> FieldSet:
         layout = layout or self._layout
         label = QLabel(str(field)) if with_label else None
 
         row = layout.add_row(widget, label)
         field_set = FieldSet(row, widget, label, layout)
         self.__field_sets[field] = field_set
+        field_set.visible = visible
         return field_set
 
     def set_visible(self, field: Field, visible: bool) -> None:
