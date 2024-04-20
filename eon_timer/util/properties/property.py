@@ -37,3 +37,20 @@ class Property(Generic[T]):
     @property
     def transient(self) -> bool:
         return self.__transient
+
+
+class IntProperty(Property[int]):
+    def __init__(self, initial_value: int | None = None, transient: bool = False):
+        super().__init__(initial_value, int, transient)
+
+    def add(self, value: int):
+        self.set(self.get() + value)
+
+    def sub(self, value: int):
+        self.set(self.get() - value)
+
+    def mul(self, value: int):
+        self.set(self.get() * value)
+
+    def div(self, value: int):
+        self.set(int(self.get() / value))
