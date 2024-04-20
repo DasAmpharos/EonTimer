@@ -12,6 +12,7 @@ class Property(Generic[T]):
                  transient: bool = False):
         if value_type is None and initial_value is None:
             raise ValueError('value_type must be specified if initial_value is None')
+        self.initial_value: Final[T | None] = initial_value
         self.value_type: Final[Type[T]] = value_type or type(initial_value)
         self.__change_listeners: list[PropertyChangeListener] = []
         self.__transient = transient
@@ -33,6 +34,9 @@ class Property(Generic[T]):
             event = PropertyChangeEvent(old_value, new_value)
             for listener in self.__change_listeners:
                 listener(event)
+
+    def reset(self):
+        self.set(self.initial_value)
 
     @property
     def transient(self) -> bool:
