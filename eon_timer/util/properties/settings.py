@@ -15,12 +15,14 @@ class Settings(QObject, CloseListener):
 
         self_type = type(self)
         self.settings: Final[QSettings] = settings
+        self.__properties: Final[list[Property]] = []
         settings.beginGroup(self.group)
         for name, value in self_type.__dict__.items():
             if isinstance(value, Property):
                 if settings.contains(name):
                     new_value = settings.value(name, None, value.value_type)
                     value.set(new_value)
+                self.__properties.append(value)
                 setattr(self, name, value)
         settings.endGroup()
 
@@ -32,6 +34,11 @@ class Settings(QObject, CloseListener):
             if isinstance(value, Property) and not value.transient:
                 self.settings.setValue(name, value.get())
         self.settings.endGroup()
+
+    def reset(self):
+        for prop in self.__properties:
+            prop.reset()
+        self.settings_changed.emit()
 
     @property
     @abstractmethod

@@ -54,6 +54,13 @@ class TimerSettingsWidget(FormWidget):
         self.model.precision_calibration.update(self.precision_calibration)
 
     def on_rejected(self):
+        self.__reset_properties()
+
+    def on_reset(self):
+        self.model.reset()
+        self.__reset_properties()
+
+    def __reset_properties(self):
         self.console.update(self.model.console)
         self.refresh_interval.update(self.model.refresh_interval)
         self.precision_calibration.update(self.model.precision_calibration)

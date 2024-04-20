@@ -35,7 +35,7 @@ AppWindow {
   border-image: url("${background}") 0 0 0 0 stretch stretch;
 }
 
-SettingsDialog {
+QDialog {
   background-color: $neutral-a10;
 }
 
