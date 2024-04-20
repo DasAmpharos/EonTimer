@@ -62,6 +62,23 @@ QLabel {
   }
 }
 
+QLineEdit {
+  min-height: 1.5em;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  border: 1px solid $neutral-a10;
+  border-radius: $border-radius;
+
+  &:focus {
+    border: 1px solid $accent-a0;
+  }
+
+  &.file-selector-field {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
 QPushButton {
   min-width: 2em;
   min-height: 1.5em;
@@ -91,6 +108,11 @@ QPushButton {
       background-color: $accent-a5;
       border: 1px solid $accent-a20;
     }
+  }
+
+  &.file-selector-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 

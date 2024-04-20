@@ -1,5 +1,3 @@
-import importlib.resources
-
 from PySide6.QtGui import QFontDatabase, QFont
 from PySide6.QtWidgets import QWidget
 

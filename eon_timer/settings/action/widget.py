@@ -1,15 +1,18 @@
 import functools
 from typing import Final
 
+import pygame
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QPixmap, QColor
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QPushButton, QSpinBox, QColorDialog
 
 from eon_timer.util import const
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property
+from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
+from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.form import FormWidget
 from .model import ActionSettingsModel, ActionMode, ActionSound
 
@@ -34,7 +37,6 @@ class ActionSettingsWidget(FormWidget):
         self.count: Final = Property(model.count.get())
         self.model: Final[ActionSettingsModel] = model
         self.__init_components()
-        self.__init_listeners()
 
     def __init_components(self) -> None:
         # ----- layout -----
@@ -48,11 +50,17 @@ class ActionSettingsWidget(FormWidget):
         field = EnumComboBox(ActionSound)
         bindings.bind_combobox(field, self.sound)
         self.add_field(self.Field.SOUND, field)
+        # ----- custom_sound -----
+        field = FileSelectorWidget()
+        field.file_validator = self.__is_valid_sound
+        bindings.bind(field.file, self.custom_sound, True)
+        self.add_field(self.Field.CUSTOM_SOUND, field, visible=self.sound.get() == ActionSound.CUSTOM)
+        self.sound.on_change(self.__on_sound_changed)
         # ----- color -----
         field = QPushButton()
         field.clicked.connect(functools.partial(self.__on_color_clicked, field))
-        self.__set_icon_color(field, self.color)
         self.add_field(self.Field.COLOR, field)
+        self.__set_icon_color(field)
         # ----- interval -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
@@ -64,33 +72,42 @@ class ActionSettingsWidget(FormWidget):
         bindings.bind_spinbox(field, self.count)
         self.add_field(self.Field.COUNT, field)
 
-    def __init_listeners(self):
-        pass
+    def __on_sound_changed(self, event: PropertyChangeEvent[ActionSound]) -> None:
+        self.set_visible(self.Field.CUSTOM_SOUND, event.new_value == ActionSound.CUSTOM)
 
     def __on_color_clicked(self, button: QPushButton) -> None:
         color = self.color.get()
         color = QColorDialog.getColor(color, self)
         if color.isValid():
             self.color.set(color)
-            self.__set_icon_color(button, color)
+            self.__set_icon_color(button)
+
+    def __set_icon_color(self, button: QPushButton) -> None:
+        pixmap = QPixmap(64, 64)
+        pixmap.fill(self.color.get())
+        button.setIcon(QIcon(pixmap))
 
     @staticmethod
-    def __set_icon_color(button: QPushButton,
-                         color: Property[QColor]) -> None:
-        pixmap = QPixmap(64, 64)
-        pixmap.fill(color.get())
-        button.setIcon(QIcon(pixmap))
+    def __is_valid_sound(filepath: str) -> bool:
+        try:
+            pygame.mixer.Sound(filepath)
+            return True
+        except pygame.error:
+            return False
 
     def on_accepted(self):
         self.model.mode.update(self.mode)
         self.model.sound.update(self.sound)
+        self.model.custom_sound.update(self.custom_sound)
         self.model.color.update(self.color)
         self.model.interval.update(self.interval)
         self.model.count.update(self.count)
+        self.model.settings_changed.emit()
 
     def on_rejected(self):
         self.mode.update(self.model.mode)
         self.sound.update(self.model.sound)
+        self.custom_sound.update(self.model.custom_sound)
         self.color.update(self.model.color)
         self.interval.update(self.model.interval)
         self.count.update(self.model.count)

@@ -13,11 +13,8 @@ class AppContext:
     def __init__(self, base_packages: list[str]):
         self.__providers: dict[type, Provider] = {}
 
-        for package in base_packages:
-            module = importlib.import_module(package)
-            for _, module_name, _ in pkgutil.iter_modules(module.__path__):
-                module_path = '.'.join([package, module_name])
-                importlib.import_module(module_path)
+        for base_package in base_packages:
+            self.__import_all(base_package)
 
         component_definitions = get_definitions()
         dependency_graph = self.__build_dependency_graph(component_definitions)
@@ -29,6 +26,14 @@ class AppContext:
             raise ValueError(f'Component {component_type} not found')
         provider: Provider = self.__providers[component_type]
         return provider.get()
+
+    @classmethod
+    def __import_all(cls, package_name: str):
+        package = importlib.import_module(package_name)
+        for loader, module_name, is_pkg in pkgutil.walk_packages(package.__path__, package_name + '.'):
+            importlib.import_module(module_name)
+            if is_pkg:
+                cls.__import_all(module_name)
 
     @staticmethod
     def __build_dependency_graph(component_definitions: ComponentDefinitions):

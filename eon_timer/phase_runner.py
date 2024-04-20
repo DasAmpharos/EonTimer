@@ -1,9 +1,8 @@
 import functools
-import statistics
 import time
 from typing import Optional, Final, Iterator
 
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject
 
 from eon_timer.app_state import AppState
 from eon_timer.settings.action.model import ActionSettingsModel
