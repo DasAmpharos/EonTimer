@@ -12,7 +12,9 @@ class SoundManager:
     def __init__(self):
         def predefined_sound(filename: str) -> pygame.mixer.Sound:
             filepath = resources.get_filepath('eon_timer.resources.sounds', filename)
-            return pygame.mixer.Sound(filepath)
+            soud = pygame.mixer.Sound(filepath)
+            print(filepath)
+            return soud
 
         pygame.mixer.init()
         self.__sounds = {
