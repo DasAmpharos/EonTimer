@@ -34,21 +34,13 @@ class ThemeManager:
                 self.__set_system_style()
 
     def __set_default_style(self):
-        # style sheet
-        caret_up = resources.get_filepath('eon_timer.resources.images', 'caret-up.png')
-        caret_up_disabled = resources.get_filepath('eon_timer.resources.images', 'caret-up-disabled.png')
-        caret_down = resources.get_filepath('eon_timer.resources.images', 'caret-down.png')
-        caret_down_disabled = resources.get_filepath('eon_timer.resources.images', 'caret-down-disabled.png')
-        background = resources.get_filepath('eon_timer.resources.images', 'background.png')
-        stylesheet = importlib.resources.read_text('eon_timer.resources', 'main.scss')
-
-        template = Template(stylesheet)
+        template = Template(importlib.resources.read_text('eon_timer.resources', 'main.scss'))
         stylesheet = template.safe_substitute(
-            caret_up=self.__normalize_file(caret_up),
-            caret_down=self.__normalize_file(caret_down),
-            caret_up_disabled=self.__normalize_file(caret_up_disabled),
-            caret_down_disabled=self.__normalize_file(caret_down_disabled),
-            background=self.__normalize_file(background)
+            caret_up=resources.get_filepath('eon_timer.resources.images', 'caret-up.png', True),
+            caret_down=resources.get_filepath('eon_timer.resources.images', 'caret-down.png', True),
+            caret_up_disabled=resources.get_filepath('eon_timer.resources.images', 'caret-up-disabled.png', True),
+            caret_down_disabled=resources.get_filepath('eon_timer.resources.images', 'caret-down-disabled.png', True),
+            background=resources.get_filepath('eon_timer.resources.images', 'background.png', True)
         )
         stylesheet = sass.compile(string=stylesheet)
         self.app_window.setStyleSheet(stylesheet)
@@ -57,9 +49,3 @@ class ThemeManager:
     def __set_system_style(self):
         self.app_window.setStyleSheet('')
         self.settings_dialog.setStyleSheet('')
-
-    @staticmethod
-    def __normalize_file(filename: str) -> str:
-        if hasattr(sys, 'getwindowsversion'):
-            return filename.replace('\\', '/')
-        return filename
