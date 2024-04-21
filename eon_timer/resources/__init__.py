@@ -2,9 +2,12 @@ import importlib.resources
 import sys
 
 
-def get_filepath(package: str, resource: str) -> str:
+def get_filepath(package: str, resource: str, normalize_path: bool = False) -> str:
     with importlib.resources.path(package, resource) as path:
-        return normalize_filepath(str(path))
+        filepath = str(path)
+        if normalize_path:
+            filepath = normalize_filepath(filepath)
+        return filepath
 
 
 def get_bytes(package: str, resource: str) -> bytes:
