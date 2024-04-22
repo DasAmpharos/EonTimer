@@ -16,7 +16,7 @@ from .model import Gen5Model, Gen5Mode
 
 
 @component()
-class Gen5Widget(FormWidget):
+class Gen5TimerWidget(FormWidget):
     class Field(FormWidget.Field):
         MODE = 'Mode'
         # target field names
@@ -118,7 +118,7 @@ class Gen5Widget(FormWidget):
         self.__on_mode_changed(event)
 
     def __init_listeners(self):
-        def field_changed(field: Gen5Widget.Field,
+        def field_changed(field: Gen5TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             logging.info(f'> INFO: Gen5Widget#{field}: {event.new_value}')
             self.timer_changed.emit()

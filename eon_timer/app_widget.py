@@ -9,9 +9,10 @@ from eon_timer.app_state import AppState
 from eon_timer.phase_runner import PhaseRunner
 from eon_timer.settings.dialog import SettingsDialog
 from eon_timer.timer_widget import TimerWidget
-from eon_timer.timers.gen3 import Gen3Widget
-from eon_timer.timers.gen4 import Gen4Widget
-from eon_timer.timers.gen5 import Gen5Widget
+from eon_timer.timers.custom.widget import CustomTimerWidget
+from eon_timer.timers.gen3 import Gen3TimerWidget
+from eon_timer.timers.gen4 import Gen4TimerWidget
+from eon_timer.timers.gen5 import Gen5TimerWidget
 from eon_timer.util import pyside
 from eon_timer.util.injector import component
 
@@ -20,24 +21,27 @@ from eon_timer.util.injector import component
 class AppWidget(QWidget):
     def __init__(self,
                  state: AppState,
-                 gen5_widget: Gen5Widget,
-                 gen4_widget: Gen4Widget,
-                 gen3_widget: Gen3Widget,
-                 timer_widget: TimerWidget,
                  phase_runner: PhaseRunner,
+                 timer_widget: TimerWidget,
+                 gen5_timer_widget: Gen5TimerWidget,
+                 gen4_timer_widget: Gen4TimerWidget,
+                 gen3_timer_widget: Gen3TimerWidget,
+                 custom_timer_widget: CustomTimerWidget,
                  settings_dialog: SettingsDialog) -> None:
         super().__init__()
         self.state: Final[AppState] = state
+        self.phase_runner: Final[PhaseRunner] = phase_runner
+        self.timer_widget: Final[TimerWidget] = timer_widget
+        self.gen5_timer_widget: Final[Gen5TimerWidget] = gen5_timer_widget
+        self.gen4_timer_widget: Final[Gen4TimerWidget] = gen4_timer_widget
+        self.gen3_timer_widget: Final[Gen3TimerWidget] = gen3_timer_widget
+        self.custom_timer_widget: Final[CustomTimerWidget] = custom_timer_widget
+        self.settings_dialog: Final[SettingsDialog] = settings_dialog
+
         self.tab_widget: Final[QTabWidget] = QTabWidget()
         self.timer_btn: Final[QPushButton] = QPushButton()
         self.update_btn: Final[QPushButton] = QPushButton()
         self.settings_btn: Final[QPushButton] = QPushButton()
-        self.gen5_widget: Final[Gen5Widget] = gen5_widget
-        self.gen4_widget: Final[Gen4Widget] = gen4_widget
-        self.gen3_widget: Final[Gen3Widget] = gen3_widget
-        self.timer_widget: Final[TimerWidget] = timer_widget
-        self.phase_runner: Final[PhaseRunner] = phase_runner
-        self.settings_dialog: Final[SettingsDialog] = settings_dialog
         self.__init_components()
 
     def __init_components(self) -> None:
@@ -56,12 +60,14 @@ class AppWidget(QWidget):
         pyside.set_class(self.tab_widget, ['themeable-panel', 'themeable-border'])
         self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.tab_widget.currentChanged.connect(self.__update_timer)
-        self.gen5_widget.timer_changed.connect(self.__update_timer)
-        self.gen4_widget.timer_changed.connect(self.__update_timer)
-        self.gen3_widget.timer_changed.connect(self.__update_timer)
-        self.tab_widget.addTab(self.gen5_widget, '5')
-        self.tab_widget.addTab(self.gen4_widget, '4')
-        self.tab_widget.addTab(self.gen3_widget, '3')
+        self.gen5_timer_widget.timer_changed.connect(self.__update_timer)
+        self.gen4_timer_widget.timer_changed.connect(self.__update_timer)
+        self.gen3_timer_widget.timer_changed.connect(self.__update_timer)
+        self.tab_widget.addTab(self.gen5_timer_widget, '5')
+        self.tab_widget.addTab(self.gen4_timer_widget, '4')
+        self.tab_widget.addTab(self.gen3_timer_widget, '3')
+        self.tab_widget.addTab(self.custom_timer_widget, 'C')
+
         # ----- settings_btn -----
         self.settings_btn.setText(chr(0xf013))
         layout.addWidget(self.settings_btn, 2, 0)

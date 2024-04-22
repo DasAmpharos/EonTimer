@@ -15,7 +15,7 @@ from .model import Gen4Model
 
 
 @component()
-class Gen4Widget(FormWidget):
+class Gen4TimerWidget(FormWidget):
     class Field(FormWidget.Field):
         CALIBRATED_DELAY = 'Calibrated Delay'
         CALIBRATED_SECOND = 'Calibrated Second'
@@ -75,7 +75,7 @@ class Gen4Widget(FormWidget):
         self.add_field(self.Field.DELAY_HIT, field)
 
     def __init_listeners(self):
-        def field_changed(field: Gen4Widget.Field,
+        def field_changed(field: Gen4TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             logging.info(f'> INFO: Gen4Widget#{field}: {event.new_value}')
             self.timer_changed.emit()

@@ -16,7 +16,7 @@ from .model import Gen3Mode, Gen3Model
 
 
 @component()
-class Gen3Widget(FormWidget):
+class Gen3TimerWidget(FormWidget):
     class Field(FormWidget.Field):
         MODE = 'Mode'
         PRE_TIMER = 'Pre-Timer'
@@ -82,7 +82,7 @@ class Gen3Widget(FormWidget):
         self.__on_mode_changed(event)
 
     def __init_listeners(self):
-        def field_changed(field: Gen3Widget.Field,
+        def field_changed(field: Gen3TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             logging.info(f'> INFO: Gen3Widget#{field}: {event.new_value}')
             self.timer_changed.emit()
