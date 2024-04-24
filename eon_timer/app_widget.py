@@ -63,6 +63,7 @@ class AppWidget(QWidget):
         self.gen5_timer_widget.timer_changed.connect(self.__update_timer)
         self.gen4_timer_widget.timer_changed.connect(self.__update_timer)
         self.gen3_timer_widget.timer_changed.connect(self.__update_timer)
+        self.custom_timer_widget.timer_changed.connect(self.__update_timer)
         self.tab_widget.addTab(self.gen5_timer_widget, '5')
         self.tab_widget.addTab(self.gen4_timer_widget, '4')
         self.tab_widget.addTab(self.gen3_timer_widget, '3')

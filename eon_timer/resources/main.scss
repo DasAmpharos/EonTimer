@@ -47,7 +47,7 @@ QTabWidget.themeable-panel::pane {
 .themeable-border,
 QTabWidget.themeable-border::pane {
   border: 2px solid $neutral-a0;
-  border-radius: 5px;
+  border-radius: $border-radius;
 }
 
 QScrollArea.themeable-panel {
@@ -282,26 +282,6 @@ QListView {
   selection-background-color: $accent-a0;
 }
 
-.button-bar {
-  & > QPushButton {
-    border-radius: 0;
-    border-right: none;
-
-    &.first {
-      border-top-left-radius: $border-radius;
-      border-bottom-left-radius: $border-radius;
-      color: blue;
-    }
-
-    &.last {
-      border-top-right-radius: $border-radius;
-      border-bottom-right-radius: $border-radius;
-      border-right: 1px solid $neutral-a10;
-      color: red;
-    }
-  }
-}
-
 QTabBar {
   margin: 0;
   padding: 1em;
@@ -329,5 +309,35 @@ QTabBar {
         border-bottom: 3px solid withAlpha($accent-a0, 0.5);
       }
     }
+  }
+}
+
+QPushButton.danger {
+  color: $neutral-a0;
+  background-color: $danger-a0;
+  border: none;
+
+  &:pressed {
+    background-color: darken($danger-a0, 10%);
+  }
+
+  &:disabled {
+    color: withAlpha($neutral-a0, 0.5);
+    background-color: withAlpha($danger-a0, 0.5);
+  }
+}
+
+QPushButton.success {
+  color: $neutral-a0;
+  background-color: $success-a0;
+  border: none;
+
+  &:pressed {
+    background-color: darken($success-a0, 10%);
+  }
+
+  &:disabled {
+    color: withAlpha($neutral-a0, 0.5);
+    background-color: withAlpha($success-a0, 0.5);
   }
 }

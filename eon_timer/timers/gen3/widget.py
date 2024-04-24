@@ -17,6 +17,8 @@ from .model import Gen3Mode, Gen3Model
 
 @component()
 class Gen3TimerWidget(FormWidget):
+    timer_changed: Final[Signal] = Signal()
+
     class Field(FormWidget.Field):
         MODE = 'Mode'
         PRE_TIMER = 'Pre-Timer'
@@ -24,8 +26,6 @@ class Gen3TimerWidget(FormWidget):
         CALIBRATION = 'Calibration'
         SET_TARGET_FRAME = 'Set Target Frame'
         FRAME_HIT = 'Frame Hit'
-
-    timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
                  model: Gen3Model,

@@ -3,7 +3,7 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QSizePolicy, QSpinBox, QGroupBox
+from PySide6.QtWidgets import QSizePolicy, QSpinBox, QScrollArea, QWidget, QVBoxLayout, QFrame
 
 from eon_timer.timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
 from eon_timer.util import const, pyside
@@ -17,6 +17,8 @@ from .model import Gen5Model, Gen5Mode
 
 @component()
 class Gen5TimerWidget(FormWidget):
+    timer_changed: Final[Signal] = Signal()
+
     class Field(FormWidget.Field):
         MODE = 'Mode'
         # target field names
@@ -31,8 +33,6 @@ class Gen5TimerWidget(FormWidget):
         DELAY_HIT = 'Delay Hit'
         SECOND_HIT = 'Second Hit'
         ADVANCES_HIT = 'Advances Hit'
-
-    timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
                  model: Gen5Model,
@@ -60,13 +60,32 @@ class Gen5TimerWidget(FormWidget):
         mode_field = EnumComboBox(Gen5Mode)
         bindings.bind_combobox(mode_field, self.model.mode)
         self.add_field(self.Field.MODE, mode_field)
-        # ----- form_group -----
-        form_group = QGroupBox()
-        self._layout.add_row(form_group)
-        form_layout = FormLayout(form_group)
-        form_layout.set_alignment(Qt.AlignTop)
-        pyside.set_class(form_group, ['themeable-panel', 'themeable-border'])
-        form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # ----- scroll_widget -----
+        scroll_pane = QWidget()
+        pyside.set_class(scroll_pane, ['themeable-panel'])
+        scroll_pane.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        scroll_pane_layout = QVBoxLayout(scroll_pane)
+        scroll_pane_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_pane_layout.setSpacing(10)
+
+        scroll_area = QScrollArea()
+        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        pyside.set_class(scroll_area, ['themeable-panel', 'themeable-border'])
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(scroll_pane)
+        self._layout.add_row(scroll_area)
+        scroll_area.setSizePolicy(
+            QSizePolicy.Expanding,
+            QSizePolicy.Expanding
+        )
+        # ----- form -----
+        form_widget = QWidget()
+        form_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        scroll_pane_layout.addWidget(form_widget, stretch=0, alignment=Qt.AlignmentFlag.AlignTop)
+        form_layout = FormLayout(form_widget)
+        form_layout.set_spacing(10)
         # ----- target_delay -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)

@@ -65,7 +65,7 @@ class PhaseRunner(QObject):
                         actions: Iterator[int]):
         ticks = 0
         elapsed = clock.tick()
-        next_action = next(actions)
+        next_action = next(actions, 0)
         period = self.timer_settings.refresh_interval.get()
         while self.state.running and elapsed < phase:
             adjusted_period = period

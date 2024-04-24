@@ -18,6 +18,9 @@ class Property(Generic[T]):
         self.__transient = transient
         self._value = initial_value
 
+    def dispose(self):
+        self.__change_listeners.clear()
+
     def on_change(self, listener: PropertyChangeListener):
         self.__change_listeners.append(listener)
 
@@ -58,28 +61,3 @@ class IntProperty(Property[int]):
 
     def div(self, value: int):
         self.set(int(self.get() / value))
-
-
-class ListProperty(Property[list[T]]):
-    def __init__(self,
-                 initial_value: list[T] | None = None,
-                 transient: bool = False):
-        super().__init__(initial_value or [], list, transient)
-
-    def get(self) -> list[T]:
-        return list(self._value)
-
-    def set(self, new_value: list[T]) -> None:
-        Property.set(self, list(new_value))
-
-    def add_item(self, item: T) -> None:
-        self._value.append(item)
-
-    def remove_item(self, index: int) -> None:
-        pass
-
-    def get_item(self, index: int) -> T:
-        return self._value[index]
-
-    def set_item(self, index: int, item: T) -> None:
-        pass

@@ -16,14 +16,14 @@ from .model import Gen4Model
 
 @component()
 class Gen4TimerWidget(FormWidget):
+    timer_changed: Final[Signal] = Signal()
+
     class Field(FormWidget.Field):
         CALIBRATED_DELAY = 'Calibrated Delay'
         CALIBRATED_SECOND = 'Calibrated Second'
         TARGET_DELAY = 'Target Delay'
         TARGET_SECOND = 'Target Second'
         DELAY_HIT = 'Delay Hit'
-
-    timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
                  model: Gen4Model,
