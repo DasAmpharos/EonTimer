@@ -28,25 +28,24 @@ jobs:
 
       - run: pyinstaller EonTimer.spec
 
-      - if: ${{ matrix.os == 'macos' }}
-        run: hdiutil create -format UDZO -srcfolder dist/EonTimer.app dist/EonTimer.dmg
+      - id: artifact
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "macos" ]]; then
+            hdiutil create -format UDZO -srcfolder dist/EonTimer.app dist/EonTimer.dmg
+            echo "artifact_name=dist/EonTimer.dmg" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ matrix.os }}" == "windows" ]]; then
+            echo "artifact_name=dist/EonTimer.exe" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ matrix.os }}" == "ubuntu" ]]; then
+            echo "artifact_name=dist/EonTimer" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'macos' }}
         with:
-          name: EonTimer-macos
-          path: dist/EonTimer.dmg
+          name: EonTimer-${{ matrix.os }}
+          path: ${{ steps.artifact.outputs.artifact_name }}
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu' }}
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: EonTimer-ubuntu
-          path: dist/EonTimer
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'windows' }}
-        with:
-          name: EonTimer-windows
-          path: dist/EonTimer.exe
-
-
+          files: ${{ steps.artifact.outputs.artifact_name }}
