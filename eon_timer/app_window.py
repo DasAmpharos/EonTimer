@@ -17,5 +17,5 @@ class AppWindow(QMainWindow):
                             Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint)
         self.setCentralWidget(app_widget)
-        self.setMinimumSize(545, 410)
-        self.resize(545, 410)
+        self.setMinimumSize(600, 450)
+        self.resize(600, 450)

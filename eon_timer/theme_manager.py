@@ -45,8 +45,6 @@ class ThemeManager:
         stylesheet = sass.compile(string=stylesheet)
         self.app_window.setStyleSheet(stylesheet)
         self.settings_dialog.setStyleSheet(stylesheet)
-        with open('main.css', 'w') as file:
-            file.write(stylesheet)
 
     def __set_system_style(self):
         self.app_window.setStyleSheet('')

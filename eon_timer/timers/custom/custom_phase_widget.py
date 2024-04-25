@@ -5,6 +5,7 @@ from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import QSpinBox, QLabel, QWidget, QGroupBox, QPushButton, QHBoxLayout, QSizePolicy, \
     QDoubleSpinBox
 
+from eon_timer.timers import Calibrator
 from eon_timer.util import pyside
 from eon_timer.util.const import INT_MAX, INT_MIN
 from eon_timer.util.properties import bindings
@@ -13,7 +14,6 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
 from .custom_phase import CustomPhase
-from .. import Calibrator
 
 
 class CustomPhaseWidget(QWidget):

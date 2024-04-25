@@ -60,7 +60,7 @@ class TimerWidget(QGroupBox):
     def __on_minutes_before_target_changed(self, new_value: int):
         self.minutes_before_target_lbl.setText(str(new_value))
 
-    def __on_next_phase_changed(self, new_value: int):
+    def __on_next_phase_changed(self, new_value: float):
         self.next_phase_lbl.setText(self.__format_time(new_value))
 
     @staticmethod

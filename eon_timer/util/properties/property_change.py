@@ -11,8 +11,3 @@ class PropertyChangeEvent(Generic[T]):
 
 
 PropertyChangeListener = Callable[[PropertyChangeEvent[T]], None]
-
-
-@dataclass
-class ListPropertyChangeEvent(Generic[T]):
-    pass
