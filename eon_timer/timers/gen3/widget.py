@@ -3,7 +3,7 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy, QSpinBox
+from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy, QSpinBox, QDoubleSpinBox
 
 from eon_timer.timers import FrameTimer
 from eon_timer.util import const, pyside
@@ -64,9 +64,9 @@ class Gen3TimerWidget(FormWidget):
         bindings.bind_spinbox(field, self.model.target_frame)
         self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout)
         # ----- calibration -----
-        field = QSpinBox()
+        field = QDoubleSpinBox()
         field.setRange(const.INT_MIN, const.INT_MAX)
-        bindings.bind_spinbox(field, self.model.calibration)
+        bindings.bind_float_spinbox(field, self.model.calibration)
         self.add_field(self.Field.CALIBRATION, field, layout=form_layout)
         # ----- set_target_frame_btn -----
         field = QPushButton(self.Field.SET_TARGET_FRAME.value)

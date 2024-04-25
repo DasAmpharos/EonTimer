@@ -181,7 +181,7 @@ class Gen5TimerWidget(FormWidget):
         self.set_visible(self.Field.ADVANCES_HIT,
                          event.new_value == Gen5Mode.ENTRALINK_PLUS)
 
-    def create_phases(self) -> list[int]:
+    def create_phases(self) -> list[float]:
         return self.enhanced_entralink_timer.create(
             self.model.target_delay.get(),
             self.model.target_second.get(),
@@ -192,19 +192,18 @@ class Gen5TimerWidget(FormWidget):
         )
 
     def calibrate(self):
-        if self.model.delay_hit.get() > 0:
+        if self.__can_calibrate():
             mode = self.model.mode.get()
             match mode:
                 case Gen5Mode.STANDARD:
                     self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
                 case Gen5Mode.C_GEAR:
                     self.model.calibration.add(self.calibrator.calibrate_to_delays(self.delay_calibration))
-                case (Gen5Mode.ENTRALINK,
-                      Gen5Mode.ENTRALINK_PLUS):
-                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
+                case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
+                    self.model.calibration.add(
+                        self.calibrator.calibrate_to_delays(self.second_calibration))
                     self.model.entralink_calibration.add(
-                        self.calibrator.calibrate_to_delays(self.entralink_calibration)
-                    )
+                        self.calibrator.calibrate_to_delays(self.entralink_calibration))
                     if mode == Gen5Mode.ENTRALINK_PLUS:
                         self.model.frame_calibration.add(self.advances_calibration)
 
@@ -227,21 +226,21 @@ class Gen5TimerWidget(FormWidget):
                         self.model.advances_hit.get() > 0)
 
     @property
-    def delay_calibration(self) -> int:
+    def delay_calibration(self) -> float:
         return self.delay_timer.calibrate(self.model.target_delay.get(),
                                           self.model.delay_hit.get())
 
     @property
-    def second_calibration(self) -> int:
+    def second_calibration(self) -> float:
         return self.second_timer.calibrate(self.model.target_second.get(),
                                            self.model.second_hit.get())
 
     @property
-    def entralink_calibration(self) -> int:
+    def entralink_calibration(self) -> float:
         return self.entralink_timer.calibrate(self.model.target_delay.get(),
                                               self.model.delay_hit.get() - self.second_calibration)
 
     @property
-    def advances_calibration(self) -> int:
+    def advances_calibration(self) -> float:
         return self.enhanced_entralink_timer.calibrate(self.model.target_advances.get(),
                                                        self.model.advances_hit.get())

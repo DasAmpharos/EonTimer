@@ -78,8 +78,8 @@ class CustomPhaseWidget(QWidget):
         form.add_field(self.Field.TARGET, self.__target_field)
         # ----- calibration -----
         self.__calibration_field.setRange(INT_MIN, INT_MAX)
-        self.__calibration_field.valueChanged.connect(self.__on_value_changed)
         bindings.bind_float_spinbox(self.__calibration_field, self.model.calibration)
+        self.__calibration_field.valueChanged.connect(self.__on_value_changed)
         form.add_field(self.Field.CALIBRATION, self.__calibration_field)
         # ----- hit_field -----
         self.__hit_field.setRange(0, INT_MAX)
@@ -98,7 +98,7 @@ class CustomPhaseWidget(QWidget):
                 calibration = self.calibrator.to_milliseconds(self.target - self.hit)
             else:
                 calibration = self.target - self.hit
-            self.model.calibration.set(calibration)
+            self.model.calibration.add(calibration)
             self.model.hit.set(0)
 
     def __update_index(self,
@@ -139,6 +139,10 @@ class CustomPhaseWidget(QWidget):
     @property
     def index(self) -> int:
         return self.__index.get()
+
+    @index.setter
+    def index(self, index: int):
+        self.__index.set(index)
 
     @property
     def unit(self) -> CustomPhase.Unit:

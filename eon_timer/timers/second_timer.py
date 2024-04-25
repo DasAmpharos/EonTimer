@@ -6,7 +6,7 @@ from eon_timer.util.injector import component
 class SecondTimer:
     def create(self,
                target_second: int,
-               calibration: int) -> list[float]:
+               calibration: float) -> list[float]:
         return [timers.to_minimum_length(target_second * 1000 + calibration + 200)]
 
     def calibrate(self,

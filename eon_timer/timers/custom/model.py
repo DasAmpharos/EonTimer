@@ -25,7 +25,7 @@ class CustomTimerModel(Settings):
             unit = self.settings.value('unit', CustomPhase.Unit.MILLISECONDS, str)
             value = self.settings.value('value', 0, int)
             calibration = self.settings.value('calibration', 0.0, float)
-            self.__phases.append(CustomPhase(value, unit, calibration))
+            self.__phases.append(CustomPhase(unit, value, calibration))
         self.settings.endArray()
 
     @override

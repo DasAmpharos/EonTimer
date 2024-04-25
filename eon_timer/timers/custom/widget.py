@@ -106,4 +106,4 @@ class CustomTimerWidget(QWidget):
         for i in range(self.__container_layout.count()):
             item = self.__container_layout.itemAt(i)
             widget = item.widget()
-            widget.index.set(i)
+            widget.index = i

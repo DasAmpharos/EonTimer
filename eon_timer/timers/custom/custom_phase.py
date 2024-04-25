@@ -12,8 +12,8 @@ class CustomPhase:
         HEX = 'Seed (Hex)'
 
     def __init__(self,
-                 value: int = 0,
                  unit: Unit = Unit.MILLISECONDS,
+                 value: int = 0,
                  calibration: float = 0.0):
         self.unit: Final[Property[CustomPhase.Unit]] = Property(unit)
         self.target: Final[IntProperty] = IntProperty(value)
@@ -21,7 +21,7 @@ class CustomPhase:
         self.hit: Final[IntProperty] = IntProperty(0, transient=True)
 
     def dispose(self):
+        self.unit.dispose()
         self.target.dispose()
         self.calibration.dispose()
-        self.unit.dispose()
         self.hit.dispose()

@@ -44,7 +44,7 @@ class PhaseRunner(QObject):
 
             self.state.reset()
 
-    def __run(self, clock: Clock, phases: list[int]):
+    def __run(self, clock: Clock, phases: list[float]):
         while self.state.running and self.state.current_phase_index < len(phases):
             current_phase = self.state.current_phase
             # build actions to trigger
@@ -60,7 +60,7 @@ class PhaseRunner(QObject):
         self.state.reset()
 
     def __execute_phase(self,
-                        phase: int,
+                        phase: float,
                         clock: Clock,
                         actions: Iterator[int]):
         ticks = 0

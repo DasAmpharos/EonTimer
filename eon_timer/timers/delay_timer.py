@@ -19,11 +19,10 @@ class DelayTimer:
         self.second_timer: Final[SecondTimer] = second_timer
 
     def create(self, target_delay: int, target_second: int, calibration: float) -> list[float]:
-        phases = [
+        return [
             self.__create_phase1(target_delay, target_second, calibration),
             self.__create_phase2(target_delay, calibration)
         ]
-        return phases
 
     def __create_phase1(self, target_delay: int, target_second: int, calibration: float) -> float:
         return timers.to_minimum_length(
