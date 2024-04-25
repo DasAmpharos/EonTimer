@@ -22,9 +22,10 @@ class CustomTimerModel(Settings):
     def _deserialize(self):
         for i in range(self.settings.beginReadArray(self.group)):
             self.settings.setArrayIndex(i)
-            value = self.settings.value('value', 0, int)
             unit = self.settings.value('unit', CustomPhase.Unit.MILLISECONDS, str)
-            self.__phases.append(CustomPhase(value, unit))
+            value = self.settings.value('value', 0, int)
+            calibration = self.settings.value('calibration', 0.0, float)
+            self.__phases.append(CustomPhase(value, unit, calibration))
         self.settings.endArray()
 
     @override
@@ -32,8 +33,9 @@ class CustomTimerModel(Settings):
         self.settings.beginWriteArray(self.group, len(self.__phases))
         for i, phase in enumerate(self.__phases):
             self.settings.setArrayIndex(i)
-            self.settings.setValue('value', phase.target.get())
             self.settings.setValue('unit', phase.unit.get())
+            self.settings.setValue('value', phase.target.get())
+            self.settings.setValue('calibration', phase.calibration.get())
         self.settings.endArray()
 
     @property

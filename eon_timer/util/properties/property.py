@@ -61,3 +61,20 @@ class IntProperty(Property[int]):
 
     def div(self, value: int):
         self.set(int(self.get() / value))
+
+
+class FloatProperty(Property[float]):
+    def __init__(self, initial_value: float | None = None, transient: bool = False):
+        Property.__init__(self, initial_value, float, transient)
+
+    def add(self, value: float):
+        self.set(self.get() + value)
+
+    def sub(self, value: float):
+        self.set(self.get() - value)
+
+    def mul(self, value: float):
+        self.set(self.get() * value)
+
+    def div(self, value: float):
+        self.set(self.get() / value)

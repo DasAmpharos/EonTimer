@@ -76,6 +76,7 @@ class Gen3TimerWidget(FormWidget):
         # ----- frame_hit -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
+        bindings.bind_spinbox(field, self.model.frame_hit)
         self.add_field(self.Field.FRAME_HIT, field)
         # update field visibility
         event = PropertyChangeEvent(None, self.model.mode.get())
@@ -100,7 +101,7 @@ class Gen3TimerWidget(FormWidget):
         handler = functools.partial(field_changed, self.Field.CALIBRATION)
         self.model.calibration.on_change(handler)
 
-    def create_phases(self) -> list[int]:
+    def create_phases(self) -> list[float]:
         return self.frame_timer.create(
             self.model.pre_timer.get(),
             self.model.target_frame.get(),

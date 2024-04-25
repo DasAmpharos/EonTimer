@@ -2,7 +2,8 @@ import functools
 from typing import Final
 
 from PySide6.QtCore import Signal, Qt
-from PySide6.QtWidgets import QSpinBox, QLabel, QWidget, QGroupBox, QPushButton, QHBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QSpinBox, QLabel, QWidget, QGroupBox, QPushButton, QHBoxLayout, QSizePolicy, \
+    QDoubleSpinBox
 
 from eon_timer.util import pyside
 from eon_timer.util.const import INT_MAX, INT_MIN
@@ -12,6 +13,7 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
 from .custom_phase import CustomPhase
+from .. import Calibrator
 
 
 class CustomPhaseWidget(QWidget):
@@ -24,14 +26,18 @@ class CustomPhaseWidget(QWidget):
         CALIBRATION = 'Calibration'
         HIT = 'Hit'
 
-    def __init__(self, model: CustomPhase, index: int):
+    def __init__(self,
+                 index: int,
+                 model: CustomPhase,
+                 calibrator: Calibrator):
         super().__init__()
         self.model: Final[CustomPhase] = model
-        self.index: Final[IntProperty] = IntProperty(index)
+        self.calibrator: Final[Calibrator] = calibrator
+        self.__index: Final[IntProperty] = IntProperty(index)
 
         self.__unit_field: Final[EnumComboBox] = EnumComboBox(CustomPhase.Unit)
         self.__target_field: Final[QSpinBox] = QSpinBox()
-        self.__calibration_field: Final[QSpinBox] = QSpinBox()
+        self.__calibration_field: Final[QDoubleSpinBox] = QDoubleSpinBox()
         self.__hit_field: Final[QSpinBox] = QSpinBox()
         self.__init_components()
 
@@ -45,7 +51,7 @@ class CustomPhaseWidget(QWidget):
         layout.addWidget(label, stretch=0)
         label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         update_index = functools.partial(self.__update_index, label)
-        self.index.on_change(update_index)
+        self.__index.on_change(update_index)
         update_index()
         # ----- group -----
         group = QGroupBox()
@@ -67,13 +73,13 @@ class CustomPhaseWidget(QWidget):
         self.__on_unit_changed()
         # ----- target -----
         self.__target_field.setRange(0, INT_MAX)
-        self.__target_field.valueChanged.connect(self.__on_value_changed)
         bindings.bind_spinbox(self.__target_field, self.model.target)
+        self.__target_field.valueChanged.connect(self.__on_value_changed)
         form.add_field(self.Field.TARGET, self.__target_field)
         # ----- calibration -----
         self.__calibration_field.setRange(INT_MIN, INT_MAX)
         self.__calibration_field.valueChanged.connect(self.__on_value_changed)
-        bindings.bind_spinbox(self.__calibration_field, self.model.calibration)
+        bindings.bind_float_spinbox(self.__calibration_field, self.model.calibration)
         form.add_field(self.Field.CALIBRATION, self.__calibration_field)
         # ----- hit_field -----
         self.__hit_field.setRange(0, INT_MAX)
@@ -87,12 +93,18 @@ class CustomPhaseWidget(QWidget):
         pyside.set_class(button, ['danger'])
 
     def calibrate(self):
-        pass
+        if self.hit > 0:
+            if self.unit != CustomPhase.Unit.MILLISECONDS:
+                calibration = self.calibrator.to_milliseconds(self.target - self.hit)
+            else:
+                calibration = self.target - self.hit
+            self.model.calibration.set(calibration)
+            self.model.hit.set(0)
 
     def __update_index(self,
                        label: QLabel,
                        event: PropertyChangeEvent[int] | None = None):
-        index = self.index.get()
+        index = self.index
         if event is not None:
             index = event.new_value
         label.setText(f'{index + 1}.')
@@ -101,7 +113,7 @@ class CustomPhaseWidget(QWidget):
         self.changed.emit()
 
     def __on_unit_changed(self, event: PropertyChangeEvent[CustomPhase.Unit] | None = None):
-        unit = self.model.unit.get()
+        unit = self.unit
         if event is not None:
             unit = event.new_value
 
@@ -120,6 +132,26 @@ class CustomPhaseWidget(QWidget):
         self.removed.emit()
 
     def deleteLater(self):
-        self.index.dispose()
         self.model.dispose()
+        self.__index.dispose()
         super().deleteLater()
+
+    @property
+    def index(self) -> int:
+        return self.__index.get()
+
+    @property
+    def unit(self) -> CustomPhase.Unit:
+        return self.model.unit.get()
+
+    @property
+    def target(self) -> int:
+        return self.model.target.get()
+
+    @property
+    def calibration(self) -> float:
+        return self.model.calibration.get()
+
+    @property
+    def hit(self) -> int:
+        return self.model.hit.get()

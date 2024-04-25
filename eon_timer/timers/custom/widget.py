@@ -73,8 +73,15 @@ class CustomTimerWidget(QWidget):
             value = phase.target.get()
             if unit == CustomPhase.Unit.ADVANCES or unit == CustomPhase.Unit.HEX:
                 value = self.calibrator.to_milliseconds(value)
+            value += phase.calibration.get()
             phases.append(value)
         return phases
+
+    def calibrate(self):
+        for i in range(self.__container_layout.count()):
+            item = self.__container_layout.itemAt(i)
+            widget = item.widget()
+            widget.calibrate()
 
     def __on_add(self):
         phase = CustomPhase()
@@ -90,7 +97,7 @@ class CustomTimerWidget(QWidget):
         widget.deleteLater()
 
     def __add_widget(self, phase: CustomPhase, index: int):
-        widget = CustomPhaseWidget(phase, index)
+        widget = CustomPhaseWidget(index, phase, self.calibrator)
         widget.changed.connect(self.timer_changed.emit)
         widget.removed.connect(functools.partial(self.__on_remove, widget))
         self.__container_layout.addWidget(widget, stretch=1, alignment=Qt.AlignmentFlag.AlignTop)

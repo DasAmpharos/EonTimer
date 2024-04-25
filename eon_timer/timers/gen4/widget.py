@@ -93,7 +93,7 @@ class Gen4TimerWidget(FormWidget):
         handler = functools.partial(field_changed, self.Field.CALIBRATED_SECOND)
         self.model.calibrated_second.on_change(handler)
 
-    def create_phases(self) -> list[int]:
+    def create_phases(self) -> list[float]:
         return self.delay_timer.create(
             self.model.target_delay.get(),
             self.model.target_second.get(),
@@ -111,7 +111,7 @@ class Gen4TimerWidget(FormWidget):
             self.model.calibrated_delay.add(calibration)
             self.model.delay_hit.set(0)
 
-    def get_calibration(self) -> int:
+    def get_calibration(self) -> float:
         return self.calibrator.create_calibration(
             self.model.calibrated_delay.get(),
             self.model.calibrated_second.get()
