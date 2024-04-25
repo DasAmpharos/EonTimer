@@ -16,5 +16,6 @@ class AppWindow(QMainWindow):
                             Qt.WindowCloseButtonHint |
                             Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint)
-        self.setMinimumSize(525, 395)
         self.setCentralWidget(app_widget)
+        self.setMinimumSize(600, 450)
+        self.resize(600, 450)

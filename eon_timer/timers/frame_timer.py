@@ -12,10 +12,10 @@ class FrameTimer:
     def create(self,
                pre_timer: int,
                target_frame: int,
-               calibration: int) -> list[int]:
+               calibration: float) -> list[float]:
         return [pre_timer, self.calibrator.to_milliseconds(target_frame) + calibration]
 
     def calibrate(self,
                   target_frame: int,
-                  frame_hit: int) -> int:
+                  frame_hit: int) -> float:
         return self.calibrator.to_milliseconds(target_frame - frame_hit)

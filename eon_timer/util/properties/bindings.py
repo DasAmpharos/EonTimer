@@ -1,7 +1,7 @@
 import functools
 from typing import TypeVar
 
-from PySide6.QtWidgets import QSpinBox, QCheckBox, QLineEdit
+from PySide6.QtWidgets import QSpinBox, QCheckBox, QLineEdit, QDoubleSpinBox
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.pyside import EnumComboBox
@@ -61,6 +61,17 @@ def bind_line_edit(line_edit: QLineEdit,
 def bind_spinbox(spinbox: QSpinBox,
                  p_property: Property[int]) -> None:
     def on_property_changed(event: PropertyChangeEvent[int]) -> None:
+        if event.new_value != spinbox.value():
+            spinbox.setValue(event.new_value)
+
+    spinbox.setValue(p_property.get())
+    spinbox.valueChanged.connect(p_property.set)
+    p_property.on_change(on_property_changed)
+
+
+def bind_float_spinbox(spinbox: QDoubleSpinBox,
+                       p_property: Property[float]) -> None:
+    def on_property_changed(event: PropertyChangeEvent[float]) -> None:
         if event.new_value != spinbox.value():
             spinbox.setValue(event.new_value)
 

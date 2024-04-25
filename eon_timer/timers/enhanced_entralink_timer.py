@@ -17,10 +17,10 @@ class EnhancedEntralinkTimer:
                target_advances: int,
                calibration: int,
                entralink_calibration: int,
-               frame_calibration: int) -> list[int]:
-        durations = self.entralink_timer.create(target_delay, target_second, calibration, entralink_calibration)
-        durations.append(round(target_advances / self.ENTRALINK_FRAME_RATE) * 1000 + frame_calibration)
-        return durations
+               frame_calibration: int) -> list[float]:
+        phases = self.entralink_timer.create(target_delay, target_second, calibration, entralink_calibration)
+        phases.append((target_advances / self.ENTRALINK_FRAME_RATE) * 1000 + frame_calibration)
+        return phases
 
-    def calibrate(self, target_advances: int, advances_hit: int) -> int:
-        return int((target_advances - advances_hit) / self.ENTRALINK_FRAME_RATE) * 1000
+    def calibrate(self, target_advances: int, advances_hit: int) -> float:
+        return ((target_advances - advances_hit) / self.ENTRALINK_FRAME_RATE) * 1000

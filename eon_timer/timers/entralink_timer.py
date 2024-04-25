@@ -13,7 +13,7 @@ class EntralinkTimer:
                target_delay: int,
                target_second: int,
                calibration: int,
-               entralink_calibration: int) -> list[int]:
+               entralink_calibration: int) -> list[float]:
         durations = self.delay_timer.create(target_delay, target_second, calibration)
         durations[0] += 250
         durations[1] -= entralink_calibration
@@ -21,5 +21,5 @@ class EntralinkTimer:
 
     def calibrate(self,
                   target_delay: int,
-                  delay_hit: int) -> int:
+                  delay_hit: int) -> float:
         return self.delay_timer.calibrate(target_delay, delay_hit)

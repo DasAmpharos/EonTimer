@@ -3,7 +3,7 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy, QSpinBox
+from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy, QSpinBox, QDoubleSpinBox
 
 from eon_timer.timers import FrameTimer
 from eon_timer.util import const, pyside
@@ -16,7 +16,9 @@ from .model import Gen3Mode, Gen3Model
 
 
 @component()
-class Gen3Widget(FormWidget):
+class Gen3TimerWidget(FormWidget):
+    timer_changed: Final[Signal] = Signal()
+
     class Field(FormWidget.Field):
         MODE = 'Mode'
         PRE_TIMER = 'Pre-Timer'
@@ -24,8 +26,6 @@ class Gen3Widget(FormWidget):
         CALIBRATION = 'Calibration'
         SET_TARGET_FRAME = 'Set Target Frame'
         FRAME_HIT = 'Frame Hit'
-
-    timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
                  model: Gen3Model,
@@ -64,9 +64,9 @@ class Gen3Widget(FormWidget):
         bindings.bind_spinbox(field, self.model.target_frame)
         self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout)
         # ----- calibration -----
-        field = QSpinBox()
+        field = QDoubleSpinBox()
         field.setRange(const.INT_MIN, const.INT_MAX)
-        bindings.bind_spinbox(field, self.model.calibration)
+        bindings.bind_float_spinbox(field, self.model.calibration)
         self.add_field(self.Field.CALIBRATION, field, layout=form_layout)
         # ----- set_target_frame_btn -----
         field = QPushButton(self.Field.SET_TARGET_FRAME.value)
@@ -76,13 +76,14 @@ class Gen3Widget(FormWidget):
         # ----- frame_hit -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
+        bindings.bind_spinbox(field, self.model.frame_hit)
         self.add_field(self.Field.FRAME_HIT, field)
         # update field visibility
         event = PropertyChangeEvent(None, self.model.mode.get())
         self.__on_mode_changed(event)
 
     def __init_listeners(self):
-        def field_changed(field: Gen3Widget.Field,
+        def field_changed(field: Gen3TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             logging.info(f'> INFO: Gen3Widget#{field}: {event.new_value}')
             self.timer_changed.emit()
@@ -100,7 +101,7 @@ class Gen3Widget(FormWidget):
         handler = functools.partial(field_changed, self.Field.CALIBRATION)
         self.model.calibration.on_change(handler)
 
-    def create_phases(self) -> list[int]:
+    def create_phases(self) -> list[float]:
         return self.frame_timer.create(
             self.model.pre_timer.get(),
             self.model.target_frame.get(),

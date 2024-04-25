@@ -3,8 +3,8 @@ from typing import override, Final
 
 from PySide6.QtCore import QSettings, Signal, QObject
 
+from eon_timer.util.injector.lifecycle import CloseListener
 from .property import Property
-from ..injector.lifecycle import CloseListener
 
 
 class Settings(QObject, CloseListener):
@@ -13,30 +13,41 @@ class Settings(QObject, CloseListener):
     def __init__(self, settings: QSettings):
         QObject.__init__(self, None)
 
-        self_type = type(self)
         self.settings: Final[QSettings] = settings
-        self.__properties: Final[list[Property]] = []
-        settings.beginGroup(self.group)
+        self.__properties: Final[dict[str, Property]] = {}
+
+        self_type = type(self)
         for name, value in self_type.__dict__.items():
             if isinstance(value, Property):
-                if settings.contains(name):
-                    new_value = settings.value(name, None, value.value_type)
-                    value.set(new_value)
-                self.__properties.append(value)
+                self.__properties[name] = value
                 setattr(self, name, value)
-        settings.endGroup()
+        self._deserialize()
+
+    def _deserialize(self):
+        self.settings.beginGroup(self.group)
+        for name, prop in self.__properties.items():
+            if self.settings.contains(name):
+                from_settings = self.settings.value(name, None, prop.value_type)
+                prop.set(from_settings)
+        self.settings.endGroup()
+
+    def _serialize(self):
+        self.settings.beginGroup(self.group)
+        for name, prop in self.__properties.items():
+            if not prop.transient:
+                self.settings.setValue(name, prop.get())
+        self.settings.endGroup()
+
+    @property
+    def properties(self) -> dict[str, Property]:
+        return dict(self.__properties)
 
     @override
     def _on_close(self):
-        self_type = type(self)
-        self.settings.beginGroup(self.group)
-        for name, value in self_type.__dict__.items():
-            if isinstance(value, Property) and not value.transient:
-                self.settings.setValue(name, value.get())
-        self.settings.endGroup()
+        self._serialize()
 
     def reset(self):
-        for prop in self.__properties:
+        for prop in self.__properties.values():
             prop.reset()
         self.settings_changed.emit()
 
@@ -44,40 +55,3 @@ class Settings(QObject, CloseListener):
     @abstractmethod
     def group(self) -> str:
         ...
-
-
-def settings_class(group: str):
-    def decorator(cls):
-        properties = dict(filter(lambda kv: isinstance(kv[1], Property), cls.__dict__.items()))
-
-        def __init__(self, settings: QSettings, *args, **kwargs):
-            cls.__init__(self, *args, **kwargs)
-            self.__settings = settings
-            settings.beginGroup(group)
-            for name, _property in properties.items():
-                new_value = settings.value(name, None)
-                if new_value is not None:
-                    _property.value = new_value
-                setattr(self, name, _property)
-            settings.endGroup()
-
-        def __on_close(self):
-            self.__settings.beginGroup(group)
-            for name, _property in properties.items():
-                if not _property.transient:
-                    self.__settings.setValue(name, _property.value)
-            self.__settings.endGroup()
-
-        def update(self, other):
-            for name in properties.keys():
-                self_property = getattr(self, name)
-                other_property = getattr(other, name)
-                self_property.update(other_property)
-
-        new_class = type(cls.__name__, cls.__bases__, dict(cls.__dict__))
-        setattr(new_class, '__init__', __init__)
-        setattr(new_class, '__on_close', __on_close)
-        setattr(new_class, 'update', update)
-        return new_class
-
-    return decorator
