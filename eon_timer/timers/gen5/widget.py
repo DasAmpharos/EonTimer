@@ -182,14 +182,27 @@ class Gen5TimerWidget(FormWidget):
                          event.new_value == Gen5Mode.ENTRALINK_PLUS)
 
     def create_phases(self) -> list[float]:
-        return self.enhanced_entralink_timer.create(
-            self.model.target_delay.get(),
-            self.model.target_second.get(),
-            self.model.target_advances.get(),
-            self.model.calibration.get(),
-            self.model.entralink_calibration.get(),
-            self.model.frame_calibration.get()
-        )
+        calibration = self.calibrator.calibrate_to_milliseconds(self.model.calibration.get())
+        entralink_calibration = self.calibrator.calibrate_to_milliseconds(self.model.entralink_calibration.get())
+        match self.model.mode.get():
+            case Gen5Mode.STANDARD:
+                return self.second_timer.create(self.model.target_second.get(), calibration)
+            case Gen5Mode.C_GEAR:
+                return self.delay_timer.create(self.model.target_delay.get(),
+                                               self.model.target_second.get(),
+                                               calibration)
+            case Gen5Mode.ENTRALINK:
+                return self.entralink_timer.create(self.model.target_delay.get(),
+                                                   self.model.target_second.get(),
+                                                   calibration,
+                                                   entralink_calibration)
+            case Gen5Mode.ENTRALINK_PLUS:
+                return self.enhanced_entralink_timer.create(self.model.target_delay.get(),
+                                                            self.model.target_second.get(),
+                                                            self.model.target_advances.get(),
+                                                            calibration,
+                                                            entralink_calibration,
+                                                            self.model.frame_calibration.get())
 
     def calibrate(self):
         if self.__can_calibrate():
