@@ -15,8 +15,8 @@ class EnhancedEntralinkTimer:
                target_delay: int,
                target_second: int,
                target_advances: int,
-               calibration: int,
-               entralink_calibration: int,
+               calibration: float,
+               entralink_calibration: float,
                frame_calibration: int) -> list[float]:
         phases = self.entralink_timer.create(target_delay, target_second, calibration, entralink_calibration)
         phases.append((target_advances / self.ENTRALINK_FRAME_RATE) * 1000 + frame_calibration)
