@@ -43,6 +43,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='eon_timer/resources/images/icon-512.png'
 )
 app = BUNDLE(
     exe,
