@@ -105,6 +105,13 @@ class ActionSettingsWidget(FormWidget):
         self.model.settings_changed.emit()
 
     def on_rejected(self):
+        self.__reset_properties()
+
+    def on_reset(self):
+        self.model.reset()
+        self.__reset_properties()
+
+    def __reset_properties(self):
         self.mode.update(self.model.mode)
         self.sound.update(self.model.sound)
         self.custom_sound.update(self.model.custom_sound)

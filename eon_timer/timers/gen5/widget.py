@@ -3,7 +3,7 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QSizePolicy, QSpinBox, QGroupBox
+from PySide6.QtWidgets import QSizePolicy, QSpinBox, QScrollArea, QWidget, QVBoxLayout, QFrame
 
 from eon_timer.timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
 from eon_timer.util import const, pyside
@@ -16,7 +16,9 @@ from .model import Gen5Model, Gen5Mode
 
 
 @component()
-class Gen5Widget(FormWidget):
+class Gen5TimerWidget(FormWidget):
+    timer_changed: Final[Signal] = Signal()
+
     class Field(FormWidget.Field):
         MODE = 'Mode'
         # target field names
@@ -31,8 +33,6 @@ class Gen5Widget(FormWidget):
         DELAY_HIT = 'Delay Hit'
         SECOND_HIT = 'Second Hit'
         ADVANCES_HIT = 'Advances Hit'
-
-    timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
                  model: Gen5Model,
@@ -60,13 +60,32 @@ class Gen5Widget(FormWidget):
         mode_field = EnumComboBox(Gen5Mode)
         bindings.bind_combobox(mode_field, self.model.mode)
         self.add_field(self.Field.MODE, mode_field)
-        # ----- form_group -----
-        form_group = QGroupBox()
-        self._layout.add_row(form_group)
-        form_layout = FormLayout(form_group)
-        form_layout.set_alignment(Qt.AlignTop)
-        pyside.set_class(form_group, ['themeable-panel', 'themeable-border'])
-        form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        # ----- scroll_widget -----
+        scroll_pane = QWidget()
+        pyside.set_class(scroll_pane, ['themeable-panel'])
+        scroll_pane.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        scroll_pane_layout = QVBoxLayout(scroll_pane)
+        scroll_pane_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_pane_layout.setSpacing(10)
+
+        scroll_area = QScrollArea()
+        scroll_area.setFrameShape(QFrame.Shape.NoFrame)
+        pyside.set_class(scroll_area, ['themeable-panel', 'themeable-border'])
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(scroll_pane)
+        self._layout.add_row(scroll_area)
+        scroll_area.setSizePolicy(
+            QSizePolicy.Expanding,
+            QSizePolicy.Expanding
+        )
+        # ----- form -----
+        form_widget = QWidget()
+        form_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        scroll_pane_layout.addWidget(form_widget, stretch=0, alignment=Qt.AlignmentFlag.AlignTop)
+        form_layout = FormLayout(form_widget)
+        form_layout.set_spacing(10)
         # ----- target_delay -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
@@ -118,7 +137,7 @@ class Gen5Widget(FormWidget):
         self.__on_mode_changed(event)
 
     def __init_listeners(self):
-        def field_changed(field: Gen5Widget.Field,
+        def field_changed(field: Gen5TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             logging.info(f'> INFO: Gen5Widget#{field}: {event.new_value}')
             self.timer_changed.emit()
@@ -162,30 +181,42 @@ class Gen5Widget(FormWidget):
         self.set_visible(self.Field.ADVANCES_HIT,
                          event.new_value == Gen5Mode.ENTRALINK_PLUS)
 
-    def create_phases(self) -> list[int]:
-        return self.enhanced_entralink_timer.create(
-            self.model.target_delay.get(),
-            self.model.target_second.get(),
-            self.model.target_advances.get(),
-            self.model.calibration.get(),
-            self.model.entralink_calibration.get(),
-            self.model.frame_calibration.get()
-        )
+    def create_phases(self) -> list[float]:
+        calibration = self.calibrator.calibrate_to_milliseconds(self.model.calibration.get())
+        entralink_calibration = self.calibrator.calibrate_to_milliseconds(self.model.entralink_calibration.get())
+        match self.model.mode.get():
+            case Gen5Mode.STANDARD:
+                return self.second_timer.create(self.model.target_second.get(), calibration)
+            case Gen5Mode.C_GEAR:
+                return self.delay_timer.create(self.model.target_delay.get(),
+                                               self.model.target_second.get(),
+                                               calibration)
+            case Gen5Mode.ENTRALINK:
+                return self.entralink_timer.create(self.model.target_delay.get(),
+                                                   self.model.target_second.get(),
+                                                   calibration,
+                                                   entralink_calibration)
+            case Gen5Mode.ENTRALINK_PLUS:
+                return self.enhanced_entralink_timer.create(self.model.target_delay.get(),
+                                                            self.model.target_second.get(),
+                                                            self.model.target_advances.get(),
+                                                            calibration,
+                                                            entralink_calibration,
+                                                            self.model.frame_calibration.get())
 
     def calibrate(self):
-        if self.model.delay_hit.get() > 0:
+        if self.__can_calibrate():
             mode = self.model.mode.get()
             match mode:
                 case Gen5Mode.STANDARD:
                     self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
                 case Gen5Mode.C_GEAR:
                     self.model.calibration.add(self.calibrator.calibrate_to_delays(self.delay_calibration))
-                case (Gen5Mode.ENTRALINK,
-                      Gen5Mode.ENTRALINK_PLUS):
-                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
+                case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
+                    self.model.calibration.add(
+                        self.calibrator.calibrate_to_delays(self.second_calibration))
                     self.model.entralink_calibration.add(
-                        self.calibrator.calibrate_to_delays(self.entralink_calibration)
-                    )
+                        self.calibrator.calibrate_to_delays(self.entralink_calibration))
                     if mode == Gen5Mode.ENTRALINK_PLUS:
                         self.model.frame_calibration.add(self.advances_calibration)
 
@@ -208,21 +239,21 @@ class Gen5Widget(FormWidget):
                         self.model.advances_hit.get() > 0)
 
     @property
-    def delay_calibration(self) -> int:
+    def delay_calibration(self) -> float:
         return self.delay_timer.calibrate(self.model.target_delay.get(),
                                           self.model.delay_hit.get())
 
     @property
-    def second_calibration(self) -> int:
+    def second_calibration(self) -> float:
         return self.second_timer.calibrate(self.model.target_second.get(),
                                            self.model.second_hit.get())
 
     @property
-    def entralink_calibration(self) -> int:
+    def entralink_calibration(self) -> float:
         return self.entralink_timer.calibrate(self.model.target_delay.get(),
                                               self.model.delay_hit.get() - self.second_calibration)
 
     @property
-    def advances_calibration(self) -> int:
+    def advances_calibration(self) -> float:
         return self.enhanced_entralink_timer.calibrate(self.model.target_advances.get(),
                                                        self.model.advances_hit.get())

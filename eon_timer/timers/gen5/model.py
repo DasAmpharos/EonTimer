@@ -3,7 +3,7 @@ from typing import override
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property, IntProperty
+from eon_timer.util.properties.property import Property, IntProperty, FloatProperty
 from eon_timer.util.properties.settings import Settings
 
 

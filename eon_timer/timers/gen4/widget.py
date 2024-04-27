@@ -15,15 +15,15 @@ from .model import Gen4Model
 
 
 @component()
-class Gen4Widget(FormWidget):
+class Gen4TimerWidget(FormWidget):
+    timer_changed: Final[Signal] = Signal()
+
     class Field(FormWidget.Field):
         CALIBRATED_DELAY = 'Calibrated Delay'
         CALIBRATED_SECOND = 'Calibrated Second'
         TARGET_DELAY = 'Target Delay'
         TARGET_SECOND = 'Target Second'
         DELAY_HIT = 'Delay Hit'
-
-    timer_changed: Final[Signal] = Signal()
 
     def __init__(self,
                  model: Gen4Model,
@@ -75,7 +75,7 @@ class Gen4Widget(FormWidget):
         self.add_field(self.Field.DELAY_HIT, field)
 
     def __init_listeners(self):
-        def field_changed(field: Gen4Widget.Field,
+        def field_changed(field: Gen4TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             logging.info(f'> INFO: Gen4Widget#{field}: {event.new_value}')
             self.timer_changed.emit()
@@ -93,7 +93,7 @@ class Gen4Widget(FormWidget):
         handler = functools.partial(field_changed, self.Field.CALIBRATED_SECOND)
         self.model.calibrated_second.on_change(handler)
 
-    def create_phases(self) -> list[int]:
+    def create_phases(self) -> list[float]:
         return self.delay_timer.create(
             self.model.target_delay.get(),
             self.model.target_second.get(),
@@ -111,7 +111,7 @@ class Gen4Widget(FormWidget):
             self.model.calibrated_delay.add(calibration)
             self.model.delay_hit.set(0)
 
-    def get_calibration(self) -> int:
+    def get_calibration(self) -> float:
         return self.calibrator.create_calibration(
             self.model.calibrated_delay.get(),
             self.model.calibrated_second.get()

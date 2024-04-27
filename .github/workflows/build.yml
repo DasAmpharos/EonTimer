@@ -17,36 +17,60 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
           cache: pip
 
-      - run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
 
-      - run: pyinstaller EonTimer.spec
+      - name: Inject Version
+        shell: bash
+        run: |
+          version="${{ github.ref_name }}@${GITHUB_SHA:0:7}"
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            version="${{ github.ref_name }}"
+          fi
 
-      - if: ${{ matrix.os == 'macos' }}
-        run: hdiutil create -format UDZO -srcfolder dist/EonTimer.app dist/EonTimer.dmg
+          version_file="eon_timer/app_version.py"
+          cat <<EOF > "${version_file}"
+          from typing import Final
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'macos' }}
+          __version__: Final[str] = '${version}'
+
+
+          $(cat "${version_file}")
+          EOF
+
+      - name: Build
+        run: pyinstaller EonTimer.spec
+
+      - name: Get Artifact Name
+        id: artifact
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "macos" ]]; then
+            hdiutil create -format UDZO -srcfolder dist/EonTimer.app dist/EonTimer.dmg
+            echo "artifact_name=dist/EonTimer.dmg" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ matrix.os }}" == "windows" ]]; then
+            echo "artifact_name=dist/EonTimer.exe" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ matrix.os }}" == "ubuntu" ]]; then
+            echo "artifact_name=dist/EonTimer" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload Workflow Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: EonTimer-macos
-          path: dist/EonTimer.dmg
+          name: EonTimer-${{ matrix.os }}
+          path: ${{ steps.artifact.outputs.artifact_name }}
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'ubuntu' }}
+      - name: Upload Release Artifact
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: EonTimer-ubuntu
-          path: dist/EonTimer
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'windows' }}
-        with:
-          name: EonTimer-windows
-          path: dist/EonTimer.exe
-
-
+          files: ${{ steps.artifact.outputs.artifact_name }}
