@@ -3,7 +3,7 @@ from typing import Final, override
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property
+from eon_timer.util.properties.property import Property, FloatProperty
 from eon_timer.util.properties.settings import Settings
 
 GBA_FPS: Final[float] = 59.7275
@@ -21,9 +21,10 @@ class Console(EnhancedEnum, StrEnum):
     NDS_SLOT2 = 'NDS - Slot 2'
     DSI = 'DSI'
     THREE_DS = '3DS'
+    CUSTOM = 'Custom'
 
     @property
-    def fps(self) -> float:
+    def fps(self) -> float | None:
         match self:
             case self.GBA:
                 return GBA_FPS
@@ -31,9 +32,11 @@ class Console(EnhancedEnum, StrEnum):
                 return NDS_SLOT2_FPS
             case self.NDS_SLOT1 | self.DSI | self.THREE_DS:
                 return NDS_SLOT1_FPS
+            case self.CUSTOM:
+                return None
 
     @property
-    def framerate(self) -> float:
+    def framerate(self) -> float | None:
         match self:
             case self.GBA:
                 return GBA_FRAMERATE
@@ -41,11 +44,14 @@ class Console(EnhancedEnum, StrEnum):
                 return NDS_SLOT2_FRAMERATE
             case self.NDS_SLOT1 | self.DSI | self.THREE_DS:
                 return NDS_SLOT1_FRAMERATE
+            case self.CUSTOM:
+                return None
 
 
 @component()
 class TimerSettingsModel(Settings):
     console = Property(Console.NDS_SLOT1, value_type=str)
+    custom_framerate = FloatProperty(60.0)
     precision_calibration = Property(False)
     refresh_interval = Property(8)
 

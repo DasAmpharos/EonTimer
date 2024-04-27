@@ -10,10 +10,10 @@ class Calibrator:
         self.timer_settings: Final = timer_settings
 
     def to_delays(self, milliseconds: float) -> int:
-        return round(milliseconds / self.console.framerate)
+        return round(milliseconds / self.framerate)
 
     def to_milliseconds(self, delays: int) -> float:
-        return self.console.framerate * delays
+        return self.framerate * delays
 
     def calibrate_to_delays(self, milliseconds: float) -> int:
         return milliseconds if self.precision_calibration else self.to_delays(milliseconds)
@@ -31,3 +31,7 @@ class Calibrator:
     @property
     def precision_calibration(self) -> bool:
         return self.timer_settings.precision_calibration.get()
+
+    @property
+    def framerate(self) -> float:
+        return self.console.framerate or self.timer_settings.custom_framerate.get()
