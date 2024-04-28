@@ -49,25 +49,36 @@ class ThemeManager(QObject, StartListener):
         self.data_dir: Final[str] = platformdirs.user_data_dir(appname=app.applicationName(),
                                                                appauthor=app.organizationName(),
                                                                ensure_exists=True)
-        self.theme_dir: Final[str] = os.path.join(self.data_dir, 'themes')
-        self.__themes: Final[dict[str, Theme]] = {}
+        theme_dir = os.path.join(self.data_dir, 'themes')
+        self.bundled_theme_dir: Final[str] = os.path.join(theme_dir, 'bundled')
+        self.user_theme_dir: Final[str] = os.path.join(theme_dir, 'user')
+        self.__bundled_themes: Final[dict[str, Theme]] = {}
+        self.__user_themes: Final[dict[str, Theme]] = {}
 
     @override
     def _on_start(self):
-        os.makedirs(self.theme_dir, exist_ok=True)
+        os.makedirs(self.user_theme_dir, exist_ok=True)
+        os.makedirs(self.bundled_theme_dir, exist_ok=True)
         pyside.install_font(resources.get_bytes('fonts/FontAwesome.ttf'))
-        self.__default_theme = self.__install_theme(resources.get_filepath('theme.zip'), self.data_dir)
-        self.__system_theme = Theme(ThemeInfo(name=self.SYSTEM_THEME, author='', version=''), '')
+
+        bundled_themes = os.listdir(resources.get_filepath('themes'))
+        bundled_themes = list(filter(lambda it: it.endswith('.zip'), bundled_themes))
+        for theme in bundled_themes:
+            theme_path = resources.get_filepath(f'themes/{theme}')
+            theme = self.__install_theme(theme_path, self.bundled_theme_dir)
+            self.__bundled_themes[theme.info.name] = theme
+        self.__bundled_themes[self.SYSTEM_THEME] = Theme(ThemeInfo(name=self.SYSTEM_THEME, author='', version=''), '')
+        self.__default_theme = self.__bundled_themes[self.DEFAULT_THEME]
         self.__load_themes()
 
     def list_theme_names(self) -> list[str]:
-        theme_names = [self.DEFAULT_THEME, self.SYSTEM_THEME]
-        theme_names.extend(self.__themes.keys())
+        theme_names = list(self.__bundled_themes.keys())
+        theme_names.extend(self.__user_themes.keys())
         return theme_names
 
     def install_theme(self, filepath: str) -> InstalledTheme:
-        theme = self.__install_theme(filepath, self.theme_dir)
-        self.__themes[theme.info.name] = theme
+        theme = self.__install_theme(filepath, self.user_theme_dir)
+        self.__user_themes[theme.info.name] = theme
         self.themes_changed.emit()
         return theme
 
@@ -114,27 +125,23 @@ class ThemeManager(QObject, StartListener):
         return InstalledTheme(theme_info, stylesheet, theme_dir)
 
     def get_theme(self, theme_name: str) -> Theme:
-        match theme_name:
-            case self.DEFAULT_THEME:
-                return self.__default_theme
-            case self.SYSTEM_THEME:
-                return self.__system_theme
-            case _:
-                return self.__themes.get(theme_name, self.__default_theme)
+        if theme_name in self.__bundled_themes:
+            return self.__bundled_themes[theme_name]
+        return self.__user_themes.get(theme_name, self.__default_theme)
 
     def __load_themes(self):
-        self.__themes.clear()
-        for theme_dir in os.listdir(self.theme_dir):
-            if os.path.isdir(os.path.join(self.theme_dir, theme_dir)):
+        self.__user_themes.clear()
+        for theme_dir in os.listdir(self.user_theme_dir):
+            if os.path.isdir(os.path.join(self.user_theme_dir, theme_dir)):
                 theme_info = self.__load_theme_info(theme_dir)
-                if theme_info.name not in self.__themes:
+                if theme_info.name not in self.__user_themes:
                     theme = self.__load_theme(theme_dir, theme_info)
-                    self.__themes[theme_info.name] = theme
+                    self.__user_themes[theme_info.name] = theme
 
     def __load_theme(self, theme_name: str, info: ThemeInfo | None = None) -> InstalledTheme:
         if info is None:
             info = self.__load_theme_info(theme_name)
-        theme_dir = os.path.join(self.theme_dir, theme_name)
+        theme_dir = os.path.join(self.user_theme_dir, theme_name)
         self.__load_fonts(theme_dir)
         # load main.css
         stylesheet_path = os.path.join(theme_dir, 'main.css')
@@ -143,7 +150,7 @@ class ThemeManager(QObject, StartListener):
         return InstalledTheme(info, stylesheet, theme_name)
 
     def __load_theme_info(self, theme_name: str) -> ThemeInfo:
-        theme_dir = os.path.join(self.theme_dir, theme_name)
+        theme_dir = os.path.join(self.user_theme_dir, theme_name)
         info_file = os.path.join(theme_dir, 'info.json')
         with open(info_file, 'r') as file:
             theme_info = json.load(file)

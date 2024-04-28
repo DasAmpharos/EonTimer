@@ -79,11 +79,11 @@ class ThemeSettingsWidget(QWidget):
 
     def __open_theme_dir(self):
         if platform.system() == 'Windows':
-            os.startfile(self.theme_manager.theme_dir)
+            os.startfile(self.theme_manager.user_theme_dir)
         elif platform.system() == 'Darwin':
-            subprocess.Popen(['open', self.theme_manager.theme_dir])
+            subprocess.Popen(['open', self.theme_manager.user_theme_dir])
         else:
-            subprocess.Popen(['xdg-open', self.theme_manager.theme_dir])
+            subprocess.Popen(['xdg-open', self.theme_manager.user_theme_dir])
 
     def on_accepted(self):
         self.model.theme.update(self.theme)
