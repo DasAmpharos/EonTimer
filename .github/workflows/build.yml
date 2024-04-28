@@ -47,8 +47,8 @@ jobs:
           $(cat "${version_file}")
           EOF
 
-      - name: Build Default Theme
-        run: python theme.py build --default
+      - name: Build Bundled Themes
+        run: python theme.py build --bundled
 
       - name: Build
         run: pyinstaller EonTimer.spec

@@ -61,10 +61,10 @@ class ThemeSettingsWidget(QWidget):
         layout.addWidget(button, 2, 0)
 
     def __on_themes_changed(self):
+        theme = self.theme.get()
         self.__theme_field.clear()
-        self.__theme_field.addItems(
-            self.theme_manager.list_theme_names()
-        )
+        self.__theme_field.addItems(self.theme_manager.list_theme_names())
+        self.__theme_field.setCurrentText(theme)
 
     def __on_import(self):
         try:
@@ -79,11 +79,11 @@ class ThemeSettingsWidget(QWidget):
 
     def __open_theme_dir(self):
         if platform.system() == 'Windows':
-            os.startfile(self.theme_manager.theme_dir)
+            os.startfile(self.theme_manager.user_theme_dir)
         elif platform.system() == 'Darwin':
-            subprocess.Popen(['open', self.theme_manager.theme_dir])
+            subprocess.Popen(['open', self.theme_manager.user_theme_dir])
         else:
-            subprocess.Popen(['xdg-open', self.theme_manager.theme_dir])
+            subprocess.Popen(['xdg-open', self.theme_manager.user_theme_dir])
 
     def on_accepted(self):
         self.model.theme.update(self.theme)

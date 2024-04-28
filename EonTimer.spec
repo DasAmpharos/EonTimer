@@ -7,9 +7,9 @@ a = Analysis(
     binaries=[],
     datas=[
         ('eon_timer/resources/*.png', 'eon_timer/resources'),
-        ('eon_timer/resources/*.zip', 'eon_timer/resources'),
         ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
         ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
+        ('eon_timer/resources/themes/*.zip', 'eon_timer/resources/themes'),
     ],
     hiddenimports=[
         'eon_timer.action',

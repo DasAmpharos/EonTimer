@@ -1,0 +1,338 @@
+/** SCSS PRIMARY COLORS */
+$primary-a0: #ffffff;
+$primary-a10: #c6c6c6;
+$primary-a20: #919191;
+$primary-a30: #5e5e5e;
+$primary-a40: #303030;
+/** SCSS ACCENT COLORS */
+$accent-a0: rgb(228, 107, 99);
+$accent-a5: darken($accent-a0, 5%);
+$accent-a10: darken($accent-a0, 10%);
+$accent-a20: darken($accent-a0, 20%);
+$accent-a30: darken($accent-a0, 30%);
+$accent-a40: darken($accent-a0, 40%);
+/** SCSS SEMANTIC COLORS */
+$danger-a0: #b41c2b;
+$success-a0: #009f42;
+$warning-a0: #cc8800;
+$info-a0: #388cfa;
+/** SCSS NEUTRAL COLORS */
+$neutral-a0: #ffffff;
+$neutral-a5: darken($neutral-a0, 10%);
+$neutral-a10: #c6c6c6;
+$neutral-a20: #919191;
+$neutral-a30: #5e5e5e;
+$neutral-a40: #303030;
+$neutral-a50: #000000;
+
+$border-radius: 5px;
+
+@function withAlpha($color, $alpha: 1) {
+  @return rgba(red($color), green($color), blue($color), $alpha);
+}
+
+AppWindow {
+  border-image: url("#(images/background.png)") 0 0 0 0 stretch stretch;
+}
+
+QDialog {
+  background-color: $neutral-a10;
+}
+
+#currentPhaseLbl {
+  font: 27pt 'Pokemon GB';
+}
+
+.themeable-panel,
+QTabWidget.themeable-panel::pane {
+  background-color: withAlpha($neutral-a0, 0.3);
+}
+
+.themeable-border,
+QTabWidget.themeable-border::pane {
+  border: 2px solid $neutral-a0;
+  border-radius: $border-radius;
+}
+
+QScrollArea.themeable-panel {
+  background-color: transparent;
+}
+
+QLabel {
+  color: $neutral-a40;
+
+  &:disabled {
+    color: $neutral-a20;
+  }
+}
+
+QLineEdit {
+  min-height: 1.5em;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  selection-color: $neutral-a0;
+  selection-background-color: $accent-a0;
+  border: 1px solid $neutral-a10;
+  border-radius: $border-radius;
+
+  &:focus {
+    border: 1px solid $accent-a0;
+  }
+
+  &.file-selector-field {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+QPushButton {
+  min-width: 2em;
+  min-height: 1.5em;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  border: 1px solid $neutral-a10;
+  border-radius: $border-radius;
+  outline: none;
+
+  &:disabled {
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
+  }
+
+  &:pressed {
+    background-color: $neutral-a10;
+    border: 1px solid $neutral-a20;
+  }
+
+  &:focus {
+    color: $neutral-a0;
+    background-color: $accent-a0;
+    border: 1px solid $accent-a20;
+
+    &:pressed {
+      background-color: $accent-a5;
+      border: 1px solid $accent-a20;
+    }
+  }
+
+  &.file-selector-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+QComboBox {
+  min-width: 2em;
+  min-height: 1.5em;
+  padding: 0 5px 0 5px;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  selection-color: $neutral-a0;
+  selection-background-color: $accent-a0;
+  border: 1px solid $neutral-a10;
+  border-radius: $border-radius;
+  outline: none;
+
+  &:disabled {
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
+  }
+
+  &:focus {
+    border: 1px solid $accent-a0;
+  }
+
+  QAbstractItemView {
+    min-width: 2em;
+    min-height: 1.5em;
+    color: $neutral-a40;
+    background-color: $neutral-a0;
+    border-radius: $border-radius;
+    padding: $border-radius;
+  }
+
+  &::drop-down {
+    min-width: 1em;
+    border-left: 1px solid $neutral-a10;
+
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+
+    &:disabled {
+      border-left: 1px solid withAlpha($neutral-a10, 0.5);
+    }
+
+    &:pressed {
+      margin-top: -1px;
+      margin-bottom: -1px;
+      margin-right: -1px;
+      background-color: $neutral-a10;
+      border: 1px solid $accent-a0;
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+  }
+
+  &::down-arrow {
+    width: 0.5em;
+    height: 0.5em;
+    image: url("#(images/caret-down.png)");
+
+    &:disabled {
+      image: url("#(images/caret-down-disabled.png)");
+    }
+  }
+}
+
+QAbstractSpinBox {
+  min-width: 2em;
+  min-height: 1em;
+  padding: 0.25em;
+  color: $neutral-a40;
+  background-color: $neutral-a0;
+  selection-color: $neutral-a0;
+  selection-background-color: $accent-a0;
+  border-radius: $border-radius;
+  border: 1px solid $neutral-a10;
+
+  &:disabled {
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
+  }
+
+  &:focus {
+    border: 1px solid $accent-a0;
+  }
+
+  &:up-button {
+    min-width: 1em;
+    margin-top: 1px;
+    margin-right: 1px;
+    border-left: 1px solid $neutral-a10;
+    border-bottom: 1px solid $neutral-a10;
+    border-top-right-radius: $border-radius;
+
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+
+    &:disabled {
+      border: 1px solid withAlpha($neutral-a10, 0.5);
+    }
+
+    &:pressed {
+      margin-top: 0;
+      margin-right: 0;
+      background-color: $neutral-a10;
+      border: 1px solid $accent-a0;
+    }
+  }
+
+  &::up-arrow,
+  &::up-arrow:off {
+    width: 0.5em;
+    height: 0.5em;
+    image: url("#(images/caret-up.png)");
+  }
+
+  &::up-arrow:disabled {
+    image: url("#(images/caret-up-disabled.png)");
+  }
+
+  &:down-button {
+    min-width: 1em;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    border-top: 1px solid $neutral-a10;
+    border-left: 1px solid $neutral-a10;
+    border-bottom-right-radius: $border-radius;
+
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+
+    &:disabled {
+      border: 1px solid withAlpha($neutral-a10, 0.5);
+    }
+
+    &:pressed {
+      margin-right: 0;
+      margin-bottom: 0;
+      background-color: $neutral-a10;
+      border: 1px solid $accent-a0;
+      border-bottom-right-radius: $border-radius;
+    }
+  }
+
+  &::down-arrow,
+  &::down-arrow:off {
+    width: 0.5em;
+    height: 0.5em;
+    image: url("#(images/caret-down.png)");
+  }
+
+  &::down-arrow:disabled {
+    image: url("#(images/caret-down-disabled.png)");
+  }
+}
+
+QTabBar {
+  margin: 0;
+  padding: 1em;
+  border: none;
+  border-radius: $border-radius;
+
+  &::tab {
+    min-width: 3em;
+    margin-left: 2px;
+    padding: 2px 4px 2px 4px;
+    color: $neutral-a40;
+    background-color: $neutral-a0;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+
+    &:disabled {
+      color: withAlpha($neutral-a40, 0.5);
+      background-color: withAlpha($neutral-a5, 0.5);
+    }
+
+    &:selected {
+      border-bottom: 3px solid $accent-a0;
+
+      &:disabled {
+        border-bottom: 3px solid withAlpha($accent-a0, 0.5);
+      }
+    }
+  }
+}
+
+QPushButton.danger {
+  color: $neutral-a0;
+  background-color: $danger-a0;
+  border: none;
+
+  &:pressed {
+    background-color: darken($danger-a0, 10%);
+  }
+
+  &:disabled {
+    color: withAlpha($neutral-a0, 0.5);
+    background-color: withAlpha($danger-a0, 0.5);
+  }
+}
+
+QPushButton.success {
+  color: $neutral-a0;
+  background-color: $success-a0;
+  border: none;
+
+  &:pressed {
+    background-color: darken($success-a0, 10%);
+  }
+
+  &:disabled {
+    color: withAlpha($neutral-a0, 0.5);
+    background-color: withAlpha($success-a0, 0.5);
+  }
+}
