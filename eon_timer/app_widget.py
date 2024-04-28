@@ -1,8 +1,8 @@
 import functools
-import importlib.resources
 from typing import Final
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import *
 
 from eon_timer.app_state import AppState
@@ -74,19 +74,21 @@ class AppWidget(QWidget):
         layout.addWidget(self.settings_btn, 2, 0)
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        font_data = importlib.resources.read_binary('eon_timer.resources.fonts', 'FontAwesome.ttf')
-        self.settings_btn.setFont(pyside.get_font(font_data))
+        self.settings_btn.setFont(QFont('Font Awesome 5 Free'))
+        self.settings_btn.setObjectName('settingsBtn')
         # ----- update_btn -----
         self.update_btn.setText('Update')
         layout.addWidget(self.update_btn, 2, 1)
         self.update_btn.clicked.connect(self.__on_update_btn_clicked)
         self.update_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.settings_btn.setObjectName('updateBtn')
         # ----- timer_btn -----
         self.timer_btn.setText('Start')
         layout.addWidget(self.timer_btn, 2, 2)
         self.timer_btn.clicked.connect(self.__on_timer_btn_clicked)
         self.timer_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.timer_btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.timer_btn.setObjectName('timerBtn')
         # ----- running_changed -----
         disable_on_run = [self.tab_widget, self.settings_btn, self.update_btn]
         self.state.running_changed.connect(

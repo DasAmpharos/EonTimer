@@ -6,15 +6,12 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
+        ('eon_timer/resources/*.png', 'eon_timer/resources'),
+        ('eon_timer/resources/*.zip', 'eon_timer/resources'),
         ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
-        ('eon_timer/resources/images/*.png', 'eon_timer/resources/images'),
         ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
-        ('eon_timer/resources/*.scss', 'eon_timer/resources'),
     ],
-    hiddenimports=[
-        'eon_timer.action',
-        'eon_timer.theme_manager'
-    ],
+    hiddenimports=['eon_timer.action'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -43,11 +40,11 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='eon_timer/resources/images/icon-512.png'
+    icon='eon_timer/resources/icon-512.png'
 )
 app = BUNDLE(
     exe,
     name='EonTimer.app',
-    icon='eon_timer/resources/images/icon-512.png',
+    icon='eon_timer/resources/icon-512.png',
     bundle_identifier=None,
 )

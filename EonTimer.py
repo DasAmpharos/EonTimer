@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication
 from eon_timer import resources
 from eon_timer.app_window import AppWindow
 from eon_timer.util.injector.app_context import AppContext
+from eon_timer.util.injector.provider import InstanceProvider
 
 
 def main() -> int:
@@ -16,10 +17,10 @@ def main() -> int:
     app.setApplicationName('EonTimer')
     app.setOrganizationName('DasAmpharos')
     app.setOrganizationDomain('io.github.dasampharos')
-    icon_filepath = resources.get_filepath('eon_timer.resources.images', 'icon-512.png')
+    icon_filepath = resources.get_filepath('icon-512.png')
     app.setWindowIcon(QIcon(icon_filepath))
 
-    context = AppContext(['eon_timer'])
+    context = AppContext(['eon_timer'], provided={QApplication: InstanceProvider(app)})
     app_window = context.get_component(AppWindow)
     app_window.show()
     return app.exec()

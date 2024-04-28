@@ -25,25 +25,23 @@ class TimerWidget(QGroupBox):
         layout.setSpacing(5)
         # ----- current_phase_lbl -----
         self.current_phase_lbl.setObjectName('currentPhaseLbl')
-        layout.addWidget(self.current_phase_lbl, alignment=Qt.AlignmentFlag.AlignCenter)
-        font_data = importlib.resources.read_binary('eon_timer.resources.fonts', 'RobotoMono-Regular.ttf')
-        self.current_phase_lbl.setFont(pyside.get_font(font_data, 36))
+        layout.addWidget(self.current_phase_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
         # ----- minutes_before_target_lbl -----
         group = QWidget()
         group_layout = QHBoxLayout(group)
         group_layout.setSpacing(5)
         group_layout.setContentsMargins(0, 0, 0, 0)
-        group_layout.addWidget(QLabel('Minutes Before Target:'), alignment=Qt.AlignmentFlag.AlignRight)
+        group_layout.addWidget(QLabel('Minutes Before Target:'), alignment=Qt.AlignmentFlag.AlignLeft)
         group_layout.addWidget(self.minutes_before_target_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignLeft)
         # ----- next_phase_lbl -----
         group = QWidget()
         group_layout = QHBoxLayout(group)
         group_layout.setSpacing(5)
         group_layout.setContentsMargins(0, 0, 0, 0)
-        group_layout.addWidget(QLabel('Next Phase:'), alignment=Qt.AlignmentFlag.AlignRight)
+        group_layout.addWidget(QLabel('Next Phase:'), alignment=Qt.AlignmentFlag.AlignLeft)
         group_layout.addWidget(self.next_phase_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
-        layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignLeft)
 
     def __init_listeners(self):
         self.state.current_phase_changed.connect(self.__on_current_phase_changed)

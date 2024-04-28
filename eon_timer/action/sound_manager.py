@@ -11,7 +11,7 @@ from eon_timer.util.injector import component
 class SoundManager:
     def __init__(self):
         def predefined_sound(filename: str) -> pygame.mixer.Sound:
-            filepath = resources.get_filepath('eon_timer.resources.sounds', filename)
+            filepath = resources.get_filepath(f'sounds/{filename}')
             return pygame.mixer.Sound(filepath)
 
         pygame.mixer.init()

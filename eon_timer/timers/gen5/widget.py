@@ -58,7 +58,7 @@ class Gen5TimerWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         mode_field = EnumComboBox(Gen5Mode)
-        bindings.bind_combobox(mode_field, self.model.mode)
+        bindings.bind_enum_combobox(mode_field, self.model.mode)
         self.add_field(self.Field.MODE, mode_field)
         # ----- scroll_widget -----
         scroll_pane = QWidget()
