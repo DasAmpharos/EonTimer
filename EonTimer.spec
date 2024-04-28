@@ -11,7 +11,10 @@ a = Analysis(
         ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
         ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
     ],
-    hiddenimports=['eon_timer.action'],
+    hiddenimports=[
+        'eon_timer.action',
+        'eon_timer.theme.theme_engine'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
