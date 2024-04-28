@@ -8,6 +8,7 @@ from eon_timer.settings.action.widget import ActionSettingsWidget
 from eon_timer.settings.advanced.widget import AdvancedSettingsWidget
 from eon_timer.settings.theme.widget import ThemeSettingsWidget
 from eon_timer.settings.timer.widget import TimerSettingsWidget
+from eon_timer.util import pyside
 
 
 @component()
@@ -42,6 +43,7 @@ class SettingsDialog(QDialog):
         tabs.addTab(self.theme_settings_widget, 'Theme')
         tabs.addTab(self.advanced_settings_widget, 'Advanced')
         self.advanced_settings_widget.on_reset.connect(self.__on_reset)
+        pyside.set_class(tabs, ['themeable-panel', 'themeable-border'])
         layout.addWidget(tabs, 0, 0, 1, 2)
         # ----- cancel button -----
         button = QPushButton('Cancel')
