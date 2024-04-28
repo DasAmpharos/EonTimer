@@ -57,10 +57,10 @@ class ThemeManager(QObject, StartListener):
 
     @override
     def _on_start(self):
-        os.makedirs(self.user_theme_dir, exist_ok=True)
-        os.makedirs(self.bundled_theme_dir, exist_ok=True)
+        # install FontAwesome
         pyside.install_font(resources.get_bytes('fonts/FontAwesome.ttf'))
-
+        # install bundled themes
+        os.makedirs(self.bundled_theme_dir, exist_ok=True)
         bundled_themes = os.listdir(resources.get_filepath('themes'))
         bundled_themes = list(filter(lambda it: it.endswith('.zip'), bundled_themes))
         for theme in bundled_themes:
@@ -69,12 +69,14 @@ class ThemeManager(QObject, StartListener):
             self.__bundled_themes[theme.info.name] = theme
         self.__bundled_themes[self.SYSTEM_THEME] = Theme(ThemeInfo(name=self.SYSTEM_THEME, author='', version=''), '')
         self.__default_theme = self.__bundled_themes[self.DEFAULT_THEME]
+        # load user themes
+        os.makedirs(self.user_theme_dir, exist_ok=True)
         self.__load_themes()
 
     def list_theme_names(self) -> list[str]:
         theme_names = list(self.__bundled_themes.keys())
         theme_names.extend(self.__user_themes.keys())
-        return theme_names
+        return list(sorted(theme_names))
 
     def install_theme(self, filepath: str) -> InstalledTheme:
         theme = self.__install_theme(filepath, self.user_theme_dir)
