@@ -93,13 +93,7 @@ class ThemeManager(QObject, StartListener):
         shutil.copytree(temp_dir, theme_dir, dirs_exist_ok=True)
 
         # load any fonts
-        fonts_dir = os.path.join(theme_dir, 'fonts')
-        if os.path.exists(fonts_dir):
-            for font in os.listdir(fonts_dir):
-                font_filepath = os.path.join(fonts_dir, font)
-                with open(font_filepath, 'rb') as file:
-                    font_data = file.read()
-                pyside.install_font(font_data)
+        self.__load_fonts(theme_dir)
         # load main.scss
         stylesheet_path = os.path.join(theme_dir, 'main.scss')
         with open(stylesheet_path, 'r') as file:
@@ -128,30 +122,42 @@ class ThemeManager(QObject, StartListener):
             case _:
                 return self.__themes.get(theme_name, self.__default_theme)
 
-    def __load_theme(self, theme_dir: str, info: ThemeInfo | None = None) -> InstalledTheme:
+    def __load_themes(self):
+        self.__themes.clear()
+        for theme_dir in os.listdir(self.theme_dir):
+            if os.path.isdir(os.path.join(self.theme_dir, theme_dir)):
+                theme_info = self.__load_theme_info(theme_dir)
+                if theme_info.name not in self.__themes:
+                    theme = self.__load_theme(theme_dir, theme_info)
+                    self.__themes[theme_info.name] = theme
+
+    def __load_theme(self, theme_name: str, info: ThemeInfo | None = None) -> InstalledTheme:
         if info is None:
-            info = self.__load_theme_info(theme_dir)
-        theme_dir = os.path.join(self.theme_dir, theme_dir)
+            info = self.__load_theme_info(theme_name)
+        theme_dir = os.path.join(self.theme_dir, theme_name)
+        self.__load_fonts(theme_dir)
+        # load main.css
         stylesheet_path = os.path.join(theme_dir, 'main.css')
         with open(stylesheet_path, 'r') as file:
             stylesheet = file.read()
-        return InstalledTheme(info, stylesheet, theme_dir)
+        return InstalledTheme(info, stylesheet, theme_name)
 
-    def __load_theme_info(self, theme_dir: str) -> ThemeInfo:
-        theme_dir = os.path.join(self.theme_dir, theme_dir)
+    def __load_theme_info(self, theme_name: str) -> ThemeInfo:
+        theme_dir = os.path.join(self.theme_dir, theme_name)
         info_file = os.path.join(theme_dir, 'info.json')
         with open(info_file, 'r') as file:
             theme_info = json.load(file)
             theme_info = ThemeInfo(**theme_info)
         return theme_info
 
-    def __load_themes(self):
-        self.__themes.clear()
-        for theme_dir in os.listdir(self.theme_dir):
-            theme_info = self.__load_theme_info(theme_dir)
-            if theme_info.name not in self.__themes:
-                theme = self.__load_theme(theme_dir, theme_info)
-                self.__themes[theme_info.name] = theme
+    def __load_fonts(self, dirname: str):
+        fonts_dir = os.path.join(dirname, 'fonts')
+        if os.path.exists(fonts_dir):
+            for font in os.listdir(fonts_dir):
+                font_filepath = os.path.join(fonts_dir, font)
+                with open(font_filepath, 'rb') as file:
+                    font_data = file.read()
+                pyside.install_font(font_data)
 
 
 class ThemeError(Exception):

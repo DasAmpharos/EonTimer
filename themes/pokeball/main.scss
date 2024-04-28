@@ -5,12 +5,12 @@ $primary-a20: #919191;
 $primary-a30: #5e5e5e;
 $primary-a40: #303030;
 /** SCSS ACCENT COLORS */
-$accent-a0: #148cd2;
+$accent-a0: rgb(228, 107, 99);
 $accent-a5: darken($accent-a0, 5%);
-$accent-a10: #1e6ea4;
-$accent-a20: #1f5278;
-$accent-a30: #1b374f;
-$accent-a40: #141f2a;
+$accent-a10: darken($accent-a0, 10%);
+$accent-a20: darken($accent-a0, 20%);
+$accent-a30: darken($accent-a0, 30%);
+$accent-a40: darken($accent-a0, 40%);
 /** SCSS SEMANTIC COLORS */
 $danger-a0: #b41c2b;
 $success-a0: #009f42;
@@ -40,7 +40,7 @@ QDialog {
 }
 
 #currentPhaseLbl {
-  font-size: 36pt;
+  font: 27pt 'Pokemon GB';
 }
 
 .themeable-panel,
