@@ -54,6 +54,7 @@ class ThemeManager(QObject, StartListener):
 
     @override
     def _on_start(self):
+        os.makedirs(self.theme_dir, exist_ok=True)
         pyside.install_font(resources.get_bytes('fonts/FontAwesome.ttf'))
         self.__default_theme = self.__install_theme(resources.get_filepath('theme.zip'), self.data_dir)
         self.__system_theme = Theme(ThemeInfo(name=self.SYSTEM_THEME, author='', version=''), '')
@@ -108,6 +109,7 @@ class ThemeManager(QObject, StartListener):
             variable_filepath = os.path.join(theme_dir, variable)
             if not os.path.exists(variable_filepath):
                 raise ThemeError(f'File {variable_filepath} is defined in stylesheet but not included')
+            variable_filepath = resources.normalize_filepath(variable_filepath)
             stylesheet = stylesheet.replace(f'#({variable})', variable_filepath)
 
         # compile stylesheet
