@@ -32,7 +32,7 @@ class ActionSettingsWidget(FormWidget):
         self.mode: Final = Property(model.mode.get())
         self.sound: Final = Property(model.sound.get())
         self.color: Final = Property(model.color.get())
-        self.custom_sound: Final = Property(model.custom_sound.get())
+        self.custom_sound: Final = Property(model.custom_sound.get(), str)
         self.interval: Final = Property(model.interval.get())
         self.count: Final = Property(model.count.get())
         self.model: Final[ActionSettingsModel] = model
@@ -44,15 +44,16 @@ class ActionSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         field = EnumComboBox(ActionMode)
-        bindings.bind_combobox(field, self.mode)
+        bindings.bind_enum_combobox(field, self.mode)
         self.add_field(self.Field.MODE, field)
         # ----- sound -----
         field = EnumComboBox(ActionSound)
-        bindings.bind_combobox(field, self.sound)
+        bindings.bind_enum_combobox(field, self.sound)
         self.add_field(self.Field.SOUND, field)
         # ----- custom_sound -----
-        field = FileSelectorWidget()
-        field.file_validator = self.__is_valid_sound
+        field = FileSelectorWidget(title='Select Sound',
+                                   filter='Sound Files (*.wav *.mp3)',
+                                   validator=self.__is_valid_sound)
         bindings.bind(field.file, self.custom_sound, True)
         self.add_field(self.Field.CUSTOM_SOUND, field, visible=self.sound.get() == ActionSound.CUSTOM)
         self.sound.on_change(self.__on_sound_changed)

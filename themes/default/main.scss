@@ -32,11 +32,15 @@ $border-radius: 5px;
 }
 
 AppWindow {
-  border-image: url("${background}") 0 0 0 0 stretch stretch;
+  border-image: url("#(images/background.png)") 0 0 0 0 stretch stretch;
 }
 
 QDialog {
   background-color: $neutral-a10;
+}
+
+#currentPhaseLbl {
+  font: 36pt 'Roboto Mono', monospace;
 }
 
 .themeable-panel,
@@ -174,10 +178,10 @@ QComboBox {
   &::down-arrow {
     width: 0.5em;
     height: 0.5em;
-    image: url("${caret_down}");
+    image: url("#(images/caret-down.png)");
 
     &:disabled {
-      image: url("${caret_down_disabled}");
+      image: url("#(images/caret-down-disabled.png)");
     }
   }
 }
@@ -230,11 +234,11 @@ QAbstractSpinBox {
   &::up-arrow:off {
     width: 0.5em;
     height: 0.5em;
-    image: url("${caret_up}");
+    image: url("#(images/caret-up.png)");
   }
 
   &::up-arrow:disabled {
-    image: url("${caret_up_disabled}");
+    image: url("#(images/caret-up-disabled.png)");
   }
 
   &:down-button {
@@ -265,11 +269,11 @@ QAbstractSpinBox {
   &::down-arrow:off {
     width: 0.5em;
     height: 0.5em;
-    image: url("${caret_down}");
+    image: url("#(images/caret-down.png)");
   }
 
   &::down-arrow:disabled {
-    image: url("${caret_down_disabled}");
+    image: url("#(images/caret-down-disabled.png)");
   }
 }
 

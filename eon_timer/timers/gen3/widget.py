@@ -43,7 +43,7 @@ class Gen3TimerWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         field = EnumComboBox(Gen3Mode)
-        bindings.bind_combobox(field, self.model.mode)
+        bindings.bind_enum_combobox(field, self.model.mode)
         self.model.mode.on_change(self.__on_mode_changed)
         self.add_field(self.Field.MODE, field)
         # ----- form_group -----

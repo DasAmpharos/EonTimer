@@ -10,7 +10,7 @@ class AppState(QObject):
     phases_changed: Final[Signal] = Signal(list)
     current_phase_changed: Final[Signal] = Signal(float)
     current_phase_elapsed_changed: Final[Signal] = Signal(float)
-    minutes_before_target_changed: Final[Signal] = Signal(float)
+    minutes_before_target_changed: Final[Signal] = Signal(int)
     next_phase_changed: Final[Signal] = Signal(float)
 
     running_changed: Final[Signal] = Signal(bool)
@@ -87,5 +87,5 @@ class AppState(QObject):
         self.current_phase_index = 0
         self.current_phase_elapsed = 0.0
         total_time = sum(self.__phases)
-        self.minutes_before_target_changed.emit(total_time // 60_000)
+        self.minutes_before_target_changed.emit(int(total_time // 60_000))
         self.__resetting = False

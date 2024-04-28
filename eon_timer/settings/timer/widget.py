@@ -36,7 +36,7 @@ class TimerSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- console -----
         field = EnumComboBox(Console)
-        bindings.bind_combobox(field, self.console)
+        bindings.bind_enum_combobox(field, self.console)
         self.add_field(self.Field.CONSOLE, field)
         # ----- custom framerate -----
         field = QDoubleSpinBox()

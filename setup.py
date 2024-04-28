@@ -8,9 +8,8 @@ setup(
     packages=list(map(lambda it: f'eon_timer.{it}', find_packages('eon_timer'))),
     include_package_data=True,
     package_data={
+        'eon_timer/resources': ['*.png', '*.zip'],
         'eon_timer/resources/fonts': ['*.ttf'],
-        'eon_timer/resources/images': ['*.png', '*.svg'],
         'eon_timer/resources/sounds': ['*.wav'],
-        'eon_timer/resources': ['*.scss'],
     }
 )

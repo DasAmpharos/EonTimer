@@ -67,7 +67,7 @@ class CustomPhaseWidget(QWidget):
         form_layout.setContentsMargins(0, 0, 0, 0)
         form_layout.setSpacing(10)
         # ----- unit -----
-        bindings.bind_combobox(self.__unit_field, self.model.unit)
+        bindings.bind_enum_combobox(self.__unit_field, self.model.unit)
         self.__unit_field.value.on_change(self.__on_unit_changed)
         form.add_field(self.Field.UNIT, self.__unit_field)
         self.__on_unit_changed()

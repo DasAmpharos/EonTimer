@@ -1,7 +1,7 @@
 import functools
 from typing import TypeVar
 
-from PySide6.QtWidgets import QSpinBox, QCheckBox, QLineEdit, QDoubleSpinBox
+from PySide6.QtWidgets import QSpinBox, QCheckBox, QLineEdit, QDoubleSpinBox, QComboBox
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.pyside import EnumComboBox
@@ -23,8 +23,19 @@ def bind(left: Property[T],
         left.on_change(functools.partial(on_change, right))
 
 
-def bind_combobox(combobox: EnumComboBox[EnhancedEnumT],
-                  p_property: Property[EnhancedEnumT]) -> None:
+def bind_str_combobox(combobox: QComboBox,
+                      p_property: Property[str]) -> None:
+    def on_property_changed(event: PropertyChangeEvent[str]) -> None:
+        if event.new_value != combobox.currentText():
+            combobox.setCurrentText(event.new_value)
+
+    combobox.setCurrentText(p_property.get())
+    combobox.currentTextChanged.connect(p_property.set)
+    p_property.on_change(on_property_changed)
+
+
+def bind_enum_combobox(combobox: EnumComboBox[EnhancedEnumT],
+                       p_property: Property[EnhancedEnumT]) -> None:
     def on_value_changed(event: PropertyChangeEvent[EnhancedEnumT]) -> None:
         p_property.set(event.new_value)
 

@@ -10,8 +10,10 @@ T = TypeVar('T')
 
 
 class AppContext:
-    def __init__(self, base_packages: list[str]):
-        self.__providers: dict[type, Provider] = {}
+    def __init__(self,
+                 base_packages: list[str],
+                 provided: dict[type, Provider] | None = None):
+        self.__providers: dict[type, Provider] = provided or {}
 
         for base_package in base_packages:
             self.__import_all(base_package)

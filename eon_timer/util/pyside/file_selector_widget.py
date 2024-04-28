@@ -9,10 +9,14 @@ from eon_timer.util.properties.property import Property
 
 class FileSelectorWidget(QWidget):
     def __init__(self,
+                 title: str = 'Select File',
+                 filter: str | None = None,
                  file: str | None = None,
                  validator: Optional[Callable[[str], bool]] = None,
                  parent: Optional[QWidget] = None):
         super().__init__(parent)
+        self.title: Optional[str] = title
+        self.filter: Optional[str] = filter
         self.file: Final[Property[str]] = Property(file or '')
         self.file_validator: Optional[Callable[[str], bool]] = validator
 
@@ -36,8 +40,12 @@ class FileSelectorWidget(QWidget):
     def __on_button_clicked(self):
         filename = self.file.get()
         dirname = os.path.dirname(filename) if filename else os.curdir
-        filename, _ = QFileDialog.getOpenFileName(self, 'Select Custom Sound', dir=dirname,
-                                                  filter='Sound Files (*.mp3 *.wav)')
+
+        args = {'parent': self, 'caption': self.title, 'dir': dirname}
+        if self.filter is not None:
+            args['filter'] = self.filter
+
+        filename, _ = QFileDialog.getOpenFileName(**args)
         is_valid = True
         if self.file_validator is not None:
             is_valid = self.file_validator(filename)
