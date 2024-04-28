@@ -61,10 +61,10 @@ class ThemeSettingsWidget(QWidget):
         layout.addWidget(button, 2, 0)
 
     def __on_themes_changed(self):
+        theme = self.theme.get()
         self.__theme_field.clear()
-        self.__theme_field.addItems(
-            self.theme_manager.list_theme_names()
-        )
+        self.__theme_field.addItems(self.theme_manager.list_theme_names())
+        self.__theme_field.setCurrentText(theme)
 
     def __on_import(self):
         try:
