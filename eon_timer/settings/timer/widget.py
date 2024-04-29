@@ -31,29 +31,35 @@ class TimerSettingsWidget(FormWidget):
         self.__init_components()
 
     def __init_components(self) -> None:
+        self.setObjectName('timerSettingsWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- console -----
         field = EnumComboBox(Console)
         bindings.bind_enum_combobox(field, self.console)
-        self.add_field(self.Field.CONSOLE, field)
+        self.add_field(self.Field.CONSOLE, field,
+                       name='timerSettingsConsole')
         # ----- custom framerate -----
         field = QDoubleSpinBox()
         field.setRange(0, INT_MAX)
         bindings.bind_float_spinbox(field, self.custom_framerate)
-        self.add_field(self.Field.CUSTOM_FRAMERATE, field, visible=self.console.get() == Console.CUSTOM)
+        self.add_field(self.Field.CUSTOM_FRAMERATE, field,
+                       visible=self.console.get() == Console.CUSTOM,
+                       name='timerSettingsCustomFramerate')
         self.console.on_change(self.__on_console_changed)
         # ----- refresh interval -----
         field = QSpinBox()
         field.setRange(1, INT_MAX)
         bindings.bind_spinbox(field, self.refresh_interval)
-        self.add_field(self.Field.REFRESH_INTERVAL, field)
+        self.add_field(self.Field.REFRESH_INTERVAL, field,
+                       name='timerSettingsRefreshInterval')
         # ----- precision calibration -----
         field = QCheckBox()
         field.setTristate(False)
         bindings.bind_checkbox(field, self.precision_calibration)
-        self.add_field(self.Field.PRECISION_CALIBRATION, field)
+        self.add_field(self.Field.PRECISION_CALIBRATION, field,
+                       name='timerSettingsPrecisionCalibration')
 
     def __on_console_changed(self, event: PropertyChangeEvent[Console]):
         self.set_visible(self.Field.CUSTOM_FRAMERATE, event.new_value == Console.CUSTOM)

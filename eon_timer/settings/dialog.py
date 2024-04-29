@@ -28,6 +28,7 @@ class SettingsDialog(QDialog):
         self.__init_components()
 
     def __init_components(self) -> None:
+        self.setObjectName('settingsDialog')
         self.setWindowTitle('Settings')
         self.setWindowFlags(Qt.Dialog |
                             Qt.WindowTitleHint |
@@ -38,6 +39,7 @@ class SettingsDialog(QDialog):
         layout.setSpacing(10)
         # ----- tabs -----
         tabs = QTabWidget()
+        tabs.setObjectName('settingsTabWidget')
         tabs.addTab(self.action_settings_widget, 'Action')
         tabs.addTab(self.timer_settings_widget, 'Timer')
         tabs.addTab(self.theme_settings_widget, 'Theme')
@@ -47,10 +49,12 @@ class SettingsDialog(QDialog):
         layout.addWidget(tabs, 0, 0, 1, 2)
         # ----- cancel button -----
         button = QPushButton('Cancel')
+        button.setObjectName('settingsCancelButton')
         button.clicked.connect(self.__on_cancelled)
         layout.addWidget(button, 1, 0)
         # ----- ok button -----
         button = QPushButton('OK')
+        button.setObjectName('settingsOkButton')
         button.clicked.connect(self.__on_accepted)
         layout.addWidget(button, 1, 1)
         button.setDefault(True)

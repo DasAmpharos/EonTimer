@@ -37,7 +37,7 @@ class Gen3TimerWidget(FormWidget):
         self.__init_listeners()
 
     def __init_components(self) -> None:
-        self.setObjectName('gen3Widget')
+        self.setObjectName('gen3TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)
@@ -45,9 +45,10 @@ class Gen3TimerWidget(FormWidget):
         field = EnumComboBox(Gen3Mode)
         bindings.bind_enum_combobox(field, self.model.mode)
         self.model.mode.on_change(self.__on_mode_changed)
-        self.add_field(self.Field.MODE, field)
+        self.add_field(self.Field.MODE, field, name='gen3Mode')
         # ----- form_group -----
         form_group = QGroupBox()
+        form_group.setObjectName('gen3FormGroup')
         self._layout.add_row(form_group)
         form_layout = FormLayout(form_group)
         form_layout.set_alignment(Qt.AlignTop)
@@ -57,27 +58,29 @@ class Gen3TimerWidget(FormWidget):
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.pre_timer)
-        self.add_field(self.Field.PRE_TIMER, field, layout=form_layout)
+        self.add_field(self.Field.PRE_TIMER, field, layout=form_layout, name='gen3PreTimer')
         # ----- target_frame -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_frame)
-        self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout)
+        self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout, name='gen3TargetFrame')
         # ----- calibration -----
         field = QDoubleSpinBox()
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_float_spinbox(field, self.model.calibration)
-        self.add_field(self.Field.CALIBRATION, field, layout=form_layout)
+        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen3Calibration')
         # ----- set_target_frame_btn -----
         field = QPushButton(self.Field.SET_TARGET_FRAME.value)
+        field.setObjectName('gen3SetTargetFrameButton')
         field_set = self.add_field(self.Field.SET_TARGET_FRAME, field,
-                                   layout=form_layout, with_label=False)
+                                   layout=form_layout,
+                                   with_label=False)
         field_set.enabled = False
         # ----- frame_hit -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.frame_hit)
-        self.add_field(self.Field.FRAME_HIT, field)
+        self.add_field(self.Field.FRAME_HIT, field, name='gen3FrameHit')
         # update field visibility
         event = PropertyChangeEvent(None, self.model.mode.get())
         self.__on_mode_changed(event)

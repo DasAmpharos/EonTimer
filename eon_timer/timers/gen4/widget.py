@@ -37,12 +37,13 @@ class Gen4TimerWidget(FormWidget):
         self.__init_listeners()
 
     def __init_components(self) -> None:
-        self.setObjectName('gen4Widget')
+        self.setObjectName('gen4TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- form_group -----
         form_group = QGroupBox()
+        form_group.setObjectName('gen4FormGroup')
         self._layout.add_row(form_group)
         form_layout = FormLayout(form_group)
         form_layout.set_alignment(Qt.AlignTop)
@@ -52,27 +53,27 @@ class Gen4TimerWidget(FormWidget):
         field = QSpinBox()
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.calibrated_delay)
-        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout)
+        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout, name='gen4CalibratedDelay')
         # ----- calibrated_second -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.calibrated_second)
-        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout)
+        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout, name='gen4CalibratedSecond')
         # ----- target_delay -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_delay)
-        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout)
+        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen4TargetDelay')
         # ----- target_second -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_second)
-        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout)
+        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen4TimerSecond')
         # ----- delay_hit -----
         field = QSpinBox()
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.delay_hit)
-        self.add_field(self.Field.DELAY_HIT, field)
+        self.add_field(self.Field.DELAY_HIT, field, name='gen4DelayHit')
 
     def __init_listeners(self):
         def field_changed(field: Gen4TimerWidget.Field,

@@ -22,9 +22,14 @@ class FormWidget(QWidget):
                   widget: QWidget,
                   with_label: bool = True,
                   layout: Optional[FormLayout] = None,
-                  visible: bool = True) -> FieldSet:
+                  visible: bool = True,
+                  name: str | None = None) -> FieldSet:
         layout = layout or self._layout
         label = QLabel(str(field)) if with_label else None
+        if name is not None:
+            widget.setObjectName(f'{name}Field')
+            if label is not None:
+                label.setObjectName(f'{name}Label')
 
         row = layout.add_row(widget, label)
         field_set = FieldSet(row, widget, label, layout)
