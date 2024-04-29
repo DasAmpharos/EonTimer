@@ -28,12 +28,14 @@ class CustomTimerWidget(QWidget):
         self.__init_components()
 
     def __init_components(self):
+        self.setObjectName('customTimerWidget')
         # ----- layout -----
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         # ----- scroll_widget -----
         scroll_pane = QWidget()
+        scroll_pane.setObjectName('customTimerScrollPane')
         pyside.set_class(scroll_pane, ['themeable-panel'])
         scroll_pane.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         scroll_pane_layout = QVBoxLayout(scroll_pane)
@@ -41,6 +43,7 @@ class CustomTimerWidget(QWidget):
         scroll_pane_layout.setSpacing(10)
         # ----- scroll_area -----
         scroll_area = QScrollArea()
+        scroll_pane.setObjectName('customTimerScrollArea')
         scroll_area.setFrameShape(QFrame.Shape.NoFrame)
         pyside.set_class(scroll_area, ['themeable-panel', 'themeable-border'])
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
@@ -54,6 +57,7 @@ class CustomTimerWidget(QWidget):
         )
         # ----- container -----
         container = QWidget()
+        container.setObjectName('customTimerContainer')
         container.setLayout(self.__container_layout)
         self.__container_layout.setContentsMargins(0, 0, 0, 0)
         self.__container_layout.setSpacing(10)
@@ -62,6 +66,7 @@ class CustomTimerWidget(QWidget):
         scroll_pane_layout.addWidget(container, stretch=1, alignment=Qt.AlignmentFlag.AlignTop)
 
         button = QPushButton('+')
+        button.setObjectName('customTimerAddBtn')
         button.clicked.connect(self.__on_add)
         pyside.set_class(button, ['success'])
         layout.addWidget(button, stretch=0, alignment=Qt.AlignmentFlag.AlignBottom)

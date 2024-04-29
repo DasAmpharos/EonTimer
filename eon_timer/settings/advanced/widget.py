@@ -16,10 +16,13 @@ class AdvancedSettingsWidget(QWidget):
         self.__init_components()
 
     def __init_components(self):
+        self.setObjectName('advancedSettingsWidget')
+        # ----- layout -----
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
-        # ----- reset button -----
+        # ----- reset_button -----
         button = QPushButton('Reset Settings')
+        button.setObjectName('advancedSettingsResetButton')
         button.clicked.connect(self.__on_reset)
         layout.addWidget(button, alignment=Qt.AlignmentFlag.AlignTop)
 

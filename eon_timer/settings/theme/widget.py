@@ -32,29 +32,38 @@ class ThemeSettingsWidget(QWidget):
         self.__init_components()
 
     def __init_components(self):
+        self.setObjectName('themeSettingsWidget')
         # ----- layout -----
         layout = QGridLayout(self)
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         layout.setContentsMargins(10, 10, 10, 10)
-        # ----- theme_field -----
+        # ===== theme =====
         self.__on_themes_changed()
         bindings.bind_str_combobox(self.__theme_field, self.theme)
         self.theme_manager.themes_changed.connect(self.__on_themes_changed)
         self.__theme_field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        layout.addWidget(QLabel('Theme'), 0, 0)
+        # ----- label -----
+        label = QLabel('Theme')
+        label.setObjectName('themeSettingsThemeLabel')
+        layout.addWidget(label, 0, 0)
+        # ----- field -----
+        self.__theme_field.setObjectName('themeSettingsThemeField')
         layout.addWidget(self.__theme_field, 0, 1)
         # ----- import_theme_field -----
+        self.__import_theme_field.setObjectName('themeSettingsImportThemeField')
         self.__import_theme_field.title = 'Select Theme'
         self.__import_theme_field.filter = 'Theme Files (*.zip)'
         self.__import_theme_field.file.on_change(self.__on_import_theme_file_changed)
         layout.addWidget(self.__import_theme_field, 1, 0, 1, 2)
         # ----- import_btn -----
+        self.__import_btn.setObjectName('themeSettingsImportButton')
         self.__import_btn.setText('Import Theme')
         layout.addWidget(self.__import_btn, 2, 1)
         self.__import_btn.clicked.connect(self.__on_import)
         self.__import_btn.setDisabled(True)
         # ----- open theme dir -----
         button = QPushButton(chr(0xf07b))
+        button.setObjectName('themeSettingsOpenThemeDirButton')
         button.setToolTip('Open Theme Directory')
         button.setFont(QFont('Font Awesome 5 Free'))
         button.clicked.connect(self.__open_theme_dir)

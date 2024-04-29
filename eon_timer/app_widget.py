@@ -45,6 +45,7 @@ class AppWidget(QWidget):
         self.__init_components()
 
     def __init_components(self) -> None:
+        self.setObjectName('appWidget')
         # ----- layout -----
         layout = QGridLayout(self)
         layout.setColumnMinimumWidth(0, 215)
@@ -52,10 +53,10 @@ class AppWidget(QWidget):
         layout.setVerticalSpacing(10)
         # ----- timer_widget -----
         layout.addWidget(self.timer_widget, 0, 0)
-        self.timer_widget.setObjectName('timerDisplay')
         pyside.set_class(self.timer_widget, ['themeable-panel', 'themeable-border'])
         self.timer_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         # ----- tab_widget -----
+        self.tab_widget.setObjectName('timerTabWidget')
         layout.addWidget(self.tab_widget, 0, 1, 2, 2)
         pyside.set_class(self.tab_widget, ['themeable-panel', 'themeable-border'])
         self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -70,25 +71,25 @@ class AppWidget(QWidget):
         self.tab_widget.addTab(self.custom_timer_widget, 'C')
 
         # ----- settings_btn -----
+        self.settings_btn.setObjectName('settingsButton')
         self.settings_btn.setText(chr(0xf013))
         layout.addWidget(self.settings_btn, 2, 0)
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.settings_btn.setFont(QFont('Font Awesome 5 Free'))
-        self.settings_btn.setObjectName('settingsBtn')
         # ----- update_btn -----
+        self.update_btn.setObjectName('updateButton')
         self.update_btn.setText('Update')
         layout.addWidget(self.update_btn, 2, 1)
         self.update_btn.clicked.connect(self.__on_update_btn_clicked)
         self.update_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        self.settings_btn.setObjectName('updateBtn')
         # ----- timer_btn -----
+        self.timer_btn.setObjectName('timerButton')
         self.timer_btn.setText('Start')
         layout.addWidget(self.timer_btn, 2, 2)
         self.timer_btn.clicked.connect(self.__on_timer_btn_clicked)
         self.timer_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.timer_btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-        self.timer_btn.setObjectName('timerBtn')
         # ----- running_changed -----
         disable_on_run = [self.tab_widget, self.settings_btn, self.update_btn]
         self.state.running_changed.connect(

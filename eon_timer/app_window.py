@@ -10,6 +10,7 @@ from eon_timer.util.injector import component
 class AppWindow(QMainWindow):
     def __init__(self, app_widget: AppWidget) -> None:
         super().__init__()
+        self.setObjectName('appWindow')
         version = app_version.get_version()
         self.setWindowTitle(f'EonTimer - {version}')
         self.setWindowFlags(Qt.Window |
