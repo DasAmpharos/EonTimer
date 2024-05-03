@@ -24,9 +24,8 @@ class PhaseRunner(QObject):
         self.action_settings: Final[ActionSettingsModel] = action_settings
         self.__thread: Optional[DelegatingQThread] = None
 
-    def start(self):
+    def start(self, clock: Clock):
         if not self.state.running:
-            clock = Clock()
             self.state.running = True
 
             func = functools.partial(self.__run, clock, self.state.phases)

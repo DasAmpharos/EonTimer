@@ -14,6 +14,7 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.form import FormWidget
+from eon_timer.util.pyside.name_service import NameService
 from .model import ActionSettingsModel, ActionMode, ActionSound
 
 
@@ -27,19 +28,21 @@ class ActionSettingsWidget(FormWidget):
         INTERVAL = 'Interval'
         COUNT = 'Count'
 
-    def __init__(self, model: ActionSettingsModel) -> None:
-        super().__init__()
+    def __init__(self,
+                 name_service: NameService,
+                 model: ActionSettingsModel) -> None:
+        super().__init__(name_service)
         self.mode: Final = Property(model.mode.get())
         self.sound: Final = Property(model.sound.get())
         self.color: Final = Property(model.color.get())
         self.custom_sound: Final = Property(model.custom_sound.get(), str)
         self.interval: Final = Property(model.interval.get())
         self.count: Final = Property(model.count.get())
-        self.model: Final[ActionSettingsModel] = model
+        self.model: Final = model
         self.__init_components()
 
     def __init_components(self) -> None:
-        self.setObjectName('actionSettingsWidget')
+        self.name_service.set_name(self, 'actionSettingsWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)

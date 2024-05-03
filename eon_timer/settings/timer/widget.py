@@ -10,6 +10,7 @@ from eon_timer.util.properties.property import Property, FloatProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
+from eon_timer.util.pyside.name_service import NameService
 from .model import TimerSettingsModel, Console
 
 
@@ -21,8 +22,10 @@ class TimerSettingsWidget(FormWidget):
         REFRESH_INTERVAL = 'Refresh Interval'
         PRECISION_CALIBRATION = 'Precision Calibration'
 
-    def __init__(self, model: TimerSettingsModel) -> None:
-        super().__init__()
+    def __init__(self,
+                 name_service: NameService,
+                 model: TimerSettingsModel) -> None:
+        super().__init__(name_service)
         self.console: Final = Property(model.console.get())
         self.custom_framerate: Final = FloatProperty(model.custom_framerate.get())
         self.precision_calibration: Final = Property(model.precision_calibration.get())
@@ -31,7 +34,7 @@ class TimerSettingsWidget(FormWidget):
         self.__init_components()
 
     def __init_components(self) -> None:
-        self.setObjectName('timerSettingsWidget')
+        self.name_service.set_name(self, 'timerSettingsWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)

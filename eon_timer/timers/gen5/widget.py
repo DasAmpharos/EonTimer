@@ -12,6 +12,7 @@ from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget, FormLayout
+from eon_timer.util.pyside.name_service import NameService
 from .model import Gen5Model, Gen5Mode
 
 
@@ -35,13 +36,14 @@ class Gen5TimerWidget(FormWidget):
         ADVANCES_HIT = 'Advances Hit'
 
     def __init__(self,
+                 name_service: NameService,
                  model: Gen5Model,
                  calibrator: Calibrator,
                  delay_timer: DelayTimer,
                  second_timer: SecondTimer,
                  entralink_timer: EntralinkTimer,
                  enhanced_entralink_timer: EnhancedEntralinkTimer) -> None:
-        super().__init__(None)
+        super().__init__(name_service)
         self.model: Final[Gen5Model] = model
         self.calibrator: Final[Calibrator] = calibrator
         self.delay_timer: Final[DelayTimer] = delay_timer
@@ -52,7 +54,7 @@ class Gen5TimerWidget(FormWidget):
         self.__init_listeners()
 
     def __init_components(self) -> None:
-        self.setObjectName('gen5TimerWidget')
+        self.name_service.set_name(self, 'gen5TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)
@@ -62,7 +64,7 @@ class Gen5TimerWidget(FormWidget):
         self.add_field(self.Field.MODE, mode_field, name='gen5Mode')
         # ----- scroll_widget -----
         scroll_pane = QWidget()
-        scroll_pane.setObjectName('gen5ScrollPane')
+        self.name_service.set_name(scroll_pane, 'gen5ScrollPane')
         pyside.set_class(scroll_pane, ['themeable-panel'])
         scroll_pane.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         scroll_pane_layout = QVBoxLayout(scroll_pane)
@@ -70,7 +72,7 @@ class Gen5TimerWidget(FormWidget):
         scroll_pane_layout.setSpacing(10)
 
         scroll_area = QScrollArea()
-        scroll_area.setObjectName('gen5ScrollArea')
+        self.name_service.set_name(scroll_area, 'gen5ScrollArea')
         scroll_area.setFrameShape(QFrame.Shape.NoFrame)
         pyside.set_class(scroll_area, ['themeable-panel', 'themeable-border'])
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
@@ -84,7 +86,7 @@ class Gen5TimerWidget(FormWidget):
         )
         # ----- form -----
         form_widget = QWidget()
-        form_widget.setObjectName('gen5FormWidget')
+        self.name_service.set_name(form_widget, 'gen5FormWidget')
         form_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         scroll_pane_layout.addWidget(form_widget, stretch=0, alignment=Qt.AlignmentFlag.AlignTop)
         form_layout = FormLayout(form_widget)
