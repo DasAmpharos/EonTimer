@@ -3,7 +3,7 @@ from typing import Final, override
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property, FloatProperty
+from eon_timer.util.properties.property import Property, FloatProperty, EnumProperty, IntProperty
 from eon_timer.util.properties.settings import Settings
 
 GBA_FPS: Final[float] = 59.7275
@@ -50,10 +50,10 @@ class Console(EnhancedEnum, StrEnum):
 
 @component()
 class TimerSettingsModel(Settings):
-    console = Property(Console.NDS_SLOT1, value_type=str)
+    console = EnumProperty(Console.NDS_SLOT1)
     custom_framerate = FloatProperty(60.0)
     precision_calibration = Property(False)
-    refresh_interval = Property(8)
+    refresh_interval = IntProperty(8)
 
     @property
     @override

@@ -4,7 +4,7 @@ from typing import override, Final
 from PySide6.QtCore import QSettings, Signal, QObject
 
 from eon_timer.util.injector.lifecycle import CloseListener
-from .property import Property
+from .property import Property, EnumProperty
 
 
 class Settings(QObject, CloseListener):
@@ -28,6 +28,8 @@ class Settings(QObject, CloseListener):
         for name, prop in self.__properties.items():
             if self.settings.contains(name):
                 from_settings = self.settings.value(name, None, prop.value_type)
+                if isinstance(prop, EnumProperty):
+                    from_settings = prop.enum_type(from_settings)
                 prop.set(from_settings)
         self.settings.endGroup()
 

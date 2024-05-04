@@ -3,7 +3,7 @@ from typing import override
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property, IntProperty, FloatProperty
+from eon_timer.util.properties.property import IntProperty, EnumProperty
 from eon_timer.util.properties.settings import Settings
 
 
@@ -16,7 +16,7 @@ class Gen5Mode(EnhancedEnum, StrEnum):
 
 @component()
 class Gen5Model(Settings):
-    mode = Property(Gen5Mode.STANDARD, value_type=str)
+    mode = EnumProperty(Gen5Mode.STANDARD)
     calibration = IntProperty(-95)
     frame_calibration = IntProperty(0)
     entralink_calibration = IntProperty(256)
