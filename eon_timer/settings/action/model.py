@@ -5,7 +5,7 @@ from PySide6.QtGui import QColor
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property
+from eon_timer.util.properties.property import Property, EnumProperty, IntProperty
 from eon_timer.util.properties.settings import Settings
 
 
@@ -25,12 +25,12 @@ class ActionSound(EnhancedEnum, StrEnum):
 
 @component()
 class ActionSettingsModel(Settings):
-    mode: Final = Property(ActionMode.AV, value_type=str)
-    sound: Final = Property(ActionSound.BEEP, value_type=str)
+    mode: Final = EnumProperty(ActionMode.AV)
+    sound: Final = EnumProperty(ActionSound.BEEP)
     color: Final = Property(QColor(0, 0, 255))
     custom_sound: Final = Property(None, value_type=str)
-    interval: Final = Property(500)
-    count: Final = Property(6)
+    interval: Final = IntProperty(500)
+    count: Final = IntProperty(6)
 
     @property
     @override

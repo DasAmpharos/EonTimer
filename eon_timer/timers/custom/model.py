@@ -23,6 +23,8 @@ class CustomTimerModel(Settings):
         for i in range(self.settings.beginReadArray(self.group)):
             self.settings.setArrayIndex(i)
             unit = self.settings.value('unit', CustomPhase.Unit.MILLISECONDS, str)
+            if isinstance(unit, str):
+                unit = CustomPhase.Unit(unit)
             value = self.settings.value('value', 0, int)
             calibration = self.settings.value('calibration', 0.0, float)
             self.__phases.append(CustomPhase(unit, value, calibration))

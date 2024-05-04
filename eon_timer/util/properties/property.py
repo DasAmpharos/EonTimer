@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import TypeVar, Generic, Self, Type, Final
 
 from .property_change import PropertyChangeEvent, PropertyChangeListener
@@ -78,3 +79,17 @@ class FloatProperty(Property[float]):
 
     def div(self, value: float):
         self.set(self.get() / value)
+
+
+EnumT = TypeVar('EnumT', bound=Enum)
+
+
+class EnumProperty(Property[EnumT]):
+    def __init__(self,
+                 initial_value: EnumT | None = None,
+                 enum_type: Type[EnumT] | None = None,
+                 transient: bool = False):
+        Property.__init__(self, initial_value, str, transient)
+        if enum_type is None and initial_value is None:
+            raise ValueError('enum_type must be specified if initial_value is None')
+        self.enum_type: Final = enum_type or type(initial_value)
