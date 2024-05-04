@@ -13,6 +13,7 @@ from eon_timer.util.properties.property import IntProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
+from eon_timer.util.pyside.name_service import NameService
 from .custom_phase import CustomPhase
 
 
@@ -27,18 +28,20 @@ class CustomPhaseWidget(QWidget):
         HIT = 'Hit'
 
     def __init__(self,
+                 name_service: NameService,
                  index: int,
                  model: CustomPhase,
                  calibrator: Calibrator):
         super().__init__()
-        self.model: Final[CustomPhase] = model
-        self.calibrator: Final[Calibrator] = calibrator
-        self.__index: Final[IntProperty] = IntProperty(index)
+        self.name_service: Final = name_service
+        self.model: Final = model
+        self.calibrator: Final = calibrator
+        self.__index: Final = IntProperty(index)
 
-        self.__unit_field: Final[EnumComboBox] = EnumComboBox(CustomPhase.Unit)
-        self.__target_field: Final[QSpinBox] = QSpinBox()
-        self.__calibration_field: Final[QDoubleSpinBox] = QDoubleSpinBox()
-        self.__hit_field: Final[QSpinBox] = QSpinBox()
+        self.__unit_field: Final = EnumComboBox(CustomPhase.Unit)
+        self.__target_field: Final = QSpinBox()
+        self.__calibration_field: Final = QDoubleSpinBox()
+        self.__hit_field: Final = QSpinBox()
         self.__init_components()
 
     def __init_components(self):
@@ -60,7 +63,7 @@ class CustomPhaseWidget(QWidget):
         pyside.set_class(group, ['themeable-panel', 'themeable-border'])
         group_layout = QHBoxLayout(group)
         # ----- form -----
-        form = FormWidget()
+        form = FormWidget(self.name_service)
         group_layout.addWidget(form, stretch=1)
         form.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         form_layout = form.layout()

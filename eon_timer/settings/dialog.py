@@ -9,26 +9,29 @@ from eon_timer.settings.advanced.widget import AdvancedSettingsWidget
 from eon_timer.settings.theme.widget import ThemeSettingsWidget
 from eon_timer.settings.timer.widget import TimerSettingsWidget
 from eon_timer.util import pyside
+from eon_timer.util.pyside.name_service import NameService
 
 
 @component()
 class SettingsDialog(QDialog):
     def __init__(self,
                  settings: QSettings,
+                 name_service: NameService,
                  action_settings_widget: ActionSettingsWidget,
                  timer_settings_widget: TimerSettingsWidget,
                  theme_settings_widget: ThemeSettingsWidget,
                  advanced_settings_widget: AdvancedSettingsWidget) -> None:
         super().__init__()
-        self.settings: Final[QSettings] = settings
-        self.action_settings_widget: Final[ActionSettingsWidget] = action_settings_widget
-        self.timer_settings_widget: Final[TimerSettingsWidget] = timer_settings_widget
-        self.theme_settings_widget: Final[ThemeSettingsWidget] = theme_settings_widget
-        self.advanced_settings_widget: Final[AdvancedSettingsWidget] = advanced_settings_widget
+        self.settings: Final = settings
+        self.name_service: Final = name_service
+        self.action_settings_widget: Final = action_settings_widget
+        self.timer_settings_widget: Final = timer_settings_widget
+        self.theme_settings_widget: Final = theme_settings_widget
+        self.advanced_settings_widget: Final = advanced_settings_widget
         self.__init_components()
 
     def __init_components(self) -> None:
-        self.setObjectName('settingsDialog')
+        self.name_service.set_name(self, 'settingsDialog')
         self.setWindowTitle('Settings')
         self.setWindowFlags(Qt.Dialog |
                             Qt.WindowTitleHint |
@@ -39,7 +42,7 @@ class SettingsDialog(QDialog):
         layout.setSpacing(10)
         # ----- tabs -----
         tabs = QTabWidget()
-        tabs.setObjectName('settingsTabWidget')
+        self.name_service.set_name(tabs, 'settingsTabWidget')
         tabs.addTab(self.action_settings_widget, 'Action')
         tabs.addTab(self.timer_settings_widget, 'Timer')
         tabs.addTab(self.theme_settings_widget, 'Theme')
@@ -49,12 +52,12 @@ class SettingsDialog(QDialog):
         layout.addWidget(tabs, 0, 0, 1, 2)
         # ----- cancel button -----
         button = QPushButton('Cancel')
-        button.setObjectName('settingsCancelButton')
+        self.name_service.set_name(button, 'settingsCancelButton')
         button.clicked.connect(self.__on_cancelled)
         layout.addWidget(button, 1, 0)
         # ----- ok button -----
         button = QPushButton('OK')
-        button.setObjectName('settingsOkButton')
+        self.name_service.set_name(button, 'settingsOkButton')
         button.clicked.connect(self.__on_accepted)
         layout.addWidget(button, 1, 1)
         button.setDefault(True)

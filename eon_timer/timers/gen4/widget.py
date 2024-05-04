@@ -11,6 +11,7 @@ from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside.form import FormLayout, FormWidget
+from eon_timer.util.pyside.name_service import NameService
 from .model import Gen4Model
 
 
@@ -26,24 +27,25 @@ class Gen4TimerWidget(FormWidget):
         DELAY_HIT = 'Delay Hit'
 
     def __init__(self,
+                 name_service: NameService,
                  model: Gen4Model,
                  calibrator: Calibrator,
                  delay_timer: DelayTimer) -> None:
-        super().__init__(None)
-        self.model: Final[Gen4Model] = model
-        self.calibrator: Final[Calibrator] = calibrator
-        self.delay_timer: Final[DelayTimer] = delay_timer
+        super().__init__(name_service)
+        self.model: Final = model
+        self.calibrator: Final = calibrator
+        self.delay_timer: Final = delay_timer
         self.__init_components()
         self.__init_listeners()
 
     def __init_components(self) -> None:
-        self.setObjectName('gen4TimerWidget')
+        self.name_service.set_name(self, 'gen4TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- form_group -----
         form_group = QGroupBox()
-        form_group.setObjectName('gen4FormGroup')
+        self.name_service.set_name(form_group, 'gen4FormGroup')
         self._layout.add_row(form_group)
         form_layout = FormLayout(form_group)
         form_layout.set_alignment(Qt.AlignTop)

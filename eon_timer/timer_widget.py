@@ -1,37 +1,39 @@
-import importlib.resources
 from typing import Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGroupBox, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 
 from eon_timer.app_state import AppState
-from eon_timer.util import pyside
 from eon_timer.util.injector import component
+from eon_timer.util.pyside.name_service import NameService
 
 
 @component()
 class TimerWidget(QGroupBox):
-    def __init__(self, state: AppState):
+    def __init__(self,
+                 state: AppState,
+                 name_service: NameService):
         super().__init__()
-        self.state: Final[AppState] = state
-        self.current_phase_lbl: Final[QLabel] = QLabel('0:000')
-        self.minutes_before_target_lbl: Final[QLabel] = QLabel('0')
-        self.next_phase_lbl: Final[QLabel] = QLabel('0:000')
+        self.state: Final = state
+        self.name_service: Final = name_service
+        self.current_phase_lbl: Final = QLabel('0:000')
+        self.minutes_before_target_lbl: Final = QLabel('0')
+        self.next_phase_lbl: Final = QLabel('0:000')
         self.__init_components()
         self.__init_listeners()
 
     def __init_components(self) -> None:
-        self.setObjectName('timerWidget')
+        self.name_service.set_name(self, 'timerWidget')
         # ----- layout -----
         layout = QVBoxLayout(self)
         layout.setSpacing(5)
         # ===== current phase =====
-        self.current_phase_lbl.setObjectName('currentPhaseValueLabel')
+        self.name_service.set_name(self.current_phase_lbl, 'currentPhaseValueLabel')
         layout.addWidget(self.current_phase_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
         # ===== minutes before target =====
         # ----- group -----
         group = QWidget()
-        group.setObjectName('minutesBeforeTargetGroup')
+        self.name_service.set_name(group, 'minutesBeforeTargetGroup')
         layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignLeft)
         # ----- group_layout -----
         group_layout = QHBoxLayout(group)
@@ -39,15 +41,15 @@ class TimerWidget(QGroupBox):
         group_layout.setSpacing(5)
         # ----- label -----
         label = QLabel('Minutes Before Target:')
-        label.setObjectName('minutesBeforeTargetLabel')
+        self.name_service.set_name(label, 'minutesBeforeTargetLabel')
         group_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignLeft)
         # ----- value_label -----
-        self.minutes_before_target_lbl.setObjectName('minutesBeforeTargetValueLabel')
+        self.name_service.set_name(self.minutes_before_target_lbl, 'minutesBeforeTargetValueLabel')
         group_layout.addWidget(self.minutes_before_target_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
         # ===== next phase =====
         # ----- group -----
         group = QWidget()
-        group.setObjectName('nextPhaseGroup')
+        self.name_service.set_name(group, 'nextPhaseGroup')
         layout.addWidget(group, alignment=Qt.AlignmentFlag.AlignLeft)
         # ----- group_layout -----
         group_layout = QHBoxLayout(group)
@@ -55,10 +57,10 @@ class TimerWidget(QGroupBox):
         group_layout.setSpacing(5)
         # ----- label -----
         label = QLabel('Next Phase:')
-        label.setObjectName('nextPhaseLabel')
+        self.name_service.set_name(label, 'nextPhaseLabel')
         group_layout.addWidget(label, alignment=Qt.AlignmentFlag.AlignLeft)
         # ----- value_label -----
-        self.next_phase_lbl.setObjectName('nextPhaseValueLabel')
+        self.name_service.set_name(self.next_phase_lbl, 'nextPhaseValueLabel')
         group_layout.addWidget(self.next_phase_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
 
     def __init_listeners(self):
@@ -81,6 +83,8 @@ class TimerWidget(QGroupBox):
 
     @staticmethod
     def __format_time(milliseconds: int | float) -> str:
+        if milliseconds < 0:
+            return '?:???'
         if isinstance(milliseconds, float):
             milliseconds = int(milliseconds)
 
