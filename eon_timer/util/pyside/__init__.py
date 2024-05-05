@@ -2,7 +2,6 @@ from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import QWidget
 
 from .enum_combo_box import EnumComboBox
-from .scroll_widget import ScrollWidget
 from .thread import DelegatingQThread
 
 

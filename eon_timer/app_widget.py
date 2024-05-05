@@ -1,7 +1,6 @@
-import functools
 from typing import Final
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSettings
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import *
 
@@ -16,11 +15,14 @@ from eon_timer.timers.gen5 import Gen5TimerWidget
 from eon_timer.util import pyside
 from eon_timer.util.clock import Clock
 from eon_timer.util.injector import component
+from eon_timer.util.injector.lifecycle import CloseListener
 from eon_timer.util.pyside.name_service import NameService
 
 
 @component()
-class AppWidget(QWidget):
+class AppWidget(QWidget, CloseListener):
+    TAB_INDEX: Final = 'tab_index'
+
     def __init__(self,
                  state: AppState,
                  phase_runner: PhaseRunner,
@@ -30,7 +32,8 @@ class AppWidget(QWidget):
                  gen4_timer_widget: Gen4TimerWidget,
                  gen3_timer_widget: Gen3TimerWidget,
                  custom_timer_widget: CustomTimerWidget,
-                 settings_dialog: SettingsDialog) -> None:
+                 settings_dialog: SettingsDialog,
+                 settings: QSettings) -> None:
         super().__init__()
         self.state: Final = state
         self.phase_runner: Final = phase_runner
@@ -41,6 +44,7 @@ class AppWidget(QWidget):
         self.gen3_timer_widget: Final = gen3_timer_widget
         self.custom_timer_widget: Final = custom_timer_widget
         self.settings_dialog: Final = settings_dialog
+        self.settings: Final = settings
 
         self.tab_widget: Final = QTabWidget()
         self.timer_btn: Final = QPushButton()
@@ -73,6 +77,8 @@ class AppWidget(QWidget):
         self.tab_widget.addTab(self.gen4_timer_widget, '4')
         self.tab_widget.addTab(self.gen3_timer_widget, '3')
         self.tab_widget.addTab(self.custom_timer_widget, 'C')
+        current_index = self.settings.value(self.TAB_INDEX, 0, int)
+        self.tab_widget.setCurrentIndex(current_index)
 
         # ----- settings_btn -----
         self.name_service.set_name(self.settings_btn, 'settingsButton')
@@ -135,3 +141,6 @@ class AppWidget(QWidget):
         if create_phases is not None:
             phases = create_phases()
             self.state.phases = phases
+
+    def _on_close(self):
+        self.settings.setValue(self.TAB_INDEX, self.tab_widget.currentIndex())
