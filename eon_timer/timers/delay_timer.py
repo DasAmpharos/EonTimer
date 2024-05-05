@@ -8,15 +8,15 @@ from .second_timer import SecondTimer
 
 @component()
 class DelayTimer:
-    CLOSE_THRESHOLD: Final[int] = 167
-    UPDATE_FACTOR: Final[float] = 1.0
-    CLOSE_UPDATE_FACTOR: Final[float] = 0.75
+    CLOSE_THRESHOLD: Final = 167
+    UPDATE_FACTOR: Final = 1.0
+    CLOSE_UPDATE_FACTOR: Final = 0.75
 
     def __init__(self,
                  calibrator: Calibrator,
                  second_timer: SecondTimer):
-        self.calibrator: Final[Calibrator] = calibrator
-        self.second_timer: Final[SecondTimer] = second_timer
+        self.calibrator: Final = calibrator
+        self.second_timer: Final = second_timer
 
     def create(self, target_delay: int, target_second: int, calibration: float) -> list[float]:
         return [

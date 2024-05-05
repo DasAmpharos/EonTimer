@@ -10,7 +10,7 @@ from eon_timer.util.pyside.name_service import NameService
 
 @component()
 class AdvancedSettingsWidget(QWidget):
-    on_reset: Final[Signal] = Signal()
+    on_reset: Final = Signal()
 
     def __init__(self, name_service: NameService):
         super().__init__()

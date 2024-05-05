@@ -6,10 +6,10 @@ from .entralink_timer import EntralinkTimer
 
 @component()
 class EnhancedEntralinkTimer:
-    ENTRALINK_FRAME_RATE: Final[float] = 0.837148929
+    ENTRALINK_FRAME_RATE: Final = 0.837148929
 
     def __init__(self, entralink_timer: EntralinkTimer):
-        self.entralink_timer: Final[EntralinkTimer] = entralink_timer
+        self.entralink_timer: Final = entralink_timer
 
     def create(self,
                target_delay: int,

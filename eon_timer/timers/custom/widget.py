@@ -16,7 +16,7 @@ from .model import CustomTimerModel
 
 @component()
 class CustomTimerWidget(QWidget):
-    timer_changed: Final[Signal] = Signal()
+    timer_changed: Final = Signal()
 
     def __init__(self,
                  model: CustomTimerModel,

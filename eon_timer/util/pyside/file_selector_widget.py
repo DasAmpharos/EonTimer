@@ -17,11 +17,11 @@ class FileSelectorWidget(QWidget):
         super().__init__(parent)
         self.title: Optional[str] = title
         self.filter: Optional[str] = filter
-        self.file: Final[Property[str]] = Property(file or '')
+        self.file: Final = Property(file or '')
         self.file_validator: Optional[Callable[[str], bool]] = validator
 
-        self.__line_edit: Final[QLineEdit] = QLineEdit()
-        self.__button: Final[QPushButton] = QPushButton('...')
+        self.__line_edit: Final = QLineEdit()
+        self.__button: Final = QPushButton('...')
         bindings.bind_line_edit(self.__line_edit, self.file)
         self.__init_components()
 

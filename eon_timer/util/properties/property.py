@@ -13,8 +13,8 @@ class Property(Generic[T]):
                  transient: bool = False):
         if value_type is None and initial_value is None:
             raise ValueError('value_type must be specified if initial_value is None')
-        self.initial_value: Final[T | None] = initial_value
-        self.value_type: Final[Type[T]] = value_type or type(initial_value)
+        self.initial_value: Final = initial_value
+        self.value_type: Final = value_type or type(initial_value)
         self.__change_listeners: list[PropertyChangeListener] = []
         self.__transient = transient
         self._value = initial_value

@@ -8,12 +8,12 @@ from .property import Property, EnumProperty
 
 
 class Settings(QObject, CloseListener):
-    settings_changed: Final[Signal] = Signal()
+    settings_changed: Final = Signal()
 
     def __init__(self, settings: QSettings):
         QObject.__init__(self, None)
 
-        self.settings: Final[QSettings] = settings
+        self.settings: Final = settings
         self.__properties: Final[dict[str, Property]] = {}
 
         self_type = type(self)

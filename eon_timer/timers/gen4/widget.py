@@ -17,7 +17,7 @@ from .model import Gen4Model
 
 @component()
 class Gen4TimerWidget(FormWidget):
-    timer_changed: Final[Signal] = Signal()
+    timer_changed: Final = Signal()
 
     class Field(FormWidget.Field):
         CALIBRATED_DELAY = 'Calibrated Delay'

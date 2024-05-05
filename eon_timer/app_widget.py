@@ -64,11 +64,11 @@ class AppWidget(QWidget):
         layout.addWidget(self.tab_widget, 0, 1, 2, 2)
         pyside.set_class(self.tab_widget, ['themeable-panel', 'themeable-border'])
         self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.tab_widget.currentChanged.connect(self.__update_timer)
-        self.gen5_timer_widget.timer_changed.connect(self.__update_timer)
-        self.gen4_timer_widget.timer_changed.connect(self.__update_timer)
-        self.gen3_timer_widget.timer_changed.connect(self.__update_timer)
-        self.custom_timer_widget.timer_changed.connect(self.__update_timer)
+        self.tab_widget.currentChanged.connect(self.__update_phases)
+        self.gen5_timer_widget.timer_changed.connect(self.__update_phases)
+        self.gen4_timer_widget.timer_changed.connect(self.__update_phases)
+        self.gen3_timer_widget.timer_changed.connect(self.__update_phases)
+        self.custom_timer_widget.timer_changed.connect(self.__update_phases)
         self.tab_widget.addTab(self.gen5_timer_widget, '5')
         self.tab_widget.addTab(self.gen4_timer_widget, '4')
         self.tab_widget.addTab(self.gen3_timer_widget, '3')
@@ -95,17 +95,7 @@ class AppWidget(QWidget):
         self.timer_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.timer_btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         # ----- running_changed -----
-        disable_on_run = [self.tab_widget, self.settings_btn, self.update_btn]
-        self.state.running_changed.connect(
-            functools.partial(self.__on_running_changed, disable_on_run)
-        )
-
-    def __update_timer(self):
-        widget = self.tab_widget.currentWidget()
-        create_phases = getattr(widget, 'create_phases')
-        if create_phases is not None:
-            phases = create_phases()
-            self.state.phases = phases
+        self.state.running_changed.connect(self.__on_running_changed)
 
     def __on_timer_btn_pressed(self):
         clock = Clock()
@@ -120,12 +110,28 @@ class AppWidget(QWidget):
         if calibrate is not None:
             calibrate()
 
-    def __on_running_changed(self, disable_on_run: list[QWidget], running: bool):
-        self.timer_btn.setText('Stop' if running else 'Start')
-        for widget in disable_on_run:
-            widget.setEnabled(not running)
-
     def __on_settings_btn_clicked(self):
         result = self.settings_dialog.exec()
         if result == QDialog.DialogCode.Accepted:
-            self.__update_timer()
+            self.__update_phases()
+
+    def __on_running_changed(self, running: bool):
+        self.timer_btn.setText('Stop' if running else 'Start')
+        # disable all tabs except the current tab
+        for i in range(self.tab_widget.count()):
+            if i != self.tab_widget.currentIndex():
+                self.tab_widget.setTabEnabled(i, not running)
+        self.settings_btn.setDisabled(running)
+        self.update_btn.setDisabled(running)
+        current_widget = self.tab_widget.currentWidget()
+        current_widget.setDisabled(running)
+        # update phases if not running
+        if not running:
+            self.__update_phases()
+
+    def __update_phases(self):
+        widget = self.tab_widget.currentWidget()
+        create_phases = getattr(widget, 'create_phases')
+        if create_phases is not None:
+            phases = create_phases()
+            self.state.phases = phases

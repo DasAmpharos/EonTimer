@@ -1,4 +1,5 @@
 from typing import Final
 
-INT_MAX: Final[int] = 2 ** 31 - 1
-INT_MIN: Final[int] = -INT_MAX
+INFINITY: Final = float('inf')
+INT_MAX: Final = 2 ** 31 - 1
+INT_MIN: Final = -INT_MAX

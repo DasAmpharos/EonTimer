@@ -45,3 +45,11 @@ class FormWidget(QWidget):
         field_set = self.__field_sets.get(field, None)
         if field_set is not None:
             field_set.visible = visible
+
+    def set_enabled(self, field: Field, enabled: bool) -> None:
+        field_set = self.__field_sets.get(field, None)
+        if field_set is not None:
+            field_set.enabled = enabled
+
+    def set_disabled(self, field: Field, disabled: bool) -> None:
+        self.set_enabled(field, not disabled)

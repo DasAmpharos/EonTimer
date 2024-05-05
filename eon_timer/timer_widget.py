@@ -4,6 +4,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGroupBox, QLabel, QVBoxLayout, QHBoxLayout, QWidget
 
 from eon_timer.app_state import AppState
+from eon_timer.util import const
 from eon_timer.util.injector import component
 from eon_timer.util.pyside.name_service import NameService
 
@@ -72,18 +73,19 @@ class TimerWidget(QGroupBox):
     def __on_current_phase_changed(self):
         current_phase = self.state.current_phase
         current_phase_elapsed = self.state.current_phase_elapsed
-        text = self.__format_time(current_phase - current_phase_elapsed)
-        self.current_phase_lbl.setText(text)
+        value = current_phase_elapsed if current_phase == const.INFINITY else current_phase - current_phase_elapsed
+        self.current_phase_lbl.setText(self.__format_time(value))
 
     def __on_minutes_before_target_changed(self, new_value: int):
-        self.minutes_before_target_lbl.setText(str(new_value))
+        value = '?' if new_value < 0 else str(new_value)
+        self.minutes_before_target_lbl.setText(value)
 
     def __on_next_phase_changed(self, new_value: float):
         self.next_phase_lbl.setText(self.__format_time(new_value))
 
     @staticmethod
     def __format_time(milliseconds: int | float) -> str:
-        if milliseconds < 0:
+        if milliseconds == const.INFINITY:
             return '?:???'
         if isinstance(milliseconds, float):
             milliseconds = int(milliseconds)

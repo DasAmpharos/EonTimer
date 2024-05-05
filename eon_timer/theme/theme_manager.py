@@ -39,19 +39,19 @@ class InstalledTheme(Theme):
 
 @component()
 class ThemeManager(QObject, StartListener):
-    themes_changed: Final[Signal] = Signal()
+    themes_changed: Final = Signal()
 
-    DEFAULT_THEME: Final[str] = 'Default'
-    SYSTEM_THEME: Final[str] = 'System'
+    DEFAULT_THEME: Final = 'Default'
+    SYSTEM_THEME: Final = 'System'
 
     def __init__(self, app: QApplication) -> None:
         super().__init__(None)
-        self.data_dir: Final[str] = platformdirs.user_data_dir(appname=app.applicationName(),
-                                                               appauthor=app.organizationName(),
-                                                               ensure_exists=True)
+        self.data_dir: Final = platformdirs.user_data_dir(appname=app.applicationName(),
+                                                          appauthor=app.organizationName(),
+                                                          ensure_exists=True)
         theme_dir = os.path.join(self.data_dir, 'themes')
-        self.bundled_theme_dir: Final[str] = os.path.join(theme_dir, 'bundled')
-        self.user_theme_dir: Final[str] = os.path.join(theme_dir, 'user')
+        self.bundled_theme_dir: Final = os.path.join(theme_dir, 'bundled')
+        self.user_theme_dir: Final = os.path.join(theme_dir, 'user')
         self.__bundled_themes: Final[dict[str, Theme]] = {}
         self.__user_themes: Final[dict[str, Theme]] = {}
 

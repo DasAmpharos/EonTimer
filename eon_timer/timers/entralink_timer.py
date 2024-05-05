@@ -7,7 +7,7 @@ from .delay_timer import DelayTimer
 @component()
 class EntralinkTimer:
     def __init__(self, delay_timer: DelayTimer):
-        self.delay_timer: Final[DelayTimer] = delay_timer
+        self.delay_timer: Final = delay_timer
 
     def create(self,
                target_delay: int,

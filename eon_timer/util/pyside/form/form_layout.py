@@ -8,7 +8,7 @@ class FormLayout:
     """ Wrapper around QGridLayout """
 
     def __init__(self, parent: QWidget, spacing: int = 10) -> None:
-        self.__layout: Final[QGridLayout] = QGridLayout(parent)
+        self.__layout: Final = QGridLayout(parent)
         self.__layout.setSpacing(spacing)
         self.__current_row = 0
 

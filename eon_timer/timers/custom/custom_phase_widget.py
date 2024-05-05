@@ -18,8 +18,8 @@ from .custom_phase import CustomPhase
 
 
 class CustomPhaseWidget(QWidget):
-    changed: Final[Signal] = Signal()
-    removed: Final[Signal] = Signal()
+    changed: Final = Signal()
+    removed: Final = Signal()
 
     class Field(FormWidget.Field):
         UNIT = 'Unit'

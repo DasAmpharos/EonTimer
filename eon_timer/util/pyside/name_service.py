@@ -10,8 +10,8 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 @component()
 class NameService:
     def __init__(self, model: ThemeSettingsModel):
+        self.model: Final = model
         self.__named: set[QWidget] = set()
-        self.model: Final[ThemeSettingsModel] = model
         model.element_name_tooltip.on_change(self.__on_element_name_tooltip_changed)
 
     def set_name(self, widget: QWidget, name: str):
