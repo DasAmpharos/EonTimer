@@ -51,3 +51,9 @@ class CustomTimerModel(Settings):
     def remove(self, phase: CustomPhase):
         self.__phases.remove(phase)
         self.settings_changed.emit()
+
+    def reset(self):
+        for phase in self.__phases:
+            phase.dispose()
+        self.__phases.clear()
+        self.settings_changed.emit()

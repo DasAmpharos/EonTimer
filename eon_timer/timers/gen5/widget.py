@@ -186,6 +186,20 @@ class Gen5TimerWidget(FormWidget):
         self.set_visible(self.Field.ADVANCES_HIT,
                          event.new_value == Gen5Mode.ENTRALINK_PLUS)
 
+    def __can_calibrate(self) -> bool:
+        match self.model.mode.get():
+            case Gen5Mode.STANDARD:
+                return self.model.second_hit.get() > 0
+            case Gen5Mode.C_GEAR:
+                return self.model.delay_hit.get() > 0
+            case Gen5Mode.ENTRALINK:
+                return (self.model.delay_hit.get() > 0 and
+                        self.model.second_hit.get() > 0)
+            case Gen5Mode.ENTRALINK_PLUS:
+                return (self.model.delay_hit.get() > 0 and
+                        self.model.second_hit.get() > 0 and
+                        self.model.advances_hit.get() > 0)
+
     def create_phases(self) -> list[float]:
         calibration = self.calibrator.calibrate_to_milliseconds(self.model.calibration.get())
         entralink_calibration = self.calibrator.calibrate_to_milliseconds(self.model.entralink_calibration.get())
@@ -229,19 +243,8 @@ class Gen5TimerWidget(FormWidget):
             self.model.second_hit.set(0)
             self.model.advances_hit.set(0)
 
-    def __can_calibrate(self) -> bool:
-        match self.model.mode.get():
-            case Gen5Mode.STANDARD:
-                return self.model.second_hit.get() > 0
-            case Gen5Mode.C_GEAR:
-                return self.model.delay_hit.get() > 0
-            case Gen5Mode.ENTRALINK:
-                return (self.model.delay_hit.get() > 0 and
-                        self.model.second_hit.get() > 0)
-            case Gen5Mode.ENTRALINK_PLUS:
-                return (self.model.delay_hit.get() > 0 and
-                        self.model.second_hit.get() > 0 and
-                        self.model.advances_hit.get() > 0)
+    def reset(self):
+        self.model.reset()
 
     @property
     def delay_calibration(self) -> float:

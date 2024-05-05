@@ -118,6 +118,16 @@ class Gen3TimerWidget(FormWidget):
         self.set_disabled(self.Field.TARGET_FRAME, True)
         self.set_disabled(self.Field.SET_TARGET_FRAME, True)
 
+    def setDisabled(self, disabled: bool):
+        self.set_disabled(self.Field.MODE, disabled)
+        self.set_disabled(self.Field.PRE_TIMER, disabled)
+        self.set_disabled(self.Field.CALIBRATION, disabled)
+        self.set_disabled(self.Field.FRAME_HIT, disabled)
+
+        mode = self.model.mode.get()
+        self.set_disabled(self.Field.TARGET_FRAME, self.state.running and mode == Gen3Mode.STANDARD)
+        self.set_enabled(self.Field.SET_TARGET_FRAME, self.state.running and mode == Gen3Mode.VARIABLE_TARGET)
+
     def create_phases(self) -> list[float]:
         match self.model.mode.get():
             case Gen3Mode.STANDARD:
@@ -140,12 +150,5 @@ class Gen3TimerWidget(FormWidget):
             self.model.calibration.add(offset)
             self.model.frame_hit.set(0)
 
-    def setDisabled(self, disabled: bool):
-        self.set_disabled(self.Field.MODE, disabled)
-        self.set_disabled(self.Field.PRE_TIMER, disabled)
-        self.set_disabled(self.Field.CALIBRATION, disabled)
-        self.set_disabled(self.Field.FRAME_HIT, disabled)
-
-        mode = self.model.mode.get()
-        self.set_disabled(self.Field.TARGET_FRAME, self.state.running and mode == Gen3Mode.STANDARD)
-        self.set_enabled(self.Field.SET_TARGET_FRAME, self.state.running and mode == Gen3Mode.VARIABLE_TARGET)
+    def reset(self):
+        self.model.reset()
