@@ -64,8 +64,6 @@ class AppWidget(QWidget, CloseListener):
         pyside.set_class(self.timer_widget, ['themeable-panel', 'themeable-border'])
         self.timer_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         # ----- tab_widget -----
-        self.name_service.set_name(self.tab_widget, 'timerTabWidget')
-        layout.addWidget(self.tab_widget, 0, 1, 2, 2)
         pyside.set_class(self.tab_widget, ['themeable-panel', 'themeable-border'])
         self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.tab_widget.currentChanged.connect(self.__update_phases)
@@ -77,29 +75,40 @@ class AppWidget(QWidget, CloseListener):
         self.tab_widget.addTab(self.gen4_timer_widget, '4')
         self.tab_widget.addTab(self.gen3_timer_widget, '3')
         self.tab_widget.addTab(self.custom_timer_widget, 'C')
+        self.name_service.set_name(self.tab_widget, 'timerTabWidget')
+        layout.addWidget(self.tab_widget, 0, 1, 2, 3)
+        # ----- load settings -----
         current_index = self.settings.value(self.TAB_INDEX, 0, int)
         self.tab_widget.setCurrentIndex(current_index)
 
         # ----- settings_btn -----
-        self.name_service.set_name(self.settings_btn, 'settingsButton')
         self.settings_btn.setText(chr(0xf013))
-        layout.addWidget(self.settings_btn, 2, 0)
+        self.settings_btn.setFont(QFont('Font Awesome 5 Free'))
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        self.settings_btn.setFont(QFont('Font Awesome 5 Free'))
+        self.name_service.set_name(self.settings_btn, 'settingsButton')
+        layout.addWidget(self.settings_btn, 2, 0)
+        # ----- reset_btn -----
+        button = QPushButton(chr(0xf2ea))
+        button.setFont(QFont('Font Awesome 5 Free'))
+        button.clicked.connect(self.__on_reset_btn_clicked)
+        button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        button.setToolTip('Reset Timer')
+        self.name_service.set_name(button, 'resetButton')
+        layout.addWidget(button, 2, 1)
         # ----- update_btn -----
-        self.name_service.set_name(self.update_btn, 'updateButton')
         self.update_btn.setText('Update')
-        layout.addWidget(self.update_btn, 2, 1)
         self.update_btn.clicked.connect(self.__on_update_btn_clicked)
         self.update_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.name_service.set_name(self.update_btn, 'updateButton')
+        layout.addWidget(self.update_btn, 2, 2)
         # ----- timer_btn -----
-        self.name_service.set_name(self.timer_btn, 'timerButton')
         self.timer_btn.setText('Start')
-        layout.addWidget(self.timer_btn, 2, 2)
         self.timer_btn.pressed.connect(self.__on_timer_btn_pressed)
         self.timer_btn.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.timer_btn.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.name_service.set_name(self.timer_btn, 'timerButton')
+        layout.addWidget(self.timer_btn, 2, 3)
         # ----- running_changed -----
         self.state.running_changed.connect(self.__on_running_changed)
 
@@ -120,6 +129,18 @@ class AppWidget(QWidget, CloseListener):
         result = self.settings_dialog.exec()
         if result == QDialog.DialogCode.Accepted:
             self.__update_phases()
+
+    def __on_reset_btn_clicked(self):
+        reply = QMessageBox.warning(self,
+                                    'Warning',
+                                    'Are you sure you want to reset the current timer? This operation cannot be undone.',
+                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                    QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            current_widget = self.tab_widget.currentWidget()
+            reset = getattr(current_widget, 'reset')
+            if reset is not None:
+                reset()
 
     def __on_running_changed(self, running: bool):
         self.timer_btn.setText('Stop' if running else 'Start')

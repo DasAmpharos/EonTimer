@@ -74,23 +74,6 @@ class CustomTimerWidget(QWidget):
         pyside.set_class(button, ['success'])
         layout.addWidget(button, stretch=0, alignment=Qt.AlignmentFlag.AlignBottom)
 
-    def create_phases(self) -> list[int]:
-        phases = []
-        for phase in self.model.phases:
-            unit = phase.unit.get()
-            value = phase.target.get()
-            if unit == CustomPhase.Unit.ADVANCES or unit == CustomPhase.Unit.HEX:
-                value = self.calibrator.to_milliseconds(value)
-            value += phase.calibration.get()
-            phases.append(value)
-        return phases
-
-    def calibrate(self):
-        for i in range(self.__container_layout.count()):
-            item = self.__container_layout.itemAt(i)
-            widget = item.widget()
-            widget.calibrate()
-
     def __on_add(self):
         phase = CustomPhase()
         self.model.append(phase)
@@ -115,3 +98,31 @@ class CustomTimerWidget(QWidget):
             item = self.__container_layout.itemAt(i)
             widget = item.widget()
             widget.index = i
+
+    def create_phases(self) -> list[int]:
+        phases = []
+        for phase in self.model.phases:
+            unit = phase.unit.get()
+            value = phase.target.get()
+            if unit == CustomPhase.Unit.ADVANCES or unit == CustomPhase.Unit.HEX:
+                value = self.calibrator.to_milliseconds(value)
+            value += phase.calibration.get()
+            phases.append(value)
+        return phases
+
+    def calibrate(self):
+        for i in range(self.__container_layout.count()):
+            item = self.__container_layout.itemAt(i)
+            widget = item.widget()
+            widget.calibrate()
+
+    def reset(self):
+        layout = self.__container_layout
+        for i in reversed(range(layout.count())):
+            item = layout.itemAt(i)
+            widget = item.widget()
+            if widget is not None:
+                layout.removeWidget(widget)
+                widget.setParent(None)
+                widget.deleteLater()
+        self.model.reset()

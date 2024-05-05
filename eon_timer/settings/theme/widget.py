@@ -63,10 +63,10 @@ class ThemeSettingsWidget(QWidget):
         layout.addWidget(self.__import_theme_field, 1, 0, 1, 2)
         # ----- open theme dir -----
         button = QPushButton(chr(0xf07b))
-        self.name_service.set_name(button, 'themeSettingsOpenThemeDirButton')
-        button.setToolTip('Open Theme Directory')
         button.setFont(QFont('Font Awesome 5 Free'))
+        button.setToolTip('Open Theme Directory')
         button.clicked.connect(self.__open_theme_dir)
+        self.name_service.set_name(button, 'themeSettingsOpenThemeDirButton')
         layout.addWidget(button, 2, 0)
         # ----- import_btn -----
         self.name_service.set_name(self.__import_btn, 'themeSettingsImportButton')
