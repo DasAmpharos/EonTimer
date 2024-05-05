@@ -16,12 +16,12 @@ class VisualManager(QObject):
                  action_settings: ActionSettingsModel):
         super().__init__(None)
         self.__active = False
-        self.__timer: Final[QTimer] = QTimer(self)
+        self.__timer: Final = QTimer(self)
         self.__timer.timeout.connect(self.deactivate)
-        self.__inactive_style: Final[str] = timer_widget.styleSheet()
+        self.__inactive_style: Final = timer_widget.styleSheet()
         self.__active_style = self.__get_active_style(action_settings.color.get())
         action_settings.color.on_change(self.__on_color_changed)
-        self.timer_widget: Final[TimerWidget] = timer_widget
+        self.timer_widget: Final = timer_widget
 
     def activate(self):
         if not self.__active:

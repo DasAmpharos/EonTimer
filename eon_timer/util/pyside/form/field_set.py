@@ -13,10 +13,10 @@ class FieldSet:
                  layout: FormLayout,
                  enabled: bool = True,
                  visible: bool = True) -> None:
-        self.row: Final[int] = row
-        self.field: Final[QWidget] = field
-        self.label: Final[Optional[QLabel]] = label
-        self.layout: Final[FormLayout] = layout
+        self.row: Final = row
+        self.field: Final = field
+        self.label: Final = label
+        self.layout: Final = layout
         self.__enabled = enabled
         self.__visible = visible
 
@@ -26,6 +26,9 @@ class FieldSet:
 
     @enabled.setter
     def enabled(self, value: bool) -> None:
+        self.set_enabled(value)
+
+    def set_enabled(self, value: bool) -> None:
         if self.__enabled != value:
             (self.enable if value else self.disable)()
 

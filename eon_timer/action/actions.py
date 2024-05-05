@@ -14,13 +14,13 @@ class Actions:
                  sound_manager: SoundManager,
                  visual_manager: VisualManager,
                  action_settings: ActionSettingsModel):
+        self.sound_manager: Final = sound_manager
+        self.visual_manager: Final = visual_manager
+        self.action_settings: Final = action_settings
         self.__audio_action: Callable = self.__do_nothing
         self.__visual_action: Callable = self.__do_nothing
-        self.sound_manager: Final[SoundManager] = sound_manager
-        self.visual_manager: Final[VisualManager] = visual_manager
-        self.action_settings: Final[ActionSettingsModel] = action_settings
         action_settings.settings_changed.connect(self.__on_action_settings_changed)
-        state.action_triggered.connect(self.__trigger)
+        state.action_triggered.connect(self.trigger)
         self.__on_action_settings_changed()
 
     def __on_action_settings_changed(self):
@@ -43,7 +43,7 @@ class Actions:
             visual_action = self.visual_manager.activate
         self.__visual_action = visual_action
 
-    def __trigger(self):
+    def trigger(self):
         self.__audio_action()
         self.__visual_action()
 

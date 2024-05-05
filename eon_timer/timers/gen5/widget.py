@@ -18,7 +18,7 @@ from .model import Gen5Model, Gen5Mode
 
 @component()
 class Gen5TimerWidget(FormWidget):
-    timer_changed: Final[Signal] = Signal()
+    timer_changed: Final = Signal()
 
     class Field(FormWidget.Field):
         MODE = 'Mode'
@@ -44,12 +44,12 @@ class Gen5TimerWidget(FormWidget):
                  entralink_timer: EntralinkTimer,
                  enhanced_entralink_timer: EnhancedEntralinkTimer) -> None:
         super().__init__(name_service)
-        self.model: Final[Gen5Model] = model
-        self.calibrator: Final[Calibrator] = calibrator
-        self.delay_timer: Final[DelayTimer] = delay_timer
-        self.second_timer: Final[SecondTimer] = second_timer
-        self.entralink_timer: Final[EntralinkTimer] = entralink_timer
-        self.enhanced_entralink_timer: Final[EnhancedEntralinkTimer] = enhanced_entralink_timer
+        self.model: Final = model
+        self.calibrator: Final = calibrator
+        self.delay_timer: Final = delay_timer
+        self.second_timer: Final = second_timer
+        self.entralink_timer: Final = entralink_timer
+        self.enhanced_entralink_timer: Final = enhanced_entralink_timer
         self.__init_components()
         self.__init_listeners()
 

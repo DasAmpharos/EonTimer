@@ -30,7 +30,7 @@ class TimerSettingsWidget(FormWidget):
         self.custom_framerate: Final = FloatProperty(model.custom_framerate.get())
         self.precision_calibration: Final = Property(model.precision_calibration.get())
         self.refresh_interval: Final = Property(model.refresh_interval.get())
-        self.model: Final[TimerSettingsModel] = model
+        self.model: Final = model
         self.__init_components()
 
     def __init_components(self) -> None:

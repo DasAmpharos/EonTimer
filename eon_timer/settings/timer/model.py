@@ -6,13 +6,13 @@ from eon_timer.util.injector import component
 from eon_timer.util.properties.property import Property, FloatProperty, EnumProperty, IntProperty
 from eon_timer.util.properties.settings import Settings
 
-GBA_FPS: Final[float] = 59.7275
-NDS_SLOT1_FPS: Final[float] = 59.8261
-NDS_SLOT2_FPS: Final[float] = 59.6555
+GBA_FPS: Final = 59.7275
+NDS_SLOT1_FPS: Final = 59.8261
+NDS_SLOT2_FPS: Final = 59.6555
 
-GBA_FRAMERATE: Final[float] = 1000 / GBA_FPS
-NDS_SLOT1_FRAMERATE: Final[float] = 1000 / NDS_SLOT1_FPS
-NDS_SLOT2_FRAMERATE: Final[float] = 1000 / NDS_SLOT2_FPS
+GBA_FRAMERATE: Final = 1000 / GBA_FPS
+NDS_SLOT1_FRAMERATE: Final = 1000 / NDS_SLOT1_FPS
+NDS_SLOT2_FRAMERATE: Final = 1000 / NDS_SLOT2_FPS
 
 
 class Console(EnhancedEnum, StrEnum):

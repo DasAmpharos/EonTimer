@@ -15,10 +15,10 @@ class ThemeEngine:
                  settings_dialog: SettingsDialog,
                  theme_settings: ThemeSettingsModel,
                  theme_manager: ThemeManager):
-        self.app_window: Final[AppWindow] = app_window
-        self.settings_dialog: Final[SettingsDialog] = settings_dialog
-        self.theme_settings: Final[ThemeSettingsModel] = theme_settings
-        self.theme_manager: Final[ThemeManager] = theme_manager
+        self.app_window: Final = app_window
+        self.settings_dialog: Final = settings_dialog
+        self.theme_settings: Final = theme_settings
+        self.theme_manager: Final = theme_manager
         theme_settings.theme.on_change(self.__apply_theme)
         self.__apply_theme()
 
