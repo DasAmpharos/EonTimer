@@ -1,17 +1,17 @@
 from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QCheckBox, QSpinBox, QDoubleSpinBox
+from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QSpinBox
 
 from eon_timer.util.const import INT_MAX
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import Property, FloatProperty
+from eon_timer.util.properties.property import FloatProperty, Property
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
-from .model import TimerSettingsModel, Console
+from .model import Console, TimerSettingsModel
 
 
 @component()

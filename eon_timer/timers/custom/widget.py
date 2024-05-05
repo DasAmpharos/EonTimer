@@ -3,7 +3,7 @@ from typing import Final
 
 from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QWidget, QPushButton, QVBoxLayout, QSizePolicy, QScrollArea, QFrame
+from PySide6.QtWidgets import QFrame, QPushButton, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
 from eon_timer.timers import Calibrator
 from eon_timer.util import pyside

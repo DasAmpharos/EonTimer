@@ -1,9 +1,9 @@
 import functools
 from typing import Final
 
-from PySide6.QtCore import Signal, Qt
-from PySide6.QtWidgets import QSpinBox, QLabel, QWidget, QGroupBox, QPushButton, QHBoxLayout, QSizePolicy, \
-    QDoubleSpinBox
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QHBoxLayout, QLabel, QPushButton, QSizePolicy, QSpinBox, \
+    QWidget
 
 from eon_timer.timers import Calibrator
 from eon_timer.util import pyside

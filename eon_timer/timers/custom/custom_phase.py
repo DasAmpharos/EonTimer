@@ -2,7 +2,7 @@ from enum import StrEnum
 from typing import Final
 
 from eon_timer.util.enum import EnhancedEnum
-from eon_timer.util.properties.property import IntProperty, FloatProperty, EnumProperty
+from eon_timer.util.properties.property import EnumProperty, FloatProperty, IntProperty
 
 
 class CustomPhase:

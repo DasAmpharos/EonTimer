@@ -4,7 +4,7 @@ from typing import Final
 import pygame
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtWidgets import QPushButton, QSpinBox, QColorDialog
+from PySide6.QtWidgets import QColorDialog, QPushButton, QSpinBox
 
 from eon_timer.util import const
 from eon_timer.util.injector import component
@@ -15,7 +15,7 @@ from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
-from .model import ActionSettingsModel, ActionMode, ActionSound
+from .model import ActionMode, ActionSettingsModel, ActionSound
 
 
 @component()

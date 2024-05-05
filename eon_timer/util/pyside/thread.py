@@ -1,6 +1,6 @@
 from typing import Callable, Final, Optional
 
-from PySide6.QtCore import QThread, QObject
+from PySide6.QtCore import QObject, QThread
 
 
 class DelegatingQThread(QThread):

@@ -3,7 +3,7 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy, QSpinBox, QDoubleSpinBox
+from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QPushButton, QSizePolicy, QSpinBox
 
 from eon_timer.app_state import AppState
 from eon_timer.timers import FrameTimer, VariableFrameTimer
@@ -12,7 +12,7 @@ from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
-from eon_timer.util.pyside.form import FormWidget, FormLayout
+from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from .model import Gen3Mode, Gen3Model
 

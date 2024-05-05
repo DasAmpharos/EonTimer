@@ -3,7 +3,7 @@ from typing import Final, override
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property, FloatProperty, EnumProperty, IntProperty
+from eon_timer.util.properties.property import EnumProperty, FloatProperty, IntProperty, Property
 from eon_timer.util.properties.settings import Settings
 
 GBA_FPS: Final = 59.7275

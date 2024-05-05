@@ -5,8 +5,8 @@ from typing import Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QComboBox, QPushButton, QWidget, QGridLayout, QLabel, QSizePolicy, QMessageBox, QCheckBox, \
-    QHBoxLayout
+from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton, \
+    QSizePolicy, QWidget
 
 from eon_timer.theme.theme_manager import ThemeManager
 from eon_timer.util.injector import component

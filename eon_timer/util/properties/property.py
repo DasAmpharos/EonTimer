@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypeVar, Generic, Self, Type, Final
+from typing import Final, Generic, Self, Type, TypeVar
 
 from .property_change import PropertyChangeEvent, PropertyChangeListener
 

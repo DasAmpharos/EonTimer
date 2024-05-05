@@ -1,6 +1,6 @@
 from typing import Final
 
-from eon_timer.settings.timer.model import TimerSettingsModel, Console
+from eon_timer.settings.timer.model import Console, TimerSettingsModel
 from eon_timer.util.injector import component
 
 

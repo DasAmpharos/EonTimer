@@ -1,10 +1,10 @@
 from abc import abstractmethod
-from typing import override, Final
+from typing import Final, override
 
-from PySide6.QtCore import QSettings, Signal, QObject
+from PySide6.QtCore import QObject, QSettings, Signal
 
 from eon_timer.util.injector.lifecycle import CloseListener
-from .property import Property, EnumProperty
+from .property import EnumProperty, Property
 
 
 class Settings(QObject, CloseListener):

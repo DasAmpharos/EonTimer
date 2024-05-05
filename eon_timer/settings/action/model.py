@@ -5,7 +5,7 @@ from PySide6.QtGui import QColor
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property, EnumProperty, IntProperty
+from eon_timer.util.properties.property import EnumProperty, IntProperty, Property
 from eon_timer.util.properties.settings import Settings
 
 

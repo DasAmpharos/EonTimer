@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, Type, Final
+from typing import Final, Generic, Type, TypeVar
 
 from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QComboBox

@@ -1,6 +1,6 @@
 from typing import Final
 
-from PySide6.QtCore import QTimer, QObject
+from PySide6.QtCore import QObject, QTimer
 from PySide6.QtGui import QColor
 
 from eon_timer.settings.action.model import ActionSettingsModel

@@ -1,7 +1,7 @@
-from typing import Final, Callable
+from typing import Callable, Final
 
 from eon_timer.app_state import AppState
-from eon_timer.settings.action.model import ActionSettingsModel, ActionSound, ActionMode
+from eon_timer.settings.action.model import ActionMode, ActionSettingsModel, ActionSound
 from eon_timer.util.injector import component
 from .sound_manager import SoundManager
 from .visual_manager import VisualManager

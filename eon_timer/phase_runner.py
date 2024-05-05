@@ -1,6 +1,6 @@
 import functools
 import time
-from typing import Optional, Final, Iterator
+from typing import Final, Iterator, Optional
 
 from PySide6.QtCore import QObject
 

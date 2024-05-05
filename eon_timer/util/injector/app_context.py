@@ -3,8 +3,8 @@ import inspect
 import pkgutil
 from typing import Type, TypeVar
 
-from .component import get_definitions, ComponentFactory, ComponentDefinitions, Scope
-from .provider import Provider, SingletonProvider, PrototypeProvider
+from .component import ComponentDefinitions, ComponentFactory, Scope, get_definitions
+from .provider import PrototypeProvider, Provider, SingletonProvider
 
 T = TypeVar('T')
 

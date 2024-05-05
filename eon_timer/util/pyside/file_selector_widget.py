@@ -1,7 +1,7 @@
 import os.path
-from typing import Final, Optional, Callable
+from typing import Callable, Final, Optional
 
-from PySide6.QtWidgets import QWidget, QLineEdit, QPushButton, QHBoxLayout, QFileDialog
+from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLineEdit, QPushButton, QWidget
 
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property

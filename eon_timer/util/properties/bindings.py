@@ -1,7 +1,7 @@
 import functools
 from typing import TypeVar
 
-from PySide6.QtWidgets import QSpinBox, QCheckBox, QLineEdit, QDoubleSpinBox, QComboBox
+from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit, QSpinBox
 
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.pyside import EnumComboBox

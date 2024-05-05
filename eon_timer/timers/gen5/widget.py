@@ -3,17 +3,17 @@ import logging
 from typing import Final
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QSizePolicy, QSpinBox, QScrollArea, QWidget, QVBoxLayout, QFrame
+from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QSpinBox, QVBoxLayout, QWidget
 
-from eon_timer.timers import Calibrator, DelayTimer, SecondTimer, EntralinkTimer, EnhancedEntralinkTimer
+from eon_timer.timers import Calibrator, DelayTimer, EnhancedEntralinkTimer, EntralinkTimer, SecondTimer
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
-from eon_timer.util.pyside.form import FormWidget, FormLayout
+from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
-from .model import Gen5Model, Gen5Mode
+from .model import Gen5Mode, Gen5Model
 
 
 @component()
