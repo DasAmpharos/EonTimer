@@ -13,7 +13,6 @@ from eon_timer.util.properties.property import IntProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
-from eon_timer.util.pyside.name_service import NameService
 from .custom_phase import CustomPhase
 
 
@@ -28,17 +27,14 @@ class CustomPhaseWidget(QWidget):
         HIT = 'Hit'
 
     def __init__(self,
-                 name_service: NameService,
                  index: int,
                  model: CustomPhase,
                  calibrator: Calibrator):
         super().__init__()
-        self.name_service: Final = name_service
         self.model: Final = model
         self.calibrator: Final = calibrator
-        self.__index: Final = IntProperty(index)
+        self.index: Final = IntProperty(index)
 
-        self.__unit_field: Final = EnumComboBox(CustomPhase.Unit)
         self.__target_field: Final = QSpinBox()
         self.__calibration_field: Final = QDoubleSpinBox()
         self.__hit_field: Final = QSpinBox()
@@ -54,7 +50,7 @@ class CustomPhaseWidget(QWidget):
         layout.addWidget(label, stretch=0)
         label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         update_index = functools.partial(self.__update_index, label)
-        self.__index.on_change(update_index)
+        self.index.on_change(update_index)
         update_index()
         # ----- group -----
         group = QGroupBox()
@@ -63,16 +59,17 @@ class CustomPhaseWidget(QWidget):
         pyside.set_class(group, ['themeable-panel', 'themeable-border'])
         group_layout = QHBoxLayout(group)
         # ----- form -----
-        form = FormWidget(self.name_service)
+        form = FormWidget()
         group_layout.addWidget(form, stretch=1)
         form.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         form_layout = form.layout()
         form_layout.setContentsMargins(0, 0, 0, 0)
         form_layout.setSpacing(10)
         # ----- unit -----
-        bindings.bind_enum_combobox(self.__unit_field, self.model.unit)
-        self.__unit_field.value.on_change(self.__on_unit_changed)
-        form.add_field(self.Field.UNIT, self.__unit_field)
+        field = EnumComboBox(CustomPhase.Unit)
+        bindings.bind_enum_combobox(field, self.model.unit)
+        field.value.on_change(self.__on_unit_changed)
+        form.add_field(self.Field.UNIT, field)
         self.__on_unit_changed()
         # ----- target -----
         self.__target_field.setRange(0, INT_MAX)
@@ -89,7 +86,8 @@ class CustomPhaseWidget(QWidget):
         bindings.bind_spinbox(self.__hit_field, self.model.hit)
         form.add_field(self.Field.HIT, self.__hit_field)
         # ----- remove_btn -----
-        button = QPushButton('x')
+        button = QPushButton(chr(0xf057))
+        button.setFont('Font Awesome 5 Free')
         button.setToolTip('Remove')
         group_layout.addWidget(button, stretch=0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
         button.clicked.connect(self.__on_remove_button_clicked)
@@ -107,7 +105,7 @@ class CustomPhaseWidget(QWidget):
     def __update_index(self,
                        label: QLabel,
                        event: PropertyChangeEvent[int] | None = None):
-        index = self.index
+        index = self.index.get()
         if event is not None:
             index = event.new_value
         label.setText(f'{index + 1}.')
@@ -136,16 +134,8 @@ class CustomPhaseWidget(QWidget):
 
     def deleteLater(self):
         self.model.dispose()
-        self.__index.dispose()
+        self.index.dispose()
         super().deleteLater()
-
-    @property
-    def index(self) -> int:
-        return self.__index.get()
-
-    @index.setter
-    def index(self, index: int):
-        self.__index.set(index)
 
     @property
     def unit(self) -> CustomPhase.Unit:

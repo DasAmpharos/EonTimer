@@ -3,12 +3,12 @@ from typing import Final
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCheckBox
 
+from eon_timer.settings.other.update_model import UpdateSettingsModel
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
-from .model import OtherSettingsModel
 
 
 @component()
@@ -17,12 +17,11 @@ class OtherSettingsWidget(FormWidget):
         CHECK_FOR_UPDATES = 'Check for Updates on Startup'
 
     def __init__(self,
-                 model: OtherSettingsModel,
+                 update_settings: UpdateSettingsModel,
                  name_service: NameService):
-        self.model: Final = model
-        self.check_for_updates: Final = Property(model.check_for_updates.get())
-
-        super().__init__(name_service)
+        FormWidget.__init__(self, name_service)
+        self.update_settings: Final = update_settings
+        self.check_on_startup: Final = Property(self.update_settings.check_on_startup.get())
         self.__init_components()
 
     def __init_components(self):
@@ -32,19 +31,19 @@ class OtherSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- check_for_updates -----
         field = QCheckBox()
-        bindings.bind_checkbox(field, self.check_for_updates)
+        bindings.bind_checkbox(field, self.check_on_startup)
         self.add_field(self.Field.CHECK_FOR_UPDATES, field, name='checkForUpdates')
 
     def on_accepted(self):
-        self.model.check_for_updates.update(self.check_for_updates)
-        self.model.settings_changed.emit()
+        self.update_settings.check_on_startup.update(self.check_on_startup)
+        self.update_settings.settings_changed.emit()
 
     def on_rejected(self):
         self.__reset_properties()
 
     def on_reset(self):
-        self.model.reset()
+        self.update_settings.reset()
         self.__reset_properties()
 
     def __reset_properties(self):
-        self.check_for_updates.update(self.model.check_for_updates)
+        self.check_on_startup.update(self.update_settings.check_on_startup)

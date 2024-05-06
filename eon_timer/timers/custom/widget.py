@@ -69,7 +69,8 @@ class CustomTimerWidget(QWidget):
             self.__add_widget(phase, index)
         scroll_pane_layout.addWidget(container, stretch=1, alignment=Qt.AlignmentFlag.AlignTop)
 
-        button = QPushButton('+')
+        button = QPushButton(chr(0xf055))
+        button.setFont('Font Awesome 5 Free')
         self.name_service.set_name(button, 'customTimerAddButton')
         button.clicked.connect(self.__on_add)
         pyside.set_class(button, ['success'])
@@ -94,7 +95,7 @@ class CustomTimerWidget(QWidget):
             self.timer_changed.emit()
 
     def __add_widget(self, phase: CustomPhase, index: int):
-        widget = CustomPhaseWidget(self.name_service, index, phase, self.calibrator)
+        widget = CustomPhaseWidget(index, phase, self.calibrator)
         widget.changed.connect(functools.partial(self.__on_change, widget))
         widget.removed.connect(functools.partial(self.__on_remove, widget))
         self.__container_layout.addWidget(widget, stretch=1, alignment=Qt.AlignmentFlag.AlignTop)

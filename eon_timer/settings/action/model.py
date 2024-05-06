@@ -28,7 +28,7 @@ class ActionSettingsModel(Settings):
     mode: Final = EnumProperty(ActionMode.AV)
     sound: Final = EnumProperty(ActionSound.BEEP)
     color: Final = Property(QColor(0, 0, 255))
-    custom_sound: Final = Property(None, value_type=str)
+    custom_sound: Final = Property('')
     interval: Final = IntProperty(500)
     count: Final = IntProperty(6)
 

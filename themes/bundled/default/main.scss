@@ -336,3 +336,10 @@ QPushButton.success {
     background-color: withAlpha($success-a0, 0.5);
   }
 }
+
+QMessageBox {
+  QPushButton {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}

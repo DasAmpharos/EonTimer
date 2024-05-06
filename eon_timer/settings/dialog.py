@@ -1,7 +1,6 @@
 from typing import Final
 
 from PySide6.QtCore import QSettings, Qt
-from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (QDialog, QGridLayout, QMessageBox, QPushButton, QSizePolicy, QTabWidget)
 
 from eon_timer import component
@@ -52,7 +51,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(tabs, 0, 0, 1, 3)
         # ----- reset button -----
         button = QPushButton(chr(0xf2ea))
-        button.setFont(QFont('Font Awesome 5 Free'))
+        button.setFont('Font Awesome 5 Free')
         button.clicked.connect(self.__on_reset)
         button.setToolTip('Reset Settings')
         self.name_service.set_name(button, 'settingsResetButton')
