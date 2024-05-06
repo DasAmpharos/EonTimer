@@ -78,10 +78,9 @@ jobs:
         id: release-artifact
         shell: bash
         run: |
-          cd dist
           release_artifact="EonTimer-${{ matrix.os }}.zip"
           echo "artifact_name=${release_artifact}" >> "$GITHUB_OUTPUT"
-          zip "${release_artifact}" ${{ steps.artifact.outputs.artifact_name }}
+          python3 bin/create-release-artifact.py -d dist -o EonTimer-${{ matrix.os }}.zip ${{ steps.artifact.outputs.artifact_name }}
 
       - name: Upload Release Artifact
         uses: softprops/action-gh-release@v2
