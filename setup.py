@@ -12,5 +12,6 @@ setup(
         'eon_timer/resources/fonts': ['*.ttf'],
         'eon_timer/resources/sounds': ['*.wav'],
         'eon_timer/resources/themes': ['*.zip'],
+        'eon_timer': ['properties.json']
     }
 )

@@ -1,16 +1,24 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+
+
+datas = [
+    ('eon_timer/resources/*.png', 'eon_timer/resources'),
+    ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
+    ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
+    ('eon_timer/resources/themes/*.zip', 'eon_timer/resources/themes')
+]
+
+properties_file = os.path.join('eon_timer', 'properties.json')
+if os.path.exists(properties_file):
+    datas.append((properties_file, 'eon_timer'))
 
 a = Analysis(
     ['EonTimer.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('eon_timer/resources/*.png', 'eon_timer/resources'),
-        ('eon_timer/resources/fonts/*.ttf', 'eon_timer/resources/fonts'),
-        ('eon_timer/resources/sounds/*.wav', 'eon_timer/resources/sounds'),
-        ('eon_timer/resources/themes/*.zip', 'eon_timer/resources/themes'),
-    ],
+    datas=datas,
     hiddenimports=[
         'eon_timer.action',
         'eon_timer.theme.theme_engine'
