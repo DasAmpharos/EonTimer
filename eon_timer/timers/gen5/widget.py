@@ -50,6 +50,7 @@ class Gen5TimerWidget(FormWidget):
         self.second_timer: Final = second_timer
         self.entralink_timer: Final = entralink_timer
         self.enhanced_entralink_timer: Final = enhanced_entralink_timer
+        self.__resetting = False
         self.__init_components()
         self.__init_listeners()
 
@@ -144,8 +145,9 @@ class Gen5TimerWidget(FormWidget):
     def __init_listeners(self):
         def field_changed(field: Gen5TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
-            logging.info(f'> INFO: Gen5Widget#{field}: {event.new_value}')
-            self.timer_changed.emit()
+            if not self.__resetting:
+                logging.info(f'> INFO: Gen5Widget#{field}: {event.new_value}')
+                self.timer_changed.emit()
 
         # mode
         handler = functools.partial(field_changed, self.Field.MODE)
@@ -244,7 +246,10 @@ class Gen5TimerWidget(FormWidget):
             self.model.advances_hit.set(0)
 
     def reset(self):
+        self.__resetting = True
         self.model.reset()
+        self.timer_changed.emit()
+        self.__resetting = False
 
     @property
     def delay_calibration(self) -> float:

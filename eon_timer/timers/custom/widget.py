@@ -28,6 +28,7 @@ class CustomTimerWidget(QWidget):
         self.name_service: Final = name_service
 
         self.__container_layout: Final = QVBoxLayout()
+        self.__resetting = False
         self.__init_components()
 
     def __init_components(self):
@@ -81,15 +82,20 @@ class CustomTimerWidget(QWidget):
         self.__add_widget(phase, index)
 
     def __on_remove(self, widget: CustomPhaseWidget):
-        self.__container_layout.removeWidget(widget)
-        self.model.remove(widget.model)
-        self.timer_changed.emit()
-        self.__update_indices()
-        widget.deleteLater()
+        if not self.__resetting:
+            self.__container_layout.removeWidget(widget)
+            self.model.remove(widget.model)
+            self.timer_changed.emit()
+            self.__update_indices()
+            widget.deleteLater()
+
+    def __on_change(self, widget: CustomPhaseWidget):
+        if not self.__resetting:
+            self.timer_changed.emit()
 
     def __add_widget(self, phase: CustomPhase, index: int):
         widget = CustomPhaseWidget(self.name_service, index, phase, self.calibrator)
-        widget.changed.connect(self.timer_changed.emit)
+        widget.changed.connect(functools.partial(self.__on_change, widget))
         widget.removed.connect(functools.partial(self.__on_remove, widget))
         self.__container_layout.addWidget(widget, stretch=1, alignment=Qt.AlignmentFlag.AlignTop)
 
@@ -117,6 +123,8 @@ class CustomTimerWidget(QWidget):
             widget.calibrate()
 
     def reset(self):
+        self.__resetting = True
+        self.model.reset()
         layout = self.__container_layout
         for i in reversed(range(layout.count())):
             item = layout.itemAt(i)
@@ -125,4 +133,5 @@ class CustomTimerWidget(QWidget):
                 layout.removeWidget(widget)
                 widget.setParent(None)
                 widget.deleteLater()
-        self.model.reset()
+        self.timer_changed.emit()
+        self.__resetting = False

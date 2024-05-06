@@ -35,6 +35,7 @@ class Gen4TimerWidget(FormWidget):
         self.model: Final = model
         self.calibrator: Final = calibrator
         self.delay_timer: Final = delay_timer
+        self.__resetting = False
         self.__init_components()
         self.__init_listeners()
 
@@ -80,8 +81,9 @@ class Gen4TimerWidget(FormWidget):
     def __init_listeners(self):
         def field_changed(field: Gen4TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
-            logging.info(f'> INFO: Gen4Widget#{field}: {event.new_value}')
-            self.timer_changed.emit()
+            if not self.__resetting:
+                logging.info(f'> INFO: Gen4Widget#{field}: {event.new_value}')
+                self.timer_changed.emit()
 
         # target_delay
         handler = functools.partial(field_changed, self.Field.TARGET_DELAY)
@@ -115,7 +117,10 @@ class Gen4TimerWidget(FormWidget):
             self.model.delay_hit.set(0)
 
     def reset(self):
+        self.__resetting = True
         self.model.reset()
+        self.timer_changed.emit()
+        self.__resetting = False
 
     @property
     def calibration(self) -> float:
