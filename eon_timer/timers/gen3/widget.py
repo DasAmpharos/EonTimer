@@ -40,6 +40,7 @@ class Gen3TimerWidget(FormWidget):
         self.model: Final = model
         self.frame_timer: Final = frame_timer
         self.variable_frame_timer: Final = variable_frame_timer
+        self.__resetting = False
         self.__init_components()
         self.__init_listeners()
 
@@ -151,4 +152,7 @@ class Gen3TimerWidget(FormWidget):
             self.model.frame_hit.set(0)
 
     def reset(self):
+        self.__resetting = True
         self.model.reset()
+        self.timer_changed.emit()
+        self.__resetting = False
