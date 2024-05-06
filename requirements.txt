@@ -19,6 +19,6 @@ PySide6_Addons==6.6.2
 PySide6_Essentials==6.6.2
 requests==2.31.0
 setuptools==69.1.0
-shiboken6==6.6.2
+shiboken6==6.7.0
 typing_extensions==4.9.0
 urllib3==2.2.1
