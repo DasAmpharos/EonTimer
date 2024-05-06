@@ -13,9 +13,10 @@ class FormWidget(QWidget):
         pass
 
     def __init__(self,
-                 name_service: NameService,
-                 parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent)
+                 name_service: NameService | None = None,
+                 parent: QWidget | None = None) -> None:
+        QWidget.__init__(self, parent)
+
         typename = type(self)
         self._layout: Final = FormLayout(self)
         self.__field_sets: Final[dict[typename.Field, FieldSet]] = {}
@@ -30,7 +31,7 @@ class FormWidget(QWidget):
                   name: str | None = None) -> FieldSet:
         layout = layout or self._layout
         label = QLabel(str(field)) if with_label else None
-        if name is not None:
+        if name is not None and self.name_service is not None:
             if label is not None:
                 self.name_service.set_name(label, f'{name}Label')
             self.name_service.set_name(widget, f'{name}Field')

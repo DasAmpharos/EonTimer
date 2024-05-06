@@ -4,7 +4,6 @@ import subprocess
 from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton, \
     QSizePolicy, QWidget
 
@@ -63,7 +62,7 @@ class ThemeSettingsWidget(QWidget):
         layout.addWidget(self.__import_theme_field, 1, 0, 1, 2)
         # ----- open theme dir -----
         button = QPushButton(chr(0xf07b))
-        button.setFont(QFont('Font Awesome 5 Free'))
+        button.setFont('Font Awesome 5 Free')
         button.setToolTip('Open Theme Directory')
         button.clicked.connect(self.__open_theme_dir)
         self.name_service.set_name(button, 'themeSettingsOpenThemeDirButton')

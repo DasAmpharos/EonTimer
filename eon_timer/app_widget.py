@@ -1,7 +1,6 @@
 from typing import Final
 
 from PySide6.QtCore import QSettings, Qt
-from PySide6.QtGui import QFont
 from PySide6.QtWidgets import *
 
 from eon_timer.app_state import AppState
@@ -83,14 +82,14 @@ class AppWidget(QWidget, CloseListener):
 
         # ----- settings_btn -----
         self.settings_btn.setText(chr(0xf013))
-        self.settings_btn.setFont(QFont('Font Awesome 5 Free'))
+        self.settings_btn.setFont('Font Awesome 5 Free')
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.name_service.set_name(self.settings_btn, 'settingsButton')
         layout.addWidget(self.settings_btn, 2, 0)
         # ----- reset_btn -----
         button = QPushButton(chr(0xf2ea))
-        button.setFont(QFont('Font Awesome 5 Free'))
+        button.setFont('Font Awesome 5 Free')
         button.clicked.connect(self.__on_reset_btn_clicked)
         button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         button.setToolTip('Reset Timer')

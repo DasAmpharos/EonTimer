@@ -4,7 +4,7 @@ from typing import Final, override
 from PySide6.QtCore import QObject, QSettings, Signal
 
 from eon_timer.util.injector.lifecycle import CloseListener
-from .property import EnumProperty, Property
+from .property import Property
 
 
 class Settings(QObject, CloseListener):
@@ -21,32 +21,29 @@ class Settings(QObject, CloseListener):
             if isinstance(value, Property):
                 self.__properties[name] = value
                 setattr(self, name, value)
-        self._deserialize()
+        self._read()
 
-    def _deserialize(self):
-        self.settings.beginGroup(self.group)
-        for name, prop in self.__properties.items():
-            if self.settings.contains(name):
-                from_settings = self.settings.value(name, None, prop.value_type)
-                if isinstance(prop, EnumProperty):
-                    from_settings = prop.enum_type(from_settings)
-                prop.set(from_settings)
-        self.settings.endGroup()
+    @override
+    def _on_close(self):
+        self._write()
 
-    def _serialize(self):
+    def _read(self):
         self.settings.beginGroup(self.group)
         for name, prop in self.__properties.items():
             if not prop.transient:
-                self.settings.setValue(name, prop.get())
+                prop.read(self.settings, name)
+        self.settings.endGroup()
+
+    def _write(self):
+        self.settings.beginGroup(self.group)
+        for name, prop in self.__properties.items():
+            if not prop.transient:
+                prop.write(self.settings, name)
         self.settings.endGroup()
 
     @property
     def properties(self) -> dict[str, Property]:
         return dict(self.__properties)
-
-    @override
-    def _on_close(self):
-        self._serialize()
 
     def reset(self):
         for prop in self.__properties.values():
