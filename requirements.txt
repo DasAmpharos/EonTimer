@@ -9,7 +9,7 @@ packaging==24.0
 pillow==10.3.0
 pip-autoremove==0.10.0
 platformdirs==4.2.1
-pydantic==2.6.1
+pydantic==2.7.1
 pydantic_core==2.16.2
 pygame==2.5.2
 pyinstaller==6.6.0
