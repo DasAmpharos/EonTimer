@@ -101,8 +101,9 @@ class EnumProperty(Property[EnumT]):
     def read(self, settings: QSettings, name: str):
         initial_value = None
         if self._initial_value is not None:
-            initial_value = self._initial_value.name
-        self._value = self.enum_type(settings.value(name, initial_value))
+            initial_value = str(self._initial_value)
+        value = settings.value(name, initial_value)
+        self._value = self.enum_type(value)
 
 
 class ListProperty(Property[list[T]]):
