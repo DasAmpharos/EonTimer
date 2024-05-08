@@ -9,3 +9,11 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      pyside:
+        patterns:
+          - "PySide6*"
+          - "shiboken6*"
+      pyinstaller:
+        patterns:
+          - "pyinstaller*"
