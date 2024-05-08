@@ -1,5 +1,4 @@
 altgraph==0.17.4
-annotated-types==0.6.0
 certifi==2024.2.2
 charset-normalizer==3.3.2
 idna==3.7
@@ -8,9 +7,8 @@ macholib==1.16.3
 packaging==24.0
 pillow==10.3.0
 pip-autoremove==0.10.0
+pipdeptree==2.20.0
 platformdirs==4.2.1
-pydantic==2.6.1
-pydantic_core==2.16.2
 pygame==2.5.2
 pyinstaller==6.6.0
 pyinstaller-hooks-contrib==2024.4
@@ -20,5 +18,4 @@ PySide6_Essentials==6.6.2
 requests==2.31.0
 setuptools==69.1.0
 shiboken6==6.6.2
-typing_extensions==4.9.0
 urllib3==2.2.1
