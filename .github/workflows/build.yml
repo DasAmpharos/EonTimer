@@ -48,6 +48,9 @@ jobs:
           }
           EOF
 
+      - name: Unit Tests
+        run: python -m unittest discover -v -s test -p "*_test.py"
+
       - name: Build Bundled Themes
         run: python theme.py build --bundled
 

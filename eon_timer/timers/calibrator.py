@@ -1,3 +1,4 @@
+import math
 from typing import Final
 
 from eon_timer.settings.timer.model import Console, TimerSettingsModel
@@ -10,7 +11,7 @@ class Calibrator:
         self.timer_settings: Final = timer_settings
 
     def to_delays(self, milliseconds: float) -> int:
-        return round(milliseconds / self.framerate)
+        return math.floor(milliseconds / self.framerate)
 
     def to_milliseconds(self, delays: int) -> float:
         return self.framerate * delays

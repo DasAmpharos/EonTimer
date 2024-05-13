@@ -1,11 +1,11 @@
 import functools
 import logging
-from typing import Final
+from typing import override
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox
 
-from eon_timer.timers import Calibrator, DelayTimer
+from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
@@ -13,12 +13,11 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from .model import Gen4Model
+from .timer import Gen4Timer
 
 
 @component()
-class Gen4TimerWidget(FormWidget):
-    timer_changed: Final = Signal()
-
+class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
     class Field(FormWidget.Field):
         CALIBRATED_DELAY = 'Calibrated Delay'
         CALIBRATED_SECOND = 'Calibrated Second'
@@ -26,20 +25,12 @@ class Gen4TimerWidget(FormWidget):
         TARGET_SECOND = 'Target Second'
         DELAY_HIT = 'Delay Hit'
 
-    def __init__(self,
-                 name_service: NameService,
-                 model: Gen4Model,
-                 calibrator: Calibrator,
-                 delay_timer: DelayTimer) -> None:
-        super().__init__(name_service)
-        self.model: Final = model
-        self.calibrator: Final = calibrator
-        self.delay_timer: Final = delay_timer
-        self.__resetting = False
-        self.__init_components()
-        self.__init_listeners()
+    def __init__(self, model: Gen4Model, timer: Gen4Timer, name_service: NameService):
+        FormWidget.__init__(self, name_service)
+        TimerWidget.__init__(self, model, timer)
 
-    def __init_components(self) -> None:
+    @override
+    def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen4TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
@@ -78,10 +69,11 @@ class Gen4TimerWidget(FormWidget):
         bindings.bind_spinbox(field, self.model.delay_hit)
         self.add_field(self.Field.DELAY_HIT, field, name='gen4DelayHit')
 
-    def __init_listeners(self):
+    @override
+    def _init_listeners(self):
         def field_changed(field: Gen4TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
-            if not self.__resetting:
+            if not self.resetting:
                 logging.info(f'> INFO: Gen4Widget#{field}: {event.new_value}')
                 self.timer_changed.emit()
 
@@ -97,34 +89,3 @@ class Gen4TimerWidget(FormWidget):
         # calibration
         handler = functools.partial(field_changed, self.Field.CALIBRATED_SECOND)
         self.model.calibrated_second.on_change(handler)
-
-    def create_phases(self) -> list[float]:
-        return self.delay_timer.create(
-            self.model.target_delay.get(),
-            self.model.target_second.get(),
-            self.calibration
-        )
-
-    def calibrate(self):
-        if self.model.delay_hit.get() > 0:
-            calibration = self.calibrator.to_delays(
-                self.delay_timer.calibrate(
-                    self.model.target_delay.get(),
-                    self.model.delay_hit.get()
-                )
-            )
-            self.model.calibrated_delay.add(calibration)
-            self.model.delay_hit.set(0)
-
-    def reset(self):
-        self.__resetting = True
-        self.model.reset()
-        self.timer_changed.emit()
-        self.__resetting = False
-
-    @property
-    def calibration(self) -> float:
-        return self.calibrator.create_calibration(
-            self.model.calibrated_delay.get(),
-            self.model.calibrated_second.get()
-        )

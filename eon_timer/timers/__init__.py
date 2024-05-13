@@ -2,8 +2,7 @@ from typing import Final
 
 from .calibrator import Calibrator
 from .delay_timer import DelayTimer
-from .enhanced_entralink_timer import EnhancedEntralinkTimer
-from .entralink_timer import EntralinkTimer
+from .entralink_timer import EnhancedEntralinkTimer, EntralinkTimer
 from .frame_timer import FrameTimer, VariableFrameTimer
 from .second_timer import SecondTimer
 
