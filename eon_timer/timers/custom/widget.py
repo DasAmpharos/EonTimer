@@ -1,37 +1,36 @@
 import functools
-from typing import Final
+from typing import Final, override
 
-from PySide6.QtCore import Signal
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QFrame, QPushButton, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
-from eon_timer.timers import Calibrator
+from eon_timer.timers.calibrator import Calibrator
+from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import pyside
 from eon_timer.util.injector import component
 from eon_timer.util.pyside.name_service import NameService
 from .custom_phase import CustomPhase
 from .custom_phase_widget import CustomPhaseWidget
 from .model import CustomTimerModel
+from .timer import CustomTimer
 
 
 @component()
-class CustomTimerWidget(QWidget):
-    timer_changed: Final = Signal()
-
+class CustomTimerWidget(TimerWidget[CustomTimerModel, CustomTimer], QWidget):
     def __init__(self,
+                 timer: CustomTimer,
                  model: CustomTimerModel,
                  calibrator: Calibrator,
                  name_service: NameService):
-        super().__init__()
-        self.model: Final = model
         self.calibrator: Final = calibrator
         self.name_service: Final = name_service
-
         self.__container_layout: Final = QVBoxLayout()
-        self.__resetting = False
-        self.__init_components()
 
-    def __init_components(self):
+        QWidget.__init__(self, None)
+        TimerWidget.__init__(self, model, timer)
+
+    @override
+    def _init_components(self):
         self.name_service.set_name(self, 'customTimerWidget')
         # ----- layout -----
         layout = QVBoxLayout(self)
@@ -83,7 +82,7 @@ class CustomTimerWidget(QWidget):
         self.__add_widget(phase, index)
 
     def __on_remove(self, widget: CustomPhaseWidget):
-        if not self.__resetting:
+        if not self.resetting:
             self.__container_layout.removeWidget(widget)
             self.model.remove(widget.model)
             self.timer_changed.emit()
@@ -91,7 +90,7 @@ class CustomTimerWidget(QWidget):
             widget.deleteLater()
 
     def __on_change(self, widget: CustomPhaseWidget):
-        if not self.__resetting:
+        if not self.resetting:
             self.timer_changed.emit()
 
     def __add_widget(self, phase: CustomPhase, index: int):
@@ -106,26 +105,15 @@ class CustomTimerWidget(QWidget):
             widget = item.widget()
             widget.index = i
 
-    def create_phases(self) -> list[int]:
-        phases = []
-        for phase in self.model.phases:
-            unit = phase.unit.get()
-            value = phase.target.get()
-            if unit == CustomPhase.Unit.ADVANCES or unit == CustomPhase.Unit.HEX:
-                value = self.calibrator.to_milliseconds(value)
-            value += phase.calibration.get()
-            phases.append(value)
-        return phases
-
+    @override
     def calibrate(self):
         for i in range(self.__container_layout.count()):
             item = self.__container_layout.itemAt(i)
             widget = item.widget()
             widget.calibrate()
 
-    def reset(self):
-        self.__resetting = True
-        self.model.reset()
+    @override
+    def _reset(self):
         layout = self.__container_layout
         for i in reversed(range(layout.count())):
             item = layout.itemAt(i)
@@ -134,5 +122,3 @@ class CustomTimerWidget(QWidget):
                 layout.removeWidget(widget)
                 widget.setParent(None)
                 widget.deleteLater()
-        self.timer_changed.emit()
-        self.__resetting = False

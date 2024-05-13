@@ -1,11 +1,11 @@
 import functools
 import logging
-from typing import Final
+from typing import override
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QSpinBox, QVBoxLayout, QWidget
 
-from eon_timer.timers import Calibrator, DelayTimer, EnhancedEntralinkTimer, EntralinkTimer, SecondTimer
+from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
@@ -14,12 +14,11 @@ from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from .model import Gen5Mode, Gen5Model
+from .timer import Gen5Timer
 
 
 @component()
-class Gen5TimerWidget(FormWidget):
-    timer_changed: Final = Signal()
-
+class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
     class Field(FormWidget.Field):
         MODE = 'Mode'
         # target field names
@@ -35,26 +34,12 @@ class Gen5TimerWidget(FormWidget):
         SECOND_HIT = 'Second Hit'
         ADVANCES_HIT = 'Advances Hit'
 
-    def __init__(self,
-                 name_service: NameService,
-                 model: Gen5Model,
-                 calibrator: Calibrator,
-                 delay_timer: DelayTimer,
-                 second_timer: SecondTimer,
-                 entralink_timer: EntralinkTimer,
-                 enhanced_entralink_timer: EnhancedEntralinkTimer) -> None:
-        super().__init__(name_service)
-        self.model: Final = model
-        self.calibrator: Final = calibrator
-        self.delay_timer: Final = delay_timer
-        self.second_timer: Final = second_timer
-        self.entralink_timer: Final = entralink_timer
-        self.enhanced_entralink_timer: Final = enhanced_entralink_timer
-        self.__resetting = False
-        self.__init_components()
-        self.__init_listeners()
+    def __init__(self, model: Gen5Model, timer: Gen5Timer, name_service: NameService):
+        FormWidget.__init__(self, name_service)
+        TimerWidget.__init__(self, model, timer)
 
-    def __init_components(self) -> None:
+    @override
+    def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen5TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
@@ -142,10 +127,11 @@ class Gen5TimerWidget(FormWidget):
         event = PropertyChangeEvent(None, self.model.mode.get())
         self.__on_mode_changed(event)
 
-    def __init_listeners(self):
+    @override
+    def _init_listeners(self):
         def field_changed(field: Gen5TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
-            if not self.__resetting:
+            if not self.resetting:
                 logging.info(f'> INFO: Gen5Widget#{field}: {event.new_value}')
                 self.timer_changed.emit()
 
@@ -187,86 +173,3 @@ class Gen5TimerWidget(FormWidget):
                          event.new_value != Gen5Mode.C_GEAR)
         self.set_visible(self.Field.ADVANCES_HIT,
                          event.new_value == Gen5Mode.ENTRALINK_PLUS)
-
-    def __can_calibrate(self) -> bool:
-        match self.model.mode.get():
-            case Gen5Mode.STANDARD:
-                return self.model.second_hit.get() > 0
-            case Gen5Mode.C_GEAR:
-                return self.model.delay_hit.get() > 0
-            case Gen5Mode.ENTRALINK:
-                return (self.model.delay_hit.get() > 0 and
-                        self.model.second_hit.get() > 0)
-            case Gen5Mode.ENTRALINK_PLUS:
-                return (self.model.delay_hit.get() > 0 and
-                        self.model.second_hit.get() > 0 and
-                        self.model.advances_hit.get() > 0)
-
-    def create_phases(self) -> list[float]:
-        calibration = self.calibrator.calibrate_to_milliseconds(self.model.calibration.get())
-        entralink_calibration = self.calibrator.calibrate_to_milliseconds(self.model.entralink_calibration.get())
-        match self.model.mode.get():
-            case Gen5Mode.STANDARD:
-                return self.second_timer.create(self.model.target_second.get(), calibration)
-            case Gen5Mode.C_GEAR:
-                return self.delay_timer.create(self.model.target_delay.get(),
-                                               self.model.target_second.get(),
-                                               calibration)
-            case Gen5Mode.ENTRALINK:
-                return self.entralink_timer.create(self.model.target_delay.get(),
-                                                   self.model.target_second.get(),
-                                                   calibration,
-                                                   entralink_calibration)
-            case Gen5Mode.ENTRALINK_PLUS:
-                return self.enhanced_entralink_timer.create(self.model.target_delay.get(),
-                                                            self.model.target_second.get(),
-                                                            self.model.target_advances.get(),
-                                                            calibration,
-                                                            entralink_calibration,
-                                                            self.model.frame_calibration.get())
-
-    def calibrate(self):
-        if self.__can_calibrate():
-            mode = self.model.mode.get()
-            match mode:
-                case Gen5Mode.STANDARD:
-                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.second_calibration))
-                case Gen5Mode.C_GEAR:
-                    self.model.calibration.add(self.calibrator.calibrate_to_delays(self.delay_calibration))
-                case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
-                    self.model.calibration.add(
-                        self.calibrator.calibrate_to_delays(self.second_calibration))
-                    self.model.entralink_calibration.add(
-                        self.calibrator.calibrate_to_delays(self.entralink_calibration))
-                    if mode == Gen5Mode.ENTRALINK_PLUS:
-                        self.model.frame_calibration.add(self.advances_calibration)
-
-            self.model.delay_hit.set(0)
-            self.model.second_hit.set(0)
-            self.model.advances_hit.set(0)
-
-    def reset(self):
-        self.__resetting = True
-        self.model.reset()
-        self.timer_changed.emit()
-        self.__resetting = False
-
-    @property
-    def delay_calibration(self) -> float:
-        return self.delay_timer.calibrate(self.model.target_delay.get(),
-                                          self.model.delay_hit.get())
-
-    @property
-    def second_calibration(self) -> float:
-        return self.second_timer.calibrate(self.model.target_second.get(),
-                                           self.model.second_hit.get())
-
-    @property
-    def entralink_calibration(self) -> float:
-        return self.entralink_timer.calibrate(self.model.target_delay.get(),
-                                              self.model.delay_hit.get() - self.second_calibration)
-
-    @property
-    def advances_calibration(self) -> float:
-        return self.enhanced_entralink_timer.calibrate(self.model.target_advances.get(),
-                                                       self.model.advances_hit.get())

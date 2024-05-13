@@ -1,12 +1,12 @@
 import functools
 import logging
-from typing import Final
+from typing import Final, override
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QPushButton, QSizePolicy, QSpinBox
 
 from eon_timer.app_state import AppState
-from eon_timer.timers import FrameTimer, VariableFrameTimer
+from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
@@ -15,12 +15,11 @@ from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from .model import Gen3Mode, Gen3Model
+from .timer import Gen3Timer
 
 
 @component()
-class Gen3TimerWidget(FormWidget):
-    timer_changed: Final = Signal()
-
+class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
     class Field(FormWidget.Field):
         MODE = 'Mode'
         PRE_TIMER = 'Pre-Timer'
@@ -32,19 +31,14 @@ class Gen3TimerWidget(FormWidget):
     def __init__(self,
                  state: AppState,
                  model: Gen3Model,
-                 frame_timer: FrameTimer,
-                 variable_frame_timer: VariableFrameTimer,
+                 timer: Gen3Timer,
                  name_service: NameService) -> None:
-        super().__init__(name_service)
         self.state: Final = state
-        self.model: Final = model
-        self.frame_timer: Final = frame_timer
-        self.variable_frame_timer: Final = variable_frame_timer
-        self.__resetting = False
-        self.__init_components()
-        self.__init_listeners()
+        FormWidget.__init__(self, name_service)
+        TimerWidget.__init__(self, model, timer)
 
-    def __init_components(self) -> None:
+    @override
+    def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen3TimerWidget')
         # ----- layout -----
         self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
@@ -93,7 +87,8 @@ class Gen3TimerWidget(FormWidget):
         # update field visibility
         self.__on_mode_changed()
 
-    def __init_listeners(self):
+    @override
+    def _init_listeners(self):
         def field_changed(field: Gen3TimerWidget.Field,
                           event: PropertyChangeEvent) -> None:
             if not self.state.running:
@@ -128,31 +123,3 @@ class Gen3TimerWidget(FormWidget):
         mode = self.model.mode.get()
         self.set_disabled(self.Field.TARGET_FRAME, self.state.running and mode == Gen3Mode.STANDARD)
         self.set_enabled(self.Field.SET_TARGET_FRAME, self.state.running and mode == Gen3Mode.VARIABLE_TARGET)
-
-    def create_phases(self) -> list[float]:
-        match self.model.mode.get():
-            case Gen3Mode.STANDARD:
-                return self.frame_timer.create(
-                    self.model.pre_timer.get(),
-                    self.model.target_frame.get(),
-                    self.model.calibration.get()
-                )
-            case Gen3Mode.VARIABLE_TARGET:
-                return self.variable_frame_timer.create(
-                    self.model.pre_timer.get()
-                )
-
-    def calibrate(self):
-        if self.model.frame_hit.get() > 0:
-            offset = self.frame_timer.calibrate(
-                self.model.target_frame.get(),
-                self.model.frame_hit.get()
-            )
-            self.model.calibration.add(offset)
-            self.model.frame_hit.set(0)
-
-    def reset(self):
-        self.__resetting = True
-        self.model.reset()
-        self.timer_changed.emit()
-        self.__resetting = False
