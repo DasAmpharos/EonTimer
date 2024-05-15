@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QSpinBox
 from eon_timer.util.const import INT_MAX
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import FloatProperty, Property
+from eon_timer.util.properties.property import FloatProperty, Property, BoolProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
@@ -28,7 +28,7 @@ class TimerSettingsWidget(FormWidget):
         super().__init__(name_service)
         self.console: Final = Property(model.console.get())
         self.custom_framerate: Final = FloatProperty(model.custom_framerate.get())
-        self.precision_calibration: Final = Property(model.precision_calibration.get())
+        self.precision_calibration: Final = BoolProperty(model.precision_calibration.get())
         self.refresh_interval: Final = Property(model.refresh_interval.get())
         self.model: Final = model
         self.__init_components()
