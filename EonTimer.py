@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import platform
 import signal
 import sys
@@ -41,5 +40,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
     sys.exit(main())

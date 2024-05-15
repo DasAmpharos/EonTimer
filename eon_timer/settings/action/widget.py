@@ -1,7 +1,6 @@
 import functools
 from typing import Final
 
-import pygame
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QColorDialog, QPushButton, QSpinBox
@@ -58,8 +57,7 @@ class ActionSettingsWidget(FormWidget):
         bindings.bind_enum_combobox(field, self.sound)
         # ----- custom_sound -----
         field = FileSelectorWidget(title='Select Sound',
-                                   filter='Sound Files (*.wav *.mp3)',
-                                   validator=self.__is_valid_sound)
+                                   filter='Sound Files (*.wav *.mp3)')
         self.add_field(self.Field.CUSTOM_SOUND, field,
                        visible=self.sound.get() == ActionSound.CUSTOM,
                        name='actionSettingsCustomSound')
@@ -95,14 +93,6 @@ class ActionSettingsWidget(FormWidget):
         pixmap = QPixmap(64, 64)
         pixmap.fill(self.color.get())
         button.setIcon(QIcon(pixmap))
-
-    @staticmethod
-    def __is_valid_sound(filepath: str) -> bool:
-        try:
-            pygame.mixer.Sound(filepath)
-            return True
-        except pygame.error:
-            return False
 
     def on_accepted(self):
         self.model.mode.update(self.mode)
