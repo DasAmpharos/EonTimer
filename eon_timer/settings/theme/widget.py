@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QL
 from eon_timer.theme.theme_manager import ThemeManager
 from eon_timer.util.injector import component
 from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import Property
+from eon_timer.util.properties.property import Property, BoolProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.name_service import NameService
@@ -29,7 +29,7 @@ class ThemeSettingsWidget(QWidget):
         self.name_service: Final = name_service
 
         self.theme: Final = Property(model.theme.get())
-        self.element_name_tooltip: Final = Property(model.element_name_tooltip.get())
+        self.element_name_tooltip: Final = BoolProperty(model.element_name_tooltip.get())
 
         self.__theme_field: Final = QComboBox()
         self.__import_theme_field: Final = FileSelectorWidget()
