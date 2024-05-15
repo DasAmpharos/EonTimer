@@ -68,6 +68,11 @@ class Property(Generic[T]):
         return self.__transient
 
 
+class BoolProperty(Property[bool]):
+    def _read(self, settings: QSettings, name: str):
+        return settings.value(name, self._initial_value, bool)
+
+
 class IntProperty(Property[int]):
     @override
     def _read(self, settings: QSettings, name: str):

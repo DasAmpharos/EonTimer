@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit, Q
 from eon_timer.util import loggers
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.pyside import EnumComboBox
-from .property import Property, PropertyChangeEvent
+from .property import Property, PropertyChangeEvent, BoolProperty
 
 T = TypeVar('T')
 EnhancedEnumT = TypeVar('EnhancedEnumT', bound=EnhancedEnum)
@@ -55,7 +55,7 @@ def bind_enum_combobox(widget: EnumComboBox[EnhancedEnumT],
 
 
 def bind_checkbox(widget: QCheckBox,
-                  p_property: Property[bool]) -> None:
+                  p_property: BoolProperty) -> None:
     logger.debug('bind_checkbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
 
     def on_property_changed(event: PropertyChangeEvent[bool]) -> None:

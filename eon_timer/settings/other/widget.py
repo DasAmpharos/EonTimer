@@ -7,7 +7,7 @@ from eon_timer.settings.other.update_model import UpdateSettingsModel
 from eon_timer.util.injector import component
 from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import Property
+from eon_timer.util.properties.property import BoolProperty
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
 
@@ -22,7 +22,7 @@ class OtherSettingsWidget(FormWidget):
                  name_service: NameService):
         FormWidget.__init__(self, name_service)
         self.update_settings: Final = update_settings
-        self.check_on_startup: Final = Property(self.update_settings.check_on_startup.get())
+        self.check_on_startup: Final = BoolProperty(self.update_settings.check_on_startup.get())
         self.__init_components()
 
     @log_method_calls()
