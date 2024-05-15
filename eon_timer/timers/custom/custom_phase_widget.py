@@ -6,8 +6,9 @@ from PySide6.QtWidgets import QDoubleSpinBox, QGroupBox, QHBoxLayout, QLabel, QP
     QWidget
 
 from eon_timer.timers import Calibrator
-from eon_timer.util import pyside
+from eon_timer.util import loggers, pyside
 from eon_timer.util.const import INT_MAX, INT_MIN
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import IntProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
@@ -31,6 +32,9 @@ class CustomPhaseWidget(QWidget):
                  model: CustomPhase,
                  calibrator: Calibrator):
         super().__init__()
+        self.logger: Final = loggers.get_logger(self)
+        self.logger.debug('__init__(index=%s)', index)
+
         self.model: Final = model
         self.calibrator: Final = calibrator
         self.index: Final = IntProperty(index)
@@ -40,6 +44,7 @@ class CustomPhaseWidget(QWidget):
         self.__hit_field: Final = QSpinBox()
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self):
         # ----- layout -----
         layout = QHBoxLayout(self)

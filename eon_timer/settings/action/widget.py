@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QColorDialog, QPushButton, QSpinBox
 
 from eon_timer.util import const
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property
 from eon_timer.util.properties.property_change import PropertyChangeEvent
@@ -41,6 +42,7 @@ class ActionSettingsWidget(FormWidget):
         self.model: Final = model
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'actionSettingsWidget')
         # ----- layout -----
@@ -48,20 +50,20 @@ class ActionSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         field = EnumComboBox(ActionMode)
-        bindings.bind_enum_combobox(field, self.mode)
         self.add_field(self.Field.MODE, field, name='actionSettingsMode')
+        bindings.bind_enum_combobox(field, self.mode)
         # ----- sound -----
         field = EnumComboBox(ActionSound)
-        bindings.bind_enum_combobox(field, self.sound)
         self.add_field(self.Field.SOUND, field, name='actionSettingsSound')
+        bindings.bind_enum_combobox(field, self.sound)
         # ----- custom_sound -----
         field = FileSelectorWidget(title='Select Sound',
                                    filter='Sound Files (*.wav *.mp3)',
                                    validator=self.__is_valid_sound)
-        bindings.bind(field.file, self.custom_sound, True)
         self.add_field(self.Field.CUSTOM_SOUND, field,
                        visible=self.sound.get() == ActionSound.CUSTOM,
                        name='actionSettingsCustomSound')
+        bindings.bind(field.file, self.custom_sound, True)
         self.sound.on_change(self.__on_sound_changed)
         # ----- color -----
         field = QPushButton()
@@ -70,14 +72,14 @@ class ActionSettingsWidget(FormWidget):
         self.__set_icon_color(field)
         # ----- interval -----
         field = QSpinBox()
+        self.add_field(self.Field.INTERVAL, field, name='actionSettingsInterval')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.interval)
-        self.add_field(self.Field.INTERVAL, field, name='actionSettingsInterval')
         # ----- count -----
         field = QSpinBox()
+        self.add_field(self.Field.COUNT, field, name='actionSettingsCount')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.count)
-        self.add_field(self.Field.COUNT, field, name='actionSettingsCount')
 
     def __on_sound_changed(self, event: PropertyChangeEvent[ActionSound]) -> None:
         self.set_visible(self.Field.CUSTOM_SOUND, event.new_value == ActionSound.CUSTOM)

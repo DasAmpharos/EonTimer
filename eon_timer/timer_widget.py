@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QVBoxLayout, QWidg
 from eon_timer.app_state import AppState
 from eon_timer.util import const
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 
 
@@ -23,6 +24,7 @@ class TimerWidget(QGroupBox):
         self.__init_components()
         self.__init_listeners()
 
+    @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'timerWidget')
         # ----- layout -----

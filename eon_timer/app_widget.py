@@ -15,6 +15,7 @@ from eon_timer.util import pyside
 from eon_timer.util.clock import Clock
 from eon_timer.util.injector import component
 from eon_timer.util.injector.lifecycle import CloseListener
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 
 
@@ -51,6 +52,7 @@ class AppWidget(QWidget, CloseListener):
         self.settings_btn: Final = QPushButton()
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'appWidget')
         # ----- layout -----

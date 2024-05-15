@@ -1,14 +1,17 @@
 import functools
-from typing import TypeVar
+from typing import Final, TypeVar
 
 from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit, QSpinBox
 
+from eon_timer.util import loggers
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.pyside import EnumComboBox
 from .property import Property, PropertyChangeEvent, BoolProperty
 
 T = TypeVar('T')
 EnhancedEnumT = TypeVar('EnhancedEnumT', bound=EnhancedEnum)
+
+logger: Final = loggers.get_logger(__name__)
 
 
 def bind(left: Property[T],
@@ -23,69 +26,81 @@ def bind(left: Property[T],
         left.on_change(functools.partial(on_change, right))
 
 
-def bind_str_combobox(combobox: QComboBox,
+def bind_str_combobox(widget: QComboBox,
                       p_property: Property[str]) -> None:
-    def on_property_changed(event: PropertyChangeEvent[str]) -> None:
-        if event.new_value != combobox.currentText():
-            combobox.setCurrentText(event.new_value)
+    logger.debug('bind_str_combobox(widget=%s, property=%s)', widget.objectName(), p_property.get())
 
-    combobox.setCurrentText(p_property.get())
-    combobox.currentTextChanged.connect(p_property.set)
+    def on_property_changed(event: PropertyChangeEvent[str]) -> None:
+        if event.new_value != widget.currentText():
+            widget.setCurrentText(event.new_value)
+
+    widget.setCurrentText(p_property.get())
+    widget.currentTextChanged.connect(p_property.set)
     p_property.on_change(on_property_changed)
 
 
-def bind_enum_combobox(combobox: EnumComboBox[EnhancedEnumT],
+def bind_enum_combobox(widget: EnumComboBox[EnhancedEnumT],
                        p_property: Property[EnhancedEnumT]) -> None:
+    logger.debug('bind_enum_combobox(widget=%s, property=%s)', widget.objectName(), p_property.get())
+
     def on_value_changed(event: PropertyChangeEvent[EnhancedEnumT]) -> None:
         p_property.set(event.new_value)
 
     def on_property_changed(event: PropertyChangeEvent[EnhancedEnumT]) -> None:
-        combobox.set_value(event.new_value)
+        widget.set_value(event.new_value)
 
-    combobox.value.update(p_property)
-    combobox.value.on_change(on_value_changed)
+    widget.value.update(p_property)
+    widget.value.on_change(on_value_changed)
     p_property.on_change(on_property_changed)
 
 
-def bind_checkbox(checkbox: QCheckBox,
+def bind_checkbox(widget: QCheckBox,
                   p_property: BoolProperty) -> None:
+    logger.debug('bind_checkbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
+
     def on_property_changed(event: PropertyChangeEvent[bool]) -> None:
-        if event.new_value != checkbox.isChecked():
-            checkbox.setChecked(event.new_value)
+        if event.new_value != widget.isChecked():
+            widget.setChecked(event.new_value)
 
-    checkbox.setChecked(p_property.get())
-    checkbox.stateChanged.connect(p_property.set)
+    widget.setChecked(p_property.get())
+    widget.stateChanged.connect(p_property.set)
     p_property.on_change(on_property_changed)
 
 
-def bind_line_edit(line_edit: QLineEdit,
+def bind_line_edit(widget: QLineEdit,
                    p_property: Property[str]) -> None:
+    logger.debug('bind_line_edit(widget=%s, property=%s)', widget.objectName(), p_property.get())
+
     def on_property_changed(event: PropertyChangeEvent[str]) -> None:
-        if event.new_value != line_edit.text():
-            line_edit.setText(event.new_value)
+        if event.new_value != widget.text():
+            widget.setText(event.new_value)
 
-    line_edit.setText(p_property.get())
-    line_edit.textChanged.connect(p_property.set)
+    widget.setText(p_property.get())
+    widget.textChanged.connect(p_property.set)
     p_property.on_change(on_property_changed)
 
 
-def bind_spinbox(spinbox: QSpinBox,
+def bind_spinbox(widget: QSpinBox,
                  p_property: Property[int]) -> None:
-    def on_property_changed(event: PropertyChangeEvent[int]) -> None:
-        if event.new_value != spinbox.value():
-            spinbox.setValue(event.new_value)
+    logger.debug('bind_spinbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
 
-    spinbox.setValue(p_property.get())
-    spinbox.valueChanged.connect(p_property.set)
+    def on_property_changed(event: PropertyChangeEvent[int]) -> None:
+        if event.new_value != widget.value():
+            widget.setValue(event.new_value)
+
+    widget.setValue(p_property.get())
+    widget.valueChanged.connect(p_property.set)
     p_property.on_change(on_property_changed)
 
 
-def bind_float_spinbox(spinbox: QDoubleSpinBox,
+def bind_float_spinbox(widget: QDoubleSpinBox,
                        p_property: Property[float]) -> None:
-    def on_property_changed(event: PropertyChangeEvent[float]) -> None:
-        if event.new_value != spinbox.value():
-            spinbox.setValue(event.new_value)
+    logger.debug('bind_float_spinbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
 
-    spinbox.setValue(p_property.get())
-    spinbox.valueChanged.connect(p_property.set)
+    def on_property_changed(event: PropertyChangeEvent[float]) -> None:
+        if event.new_value != widget.value():
+            widget.setValue(event.new_value)
+
+    widget.setValue(p_property.get())
+    widget.valueChanged.connect(p_property.set)
     p_property.on_change(on_property_changed)

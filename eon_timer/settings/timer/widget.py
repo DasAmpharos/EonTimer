@@ -5,6 +5,7 @@ from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QSpinBox
 
 from eon_timer.util.const import INT_MAX
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import FloatProperty, Property, BoolProperty
 from eon_timer.util.properties.property_change import PropertyChangeEvent
@@ -33,6 +34,7 @@ class TimerSettingsWidget(FormWidget):
         self.model: Final = model
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'timerSettingsWidget')
         # ----- layout -----
@@ -40,29 +42,29 @@ class TimerSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- console -----
         field = EnumComboBox(Console)
-        bindings.bind_enum_combobox(field, self.console)
         self.add_field(self.Field.CONSOLE, field,
                        name='timerSettingsConsole')
+        bindings.bind_enum_combobox(field, self.console)
         # ----- custom framerate -----
         field = QDoubleSpinBox()
-        field.setRange(0, INT_MAX)
-        bindings.bind_float_spinbox(field, self.custom_framerate)
         self.add_field(self.Field.CUSTOM_FRAMERATE, field,
                        visible=self.console.get() == Console.CUSTOM,
                        name='timerSettingsCustomFramerate')
+        field.setRange(0, INT_MAX)
+        bindings.bind_float_spinbox(field, self.custom_framerate)
         self.console.on_change(self.__on_console_changed)
         # ----- refresh interval -----
         field = QSpinBox()
-        field.setRange(1, INT_MAX)
-        bindings.bind_spinbox(field, self.refresh_interval)
         self.add_field(self.Field.REFRESH_INTERVAL, field,
                        name='timerSettingsRefreshInterval')
+        field.setRange(1, INT_MAX)
+        bindings.bind_spinbox(field, self.refresh_interval)
         # ----- precision calibration -----
         field = QCheckBox()
-        field.setTristate(False)
-        bindings.bind_checkbox(field, self.precision_calibration)
         self.add_field(self.Field.PRECISION_CALIBRATION, field,
                        name='timerSettingsPrecisionCalibration')
+        field.setTristate(False)
+        bindings.bind_checkbox(field, self.precision_calibration)
 
     def __on_console_changed(self, event: PropertyChangeEvent[Console]):
         self.set_visible(self.Field.CUSTOM_FRAMERATE, event.new_value == Console.CUSTOM)

@@ -36,6 +36,13 @@ class CustomPhase:
         settings.setValue('value', value.target.get())
         settings.setValue('calibration', value.calibration.get())
 
+    def __repr__(self):
+        return str({
+            'unit': self.unit.get(),
+            'value': self.target.get(),
+            'calibration': self.calibration.get()
+        })
+
     def dispose(self):
         self.unit.dispose()
         self.target.dispose()
