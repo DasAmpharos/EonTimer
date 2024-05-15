@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import platform
 import signal
 import sys
 
@@ -16,13 +17,13 @@ from eon_timer.util.injector.provider import InstanceProvider
 def main() -> int:
     loggers.init()
     logger = loggers.get_logger('EonTimer')
-    logger.info('app.version == %s', app.get_version())
-    logger.info('sys.version == %s', sys.version)
-    uname = os.uname()
-    logger.info('os.sysname == %s', uname.sysname)
-    logger.info('os.machine == %s', uname.machine)
-    logger.info('os.release == %s', uname.release)
-    logger.info('os.version == %s', uname.version)
+    logger.info('app.version             == %s', app.get_version())
+    logger.info('platform.system         == %s', platform.system())
+    logger.info('platform.release        == %s', platform.release())
+    logger.info('platform.version        == %s', platform.version())
+    logger.info('platform.machine        == %s', platform.machine())
+    logger.info('platform.processor      == %s', platform.processor())
+    logger.info('platform.python_version == %s', platform.python_version())
 
     _app = QApplication(sys.argv)
     _app.setApplicationName('EonTimer')
