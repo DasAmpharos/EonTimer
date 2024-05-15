@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QGroupBox, QSizePolicy, QSpinBox
 from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside.form import FormLayout, FormWidget
@@ -30,6 +31,7 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
         TimerWidget.__init__(self, model, timer)
 
     @override
+    @log_method_calls()
     def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen4TimerWidget')
         # ----- layout -----
@@ -45,29 +47,29 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
         form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- calibrated_delay -----
         field = QSpinBox()
+        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout, name='gen4CalibratedDelay')
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.calibrated_delay)
-        self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout, name='gen4CalibratedDelay')
         # ----- calibrated_second -----
         field = QSpinBox()
+        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout, name='gen4CalibratedSecond')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.calibrated_second)
-        self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout, name='gen4CalibratedSecond')
         # ----- target_delay -----
         field = QSpinBox()
+        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen4TargetDelay')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_delay)
-        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen4TargetDelay')
         # ----- target_second -----
         field = QSpinBox()
+        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen4TimerSecond')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_second)
-        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen4TimerSecond')
         # ----- delay_hit -----
         field = QSpinBox()
+        self.add_field(self.Field.DELAY_HIT, field, name='gen4DelayHit')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.delay_hit)
-        self.add_field(self.Field.DELAY_HIT, field, name='gen4DelayHit')
 
     @override
     def _init_listeners(self):

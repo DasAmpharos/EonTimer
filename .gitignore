@@ -12,3 +12,5 @@ dist/
 eon_timer.egg-info
 # macOS
 .DS_Store
+# logs
+EonTimer-*.log

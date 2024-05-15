@@ -8,6 +8,7 @@ from eon_timer.timers.calibrator import Calibrator
 from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import pyside
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 from .custom_phase import CustomPhase
 from .custom_phase_widget import CustomPhaseWidget
@@ -30,6 +31,7 @@ class CustomTimerWidget(TimerWidget[CustomTimerModel, CustomTimer], QWidget):
         TimerWidget.__init__(self, model, timer)
 
     @override
+    @log_method_calls()
     def _init_components(self):
         self.name_service.set_name(self, 'customTimerWidget')
         # ----- layout -----

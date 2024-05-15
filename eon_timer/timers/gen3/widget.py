@@ -9,6 +9,7 @@ from eon_timer.app_state import AppState
 from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
@@ -38,6 +39,7 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         TimerWidget.__init__(self, model, timer)
 
     @override
+    @log_method_calls()
     def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen3TimerWidget')
         # ----- layout -----
@@ -45,9 +47,9 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         field = EnumComboBox(Gen3Mode)
+        self.add_field(self.Field.MODE, field, name='gen3Mode')
         bindings.bind_enum_combobox(field, self.model.mode)
         self.model.mode.on_change(self.__on_mode_changed)
-        self.add_field(self.Field.MODE, field, name='gen3Mode')
         # ----- form_group -----
         form_group = QGroupBox()
         self.name_service.set_name(form_group, 'gen3FormGroup')
@@ -58,19 +60,19 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- pre_timer -----
         field = QSpinBox()
+        self.add_field(self.Field.PRE_TIMER, field, layout=form_layout, name='gen3PreTimer')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.pre_timer)
-        self.add_field(self.Field.PRE_TIMER, field, layout=form_layout, name='gen3PreTimer')
         # ----- target_frame -----
         field = QSpinBox()
+        self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout, name='gen3TargetFrame')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_frame)
-        self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout, name='gen3TargetFrame')
         # ----- calibration -----
         field = QDoubleSpinBox()
+        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen3Calibration')
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_float_spinbox(field, self.model.calibration)
-        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen3Calibration')
         # ----- set_target_frame_btn -----
         field = QPushButton(self.Field.SET_TARGET_FRAME.value)
         self.name_service.set_name(field, 'gen3SetTargetFrameButton')
@@ -81,9 +83,9 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         field_set.enabled = False
         # ----- frame_hit -----
         field = QSpinBox()
+        self.add_field(self.Field.FRAME_HIT, field, name='gen3FrameHit')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.frame_hit)
-        self.add_field(self.Field.FRAME_HIT, field, name='gen3FrameHit')
         # update field visibility
         self.__on_mode_changed()
 

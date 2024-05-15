@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QL
 
 from eon_timer.theme.theme_manager import ThemeManager
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property
 from eon_timer.util.properties.property_change import PropertyChangeEvent
@@ -36,6 +37,7 @@ class ThemeSettingsWidget(QWidget):
         self.__import_btn: Final = QPushButton()
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self):
         self.name_service.set_name(self, 'themeSettingsWidget')
         # ----- layout -----
@@ -44,7 +46,6 @@ class ThemeSettingsWidget(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         # ===== theme =====
         self.__on_themes_changed()
-        bindings.bind_str_combobox(self.__theme_field, self.theme)
         self.theme_manager.themes_changed.connect(self.__on_themes_changed)
         self.__theme_field.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         # ----- label -----
@@ -53,6 +54,7 @@ class ThemeSettingsWidget(QWidget):
         layout.addWidget(label, 0, 0)
         # ----- field -----
         self.name_service.set_name(self.__theme_field, 'themeSettingsThemeField')
+        bindings.bind_str_combobox(self.__theme_field, self.theme)
         layout.addWidget(self.__theme_field, 0, 1)
         # ----- import_theme_field -----
         self.name_service.set_name(self.__import_theme_field, 'themeSettingsImportThemeField')

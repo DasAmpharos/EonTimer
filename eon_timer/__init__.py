@@ -4,5 +4,5 @@ from eon_timer.util.injector.component import component
 
 
 @component()
-def __qsettings() -> QSettings:
+def __settings() -> QSettings:
     return QSettings()

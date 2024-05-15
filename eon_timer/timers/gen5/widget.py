@@ -8,6 +8,7 @@ from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QSpinBox, QVBoxL
 from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
@@ -39,6 +40,7 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         TimerWidget.__init__(self, model, timer)
 
     @override
+    @log_method_calls()
     def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen5TimerWidget')
         # ----- layout -----
@@ -46,8 +48,8 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         mode_field = EnumComboBox(Gen5Mode)
-        bindings.bind_enum_combobox(mode_field, self.model.mode)
         self.add_field(self.Field.MODE, mode_field, name='gen5Mode')
+        bindings.bind_enum_combobox(mode_field, self.model.mode)
         # ----- scroll_widget -----
         scroll_pane = QWidget()
         self.name_service.set_name(scroll_pane, 'gen5ScrollPane')
@@ -79,49 +81,49 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         form_layout.set_spacing(10)
         # ----- target_delay -----
         field = QSpinBox()
+        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen5TargetDelay')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_delay)
-        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen5TargetDelay')
         # ----- target_second -----
         field = QSpinBox()
+        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen5TargetSecond')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_second)
-        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen5TargetSecond')
         # ----- target_advances -----
         field = QSpinBox()
+        self.add_field(self.Field.TARGET_ADVANCES, field, layout=form_layout, name='gen5TargetAdvances')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.target_advances)
-        self.add_field(self.Field.TARGET_ADVANCES, field, layout=form_layout, name='gen5TargetAdvances')
         # ----- calibration -----
         field = QSpinBox()
+        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen5Calibration')
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.calibration)
-        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen5Calibration')
         # ----- entralink_calibration -----
         field = QSpinBox()
+        self.add_field(self.Field.ENTRALINK_CALIBRATION, field, layout=form_layout, name='gen5EntralinkCalibration')
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.entralink_calibration)
-        self.add_field(self.Field.ENTRALINK_CALIBRATION, field, layout=form_layout, name='gen5EntralinkCalibration')
         # ----- frame_calibration -----
         field = QSpinBox()
+        self.add_field(self.Field.FRAME_CALIBRATION, field, layout=form_layout, name='gen5FrameCalibration')
         field.setRange(const.INT_MIN, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.frame_calibration)
-        self.add_field(self.Field.FRAME_CALIBRATION, field, layout=form_layout, name='gen5FrameCalibration')
         # ----- delay_hit -----
         field = QSpinBox()
+        self.add_field(self.Field.DELAY_HIT, field, name='gen5DelayHit')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.delay_hit)
-        self.add_field(self.Field.DELAY_HIT, field, name='gen5DelayHit')
         # ----- second_hit -----
         field = QSpinBox()
+        self.add_field(self.Field.SECOND_HIT, field, name='gen5SecondHit')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.second_hit)
-        self.add_field(self.Field.SECOND_HIT, field, name='gen5SecondHit')
         # ----- advances_hit -----
         field = QSpinBox()
+        self.add_field(self.Field.ADVANCES_HIT, field, name='gen5AdvancesHit')
         field.setRange(0, const.INT_MAX)
         bindings.bind_spinbox(field, self.model.advances_hit)
-        self.add_field(self.Field.ADVANCES_HIT, field, name='gen5AdvancesHit')
         # update field visibility
         self.model.mode.on_change(self.__on_mode_changed)
         event = PropertyChangeEvent(None, self.model.mode.get())

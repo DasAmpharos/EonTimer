@@ -11,6 +11,7 @@ from eon_timer.util.clock import Clock
 from eon_timer.util.injector import component
 from eon_timer.util.injector.lifecycle import CloseListener
 from eon_timer.util.pyside.thread import DelegatingQThread
+from eon_timer.util import loggers
 
 
 @component()
@@ -20,6 +21,8 @@ class PhaseRunner(QObject, CloseListener):
                  timer_settings: TimerSettingsModel,
                  action_settings: ActionSettingsModel):
         super().__init__()
+        self.logger: Final = loggers.get_logger(self)
+
         self.state: Final = state
         self.timer_settings: Final = timer_settings
         self.action_settings: Final = action_settings
@@ -29,14 +32,17 @@ class PhaseRunner(QObject, CloseListener):
     def start(self, clock: Clock):
         if not self.__running:
             self.__running = True
+            self.logger.info('Starting phase runner')
             func = functools.partial(self.__run, clock)
             self.__thread = DelegatingQThread(func, self)
+            self.__thread.setObjectName('PhaseRunnerThread')
             self.__thread.finished.connect(self.stop)
             self.__thread.start()
 
     def stop(self):
         if self.__running:
             self.__running = False
+            self.logger.info('Stopping phase runner')
             if not self.__thread.isFinished():
                 self.__thread.quit()
                 self.__thread.wait()
@@ -87,6 +93,7 @@ class PhaseRunner(QObject, CloseListener):
             if elapsed >= phase:
                 break
             ticks += 1
+        self.logger.info('Finished executing phase: expected=%s, actual=%s', phase, elapsed)
 
     def __build_actions(self, phase: float, elapsed: float) -> Iterator[int]:
         actions = []

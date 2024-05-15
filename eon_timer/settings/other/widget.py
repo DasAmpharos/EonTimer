@@ -5,6 +5,7 @@ from PySide6.QtWidgets import QCheckBox
 
 from eon_timer.settings.other.update_model import UpdateSettingsModel
 from eon_timer.util.injector import component
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property import Property
 from eon_timer.util.pyside.form import FormWidget
@@ -24,6 +25,7 @@ class OtherSettingsWidget(FormWidget):
         self.check_on_startup: Final = Property(self.update_settings.check_on_startup.get())
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self):
         self.name_service.set_name(self, 'otherSettingsWidget')
         # ---- layout -----
@@ -31,8 +33,8 @@ class OtherSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- check_for_updates -----
         field = QCheckBox()
-        bindings.bind_checkbox(field, self.check_on_startup)
         self.add_field(self.Field.CHECK_FOR_UPDATES, field, name='checkForUpdates')
+        bindings.bind_checkbox(field, self.check_on_startup)
 
     def on_accepted(self):
         self.update_settings.check_on_startup.update(self.check_on_startup)

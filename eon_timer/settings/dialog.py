@@ -9,6 +9,7 @@ from eon_timer.settings.other.widget import OtherSettingsWidget
 from eon_timer.settings.theme.widget import ThemeSettingsWidget
 from eon_timer.settings.timer.widget import TimerSettingsWidget
 from eon_timer.util import pyside
+from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 
 
@@ -30,6 +31,7 @@ class SettingsDialog(QDialog):
         self.other_settings_widget: Final = other_settings_widget
         self.__init_components()
 
+    @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'settingsDialog')
         self.setWindowTitle('Settings')
