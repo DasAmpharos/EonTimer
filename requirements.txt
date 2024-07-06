@@ -1,5 +1,5 @@
 altgraph==0.17.4
-certifi==2024.2.2
+certifi==2024.7.4
 charset-normalizer @ git+https://github.com/Ousret/charset_normalizer.git@79dce4857914fead2ffe55eb787cad6d5cf14643
 idna==3.7
 libsass @ git+https://github.com/sass/libsass-python.git@af3c4bf4ab0b852447fc2b2f46001e499c615011
