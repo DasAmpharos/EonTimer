@@ -62,10 +62,13 @@ class Gen5Timer(Timer[Gen5Model]):
                 case Gen5Mode.C_GEAR:
                     model.calibration.add(delay_calibration)
                 case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
-                    model.calibration.add(second_calibration)
-                    model.entralink_calibration.add(entralink_calibration)
+                    if model.second_hit.get() != model.target_second.get():
+                        model.calibration.add(second_calibration)
+                    if model.delay_hit.get() != model.target_delay.get():
+                        model.entralink_calibration.add(entralink_calibration)
                     if model.mode.get() == Gen5Mode.ENTRALINK_PLUS:
-                        model.frame_calibration.add(self.get_advances_calibration(model))
+                        if model.advances_hit.get() != model.target_advances.get():
+                            model.frame_calibration.add(self.get_advances_calibration(model))
 
             model.delay_hit.set(0)
             model.second_hit.set(0)
