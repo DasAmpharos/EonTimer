@@ -7,7 +7,7 @@ macholib==1.16.3
 packaging==24.0
 pillow==10.3.0
 pip-autoremove==0.10.0
-pipdeptree==2.20.0
+pipdeptree==2.23.1
 platformdirs==4.2.2
 pyinstaller==6.7.0
 pyinstaller-hooks-contrib==2024.6
