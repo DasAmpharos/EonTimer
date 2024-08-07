@@ -50,6 +50,7 @@ class AppWidget(QWidget, CloseListener):
         self.timer_btn: Final = QPushButton()
         self.update_btn: Final = QPushButton()
         self.settings_btn: Final = QPushButton()
+        self.reset_btn: Final = QPushButton()
         self.__init_components()
 
     @log_method_calls()
@@ -90,13 +91,13 @@ class AppWidget(QWidget, CloseListener):
         self.name_service.set_name(self.settings_btn, 'settingsButton')
         layout.addWidget(self.settings_btn, 2, 0)
         # ----- reset_btn -----
-        button = QPushButton(chr(0xf2ea))
-        button.setFont('Font Awesome 5 Free')
-        button.clicked.connect(self.__on_reset_btn_clicked)
-        button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        button.setToolTip('Reset Timer')
-        self.name_service.set_name(button, 'resetButton')
-        layout.addWidget(button, 2, 1)
+        self.reset_btn.setText(chr(0xf2ea))
+        self.reset_btn.setFont('Font Awesome 5 Free')
+        self.reset_btn.clicked.connect(self.__on_reset_btn_clicked)
+        self.reset_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.reset_btn.setToolTip('Reset Timer')
+        self.name_service.set_name(self.reset_btn, 'resetButton')
+        layout.addWidget(self.reset_btn, 2, 1)
         # ----- update_btn -----
         self.update_btn.setText('Update')
         self.update_btn.clicked.connect(self.__on_update_btn_clicked)
@@ -151,6 +152,7 @@ class AppWidget(QWidget, CloseListener):
                 self.tab_widget.setTabEnabled(i, not running)
         self.settings_btn.setDisabled(running)
         self.update_btn.setDisabled(running)
+        self.reset_btn.setDisabled(running)
         current_widget = self.tab_widget.currentWidget()
         current_widget.setDisabled(running)
         # update phases if not running
