@@ -3,8 +3,7 @@ import unittest
 from unittest.mock import Mock
 
 from eon_timer.timers import Calibrator, DelayTimer, EnhancedEntralinkTimer, EntralinkTimer, SecondTimer
-from eon_timer.timers.gen5 import Gen5Model
-from eon_timer.timers.gen5.model import Gen5Mode
+from eon_timer.timers.gen5.model import Gen5Model, Gen5Mode
 from eon_timer.timers.gen5.timer import Gen5Timer
 
 
