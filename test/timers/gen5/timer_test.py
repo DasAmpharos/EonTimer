@@ -126,21 +126,21 @@ class Gen5TimerTest(unittest.TestCase):
         self.calibrator.calibrate_to_delays.assert_not_called()
 
     def mock_delays(self, should_match: bool = True) -> tuple[int, int]:
-        target = random.randint(0, 100)
+        target = random.randint(1, 100)
         self.model.target_delay.get.return_value = target
         offset = 0 if should_match else random.randint(1, 10)
         self.model.delay_hit.get.return_value = target + offset
         return target, target + offset
 
     def mock_seconds(self, should_match: bool = True) -> tuple[int, int]:
-        target = random.randint(0, 100)
+        target = random.randint(1, 100)
         self.model.target_second.get.return_value = target
         offset = 0 if should_match else random.randint(1, 10)
         self.model.second_hit.get.return_value = target + offset
         return target, target + offset
 
     def mock_advances(self, should_match: bool = True) -> tuple[int, int]:
-        target = random.randint(0, 100)
+        target = random.randint(1, 100)
         self.model.target_advances.get.return_value = target
         offset = 0 if should_match else random.randint(1, 10)
         self.model.advances_hit.get.return_value = target + offset
