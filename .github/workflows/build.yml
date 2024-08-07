@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: build-${{ inputs.git-ref }}
+  group: build-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -30,6 +30,10 @@ jobs:
 
       - name: Install Dependencies
         run: pip install -r requirements.txt
+
+      - name: Install Dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu'
+        run: sudo apt update && sudo apt install -y libegl1-mesa-dev
 
       - name: Inject Properties
         shell: bash
