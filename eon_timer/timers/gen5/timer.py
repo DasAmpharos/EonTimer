@@ -52,9 +52,9 @@ class Gen5Timer(Timer[Gen5Model]):
     @override
     def calibrate(self, model: Gen5Model):
         if self.__can_calibrate(model):
-            delay_calibration = self.calibrator.calibrate_to_delays(self.get_delay_calibration(model))
-            second_calibration = self.calibrator.calibrate_to_delays(self.get_second_calibration(model))
-            entralink_calibration = self.calibrator.calibrate_to_delays(self.get_entralink_calibration(model))
+            delay_calibration = self.get_delay_calibration(model)
+            second_calibration = self.get_second_calibration(model)
+            entralink_calibration = self.get_entralink_calibration(model)
 
             match model.mode.get():
                 case Gen5Mode.STANDARD:
@@ -89,18 +89,17 @@ class Gen5Timer(Timer[Gen5Model]):
                         model.second_hit.get() > 0 and
                         model.advances_hit.get() > 0)
 
-    def get_delay_calibration(self, model: Gen5Model) -> float:
-        return self.delay_timer.calibrate(model.target_delay.get(),
-                                          model.delay_hit.get())
+    def get_delay_calibration(self, model: Gen5Model) -> int:
+        calibration = self.delay_timer.calibrate(model.target_delay.get(), model.delay_hit.get())
+        return self.calibrator.calibrate_to_delays(calibration)
 
-    def get_second_calibration(self, model: Gen5Model) -> float:
-        return self.second_timer.calibrate(model.target_second.get(),
-                                           model.second_hit.get())
+    def get_second_calibration(self, model: Gen5Model) -> int:
+        calibration = self.second_timer.calibrate(model.target_second.get(), model.second_hit.get())
+        return self.calibrator.calibrate_to_delays(calibration)
 
-    def get_entralink_calibration(self, model: Gen5Model) -> float:
-        second_calibration = self.get_second_calibration(model)
-        return self.entralink_timer.calibrate(model.target_delay.get(),
-                                              model.delay_hit.get() - second_calibration)
+    def get_entralink_calibration(self, model: Gen5Model) -> int:
+        calibration = self.entralink_timer.calibrate(model.target_delay.get(), model.delay_hit.get())
+        return self.calibrator.calibrate_to_delays(calibration)
 
     def get_advances_calibration(self, model: Gen5Model) -> float:
         return self.enhanced_entralink_timer.calibrate(model.target_advances.get(),
