@@ -20,7 +20,7 @@ class CustomPhase:
         self.unit: Final = EnumProperty(unit)
         self.target: Final = IntProperty(value)
         self.calibration: Final = FloatProperty(calibration)
-        self.hit: Final = IntProperty(0, transient=True)
+        self.hit: Final = IntProperty(None, transient=True)
 
     @classmethod
     def read(cls, settings: QSettings) -> Self:

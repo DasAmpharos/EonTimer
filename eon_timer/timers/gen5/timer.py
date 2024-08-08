@@ -51,43 +51,27 @@ class Gen5Timer(Timer[Gen5Model]):
 
     @override
     def calibrate(self, model: Gen5Model):
-        if self.__can_calibrate(model):
-            delay_calibration = self.get_delay_calibration(model)
-            second_calibration = self.get_second_calibration(model)
-            entralink_calibration = self.get_entralink_calibration(model)
+        delay_calibration = self.get_delay_calibration(model)
+        second_calibration = self.get_second_calibration(model)
+        entralink_calibration = self.get_entralink_calibration(model)
 
-            match model.mode.get():
-                case Gen5Mode.STANDARD:
-                    model.calibration.add(second_calibration)
-                case Gen5Mode.C_GEAR:
-                    model.calibration.add(delay_calibration)
-                case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
-                    if model.second_hit.get() != model.target_second.get():
-                        model.calibration.add(second_calibration)
-                    if model.delay_hit.get() != model.target_delay.get():
-                        model.entralink_calibration.add(entralink_calibration)
-                    if model.mode.get() == Gen5Mode.ENTRALINK_PLUS:
-                        if model.advances_hit.get() != model.target_advances.get():
-                            model.frame_calibration.add(self.get_advances_calibration(model))
-
-            model.delay_hit.set(0)
-            model.second_hit.set(0)
-            model.advances_hit.set(0)
-
-    @staticmethod
-    def __can_calibrate(model: Gen5Model) -> bool:
         match model.mode.get():
             case Gen5Mode.STANDARD:
-                return model.second_hit.get() > 0
+                model.calibration.add(second_calibration)
             case Gen5Mode.C_GEAR:
-                return model.delay_hit.get() > 0
-            case Gen5Mode.ENTRALINK:
-                return (model.delay_hit.get() > 0 and
-                        model.second_hit.get() > 0)
-            case Gen5Mode.ENTRALINK_PLUS:
-                return (model.delay_hit.get() > 0 and
-                        model.second_hit.get() > 0 and
-                        model.advances_hit.get() > 0)
+                model.calibration.add(delay_calibration)
+            case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
+                if model.second_hit.get() != model.target_second.get():
+                    model.calibration.add(second_calibration)
+                if model.delay_hit.get() != model.target_delay.get():
+                    model.entralink_calibration.add(entralink_calibration)
+                if model.mode.get() == Gen5Mode.ENTRALINK_PLUS:
+                    if model.advances_hit.get() != model.target_advances.get():
+                        model.frame_calibration.add(self.get_advances_calibration(model))
+
+        model.delay_hit.set(None)
+        model.second_hit.set(None)
+        model.advances_hit.set(None)
 
     def get_delay_calibration(self, model: Gen5Model) -> int:
         calibration = self.delay_timer.calibrate(model.target_delay.get(), model.delay_hit.get())

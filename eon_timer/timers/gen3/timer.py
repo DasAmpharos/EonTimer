@@ -30,10 +30,9 @@ class Gen3Timer(Timer[Gen3Model]):
 
     @override
     def calibrate(self, model: Gen3Model):
-        if model.frame_hit.get() > 0:
-            offset = self.frame_timer.calibrate(
-                model.target_frame.get(),
-                model.frame_hit.get()
-            )
-            model.calibration.add(offset)
-            model.frame_hit.set(0)
+        offset = self.frame_timer.calibrate(
+            model.target_frame.get(),
+            model.frame_hit.get()
+        )
+        model.calibration.add(offset)
+        model.frame_hit.set(None)

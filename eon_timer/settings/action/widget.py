@@ -3,7 +3,7 @@ from typing import Final
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtWidgets import QColorDialog, QPushButton, QSpinBox
+from PySide6.QtWidgets import QColorDialog, QPushButton
 
 from eon_timer.util import const
 from eon_timer.util.injector import component
@@ -15,6 +15,7 @@ from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
+from eon_timer.util.pyside.numeric_input_field import IntInputField
 from .model import ActionMode, ActionSettingsModel, ActionSound
 
 
@@ -69,15 +70,15 @@ class ActionSettingsWidget(FormWidget):
         self.add_field(self.Field.COLOR, field, name='actionSettingsColor')
         self.__set_icon_color(field)
         # ----- interval -----
-        field = QSpinBox()
+        field = IntInputField()
+        field.set_range(0, const.INT_MAX)
+        bindings.bind(field.value, self.interval)
         self.add_field(self.Field.INTERVAL, field, name='actionSettingsInterval')
-        field.setRange(0, const.INT_MAX)
-        bindings.bind_spinbox(field, self.interval)
         # ----- count -----
-        field = QSpinBox()
+        field = IntInputField()
+        field.set_range(0, const.INT_MAX)
+        bindings.bind(field.value, self.count)
         self.add_field(self.Field.COUNT, field, name='actionSettingsCount')
-        field.setRange(0, const.INT_MAX)
-        bindings.bind_spinbox(field, self.count)
 
     def __on_sound_changed(self, event: PropertyChangeEvent[ActionSound]) -> None:
         self.set_visible(self.Field.CUSTOM_SOUND, event.new_value == ActionSound.CUSTOM)

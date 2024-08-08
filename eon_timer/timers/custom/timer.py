@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, override
 
 from eon_timer.timers.calibrator import Calibrator
 from eon_timer.timers.timer import Timer
@@ -12,6 +12,7 @@ class CustomTimer(Timer[CustomTimerModel]):
     def __init__(self, calibrator: Calibrator):
         self.calibrator: Final = calibrator
 
+    @override
     def create(self, model: CustomTimerModel) -> list[float]:
         phases = []
         for phase in model.phases:
@@ -23,5 +24,6 @@ class CustomTimer(Timer[CustomTimerModel]):
             phases.append(value)
         return phases
 
+    @override
     def calibrate(self, model: CustomTimerModel):
         pass

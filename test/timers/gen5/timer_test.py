@@ -147,6 +147,6 @@ class Gen5TimerTest(unittest.TestCase):
         return target, target + offset
 
     def assert_fields_cleared(self):
-        self.model.delay_hit.set.assert_called_once_with(0)
-        self.model.second_hit.set.assert_called_once_with(0)
-        self.model.advances_hit.set.assert_called_once_with(0)
+        self.model.delay_hit.set.assert_called_once_with(None)
+        self.model.second_hit.set.assert_called_once_with(None)
+        self.model.advances_hit.set.assert_called_once_with(None)

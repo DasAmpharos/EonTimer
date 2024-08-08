@@ -3,8 +3,8 @@ from typing import Final, Generic, TypeVar, final
 
 from PySide6.QtCore import Signal
 
+from eon_timer.util.properties.settings import Settings
 from .timer import Timer
-from ..util.properties.settings import Settings
 
 ModelT = TypeVar('ModelT', bound=Settings)
 TimerT = TypeVar('TimerT', bound=Timer)
