@@ -13,6 +13,52 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 NumericT = TypeVar('NumericT', bound=Number)
 
 
+class Radix(IntEnum):
+    BINARY = 2
+    OCTAL = 8
+    DECIMAL = 10
+    HEXADECIMAL = 16
+
+
+class RadixValidator(QValidator, Generic[NumericT]):
+    def __init__(self,
+                 converter: Callable[[str, Radix], NumericT],
+                 radix: Radix = Radix.DECIMAL,
+                 parent: QObject | None = None):
+        super().__init__(parent)
+        self.lower_bound: NumericT | None = None
+        self.upper_bound: NumericT | None = None
+        self.converter: Final = converter
+        self.radix = radix
+
+    @override
+    def validate(self, s: str, pos: int):
+        try:
+            value = self.converter(s, self.radix)
+            if self.lower_bound is not None and value < self.lower_bound:
+                return QValidator.State.Invalid, s, pos
+            if self.upper_bound is not None and value > self.upper_bound:
+                return QValidator.State.Invalid, s, pos
+            return QValidator.State.Acceptable, s, pos
+        except ValueError:
+            if s == '' or s == '-':
+                return QValidator.State.Intermediate, s, pos
+            return QValidator.State.Invalid, s, pos
+
+    @override
+    def fixup(self, s: str) -> str:
+        try:
+            return str(self.converter(s, self.radix))
+        except ValueError:
+            return ''
+
+    def set_range(self, lower_bound: NumericT, upper_bound: NumericT):
+        if lower_bound > upper_bound:
+            raise ValueError(f'lower_bound must be less than or equal to upper_bound')
+        self.lower_bound = lower_bound
+        self.upper_bound = upper_bound
+
+
 class BlankBehavior(IntEnum):
     BLANK = auto()
     PLACEHOLDER = auto()
@@ -65,13 +111,6 @@ class NumericInputField(QLineEdit, Generic[NumericT]):
                 self.value.set(self.value.get() + 1)
             case Qt.Key.Key_Down:
                 self.value.set(self.value.get() - 1)
-
-
-class Radix(IntEnum):
-    BINARY = 2
-    OCTAL = 8
-    DECIMAL = 10
-    HEXADECIMAL = 16
 
 
 class IntInputField(NumericInputField[int]):
@@ -150,42 +189,3 @@ class FloatInputField(NumericInputField[float]):
     @override
     def _to_value(self, text: str | None) -> float | None:
         return None if not text else float(text)
-
-
-class RadixValidator(QValidator, Generic[NumericT]):
-    def __init__(self,
-                 converter: Callable[[str, Radix], NumericT],
-                 radix: Radix = Radix.DECIMAL,
-                 parent: QObject | None = None):
-        super().__init__(parent)
-        self.lower_bound: NumericT | None = None
-        self.upper_bound: NumericT | None = None
-        self.converter: Final = converter
-        self.radix = radix
-
-    @override
-    def validate(self, s: str, pos: int):
-        try:
-            value = self.converter(s, self.radix)
-            if self.lower_bound is not None and value < self.lower_bound:
-                return QValidator.State.Invalid, s, pos
-            if self.upper_bound is not None and value > self.upper_bound:
-                return QValidator.State.Invalid, s, pos
-            return QValidator.State.Acceptable, s, pos
-        except ValueError:
-            if s == '' or s == '-':
-                return QValidator.State.Intermediate, s, pos
-            return QValidator.State.Invalid, s, pos
-
-    @override
-    def fixup(self, s: str) -> str:
-        try:
-            return str(self.converter(s, self.radix))
-        except ValueError:
-            return ''
-
-    def set_range(self, lower_bound: NumericT, upper_bound: NumericT):
-        if lower_bound > upper_bound:
-            raise ValueError(f'lower_bound must be less than or equal to upper_bound')
-        self.lower_bound = lower_bound
-        self.upper_bound = upper_bound
