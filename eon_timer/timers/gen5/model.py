@@ -23,9 +23,9 @@ class Gen5Model(Settings):
     target_delay = IntProperty(1200)
     target_second = IntProperty(50)
     target_advances = IntProperty(100)
-    delay_hit = IntProperty(0, transient=True)
-    second_hit = IntProperty(0, transient=True)
-    advances_hit = IntProperty(0, transient=True)
+    delay_hit = IntProperty(None, transient=True)
+    second_hit = IntProperty(None, transient=True)
+    advances_hit = IntProperty(None, transient=True)
 
     @property
     @override

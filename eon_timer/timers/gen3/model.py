@@ -18,7 +18,7 @@ class Gen3Model(Settings):
     pre_timer = IntProperty(5000)
     target_frame = IntProperty(1000)
     calibration = FloatProperty(0.0)
-    frame_hit = IntProperty(0, transient=True)
+    frame_hit = IntProperty(None, transient=True)
 
     @property
     @override

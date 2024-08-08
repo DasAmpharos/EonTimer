@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, override
 
 from eon_timer.timers.calibrator import Calibrator
 from eon_timer.timers.delay_timer import DelayTimer
@@ -15,6 +15,7 @@ class Gen4Timer(Timer[Gen4Model]):
         self.calibrator: Final = calibrator
         self.delay_timer: Final = delay_timer
 
+    @override
     def create(self, model: Gen4Model) -> list[float]:
         return self.delay_timer.create(
             model.target_delay.get(),
@@ -22,6 +23,7 @@ class Gen4Timer(Timer[Gen4Model]):
             self.get_calibration(model)
         )
 
+    @override
     def calibrate(self, model: Gen4Model):
         if model.delay_hit.get() > 0:
             calibration = self.calibrator.to_delays(
@@ -31,7 +33,7 @@ class Gen4Timer(Timer[Gen4Model]):
                 )
             )
             model.calibrated_delay.add(calibration)
-            model.delay_hit.set(0)
+            model.delay_hit.set(None)
 
     def get_calibration(self, model: Gen4Model) -> float:
         return self.calibrator.create_calibration(

@@ -1,12 +1,12 @@
 import functools
 from typing import Final, TypeVar
 
-from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QLineEdit, QSpinBox
+from PySide6.QtWidgets import QCheckBox, QComboBox, QLineEdit
 
 from eon_timer.util import loggers
 from eon_timer.util.enum import EnhancedEnum
 from eon_timer.util.pyside import EnumComboBox
-from .property import Property, PropertyChangeEvent, BoolProperty
+from .property import Property, PropertyChangeEvent
 
 T = TypeVar('T')
 EnhancedEnumT = TypeVar('EnhancedEnumT', bound=EnhancedEnum)
@@ -16,7 +16,7 @@ logger: Final = loggers.get_logger(__name__)
 
 def bind(left: Property[T],
          right: Property[T],
-         bidirectional: bool = False):
+         bidirectional: bool = True):
     def on_change(other: Property[T], event: PropertyChangeEvent[T]):
         other.set(event.new_value)
 
@@ -55,7 +55,7 @@ def bind_enum_combobox(widget: EnumComboBox[EnhancedEnumT],
 
 
 def bind_checkbox(widget: QCheckBox,
-                  p_property: BoolProperty) -> None:
+                  p_property: Property[bool]) -> None:
     logger.debug('bind_checkbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
 
     def on_property_changed(event: PropertyChangeEvent[bool]) -> None:
@@ -77,30 +77,4 @@ def bind_line_edit(widget: QLineEdit,
 
     widget.setText(p_property.get())
     widget.textChanged.connect(p_property.set)
-    p_property.on_change(on_property_changed)
-
-
-def bind_spinbox(widget: QSpinBox,
-                 p_property: Property[int]) -> None:
-    logger.debug('bind_spinbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
-
-    def on_property_changed(event: PropertyChangeEvent[int]) -> None:
-        if event.new_value != widget.value():
-            widget.setValue(event.new_value)
-
-    widget.setValue(p_property.get())
-    widget.valueChanged.connect(p_property.set)
-    p_property.on_change(on_property_changed)
-
-
-def bind_float_spinbox(widget: QDoubleSpinBox,
-                       p_property: Property[float]) -> None:
-    logger.debug('bind_float_spinbox(widget=%s, property=%s)', widget.objectName(), p_property.get())
-
-    def on_property_changed(event: PropertyChangeEvent[float]) -> None:
-        if event.new_value != widget.value():
-            widget.setValue(event.new_value)
-
-    widget.setValue(p_property.get())
-    widget.valueChanged.connect(p_property.set)
     p_property.on_change(on_property_changed)

@@ -1,17 +1,18 @@
 from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QCheckBox, QDoubleSpinBox, QSpinBox
+from PySide6.QtWidgets import QCheckBox
 
 from eon_timer.util.const import INT_MAX
 from eon_timer.util.injector import component
 from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import FloatProperty, Property, BoolProperty
+from eon_timer.util.properties.property import BoolProperty, FloatProperty, Property
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
+from eon_timer.util.pyside.numeric_input_field import FloatInputField, IntInputField
 from .model import Console, TimerSettingsModel
 
 
@@ -46,19 +47,19 @@ class TimerSettingsWidget(FormWidget):
                        name='timerSettingsConsole')
         bindings.bind_enum_combobox(field, self.console)
         # ----- custom framerate -----
-        field = QDoubleSpinBox()
+        field = FloatInputField()
+        field.set_range(0, INT_MAX)
+        bindings.bind(field.value, self.custom_framerate)
         self.add_field(self.Field.CUSTOM_FRAMERATE, field,
                        visible=self.console.get() == Console.CUSTOM,
                        name='timerSettingsCustomFramerate')
-        field.setRange(0, INT_MAX)
-        bindings.bind_float_spinbox(field, self.custom_framerate)
         self.console.on_change(self.__on_console_changed)
         # ----- refresh interval -----
-        field = QSpinBox()
+        field = IntInputField()
+        field.set_range(1, INT_MAX)
+        bindings.bind(field.value, self.refresh_interval)
         self.add_field(self.Field.REFRESH_INTERVAL, field,
                        name='timerSettingsRefreshInterval')
-        field.setRange(1, INT_MAX)
-        bindings.bind_spinbox(field, self.refresh_interval)
         # ----- precision calibration -----
         field = QCheckBox()
         self.add_field(self.Field.PRECISION_CALIBRATION, field,
