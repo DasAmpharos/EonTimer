@@ -126,8 +126,8 @@ class CustomPhaseWidget(QWidget):
             unit = event.new_value
 
         radix = Radix.HEXADECIMAL if unit == CustomPhase.Unit.HEX else Radix.DECIMAL
-        self.__target_field.set_radix(radix)
-        self.__hit_field.set_radix(radix)
+        self.__target_field.radix = radix
+        self.__hit_field.radix = radix
 
         self.changed.emit()
 
