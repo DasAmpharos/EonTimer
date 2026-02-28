@@ -1,7 +1,7 @@
 from typing import Final, override
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QFrame, QLabel, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWidget
 
 from eon_timer.app_state import AppState
 from eon_timer.timers.timer_widget import TimerWidget
@@ -59,9 +59,6 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
     @log_method_calls()
     def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen5TimerWidget')
-        # ----- layout -----
-        self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
-        self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         mode_field = EnumComboBox(Gen5Mode)
         self.add_field(self.Field.MODE, mode_field, name='gen5Mode')
@@ -93,49 +90,34 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         scroll_pane_layout.addWidget(form_widget, stretch=0, alignment=Qt.AlignmentFlag.AlignTop)
         form_layout = FormLayout(form_widget)
         form_layout.set_spacing(10)
-        # ----- [Targets] header -----
-        targets_header = QLabel('Targets')
-        self.name_service.set_name(targets_header, 'gen5TargetsHeader')
-        form_layout.add_row(targets_header)
         # ----- target_delay -----
-        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The delay value from your target seed')
-        bindings.bind(field.value, self.model.target_delay)
-        self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen5TargetDelay')
+        self.add_bound_field(self.Field.TARGET_DELAY,
+            IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The delay value from your target seed'),
+            self.model.target_delay, layout=form_layout, name='gen5TargetDelay')
         # ----- target_second -----
-        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The second value from your target seed')
-        bindings.bind(field.value, self.model.target_second)
-        self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen5TargetSecond')
+        self.add_bound_field(self.Field.TARGET_SECOND,
+            IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The second value from your target seed'),
+            self.model.target_second, layout=form_layout, name='gen5TargetSecond')
         # ----- target_advances -----
-        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The advances/frames value from your target seed')
-        bindings.bind(field.value, self.model.target_advances)
-        self.add_field(self.Field.TARGET_ADVANCES, field, layout=form_layout, name='gen5TargetAdvances')
-        # ----- [Calibration] header -----
-        calibration_header = QLabel('Calibration')
-        self.name_service.set_name(calibration_header, 'gen5CalibrationHeader')
-        form_layout.add_row(calibration_header)
+        self.add_bound_field(self.Field.TARGET_ADVANCES,
+            IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The advances/frames value from your target seed'),
+            self.model.target_advances, layout=form_layout, name='gen5TargetAdvances')
         # ----- calibration -----
-        field = IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Delay calibration offset (auto-updated after each run)')
-        bindings.bind(field.value, self.model.calibration)
-        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen5Calibration')
+        self.add_bound_field(self.Field.CALIBRATION,
+            IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Delay calibration offset (auto-updated after each run)'),
+            self.model.calibration, layout=form_layout, name='gen5Calibration')
         # ----- entralink_calibration -----
-        field = IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Entralink-specific delay calibration (auto-updated after each run)')
-        bindings.bind(field.value, self.model.entralink_calibration)
-        self.add_field(self.Field.ENTRALINK_CALIBRATION, field, layout=form_layout, name='gen5EntralinkCalibration')
+        self.add_bound_field(self.Field.ENTRALINK_CALIBRATION,
+            IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Entralink-specific delay calibration (auto-updated after each run)'),
+            self.model.entralink_calibration, layout=form_layout, name='gen5EntralinkCalibration')
         # ----- frame_calibration -----
-        field = IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Frame/advances calibration offset (auto-updated after each run)')
-        bindings.bind(field.value, self.model.frame_calibration)
-        self.add_field(self.Field.FRAME_CALIBRATION, field, layout=form_layout, name='gen5FrameCalibration')
-        # ----- [After Run] header -----
-        after_run_header = QLabel('After Run')
-        self.name_service.set_name(after_run_header, 'gen5AfterRunHeader')
-        self._layout.add_row(after_run_header)
+        self.add_bound_field(self.Field.FRAME_CALIBRATION,
+            IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Frame/advances calibration offset (auto-updated after each run)'),
+            self.model.frame_calibration, layout=form_layout, name='gen5FrameCalibration')
         # ----- delay_hit / second_hit / advances_hit -----
-        bindings.bind(self.delay_hit_field.value, self.model.delay_hit)
-        self.add_field(self.Field.DELAY_HIT, self.delay_hit_field, name='gen5DelayHit')
-        bindings.bind(self.second_hit_field.value, self.model.second_hit)
-        self.add_field(self.Field.SECOND_HIT, self.second_hit_field, name='gen5SecondHit')
-        bindings.bind(self.advances_hit_field.value, self.model.advances_hit)
-        self.add_field(self.Field.ADVANCES_HIT, self.advances_hit_field, name='gen5AdvancesHit')
+        self.add_bound_field(self.Field.DELAY_HIT, self.delay_hit_field, self.model.delay_hit, name='gen5DelayHit')
+        self.add_bound_field(self.Field.SECOND_HIT, self.second_hit_field, self.model.second_hit, name='gen5SecondHit')
+        self.add_bound_field(self.Field.ADVANCES_HIT, self.advances_hit_field, self.model.advances_hit, name='gen5AdvancesHit')
         # update field visibility
         self.model.mode.on_change(self.__on_mode_changed)
         event = PropertyChangeEvent(None, self.model.mode.get())

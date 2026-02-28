@@ -1,6 +1,5 @@
 from typing import Final
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCheckBox
 
 from eon_timer.settings.other.update_model import UpdateSettingsModel
@@ -21,9 +20,6 @@ class OtherSettingsWidget(FormWidget):
     @log_method_calls()
     def __init_components(self):
         self.name_service.set_name(self, 'otherSettingsWidget')
-        # ---- layout -----
-        self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
-        self._layout.set_content_margins(10, 10, 10, 10)
         # ----- check_for_updates -----
         self._check_on_startup_field = QCheckBox()
         self._check_on_startup_field.setChecked(self.update_settings.check_on_startup.get())

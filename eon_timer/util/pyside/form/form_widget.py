@@ -19,6 +19,8 @@ class FormWidget(QWidget):
 
         typename = type(self)
         self._layout: Final = FormLayout(self)
+        self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
+        self._layout.set_content_margins(10, 10, 10, 10)
         self.__field_sets: Final[dict[typename.Field, FieldSet]] = {}
         self.name_service: Final = name_service
 
@@ -43,6 +45,22 @@ class FormWidget(QWidget):
         self.__field_sets[field] = field_set
         field_set.visible = visible
         return field_set
+
+    def add_bound_field(
+        self,
+        field: Field,
+        widget: QWidget,
+        prop,
+        with_label: bool = True,
+        layout: Optional[FormLayout] = None,
+        visible: bool = True,
+        name: str | None = None,
+    ) -> FieldSet:
+        """Add a field and bidirectionally bind its `.value` property to `prop`."""
+        from eon_timer.util.properties import bindings
+        result = self.add_field(field, widget, with_label=with_label, layout=layout, visible=visible, name=name)
+        bindings.bind(widget.value, prop)
+        return result
 
     def _add_form_group(self, group_name: str) -> tuple['QGroupBox', FormLayout]:
         """Add a themed, expanding QGroupBox to self._layout and return it with its FormLayout."""

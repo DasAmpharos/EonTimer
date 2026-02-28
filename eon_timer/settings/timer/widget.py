@@ -1,6 +1,5 @@
 from typing import Final
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QCheckBox
 
 from eon_timer.settings.other.update_model import UpdateSettingsModel
@@ -32,9 +31,6 @@ class TimerSettingsWidget(FormWidget):
     @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'timerSettingsWidget')
-        # ----- layout -----
-        self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
-        self._layout.set_content_margins(10, 10, 10, 10)
         # ----- console -----
         self._console_field = EnumComboBox(Console, self.model.console.get())
         self._console_field.value_changed.connect(self.__on_console_changed)

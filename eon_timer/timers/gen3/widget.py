@@ -1,6 +1,5 @@
 from typing import Final, override
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QPushButton
 
 from eon_timer.app_state import AppState
@@ -42,9 +41,6 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
     @log_method_calls()
     def _init_components(self) -> None:
         self.name_service.set_name(self, 'gen3TimerWidget')
-        # ----- layout -----
-        self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
-        self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         field = EnumComboBox(Gen3Mode)
         bindings.bind_enum_combobox(field, self.model.mode)
@@ -53,17 +49,17 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         # ----- form_group -----
         _, form_layout = self._add_form_group('gen3FormGroup')
         # ----- pre_timer -----
-        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='Milliseconds to wait before the first phase (typically 1000–3000)')
-        bindings.bind(field.value, self.model.pre_timer)
-        self.add_field(self.Field.PRE_TIMER, field, layout=form_layout, name='gen3PreTimer')
+        self.add_bound_field(self.Field.PRE_TIMER,
+            IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='Milliseconds to wait before the first phase (typically 1000–3000)'),
+            self.model.pre_timer, layout=form_layout, name='gen3PreTimer')
         # ----- target_frame -----
-        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The frame number you want to land on')
-        bindings.bind(field.value, self.model.target_frame)
-        self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout, name='gen3TargetFrame')
+        self.add_bound_field(self.Field.TARGET_FRAME,
+            IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The frame number you want to land on'),
+            self.model.target_frame, layout=form_layout, name='gen3TargetFrame')
         # ----- calibration -----
-        field = FloatInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Calibration offset in milliseconds (auto-updated after each run)')
-        bindings.bind(field.value, self.model.calibration)
-        self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen3Calibration')
+        self.add_bound_field(self.Field.CALIBRATION,
+            FloatInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Calibration offset in milliseconds (auto-updated after each run)'),
+            self.model.calibration, layout=form_layout, name='gen3Calibration')
         # ----- set_target_frame_btn -----
         field = QPushButton(self.Field.SET_TARGET_FRAME.value)
         self.name_service.set_name(field, 'gen3SetTargetFrameButton')
@@ -71,8 +67,7 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         field.pressed.connect(self.__on_set_target_frame)
         field_set.enabled = False
         # ----- frame_hit -----
-        bindings.bind(self.frame_hit_field.value, self.model.frame_hit)
-        self.add_field(self.Field.FRAME_HIT, self.frame_hit_field, name='gen3FrameHit')
+        self.add_bound_field(self.Field.FRAME_HIT, self.frame_hit_field, self.model.frame_hit, name='gen3FrameHit')
         # update field visibility
         self.__on_mode_changed()
 
