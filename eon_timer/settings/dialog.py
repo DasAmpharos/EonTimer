@@ -4,7 +4,6 @@ from PySide6.QtCore import QSettings, Qt
 from PySide6.QtWidgets import QDialog, QGridLayout, QMessageBox, QPushButton, QSizePolicy, QTabWidget
 
 from eon_timer.settings.action.widget import ActionSettingsWidget
-from eon_timer.settings.other.widget import OtherSettingsWidget
 from eon_timer.settings.theme.widget import ThemeSettingsWidget
 from eon_timer.settings.timer.widget import TimerSettingsWidget
 from eon_timer.util import pyside
@@ -20,7 +19,6 @@ class SettingsDialog(QDialog):
         action_settings_widget: ActionSettingsWidget,
         timer_settings_widget: TimerSettingsWidget,
         theme_settings_widget: ThemeSettingsWidget,
-        other_settings_widget: OtherSettingsWidget,
     ) -> None:
         super().__init__()
         self.settings: Final = settings
@@ -28,7 +26,6 @@ class SettingsDialog(QDialog):
         self.action_settings_widget: Final = action_settings_widget
         self.timer_settings_widget: Final = timer_settings_widget
         self.theme_settings_widget: Final = theme_settings_widget
-        self.other_settings_widget: Final = other_settings_widget
         self.__init_components()
 
     @log_method_calls()
@@ -45,7 +42,6 @@ class SettingsDialog(QDialog):
         tabs.addTab(self.action_settings_widget, 'Action')
         tabs.addTab(self.timer_settings_widget, 'Timer')
         tabs.addTab(self.theme_settings_widget, 'Theme')
-        tabs.addTab(self.other_settings_widget, 'Other')
         pyside.set_class(tabs, ['themeable-panel', 'themeable-border'])
         layout.addWidget(tabs, 0, 0, 1, 3)
         # ----- reset button -----
@@ -72,14 +68,12 @@ class SettingsDialog(QDialog):
         self.action_settings_widget.on_accepted()
         self.timer_settings_widget.on_accepted()
         self.theme_settings_widget.on_accepted()
-        self.other_settings_widget.on_accepted()
         self.done(QDialog.DialogCode.Accepted)
 
     def __on_cancelled(self) -> None:
         self.action_settings_widget.on_rejected()
         self.timer_settings_widget.on_rejected()
         self.theme_settings_widget.on_rejected()
-        self.other_settings_widget.on_rejected()
         self.done(QDialog.DialogCode.Rejected)
 
     def __on_reset(self):
@@ -94,7 +88,6 @@ class SettingsDialog(QDialog):
             self.action_settings_widget.on_reset()
             self.timer_settings_widget.on_reset()
             self.theme_settings_widget.on_reset()
-            self.other_settings_widget.on_reset()
             self.done(QDialog.DialogCode.Accepted)
 
     def closeEvent(self, arg__1):

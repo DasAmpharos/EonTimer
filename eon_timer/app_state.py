@@ -13,6 +13,7 @@ class AppState(QObject):
 
     running_changed: Final = Signal(bool)
     action_triggered: Final = Signal()
+    phases_changed: Final = Signal()
 
     def __init__(self):
         super().__init__()
@@ -28,6 +29,7 @@ class AppState(QObject):
     @phases.setter
     def phases(self, phases: list[float]):
         self.__phases = list(phases)
+        self.phases_changed.emit()
         self.reset()
 
     def set_phase(self, index: int, phase: float):

@@ -56,16 +56,19 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         # ----- pre_timer -----
         field = IntInputField()
         field.set_range(0, const.INT_MAX)
+        field.setToolTip('Milliseconds to wait before the first phase (typically 1000–3000)')
         bindings.bind(field.value, self.model.pre_timer)
         self.add_field(self.Field.PRE_TIMER, field, layout=form_layout, name='gen3PreTimer')
         # ----- target_frame -----
         field = IntInputField()
         field.set_range(0, const.INT_MAX)
+        field.setToolTip('The frame number you want to land on')
         bindings.bind(field.value, self.model.target_frame)
         self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout, name='gen3TargetFrame')
         # ----- calibration -----
         field = FloatInputField()
         field.set_range(const.INT_MIN, const.INT_MAX)
+        field.setToolTip('Calibration offset in milliseconds (auto-updated after each run)')
         bindings.bind(field.value, self.model.calibration)
         self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen3Calibration')
         # ----- set_target_frame_btn -----
@@ -77,6 +80,8 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         # ----- frame_hit -----
         self.frame_hit_field.set_range(0, const.INT_MAX)
         self.frame_hit_field.blank_behavior = BlankBehavior.BLANK
+        self.frame_hit_field.setPlaceholderText('Enter hit frame')
+        self.frame_hit_field.setToolTip('The frame you actually landed on — enter this after each run to calibrate')
         bindings.bind(self.frame_hit_field.value, self.model.frame_hit)
         self.add_field(self.Field.FRAME_HIT, self.frame_hit_field, name='gen3FrameHit')
         self.frame_hit_field.setText('')
@@ -91,6 +96,7 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
                 (self.model.pre_timer, self.Field.PRE_TIMER),
                 (self.model.target_frame, self.Field.TARGET_FRAME),
                 (self.model.calibration, self.Field.CALIBRATION),
+                (self.model.frame_hit, self.Field.FRAME_HIT),
             ]
         )
 
@@ -100,6 +106,9 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         if frame_hit is not None:
             super().calibrate()
             self.frame_hit_field.setText('')
+
+    def can_calibrate(self) -> bool:
+        return strings.strip_to_none(self.frame_hit_field.text()) is not None
 
     @override
     def setDisabled(self, disabled: bool):

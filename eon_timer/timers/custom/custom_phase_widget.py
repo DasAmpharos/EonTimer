@@ -91,12 +91,15 @@ class CustomPhaseWidget(QWidget):
         form.add_field(self.Field.HIT, self.__hit_field)
         self.__hit_field.setText('')
         # ----- remove_btn -----
-        button = QPushButton(chr(0xF057))
-        button.setFont('Font Awesome 5 Free')
-        button.setToolTip('Remove')
-        group_layout.addWidget(button, stretch=0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
-        button.clicked.connect(self.__on_remove_button_clicked)
-        pyside.set_class(button, ['danger'])
+        self.__remove_btn = QPushButton(chr(0xF057))
+        self.__remove_btn.setFont('Font Awesome 5 Free')
+        self.__remove_btn.setToolTip('Remove')
+        group_layout.addWidget(self.__remove_btn, stretch=0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
+        self.__remove_btn.clicked.connect(self.__on_remove_button_clicked)
+        pyside.set_class(self.__remove_btn, ['danger'])
+
+    def set_removable(self, removable: bool):
+        self.__remove_btn.setEnabled(removable)
 
     def calibrate(self):
         if strings.strip_to_none(self.__hit_field.text()) is not None:

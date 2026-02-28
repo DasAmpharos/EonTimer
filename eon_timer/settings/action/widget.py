@@ -1,7 +1,7 @@
 import functools
 from typing import Final
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor, QIcon, QPixmap
 from PySide6.QtWidgets import QColorDialog, QPushButton
 
@@ -17,6 +17,8 @@ from .model import ActionMode, ActionSettingsModel, ActionSound
 
 
 class ActionSettingsWidget(FormWidget):
+    test_action: Final = Signal()
+
     class Field(FormWidget.Field):
         MODE = 'Mode'
         SOUND = 'Sound'
@@ -39,14 +41,17 @@ class ActionSettingsWidget(FormWidget):
         self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
         self._mode_field = EnumComboBox(ActionMode, self.model.mode.get())
+        self._mode_field.setToolTip('Whether to use an audio cue, visual flash, or both')
         self.add_field(self.Field.MODE, self._mode_field, name='actionSettingsMode')
         # ----- sound -----
         self._sound_field = EnumComboBox(ActionSound, self.model.sound.get())
+        self._sound_field.setToolTip('Built-in sound to play when the action fires')
         self._sound_field.value_changed.connect(self.__on_sound_changed)
         self.add_field(self.Field.SOUND, self._sound_field, name='actionSettingsSound')
         # ----- custom_sound -----
         self._custom_sound_field = FileSelectorWidget(title='Select Sound', filter='Sound Files (*.wav *.mp3)')
         self._custom_sound_field.file = self.model.custom_sound.get()
+        self._custom_sound_field.setToolTip('Path to a custom .wav or .mp3 file to play instead of a built-in sound')
         self.add_field(
             self.Field.CUSTOM_SOUND,
             self._custom_sound_field,
@@ -56,16 +61,25 @@ class ActionSettingsWidget(FormWidget):
         # ----- color -----
         self._color_button = QPushButton()
         self._color_button.clicked.connect(functools.partial(self.__on_color_clicked, self._color_button))
+        self._color_button.setToolTip('Color used for the visual flash overlay')
         self.add_field(self.Field.COLOR, self._color_button, name='actionSettingsColor')
         self.__set_icon_color(self._color_button)
         # ----- interval -----
         self._interval_field = IntInputField(value=self.model.interval.get())
         self._interval_field.set_range(0, const.INT_MAX)
+        self._interval_field.setToolTip('Milliseconds between consecutive action cues (e.g. 500 = two cues 500 ms apart)')
         self.add_field(self.Field.INTERVAL, self._interval_field, name='actionSettingsInterval')
         # ----- count -----
         self._count_field = IntInputField(value=self.model.count.get())
         self._count_field.set_range(0, const.INT_MAX)
+        self._count_field.setToolTip('Number of times the action repeats before the phase ends (set 1 for a single cue)')
         self.add_field(self.Field.COUNT, self._count_field, name='actionSettingsCount')
+        # ----- test button -----
+        test_btn = QPushButton('Test Action')
+        test_btn.setToolTip('Fire the current action once to preview the sound/visual settings')
+        self.name_service.set_name(test_btn, 'actionSettingsTestButton')
+        test_btn.clicked.connect(self.test_action.emit)
+        self._layout.add_row(test_btn)
 
     def __on_sound_changed(self, sound: ActionSound) -> None:
         self.set_visible(self.Field.CUSTOM_SOUND, sound == ActionSound.CUSTOM)

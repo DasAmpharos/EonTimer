@@ -12,7 +12,6 @@ from eon_timer.settings.action.model import ActionSettingsModel
 from eon_timer.settings.action.widget import ActionSettingsWidget
 from eon_timer.settings.dialog import SettingsDialog
 from eon_timer.settings.other.update_model import UpdateSettingsModel
-from eon_timer.settings.other.widget import OtherSettingsWidget
 from eon_timer.settings.theme.model import ThemeSettingsModel
 from eon_timer.settings.theme.widget import ThemeSettingsWidget
 from eon_timer.settings.timer.model import TimerSettingsModel
@@ -83,7 +82,7 @@ def build(app: QApplication) -> AppWindow:
     custom_timer = CustomTimer(calibrator)
 
     # Timer display widget (top bar showing countdown)
-    timer_widget = TimerWidget(app_state, name_service)
+    timer_widget = TimerWidget(app_state, action_settings, name_service)
 
     # Action handling (audio + visual feedback)
     sound_manager = SoundManager()
@@ -93,21 +92,19 @@ def build(app: QApplication) -> AppWindow:
     # Timer input widgets
     gen3_widget = Gen3TimerWidget(app_state, gen3_model, gen3_timer, name_service)
     gen4_widget = Gen4TimerWidget(gen4_model, gen4_timer, name_service)
-    gen5_widget = Gen5TimerWidget(gen5_model, gen5_timer, name_service)
+    gen5_widget = Gen5TimerWidget(app_state, gen5_model, gen5_timer, name_service)
     custom_widget = CustomTimerWidget(custom_timer, custom_model, calibrator, name_service)
 
     # Settings widgets
     action_settings_widget = ActionSettingsWidget(name_service, action_settings)
-    timer_settings_widget = TimerSettingsWidget(name_service, timer_settings)
+    timer_settings_widget = TimerSettingsWidget(name_service, timer_settings, update_settings)
     theme_settings_widget = ThemeSettingsWidget(theme_settings, theme_manager, name_service)
-    other_settings_widget = OtherSettingsWidget(update_settings, name_service)
     settings_dialog = SettingsDialog(
         settings,
         name_service,
         action_settings_widget,
         timer_settings_widget,
         theme_settings_widget,
-        other_settings_widget,
     )
 
     update_manager = UpdateManager(update_settings)
@@ -125,7 +122,11 @@ def build(app: QApplication) -> AppWindow:
         settings_dialog,
         settings,
     )
-    app_window = AppWindow(app_widget, update_manager, name_service)
+    app_window = AppWindow(app_widget, update_manager, name_service, settings)
+
+    # Wire up new signals
+    app_widget.status_message.connect(app_window.statusBar().showMessage)
+    action_settings_widget.test_action.connect(_actions.trigger)
 
     # Theme engine wires itself reactively; must be created after app_window and settings_dialog
     _theme_engine = ThemeEngine(app_window, settings_dialog, theme_settings, theme_manager)

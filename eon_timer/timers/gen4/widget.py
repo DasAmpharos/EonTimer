@@ -46,26 +46,32 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
         # ----- calibrated_delay -----
         field = IntInputField()
         field.set_range(const.INT_MIN, const.INT_MAX)
+        field.setToolTip('Your console-specific delay calibration (auto-updated after each run)')
         bindings.bind(field.value, self.model.calibrated_delay)
         self.add_field(self.Field.CALIBRATED_DELAY, field, layout=form_layout, name='gen4CalibratedDelay')
         # ----- calibrated_second -----
         field = IntInputField()
         field.set_range(0, const.INT_MAX)
+        field.setToolTip('Your console-specific second calibration (auto-updated after each run)')
         bindings.bind(field.value, self.model.calibrated_second)
         self.add_field(self.Field.CALIBRATED_SECOND, field, layout=form_layout, name='gen4CalibratedSecond')
         # ----- target_delay -----
         field = IntInputField()
         field.set_range(0, const.INT_MAX)
+        field.setToolTip('The delay value from your target seed')
         bindings.bind(field.value, self.model.target_delay)
         self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen4TargetDelay')
         # ----- target_second -----
         field = IntInputField()
         field.set_range(0, const.INT_MAX)
+        field.setToolTip('The second value from your target seed')
         bindings.bind(field.value, self.model.target_second)
         self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen4TimerSecond')
         # ----- delay_hit -----
         self.delay_hit_field.set_range(0, const.INT_MAX)
         self.delay_hit_field.blank_behavior = BlankBehavior.BLANK
+        self.delay_hit_field.setPlaceholderText('Enter hit delay')
+        self.delay_hit_field.setToolTip('The delay you actually hit — enter this after each run to calibrate')
         bindings.bind(self.delay_hit_field.value, self.model.delay_hit)
         self.add_field(self.Field.DELAY_HIT, self.delay_hit_field, name='gen4DelayHit')
         self.delay_hit_field.setText('')
@@ -78,6 +84,7 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
                 (self.model.target_second, self.Field.TARGET_SECOND),
                 (self.model.calibrated_delay, self.Field.CALIBRATED_DELAY),
                 (self.model.calibrated_second, self.Field.CALIBRATED_SECOND),
+                (self.model.delay_hit, self.Field.DELAY_HIT),
             ]
         )
 
@@ -86,3 +93,6 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
         if strings.strip_to_none(self.delay_hit_field.text()) is not None:
             super().calibrate()
             self.delay_hit_field.setText('')
+
+    def can_calibrate(self) -> bool:
+        return strings.strip_to_none(self.delay_hit_field.text()) is not None
