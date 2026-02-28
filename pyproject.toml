@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "EonTimer"
+version = "3.0.0"
+requires-python = ">=3.14"
+dependencies = [
+    "PySide6>=6.7",
+    "pillow>=10.3",
+    "platformdirs>=4.2",
+    "libsass>=0.23",
+    "loguru>=0.7",
+    "requests>=2.32",
+]
+
+[dependency-groups]
+build = [
+    "pyinstaller>=6.7",
+    "pyinstaller-hooks-contrib>=2024.6",
+]
+dev = [
+    "pytest>=9.0.2",
+    "ruff>=0.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["eon_timer"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = [
+    "E501",  # line-too-long: enforced separately by formatter if desired
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]  # re-exports in __init__ files are intentional
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+

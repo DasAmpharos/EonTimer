@@ -4,6 +4,7 @@
 # python
 __pycache__
 venv
+.venv
 # generated
 main.css
 config.json

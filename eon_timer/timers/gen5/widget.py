@@ -1,5 +1,3 @@
-import functools
-import logging
 from typing import Final, override
 
 from PySide6.QtCore import Qt
@@ -7,7 +5,6 @@ from PySide6.QtWidgets import QFrame, QScrollArea, QSizePolicy, QVBoxLayout, QWi
 
 from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside, strings
-from eon_timer.util.injector import component
 from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
@@ -15,11 +12,11 @@ from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from eon_timer.util.pyside.numeric_input_field import BlankBehavior, IntInputField
+
 from .model import Gen5Mode, Gen5Model
 from .timer import Gen5Timer
 
 
-@component()
 class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
     class Field(FormWidget.Field):
         MODE = 'Mode'
@@ -72,10 +69,7 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(scroll_pane)
         self._layout.add_row(scroll_area)
-        scroll_area.setSizePolicy(
-            QSizePolicy.Expanding,
-            QSizePolicy.Expanding
-        )
+        scroll_area.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # ----- form -----
         form_widget = QWidget()
         self.name_service.set_name(form_widget, 'gen5FormWidget')
@@ -138,33 +132,17 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
 
     @override
     def _init_listeners(self):
-        def field_changed(field: Gen5TimerWidget.Field,
-                          event: PropertyChangeEvent) -> None:
-            if not self.resetting:
-                logging.info(f'> INFO: Gen5Widget#{field}: {event.new_value}')
-                self.timer_changed.emit()
-
-        # mode
-        handler = functools.partial(field_changed, self.Field.MODE)
-        self.model.mode.on_change(handler)
-        # target_delay
-        handler = functools.partial(field_changed, self.Field.TARGET_DELAY)
-        self.model.target_delay.on_change(handler)
-        # target_second
-        handler = functools.partial(field_changed, self.Field.TARGET_SECOND)
-        self.model.target_second.on_change(handler)
-        # target_advances
-        handler = functools.partial(field_changed, self.Field.TARGET_ADVANCES)
-        self.model.target_advances.on_change(handler)
-        # calibration
-        handler = functools.partial(field_changed, self.Field.CALIBRATION)
-        self.model.calibration.on_change(handler)
-        # entralink_calibration
-        handler = functools.partial(field_changed, self.Field.ENTRALINK_CALIBRATION)
-        self.model.entralink_calibration.on_change(handler)
-        # frame_calibration
-        handler = functools.partial(field_changed, self.Field.FRAME_CALIBRATION)
-        self.model.frame_calibration.on_change(handler)
+        self._register_field_listeners(
+            [
+                (self.model.mode, self.Field.MODE),
+                (self.model.target_delay, self.Field.TARGET_DELAY),
+                (self.model.target_second, self.Field.TARGET_SECOND),
+                (self.model.target_advances, self.Field.TARGET_ADVANCES),
+                (self.model.calibration, self.Field.CALIBRATION),
+                (self.model.entralink_calibration, self.Field.ENTRALINK_CALIBRATION),
+                (self.model.frame_calibration, self.Field.FRAME_CALIBRATION),
+            ]
+        )
 
     @override
     def calibrate(self):
@@ -190,18 +168,13 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
                 return delay_hit is not None and second_hit is not None and advances_hit is not None
 
     def __on_mode_changed(self, event: PropertyChangeEvent[Gen5Mode]):
-        self.set_visible(self.Field.TARGET_DELAY,
-                         event.new_value != Gen5Mode.STANDARD)
-        self.set_visible(self.Field.TARGET_ADVANCES,
-                         event.new_value == Gen5Mode.ENTRALINK_PLUS)
-        self.set_visible(self.Field.ENTRALINK_CALIBRATION,
-                         event.new_value == Gen5Mode.ENTRALINK or
-                         event.new_value == Gen5Mode.ENTRALINK_PLUS)
-        self.set_visible(self.Field.FRAME_CALIBRATION,
-                         event.new_value == Gen5Mode.ENTRALINK_PLUS)
-        self.set_visible(self.Field.DELAY_HIT,
-                         event.new_value != Gen5Mode.STANDARD)
-        self.set_visible(self.Field.SECOND_HIT,
-                         event.new_value != Gen5Mode.C_GEAR)
-        self.set_visible(self.Field.ADVANCES_HIT,
-                         event.new_value == Gen5Mode.ENTRALINK_PLUS)
+        self.set_visible(self.Field.TARGET_DELAY, event.new_value != Gen5Mode.STANDARD)
+        self.set_visible(self.Field.TARGET_ADVANCES, event.new_value == Gen5Mode.ENTRALINK_PLUS)
+        self.set_visible(
+            self.Field.ENTRALINK_CALIBRATION,
+            event.new_value == Gen5Mode.ENTRALINK or event.new_value == Gen5Mode.ENTRALINK_PLUS,
+        )
+        self.set_visible(self.Field.FRAME_CALIBRATION, event.new_value == Gen5Mode.ENTRALINK_PLUS)
+        self.set_visible(self.Field.DELAY_HIT, event.new_value != Gen5Mode.STANDARD)
+        self.set_visible(self.Field.SECOND_HIT, event.new_value != Gen5Mode.C_GEAR)
+        self.set_visible(self.Field.ADVANCES_HIT, event.new_value == Gen5Mode.ENTRALINK_PLUS)

@@ -1,19 +1,24 @@
 from typing import Callable, Final
 
+from PySide6.QtCore import QObject, Slot
+
 from eon_timer.app_state import AppState
 from eon_timer.settings.action.model import ActionMode, ActionSettingsModel, ActionSound
-from eon_timer.util.injector import component
+
 from .sound_manager import SoundManager
 from .visual_manager import VisualManager
 
 
-@component()
-class Actions:
-    def __init__(self,
-                 state: AppState,
-                 sound_manager: SoundManager,
-                 visual_manager: VisualManager,
-                 action_settings: ActionSettingsModel):
+class Actions(QObject):
+    def __init__(
+        self,
+        state: AppState,
+        sound_manager: SoundManager,
+        visual_manager: VisualManager,
+        action_settings: ActionSettingsModel,
+    ):
+        # Use state as parent so Qt manages lifetime and ensures trigger() runs in the main thread
+        QObject.__init__(self, state)
         self.sound_manager: Final = sound_manager
         self.visual_manager: Final = visual_manager
         self.action_settings: Final = action_settings
@@ -43,6 +48,7 @@ class Actions:
             visual_action = self.visual_manager.activate
         self.__visual_action = visual_action
 
+    @Slot()
     def trigger(self):
         self.__audio_action()
         self.__visual_action()

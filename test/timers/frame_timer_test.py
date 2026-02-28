@@ -1,21 +1,15 @@
 import unittest
 from unittest.mock import Mock
 
-from eon_timer.settings.timer.model import Console, TimerSettingsModel
 from eon_timer.timers import Calibrator, FrameTimer, VariableFrameTimer
 from eon_timer.util import const
-from eon_timer.util.properties.property import EnumProperty, FloatProperty
+from test.helpers import build_mock_timer_settings
 
 
 class FrameTimerTest(unittest.TestCase):
     def setUp(self):
-        timer_settings = Mock(spec=TimerSettingsModel)
-        timer_settings.console = Mock(spec=EnumProperty)
-        timer_settings.console.get.return_value = Console.CUSTOM
-        timer_settings.custom_framerate = Mock(FloatProperty)
-        timer_settings.custom_framerate.get.return_value = 1.0
         self.frame_timer = FrameTimer(
-            Calibrator(timer_settings),
+            Calibrator(build_mock_timer_settings(fps=1000.0)),
         )
 
     def test_create(self):

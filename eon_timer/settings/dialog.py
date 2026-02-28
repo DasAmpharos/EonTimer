@@ -1,9 +1,8 @@
 from typing import Final
 
 from PySide6.QtCore import QSettings, Qt
-from PySide6.QtWidgets import (QDialog, QGridLayout, QMessageBox, QPushButton, QSizePolicy, QTabWidget)
+from PySide6.QtWidgets import QDialog, QGridLayout, QMessageBox, QPushButton, QSizePolicy, QTabWidget
 
-from eon_timer import component
 from eon_timer.settings.action.widget import ActionSettingsWidget
 from eon_timer.settings.other.widget import OtherSettingsWidget
 from eon_timer.settings.theme.widget import ThemeSettingsWidget
@@ -13,15 +12,16 @@ from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 
 
-@component()
 class SettingsDialog(QDialog):
-    def __init__(self,
-                 settings: QSettings,
-                 name_service: NameService,
-                 action_settings_widget: ActionSettingsWidget,
-                 timer_settings_widget: TimerSettingsWidget,
-                 theme_settings_widget: ThemeSettingsWidget,
-                 other_settings_widget: OtherSettingsWidget) -> None:
+    def __init__(
+        self,
+        settings: QSettings,
+        name_service: NameService,
+        action_settings_widget: ActionSettingsWidget,
+        timer_settings_widget: TimerSettingsWidget,
+        theme_settings_widget: ThemeSettingsWidget,
+        other_settings_widget: OtherSettingsWidget,
+    ) -> None:
         super().__init__()
         self.settings: Final = settings
         self.name_service: Final = name_service
@@ -35,10 +35,7 @@ class SettingsDialog(QDialog):
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'settingsDialog')
         self.setWindowTitle('Settings')
-        self.setWindowFlags(Qt.Dialog |
-                            Qt.WindowTitleHint |
-                            Qt.CustomizeWindowHint |
-                            Qt.WindowCloseButtonHint)
+        self.setWindowFlags(Qt.Dialog | Qt.WindowTitleHint | Qt.CustomizeWindowHint | Qt.WindowCloseButtonHint)
         # ----- layout -----
         layout = QGridLayout(self)
         layout.setSpacing(10)
@@ -52,7 +49,7 @@ class SettingsDialog(QDialog):
         pyside.set_class(tabs, ['themeable-panel', 'themeable-border'])
         layout.addWidget(tabs, 0, 0, 1, 3)
         # ----- reset button -----
-        button = QPushButton(chr(0xf2ea))
+        button = QPushButton(chr(0xF2EA))
         button.setFont('Font Awesome 5 Free')
         button.clicked.connect(self.__on_reset)
         button.setToolTip('Reset Settings')
@@ -86,11 +83,13 @@ class SettingsDialog(QDialog):
         self.done(QDialog.DialogCode.Rejected)
 
     def __on_reset(self):
-        reply = QMessageBox.warning(self,
-                                    'Warning',
-                                    'Are you sure you want to reset all settings? This operation cannot be undone.',
-                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                                    QMessageBox.StandardButton.No)
+        reply = QMessageBox.warning(
+            self,
+            'Warning',
+            'Are you sure you want to reset all settings? This operation cannot be undone.',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
         if reply == QMessageBox.StandardButton.Yes:
             self.action_settings_widget.on_reset()
             self.timer_settings_widget.on_reset()

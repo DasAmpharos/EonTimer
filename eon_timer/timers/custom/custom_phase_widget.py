@@ -14,6 +14,7 @@ from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.numeric_input_field import BlankBehavior, FloatInputField, IntInputField, Radix
+
 from .custom_phase import CustomPhase
 
 
@@ -27,13 +28,10 @@ class CustomPhaseWidget(QWidget):
         CALIBRATION = 'Calibration'
         HIT = 'Hit'
 
-    def __init__(self,
-                 index: int,
-                 model: CustomPhase,
-                 calibrator: Calibrator):
+    def __init__(self, index: int, model: CustomPhase, calibrator: Calibrator):
         super().__init__()
         self.logger: Final = loggers.get_logger(self)
-        self.logger.debug('__init__(index=%s)', index)
+        self.logger.debug(f'__init__(index={index})')
 
         self.model: Final = model
         self.calibrator: Final = calibrator
@@ -73,7 +71,7 @@ class CustomPhaseWidget(QWidget):
         # ----- unit -----
         field = EnumComboBox(CustomPhase.Unit)
         bindings.bind_enum_combobox(field, self.model.unit)
-        field.value.on_change(self.__on_unit_changed)
+        field.value_changed.connect(self.__on_unit_changed)
         form.add_field(self.Field.UNIT, field)
         self.__on_unit_changed()
         # ----- target -----
@@ -93,7 +91,7 @@ class CustomPhaseWidget(QWidget):
         form.add_field(self.Field.HIT, self.__hit_field)
         self.__hit_field.setText('')
         # ----- remove_btn -----
-        button = QPushButton(chr(0xf057))
+        button = QPushButton(chr(0xF057))
         button.setFont('Font Awesome 5 Free')
         button.setToolTip('Remove')
         group_layout.addWidget(button, stretch=0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
@@ -109,9 +107,7 @@ class CustomPhaseWidget(QWidget):
             self.model.calibration.add(calibration)
             self.model.hit.set(None)
 
-    def __update_index(self,
-                       label: QLabel,
-                       event: PropertyChangeEvent[int] | None = None):
+    def __update_index(self, label: QLabel, event: PropertyChangeEvent[int] | None = None):
         index = self.index.get()
         if event is not None:
             index = event.new_value
@@ -120,10 +116,9 @@ class CustomPhaseWidget(QWidget):
     def __on_value_changed(self, event: PropertyChangeEvent[int | float]):
         self.changed.emit()
 
-    def __on_unit_changed(self, event: PropertyChangeEvent[CustomPhase.Unit] | None = None):
-        unit = self.unit
-        if event is not None:
-            unit = event.new_value
+    def __on_unit_changed(self, unit: CustomPhase.Unit | None = None):
+        if unit is None:
+            unit = self.unit
 
         radix = Radix.HEXADECIMAL if unit == CustomPhase.Unit.HEX else Radix.DECIMAL
         self.__target_field.radix = radix

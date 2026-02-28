@@ -5,25 +5,20 @@ from PySide6.QtWidgets import QGridLayout, QLabel, QSizePolicy, QWidget
 
 
 class FormLayout:
-    """ Wrapper around QGridLayout """
+    """Wrapper around QGridLayout"""
 
     def __init__(self, parent: QWidget, spacing: int = 10) -> None:
         self.__layout: Final = QGridLayout(parent)
         self.__layout.setSpacing(spacing)
         self.__current_row = 0
 
-    def add_row(self,
-                field: QWidget,
-                label: Optional[QLabel] = None) -> int:
+    def add_row(self, field: QWidget, label: Optional[QLabel] = None) -> int:
         row = self.__current_row
         self.set_row(row, field, label)
         self.__current_row += 1
         return row
 
-    def set_row(self,
-                row: int,
-                field: QWidget,
-                label: Optional[QLabel] = None) -> None:
+    def set_row(self, row: int, field: QWidget, label: Optional[QLabel] = None) -> None:
         column = 0 if label is None else 1
         column_span = 2 if label is None else 1
 
@@ -34,8 +29,7 @@ class FormLayout:
         field.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.__layout.addWidget(field, row, column, 1, column_span)
 
-    def remove_row(self,
-                   row: int) -> None:
+    def remove_row(self, row: int) -> None:
         i1 = self.__layout.itemAtPosition(row, 0)
         i2 = self.__layout.itemAtPosition(row, 1)
 

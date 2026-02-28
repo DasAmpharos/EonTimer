@@ -1,39 +1,39 @@
 from typing import Final
 
 from PySide6.QtCore import QSettings, Qt
-from PySide6.QtWidgets import *
+from PySide6.QtWidgets import QDialog, QGridLayout, QMessageBox, QPushButton, QSizePolicy, QTabWidget, QWidget
 
 from eon_timer.app_state import AppState
 from eon_timer.phase_runner import PhaseRunner
 from eon_timer.settings.dialog import SettingsDialog
 from eon_timer.timer_widget import TimerWidget
 from eon_timer.timers.custom.widget import CustomTimerWidget
-from eon_timer.timers.gen3 import Gen3TimerWidget
-from eon_timer.timers.gen4 import Gen4TimerWidget
-from eon_timer.timers.gen5 import Gen5TimerWidget
+from eon_timer.timers.gen3.widget import Gen3TimerWidget
+from eon_timer.timers.gen4.widget import Gen4TimerWidget
+from eon_timer.timers.gen5.widget import Gen5TimerWidget
 from eon_timer.util import pyside
 from eon_timer.util.clock import Clock
-from eon_timer.util.injector import component
-from eon_timer.util.injector.lifecycle import CloseListener
+from eon_timer.util.lifecycle import CloseListener
 from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 
 
-@component()
 class AppWidget(QWidget, CloseListener):
     TAB_INDEX: Final = 'tab_index'
 
-    def __init__(self,
-                 state: AppState,
-                 phase_runner: PhaseRunner,
-                 name_service: NameService,
-                 timer_widget: TimerWidget,
-                 gen5_timer_widget: Gen5TimerWidget,
-                 gen4_timer_widget: Gen4TimerWidget,
-                 gen3_timer_widget: Gen3TimerWidget,
-                 custom_timer_widget: CustomTimerWidget,
-                 settings_dialog: SettingsDialog,
-                 settings: QSettings) -> None:
+    def __init__(
+        self,
+        state: AppState,
+        phase_runner: PhaseRunner,
+        name_service: NameService,
+        timer_widget: TimerWidget,
+        gen5_timer_widget: Gen5TimerWidget,
+        gen4_timer_widget: Gen4TimerWidget,
+        gen3_timer_widget: Gen3TimerWidget,
+        custom_timer_widget: CustomTimerWidget,
+        settings_dialog: SettingsDialog,
+        settings: QSettings,
+    ) -> None:
         super().__init__()
         self.state: Final = state
         self.phase_runner: Final = phase_runner
@@ -84,14 +84,14 @@ class AppWidget(QWidget, CloseListener):
         self.tab_widget.setCurrentIndex(current_index)
 
         # ----- settings_btn -----
-        self.settings_btn.setText(chr(0xf013))
+        self.settings_btn.setText(chr(0xF013))
         self.settings_btn.setFont('Font Awesome 5 Free')
         self.settings_btn.clicked.connect(self.__on_settings_btn_clicked)
         self.settings_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.name_service.set_name(self.settings_btn, 'settingsButton')
         layout.addWidget(self.settings_btn, 2, 0)
         # ----- reset_btn -----
-        self.reset_btn.setText(chr(0xf2ea))
+        self.reset_btn.setText(chr(0xF2EA))
         self.reset_btn.setFont('Font Awesome 5 Free')
         self.reset_btn.clicked.connect(self.__on_reset_btn_clicked)
         self.reset_btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -133,11 +133,13 @@ class AppWidget(QWidget, CloseListener):
             self.__update_phases()
 
     def __on_reset_btn_clicked(self):
-        reply = QMessageBox.warning(self,
-                                    'Warning',
-                                    'Are you sure you want to reset the current timer? This operation cannot be undone.',
-                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                                    QMessageBox.StandardButton.No)
+        reply = QMessageBox.warning(
+            self,
+            'Warning',
+            'Are you sure you want to reset the current timer? This operation cannot be undone.',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
         if reply == QMessageBox.StandardButton.Yes:
             current_widget = self.tab_widget.currentWidget()
             reset = getattr(current_widget, 'reset')

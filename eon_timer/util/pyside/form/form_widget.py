@@ -4,6 +4,7 @@ from typing import Final, Optional
 from PySide6.QtWidgets import QLabel, QWidget
 
 from eon_timer.util.pyside.name_service import NameService
+
 from .field_set import FieldSet
 from .form_layout import FormLayout
 
@@ -12,9 +13,7 @@ class FormWidget(QWidget):
     class Field(StrEnum):
         pass
 
-    def __init__(self,
-                 name_service: NameService | None = None,
-                 parent: QWidget | None = None) -> None:
+    def __init__(self, name_service: NameService | None = None, parent: QWidget | None = None) -> None:
         QWidget.__init__(self, parent)
 
         typename = type(self)
@@ -22,13 +21,15 @@ class FormWidget(QWidget):
         self.__field_sets: Final[dict[typename.Field, FieldSet]] = {}
         self.name_service: Final = name_service
 
-    def add_field(self,
-                  field: Field,
-                  widget: QWidget,
-                  with_label: bool = True,
-                  layout: Optional[FormLayout] = None,
-                  visible: bool = True,
-                  name: str | None = None) -> FieldSet:
+    def add_field(
+        self,
+        field: Field,
+        widget: QWidget,
+        with_label: bool = True,
+        layout: Optional[FormLayout] = None,
+        visible: bool = True,
+        name: str | None = None,
+    ) -> FieldSet:
         layout = layout or self._layout
         label = QLabel(str(field)) if with_label else None
         if name is not None and self.name_service is not None:

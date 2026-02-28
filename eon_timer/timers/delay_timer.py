@@ -1,27 +1,24 @@
 from typing import Final
 
 from eon_timer import timers
-from eon_timer.util.injector import component
+
 from .calibrator import Calibrator
 from .second_timer import SecondTimer
 
 
-@component()
 class DelayTimer:
     CLOSE_THRESHOLD: Final = 167
     UPDATE_FACTOR: Final = 1.0
     CLOSE_UPDATE_FACTOR: Final = 0.75
 
-    def __init__(self,
-                 calibrator: Calibrator,
-                 second_timer: SecondTimer):
+    def __init__(self, calibrator: Calibrator, second_timer: SecondTimer):
         self.calibrator: Final = calibrator
         self.second_timer: Final = second_timer
 
     def create(self, target_delay: int, target_second: int, calibration: float) -> list[float]:
         return [
             self.__create_phase1(target_delay, target_second, calibration),
-            self.__create_phase2(target_delay, calibration)
+            self.__create_phase2(target_delay, calibration),
         ]
 
     def __create_phase1(self, target_delay: int, target_second: int, calibration: float) -> float:

@@ -15,8 +15,7 @@ from PySide6.QtWidgets import QApplication
 
 from eon_timer import resources
 from eon_timer.util import pyside
-from eon_timer.util.injector import component
-from eon_timer.util.injector.lifecycle import StartListener
+from eon_timer.util.lifecycle import StartListener
 
 
 @dataclass
@@ -37,7 +36,6 @@ class InstalledTheme(Theme):
     location: str
 
 
-@component()
 class ThemeManager(QObject, StartListener):
     themes_changed: Final = Signal()
 
@@ -46,9 +44,9 @@ class ThemeManager(QObject, StartListener):
 
     def __init__(self, app: QApplication) -> None:
         super().__init__(None)
-        self.data_dir: Final = platformdirs.user_data_dir(appname=app.applicationName(),
-                                                          appauthor=app.organizationName(),
-                                                          ensure_exists=True)
+        self.data_dir: Final = platformdirs.user_data_dir(
+            appname=app.applicationName(), appauthor=app.organizationName(), ensure_exists=True
+        )
         theme_dir = os.path.join(self.data_dir, 'themes')
         self.bundled_theme_dir: Final = os.path.join(theme_dir, 'bundled')
         self.user_theme_dir: Final = os.path.join(theme_dir, 'user')

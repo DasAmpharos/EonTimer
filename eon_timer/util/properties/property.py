@@ -4,15 +4,14 @@ from typing import Callable, Final, Generic, Self, Type, TypeVar, final, overrid
 from PySide6.QtCore import QSettings
 
 from eon_timer.util import loggers
+
 from .property_change import PropertyChangeEvent, PropertyChangeListener
 
 T = TypeVar('T')
 
 
 class Property(Generic[T]):
-    def __init__(self,
-                 value: T | None = None,
-                 transient: bool = False):
+    def __init__(self, value: T | None = None, transient: bool = False):
         self.logger: Final = loggers.get_logger(self)
 
         self._value: T = value
@@ -23,7 +22,7 @@ class Property(Generic[T]):
     @final
     def read(self, settings: QSettings, name: str):
         self._value = self._read(settings, name)
-        self.logger.debug('read(name=%s) -> %s', name, self._value)
+        self.logger.debug(f'read(name={name}) -> {self._value}')
 
     def _read(self, settings: QSettings, name: str):
         return settings.value(name, self._initial_value)
@@ -31,7 +30,7 @@ class Property(Generic[T]):
     @final
     def write(self, settings: QSettings, name: str):
         self._write(settings, name)
-        self.logger.debug('write(name=%s, value=%s)', name, self._value)
+        self.logger.debug(f'write(name={name}, value={self._value})')
 
     def _write(self, settings: QSettings, name: str):
         settings.setValue(name, self._value)
@@ -58,9 +57,13 @@ class Property(Generic[T]):
     def reset(self):
         self.set(self._initial_value)
 
+    def fresh(self) -> 'Property[T]':
+        """Create a new instance with the same type/initial-value/transient, but no listeners."""
+        return type(self)(self._initial_value, self.transient)
+
     @final
     def notify(self, event: PropertyChangeEvent[T]):
-        for listener in self.__change_listeners:
+        for listener in list(self.__change_listeners):
             listener(event)
 
     @property
@@ -113,14 +116,15 @@ EnumT = TypeVar('EnumT', bound=Enum)
 
 
 class EnumProperty(Property[EnumT]):
-    def __init__(self,
-                 value: EnumT | None = None,
-                 enum_type: Type[EnumT] | None = None,
-                 transient: bool = False):
+    def __init__(self, value: EnumT | None = None, enum_type: Type[EnumT] | None = None, transient: bool = False):
         Property.__init__(self, value, transient)
         if enum_type is None and value is None:
             raise ValueError('enum_type must be specified if initial_value is None')
         self.enum_type: Final = enum_type or type(value)
+
+    @override
+    def fresh(self) -> 'EnumProperty[EnumT]':
+        return EnumProperty(self._initial_value, self.enum_type, self.transient)
 
     @override
     def _read(self, settings: QSettings, name: str):
@@ -128,19 +132,24 @@ class EnumProperty(Property[EnumT]):
         if self._initial_value is not None:
             initial_value = str(self._initial_value)
         value = settings.value(name, initial_value)
-        return self.enum_type(value)
+        try:
+            return self.enum_type(value)
+        except (ValueError, KeyError):
+            return self._initial_value
 
 
 class ListProperty(Property[list[T]]):
     ElementReader: Final = Callable[[QSettings], T]
     ElementWriter: Final = Callable[[QSettings, T], None]
 
-    def __init__(self,
-                 value: list[T] | None = None,
-                 element_type: Type[T] | None = None,
-                 element_reader: ElementReader | None = None,
-                 element_writer: ElementWriter | None = None,
-                 transient: bool = False):
+    def __init__(
+        self,
+        value: list[T] | None = None,
+        element_type: Type[T] | None = None,
+        element_reader: ElementReader | None = None,
+        element_writer: ElementWriter | None = None,
+        transient: bool = False,
+    ):
         Property.__init__(self, value, transient)
         if element_type is None and (value is None or len(value) == 0):
             raise ValueError('element_type must be specified if initial_value is None or empty')
@@ -154,7 +163,7 @@ class ListProperty(Property[list[T]]):
         count = settings.beginReadArray(name)
         for i in range(count):
             settings.setArrayIndex(i)
-            self.logger.debug('setArrayIndex(%d)', i)
+            self.logger.debug(f'setArrayIndex({i})')
             value = self.element_reader(settings)
             value_array.append(value)
         settings.endArray()
@@ -166,7 +175,7 @@ class ListProperty(Property[list[T]]):
         settings.beginWriteArray(name, count)
         for i, value in enumerate(self._value):
             settings.setArrayIndex(i)
-            self.logger.debug('setArrayIndex(%d)', i)
+            self.logger.debug(f'setArrayIndex({i})')
             self.element_writer(settings, value)
         settings.endArray()
 
@@ -190,6 +199,11 @@ class ListProperty(Property[list[T]]):
 
     def __len__(self):
         return len(self._value)
+
+    @override
+    def fresh(self) -> 'ListProperty[T]':
+        initial = list(self._initial_value) if self._initial_value else []
+        return ListProperty(initial, self.element_type, self.element_reader, self.element_writer, self.transient)
 
     @staticmethod
     def __default_element_reader(settings: QSettings) -> T:

@@ -1,5 +1,3 @@
-import functools
-import logging
 from typing import Final, override
 
 from PySide6.QtCore import Qt
@@ -7,18 +5,16 @@ from PySide6.QtWidgets import QGroupBox, QSizePolicy
 
 from eon_timer.timers.timer_widget import TimerWidget
 from eon_timer.util import const, pyside, strings
-from eon_timer.util.injector import component
 from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside.form import FormLayout, FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from eon_timer.util.pyside.numeric_input_field import BlankBehavior, IntInputField
+
 from .model import Gen4Model
 from .timer import Gen4Timer
 
 
-@component()
 class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
     class Field(FormWidget.Field):
         CALIBRATED_DELAY = 'Calibrated Delay'
@@ -76,24 +72,14 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
 
     @override
     def _init_listeners(self):
-        def field_changed(field: Gen4TimerWidget.Field,
-                          event: PropertyChangeEvent) -> None:
-            if not self.resetting:
-                logging.info(f'> INFO: Gen4Widget#{field}: {event.new_value}')
-                self.timer_changed.emit()
-
-        # target_delay
-        handler = functools.partial(field_changed, self.Field.TARGET_DELAY)
-        self.model.target_delay.on_change(handler)
-        # target_second
-        handler = functools.partial(field_changed, self.Field.TARGET_SECOND)
-        self.model.target_second.on_change(handler)
-        # target_frame
-        handler = functools.partial(field_changed, self.Field.CALIBRATED_DELAY)
-        self.model.calibrated_delay.on_change(handler)
-        # calibration
-        handler = functools.partial(field_changed, self.Field.CALIBRATED_SECOND)
-        self.model.calibrated_second.on_change(handler)
+        self._register_field_listeners(
+            [
+                (self.model.target_delay, self.Field.TARGET_DELAY),
+                (self.model.target_second, self.Field.TARGET_SECOND),
+                (self.model.calibrated_delay, self.Field.CALIBRATED_DELAY),
+                (self.model.calibrated_second, self.Field.CALIBRATED_SECOND),
+            ]
+        )
 
     @override
     def calibrate(self):

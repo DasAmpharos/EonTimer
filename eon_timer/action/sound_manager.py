@@ -5,10 +5,8 @@ from PySide6.QtMultimedia import QSoundEffect
 
 from eon_timer import resources
 from eon_timer.settings.action.model import ActionSound
-from eon_timer.util.injector import component
 
 
-@component()
 class SoundManager:
     def __init__(self):
         def predefined_sound(filename: str) -> QSoundEffect:

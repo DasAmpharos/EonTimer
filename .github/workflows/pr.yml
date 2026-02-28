@@ -1,0 +1,61 @@
+name: PR Checks
+
+on:
+  pull_request:
+
+concurrency:
+  group: pr-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install Dev Dependencies
+        run: uv sync --group dev
+
+      - name: Ruff Check
+        run: uv run ruff check eon_timer test
+
+      - name: Ruff Format
+        run: uv run ruff format --check eon_timer test
+
+  test:
+    name: Test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos
+          - ubuntu
+          - windows
+    runs-on: ${{ matrix.os }}-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install Dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu'
+        run: sudo apt update && sudo apt install -y libegl1-mesa-dev
+
+      - name: Install Dependencies
+        run: uv sync
+
+      - name: Unit Tests
+        run: uv run python -m unittest discover -v -s test -p "*_test.py"

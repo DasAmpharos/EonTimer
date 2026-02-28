@@ -13,10 +13,7 @@ class CustomPhase:
         ADVANCES = 'Advances'
         HEX = 'Seed (Hex)'
 
-    def __init__(self,
-                 unit: Unit = Unit.MILLISECONDS,
-                 value: int = 0,
-                 calibration: float = 0.0):
+    def __init__(self, unit: Unit = Unit.MILLISECONDS, value: int = 0, calibration: float = 0.0):
         self.unit: Final = EnumProperty(unit)
         self.target: Final = IntProperty(value)
         self.calibration: Final = FloatProperty(calibration)
@@ -37,11 +34,7 @@ class CustomPhase:
         settings.setValue('calibration', value.calibration.get())
 
     def __repr__(self):
-        return str({
-            'unit': self.unit.get(),
-            'value': self.target.get(),
-            'calibration': self.calibration.get()
-        })
+        return str({'unit': self.unit.get(), 'value': self.target.get(), 'calibration': self.calibration.get()})
 
     def dispose(self):
         self.unit.dispose()

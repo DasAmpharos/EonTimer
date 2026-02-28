@@ -2,7 +2,6 @@ from enum import StrEnum
 from typing import override
 
 from eon_timer.util.enum import EnhancedEnum
-from eon_timer.util.injector import component
 from eon_timer.util.properties.property import EnumProperty, IntProperty
 from eon_timer.util.properties.settings import Settings
 
@@ -14,7 +13,6 @@ class Gen5Mode(EnhancedEnum, StrEnum):
     ENTRALINK_PLUS = 'Entralink+'
 
 
-@component()
 class Gen5Model(Settings):
     mode = EnumProperty(Gen5Mode.STANDARD)
     calibration = IntProperty(-95)

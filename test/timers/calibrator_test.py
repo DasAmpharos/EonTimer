@@ -1,18 +1,12 @@
 import unittest
-from unittest.mock import Mock
 
-from eon_timer.settings.timer.model import Console, TimerSettingsModel
 from eon_timer.timers import Calibrator
-from eon_timer.util.properties.property import EnumProperty, FloatProperty
+from test.helpers import build_mock_timer_settings
 
 
 class CalibratorTest(unittest.TestCase):
     def setUp(self):
-        self.timer_settings = Mock(spec=TimerSettingsModel)
-        self.timer_settings.console = Mock(spec=EnumProperty)
-        self.timer_settings.console.get.return_value = Console.CUSTOM
-        self.timer_settings.custom_framerate = Mock(FloatProperty)
-        self.timer_settings.custom_framerate.get.return_value = 1.0
+        self.timer_settings = build_mock_timer_settings(fps=1000.0)
         self.calibrator = Calibrator(self.timer_settings)
 
     def test_to_delays(self):
@@ -26,17 +20,17 @@ class CalibratorTest(unittest.TestCase):
         self.assertEqual(3, self.calibrator.to_delays(3.0))
 
     def test_to_milliseconds(self):
-        self.timer_settings.custom_framerate.get.return_value = 1.0
+        self.timer_settings.custom_framerate.get.return_value = 1000.0  # 1000 fps → 1 ms/frame
         self.assertEqual(1.0, self.calibrator.to_milliseconds(1))
         self.assertEqual(2.0, self.calibrator.to_milliseconds(2))
         self.assertEqual(3.0, self.calibrator.to_milliseconds(3))
 
-        self.timer_settings.custom_framerate.get.return_value = 1.5
+        self.timer_settings.custom_framerate.get.return_value = 1000 / 1.5  # → 1.5 ms/frame
         self.assertEqual(1.5, self.calibrator.to_milliseconds(1))
         self.assertEqual(3, self.calibrator.to_milliseconds(2))
         self.assertEqual(4.5, self.calibrator.to_milliseconds(3))
 
-        self.timer_settings.custom_framerate.get.return_value = 2.0
+        self.timer_settings.custom_framerate.get.return_value = 500.0  # 500 fps → 2 ms/frame
         self.assertEqual(2.0, self.calibrator.to_milliseconds(1))
         self.assertEqual(4.0, self.calibrator.to_milliseconds(2))
         self.assertEqual(6.0, self.calibrator.to_milliseconds(3))
