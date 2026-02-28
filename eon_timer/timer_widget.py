@@ -1,7 +1,7 @@
 from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QProgressBar, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QProgressBar, QSizePolicy, QVBoxLayout, QWidget
 
 from eon_timer.app_state import AppState
 from eon_timer.settings.action.model import ActionSettingsModel
@@ -33,6 +33,9 @@ class TimerWidget(QGroupBox):
         # ===== current phase =====
         self.name_service.set_name(self.current_phase_lbl, 'currentPhaseValueLabel')
         self.current_phase_lbl.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        # Ignore horizontal size hint so the label never forces the parent GroupBox to resize;
+        # text clips naturally when the column is narrower than the content.
+        self.current_phase_lbl.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
         layout.addWidget(self.current_phase_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
         # ===== progress bar =====
         self.name_service.set_name(self.progress_bar, 'timerProgressBar')
