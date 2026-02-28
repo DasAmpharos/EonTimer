@@ -65,14 +65,10 @@ class ActionSettingsWidget(FormWidget):
         self.add_field(self.Field.COLOR, self._color_button, name='actionSettingsColor')
         self.__set_icon_color(self._color_button)
         # ----- interval -----
-        self._interval_field = IntInputField(value=self.model.interval.get())
-        self._interval_field.set_range(0, const.INT_MAX)
-        self._interval_field.setToolTip('Milliseconds between consecutive action cues (e.g. 500 = two cues 500 ms apart)')
+        self._interval_field = IntInputField(value=self.model.interval.get(), min_val=0, max_val=const.INT_MAX, tooltip='Milliseconds between consecutive action cues (e.g. 500 = two cues 500 ms apart)')
         self.add_field(self.Field.INTERVAL, self._interval_field, name='actionSettingsInterval')
         # ----- count -----
-        self._count_field = IntInputField(value=self.model.count.get())
-        self._count_field.set_range(0, const.INT_MAX)
-        self._count_field.setToolTip('Number of times the action repeats before the phase ends (set 1 for a single cue)')
+        self._count_field = IntInputField(value=self.model.count.get(), min_val=0, max_val=const.INT_MAX, tooltip='Number of times the action repeats before the phase ends (set 1 for a single cue)')
         self.add_field(self.Field.COUNT, self._count_field, name='actionSettingsCount')
         # ----- test button -----
         test_btn = QPushButton('Test Action')

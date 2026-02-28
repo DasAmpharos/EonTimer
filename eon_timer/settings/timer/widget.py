@@ -41,9 +41,7 @@ class TimerSettingsWidget(FormWidget):
         self._console_field.setToolTip('Select your game console to use the correct framerate')
         self.add_field(self.Field.CONSOLE, self._console_field, name='timerSettingsConsole')
         # ----- custom framerate -----
-        self._custom_framerate_field = FloatInputField(value=self.model.custom_framerate.get())
-        self._custom_framerate_field.set_range(0.001, INT_MAX)
-        self._custom_framerate_field.setToolTip('Frames per second for the "Custom" console option (must be > 0)')
+        self._custom_framerate_field = FloatInputField(value=self.model.custom_framerate.get(), min_val=0.001, max_val=INT_MAX, tooltip='Frames per second for the "Custom" console option (must be > 0)')
         self.add_field(
             self.Field.CUSTOM_FRAMERATE,
             self._custom_framerate_field,
@@ -51,9 +49,7 @@ class TimerSettingsWidget(FormWidget):
             name='timerSettingsCustomFramerate',
         )
         # ----- refresh interval -----
-        self._refresh_interval_field = IntInputField(value=self.model.refresh_interval.get())
-        self._refresh_interval_field.set_range(1, INT_MAX)
-        self._refresh_interval_field.setToolTip('How often (in ms) the timer display updates — lower is smoother but uses more CPU')
+        self._refresh_interval_field = IntInputField(value=self.model.refresh_interval.get(), min_val=1, max_val=INT_MAX, tooltip='How often (in ms) the timer display updates — lower is smoother but uses more CPU')
         self.add_field(self.Field.REFRESH_INTERVAL, self._refresh_interval_field, name='timerSettingsRefreshInterval')
         # ----- minimum length -----
         self._minimum_length_field = IntInputField(value=self.model.minimum_length.get())

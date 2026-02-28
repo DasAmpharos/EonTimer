@@ -37,9 +37,9 @@ class CustomPhaseWidget(QWidget):
         self.calibrator: Final = calibrator
         self.index: Final = IntProperty(index)
 
-        self.__target_field: Final = IntInputField()
-        self.__calibration_field: Final = FloatInputField()
-        self.__hit_field: Final = IntInputField()
+        self.__target_field: Final = IntInputField(min_val=0, max_val=INT_MAX)
+        self.__calibration_field: Final = FloatInputField(min_val=INT_MIN, max_val=INT_MAX)
+        self.__hit_field: Final = IntInputField(min_val=0, max_val=INT_MAX, blank_behavior=BlankBehavior.BLANK)
         self.__init_components()
 
     @log_method_calls()
@@ -75,21 +75,16 @@ class CustomPhaseWidget(QWidget):
         form.add_field(self.Field.UNIT, field)
         self.__on_unit_changed()
         # ----- target -----
-        self.__target_field.set_range(0, INT_MAX)
         bindings.bind(self.__target_field.value, self.model.target)
         self.__target_field.value.on_change(self.__on_value_changed)
         form.add_field(self.Field.TARGET, self.__target_field)
         # ----- calibration -----
-        self.__calibration_field.set_range(INT_MIN, INT_MAX)
         bindings.bind(self.__calibration_field.value, self.model.calibration)
         self.__calibration_field.value.on_change(self.__on_value_changed)
         form.add_field(self.Field.CALIBRATION, self.__calibration_field)
         # ----- hit_field -----
-        self.__hit_field.set_range(0, INT_MAX)
-        self.__hit_field.blank_behavior = BlankBehavior.BLANK
         bindings.bind(self.__hit_field.value, self.model.hit)
         form.add_field(self.Field.HIT, self.__hit_field)
-        self.__hit_field.setText('')
         # ----- remove_btn -----
         self.__remove_btn = QPushButton(chr(0xF057))
         self.__remove_btn.setFont('Font Awesome 5 Free')

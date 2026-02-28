@@ -165,10 +165,30 @@ class NumericInputField(QLineEdit, Generic[NumericT]):
 
 
 class IntInputField(NumericInputField[int]):
-    def __init__(self, value: int = 0, parent: QObject | None = None):
+    def __init__(
+        self,
+        value: int = 0,
+        *,
+        min_val: int | None = None,
+        max_val: int | None = None,
+        blank_behavior: BlankBehavior | None = None,
+        placeholder: str | None = None,
+        tooltip: str | None = None,
+        parent: QObject | None = None,
+    ):
         NumericInputField.__init__(self, IntProperty(value), parent)
         self.validator: Final = RadixValidator(lambda s, radix: int(s, radix))
         super().setValidator(self.validator)
+        if min_val is not None and max_val is not None:
+            self.set_range(min_val, max_val)
+        if blank_behavior is not None:
+            self.blank_behavior = blank_behavior
+        if placeholder is not None:
+            self.setPlaceholderText(placeholder)
+        if tooltip is not None:
+            self.setToolTip(tooltip)
+        if blank_behavior == BlankBehavior.BLANK:
+            self.setText('')
 
     @override
     def to_number(self, s: str | None) -> int | None:
@@ -221,11 +241,23 @@ class IntInputField(NumericInputField[int]):
 
 
 class FloatInputField(NumericInputField[float]):
-    def __init__(self, value: float = 0.0, parent: QObject | None = None):
+    def __init__(
+        self,
+        value: float = 0.0,
+        *,
+        min_val: float | None = None,
+        max_val: float | None = None,
+        tooltip: str | None = None,
+        parent: QObject | None = None,
+    ):
         NumericInputField.__init__(self, FloatProperty(value), parent)
         self.validator: Final = FloatValidator()
         super().setValidator(self.validator)
         self.precision = 2
+        if min_val is not None and max_val is not None:
+            self.set_range(min_val, max_val)
+        if tooltip is not None:
+            self.setToolTip(tooltip)
 
     @override
     def to_number(self, s: str | None) -> float | None:

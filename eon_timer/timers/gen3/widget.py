@@ -1,16 +1,16 @@
 from typing import Final, override
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGroupBox, QPushButton, QSizePolicy
+from PySide6.QtWidgets import QPushButton
 
 from eon_timer.app_state import AppState
 from eon_timer.timers.timer_widget import TimerWidget
-from eon_timer.util import const, pyside, strings
+from eon_timer.util import const, strings
 from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.properties import bindings
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
-from eon_timer.util.pyside.form import FormLayout, FormWidget
+from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from eon_timer.util.pyside.numeric_input_field import BlankBehavior, FloatInputField, IntInputField
 
@@ -29,7 +29,12 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
 
     def __init__(self, state: AppState, model: Gen3Model, timer: Gen3Timer, name_service: NameService) -> None:
         self.state: Final = state
-        self.frame_hit_field: Final = IntInputField()
+        self.frame_hit_field: Final = IntInputField(
+            min_val=0, max_val=const.INT_MAX,
+            blank_behavior=BlankBehavior.BLANK,
+            placeholder='Enter hit frame',
+            tooltip='The frame you actually landed on — enter this after each run to calibrate',
+        )
         FormWidget.__init__(self, name_service)
         TimerWidget.__init__(self, model, timer)
 
@@ -46,29 +51,17 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         self.model.mode.on_change(self.__on_mode_changed)
         self.add_field(self.Field.MODE, field, name='gen3Mode')
         # ----- form_group -----
-        form_group = QGroupBox()
-        self.name_service.set_name(form_group, 'gen3FormGroup')
-        self._layout.add_row(form_group)
-        form_layout = FormLayout(form_group)
-        form_layout.set_alignment(Qt.AlignTop)
-        pyside.set_class(form_group, ['themeable-panel', 'themeable-border'])
-        form_group.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        _, form_layout = self._add_form_group('gen3FormGroup')
         # ----- pre_timer -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        field.setToolTip('Milliseconds to wait before the first phase (typically 1000–3000)')
+        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='Milliseconds to wait before the first phase (typically 1000–3000)')
         bindings.bind(field.value, self.model.pre_timer)
         self.add_field(self.Field.PRE_TIMER, field, layout=form_layout, name='gen3PreTimer')
         # ----- target_frame -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        field.setToolTip('The frame number you want to land on')
+        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The frame number you want to land on')
         bindings.bind(field.value, self.model.target_frame)
         self.add_field(self.Field.TARGET_FRAME, field, layout=form_layout, name='gen3TargetFrame')
         # ----- calibration -----
-        field = FloatInputField()
-        field.set_range(const.INT_MIN, const.INT_MAX)
-        field.setToolTip('Calibration offset in milliseconds (auto-updated after each run)')
+        field = FloatInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Calibration offset in milliseconds (auto-updated after each run)')
         bindings.bind(field.value, self.model.calibration)
         self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen3Calibration')
         # ----- set_target_frame_btn -----
@@ -78,13 +71,8 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         field.pressed.connect(self.__on_set_target_frame)
         field_set.enabled = False
         # ----- frame_hit -----
-        self.frame_hit_field.set_range(0, const.INT_MAX)
-        self.frame_hit_field.blank_behavior = BlankBehavior.BLANK
-        self.frame_hit_field.setPlaceholderText('Enter hit frame')
-        self.frame_hit_field.setToolTip('The frame you actually landed on — enter this after each run to calibrate')
         bindings.bind(self.frame_hit_field.value, self.model.frame_hit)
         self.add_field(self.Field.FRAME_HIT, self.frame_hit_field, name='gen3FrameHit')
-        self.frame_hit_field.setText('')
         # update field visibility
         self.__on_mode_changed()
 

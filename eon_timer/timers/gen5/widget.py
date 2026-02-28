@@ -21,24 +21,36 @@ from .timer import Gen5Timer
 class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
     class Field(FormWidget.Field):
         MODE = 'Mode'
-        # target field names
         TARGET_DELAY = 'Target Delay'
         TARGET_SECOND = 'Target Second'
         TARGET_ADVANCES = 'Target Advances'
-        # calibration field names
         CALIBRATION = 'Calibration'
         ENTRALINK_CALIBRATION = 'Entralink Calibration'
         FRAME_CALIBRATION = 'Frame Calibration'
-        # result field names
         DELAY_HIT = 'Delay Hit'
         SECOND_HIT = 'Second Hit'
         ADVANCES_HIT = 'Advances Hit'
 
     def __init__(self, state: AppState, model: Gen5Model, timer: Gen5Timer, name_service: NameService):
         self.state: Final = state
-        self.delay_hit_field: Final = IntInputField()
-        self.second_hit_field: Final = IntInputField()
-        self.advances_hit_field: Final = IntInputField()
+        self.delay_hit_field: Final = IntInputField(
+            min_val=0, max_val=const.INT_MAX,
+            blank_behavior=BlankBehavior.BLANK,
+            placeholder='Enter hit delay',
+            tooltip='The delay you actually hit — enter this after each run to calibrate',
+        )
+        self.second_hit_field: Final = IntInputField(
+            min_val=0, max_val=const.INT_MAX,
+            blank_behavior=BlankBehavior.BLANK,
+            placeholder='Enter hit second',
+            tooltip='The second you actually hit — enter this after each run to calibrate',
+        )
+        self.advances_hit_field: Final = IntInputField(
+            min_val=0, max_val=const.INT_MAX,
+            blank_behavior=BlankBehavior.BLANK,
+            placeholder='Enter hit advances',
+            tooltip='The advances you actually hit — enter this after each run to calibrate',
+        )
         self.__scroll_area: QScrollArea | None = None
         FormWidget.__init__(self, name_service)
         TimerWidget.__init__(self, model, timer)
@@ -86,21 +98,15 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         self.name_service.set_name(targets_header, 'gen5TargetsHeader')
         form_layout.add_row(targets_header)
         # ----- target_delay -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        field.setToolTip('The delay value from your target seed')
+        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The delay value from your target seed')
         bindings.bind(field.value, self.model.target_delay)
         self.add_field(self.Field.TARGET_DELAY, field, layout=form_layout, name='gen5TargetDelay')
         # ----- target_second -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        field.setToolTip('The second value from your target seed')
+        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The second value from your target seed')
         bindings.bind(field.value, self.model.target_second)
         self.add_field(self.Field.TARGET_SECOND, field, layout=form_layout, name='gen5TargetSecond')
         # ----- target_advances -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        field.setToolTip('The advances/frames value from your target seed')
+        field = IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The advances/frames value from your target seed')
         bindings.bind(field.value, self.model.target_advances)
         self.add_field(self.Field.TARGET_ADVANCES, field, layout=form_layout, name='gen5TargetAdvances')
         # ----- [Calibration] header -----
@@ -108,51 +114,28 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         self.name_service.set_name(calibration_header, 'gen5CalibrationHeader')
         form_layout.add_row(calibration_header)
         # ----- calibration -----
-        field = IntInputField()
-        field.set_range(const.INT_MIN, const.INT_MAX)
-        field.setToolTip('Delay calibration offset (auto-updated after each run)')
+        field = IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Delay calibration offset (auto-updated after each run)')
         bindings.bind(field.value, self.model.calibration)
         self.add_field(self.Field.CALIBRATION, field, layout=form_layout, name='gen5Calibration')
         # ----- entralink_calibration -----
-        field = IntInputField()
-        field.set_range(const.INT_MIN, const.INT_MAX)
-        field.setToolTip('Entralink-specific delay calibration (auto-updated after each run)')
+        field = IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Entralink-specific delay calibration (auto-updated after each run)')
         bindings.bind(field.value, self.model.entralink_calibration)
         self.add_field(self.Field.ENTRALINK_CALIBRATION, field, layout=form_layout, name='gen5EntralinkCalibration')
         # ----- frame_calibration -----
-        field = IntInputField()
-        field.set_range(const.INT_MIN, const.INT_MAX)
-        field.setToolTip('Frame/advances calibration offset (auto-updated after each run)')
+        field = IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Frame/advances calibration offset (auto-updated after each run)')
         bindings.bind(field.value, self.model.frame_calibration)
         self.add_field(self.Field.FRAME_CALIBRATION, field, layout=form_layout, name='gen5FrameCalibration')
         # ----- [After Run] header -----
         after_run_header = QLabel('After Run')
         self.name_service.set_name(after_run_header, 'gen5AfterRunHeader')
         self._layout.add_row(after_run_header)
-        # ----- delay_hit -----
-        self.delay_hit_field.set_range(0, const.INT_MAX)
-        self.delay_hit_field.blank_behavior = BlankBehavior.BLANK
-        self.delay_hit_field.setPlaceholderText('Enter hit delay')
-        self.delay_hit_field.setToolTip('The delay you actually hit — enter this after each run to calibrate')
+        # ----- delay_hit / second_hit / advances_hit -----
         bindings.bind(self.delay_hit_field.value, self.model.delay_hit)
         self.add_field(self.Field.DELAY_HIT, self.delay_hit_field, name='gen5DelayHit')
-        self.delay_hit_field.setText('')
-        # ----- second_hit -----
-        self.second_hit_field.set_range(0, const.INT_MAX)
-        self.second_hit_field.blank_behavior = BlankBehavior.BLANK
-        self.second_hit_field.setPlaceholderText('Enter hit second')
-        self.second_hit_field.setToolTip('The second you actually hit — enter this after each run to calibrate')
         bindings.bind(self.second_hit_field.value, self.model.second_hit)
         self.add_field(self.Field.SECOND_HIT, self.second_hit_field, name='gen5SecondHit')
-        self.second_hit_field.setText('')
-        # ----- advances_hit -----
-        self.advances_hit_field.set_range(0, const.INT_MAX)
-        self.advances_hit_field.blank_behavior = BlankBehavior.BLANK
-        self.advances_hit_field.setPlaceholderText('Enter hit advances')
-        self.advances_hit_field.setToolTip('The advances you actually hit — enter this after each run to calibrate')
         bindings.bind(self.advances_hit_field.value, self.model.advances_hit)
         self.add_field(self.Field.ADVANCES_HIT, self.advances_hit_field, name='gen5AdvancesHit')
-        self.advances_hit_field.setText('')
         # update field visibility
         self.model.mode.on_change(self.__on_mode_changed)
         event = PropertyChangeEvent(None, self.model.mode.get())
