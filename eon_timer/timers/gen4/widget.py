@@ -23,7 +23,7 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
         self.delay_hit_field: Final = IntInputField(
             min_val=0, max_val=const.INT_MAX,
             blank_behavior=BlankBehavior.BLANK,
-            placeholder='Enter hit delay',
+            placeholder='Enter delay hit',
             tooltip='The delay you actually hit — enter this after each run to calibrate',
         )
         FormWidget.__init__(self, name_service)

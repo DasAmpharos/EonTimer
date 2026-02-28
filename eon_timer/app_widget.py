@@ -231,7 +231,7 @@ class AppWidget(QWidget, CloseListener):
             widget = self.tab_widget.currentWidget()
             has_calibrate = getattr(widget, 'can_calibrate', None)
             if has_calibrate is not None:
-                self.status_message.emit('Run complete — enter hit values and press Update to calibrate.', 8000)
+                self.status_message.emit('Run complete — enter values hit and press Update to calibrate.', 8000)
 
     def __update_phases(self):
         widget = self.tab_widget.currentWidget()

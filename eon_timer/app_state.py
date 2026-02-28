@@ -34,6 +34,7 @@ class AppState(QObject):
 
     def set_phase(self, index: int, phase: float):
         self.__phases[index] = phase
+        self.phases_changed.emit()
         # update current_phase / next_phase
         match index:
             case self.current_phase_index:

@@ -31,7 +31,7 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         self.frame_hit_field: Final = IntInputField(
             min_val=0, max_val=const.INT_MAX,
             blank_behavior=BlankBehavior.BLANK,
-            placeholder='Enter hit frame',
+            placeholder='Enter frame hit',
             tooltip='The frame you actually landed on — enter this after each run to calibrate',
         )
         FormWidget.__init__(self, name_service)
