@@ -76,6 +76,12 @@ jobs:
       - name: Build
         run: uv run pyinstaller EonTimer.spec
 
+      - name: Clean up disk space (macOS)
+        if: matrix.os == 'macos'
+        run: |
+          rm -rf build/
+          uv cache clean
+
       - name: Get Artifact Name
         id: artifact
         shell: bash
