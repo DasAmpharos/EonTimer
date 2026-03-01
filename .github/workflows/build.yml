@@ -80,6 +80,8 @@ jobs:
         if: matrix.os == 'macos'
         run: |
           rm -rf build/
+          rm -rf .venv/
+          rm -f dist/EonTimer
           uv cache clean
 
       - name: Get Artifact Name
