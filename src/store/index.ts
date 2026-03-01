@@ -40,7 +40,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (running && !get().running) {
       set({ running: true, currentPhaseIndex: 0, currentPhaseElapsed: 0 });
     } else if (!running && get().running) {
-      set({ running: false });
+      set({ running: false, currentPhaseIndex: 0, currentPhaseElapsed: 0 });
     }
   },
   reset: () => set({ currentPhaseIndex: 0, currentPhaseElapsed: 0 }),
