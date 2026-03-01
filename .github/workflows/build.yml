@@ -45,6 +45,11 @@ jobs:
       - name: Install Dependencies
         run: uv sync --group build
 
+      - name: Rebuild native extensions for universal2 (macOS)
+        if: matrix.os == 'macos'
+        run: |
+          ARCHFLAGS="-arch x86_64 -arch arm64" uv pip install --reinstall --no-binary libsass,charset-normalizer libsass charset-normalizer
+
       - name: Inject Properties
         shell: bash
         run: |
