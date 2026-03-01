@@ -35,7 +35,7 @@
   border-radius: 6px;
   padding: 20px 16px 14px;
   gap: 8px;
-  transition: background-color 0.15s;
+  transition: none;
 }
 
 /* Small settings gear in bottom-left corner */
