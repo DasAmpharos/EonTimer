@@ -33,7 +33,6 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
   const running = useAppStore((s) => s.running);
   const actionInterval = useSettingsStore((s) => s.action.interval);
   const actionCount = useSettingsStore((s) => s.action.count);
-  const actionColor = useSettingsStore((s) => s.action.color);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const flashTimeoutRef = useRef<number>(0);
@@ -66,12 +65,13 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
   const flash = useCallback(() => {
     const el = panelRef.current;
     if (!el) return;
-    el.style.backgroundColor = actionColor;
+    const color = useSettingsStore.getState().action.color;
+    el.style.backgroundColor = color;
     clearTimeout(flashTimeoutRef.current);
     flashTimeoutRef.current = window.setTimeout(() => {
       el.style.backgroundColor = '';
-    }, 50);
-  }, [actionColor]);
+    }, 150);
+  }, []);
 
   useEffect(() => {
     registerFlash(flash);
