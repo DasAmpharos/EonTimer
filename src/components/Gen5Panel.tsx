@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react';
-import { useSettingsStore } from '../store';
+import { useSettingsStore, DEFAULT_GEN5 } from '../store';
 import { Gen5Mode } from '../utils/types';
 import { INT_MAX, INT_MIN } from '../utils/constants';
 import { FormField } from './common/FormField';
@@ -65,10 +65,11 @@ export const Gen5Panel = forwardRef<TimerPanelHandle, Gen5PanelProps>(
     }, [calSettings, gen5, delayHit, secondHit, advancesHit, updateGen5, canCalibrate]);
 
     const reset = useCallback(() => {
+      updateGen5({ ...DEFAULT_GEN5 });
       setDelayHit(null);
       setSecondHit(null);
       setAdvancesHit(null);
-    }, []);
+    }, [updateGen5]);
 
     useImperativeHandle(ref, () => ({ createPhases, calibrate, canCalibrate, reset }), [createPhases, calibrate, canCalibrate, reset]);
 

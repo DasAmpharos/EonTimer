@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react';
-import { useSettingsStore } from '../store';
+import { useSettingsStore, DEFAULT_GEN4 } from '../store';
 import { INT_MAX, INT_MIN } from '../utils/constants';
 import { FormField } from './common/FormField';
 import { IntInput } from './common/IntInput';
@@ -39,7 +39,10 @@ export const Gen4Panel = forwardRef<TimerPanelHandle, Gen4PanelProps>(
       setDelayHit(null);
     }, [calSettings, gen4, delayHit, updateGen4]);
 
-    const reset = useCallback(() => setDelayHit(null), []);
+    const reset = useCallback(() => {
+      updateGen4({ ...DEFAULT_GEN4 });
+      setDelayHit(null);
+    }, [updateGen4]);
 
     useImperativeHandle(ref, () => ({ createPhases, calibrate, canCalibrate, reset }), [createPhases, calibrate, canCalibrate, reset]);
 

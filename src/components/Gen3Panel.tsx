@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { useSettingsStore, useAppStore } from '../store';
+import { useSettingsStore, useAppStore, DEFAULT_GEN3 } from '../store';
 import { Gen3Mode } from '../utils/types';
 import { INT_MAX, INT_MIN } from '../utils/constants';
 import { FormField } from './common/FormField';
@@ -56,9 +56,10 @@ export const Gen3Panel = forwardRef<TimerPanelHandle, Gen3PanelProps>(
     }, [calSettings, gen3, frameHit, updateGen3]);
 
     const reset = useCallback(() => {
+      updateGen3({ ...DEFAULT_GEN3 });
       setFrameHit(null);
       setTargetFrameLocked(false);
-    }, []);
+    }, [updateGen3]);
 
     useImperativeHandle(ref, () => ({ createPhases, calibrate, canCalibrate, reset }), [createPhases, calibrate, canCalibrate, reset]);
 

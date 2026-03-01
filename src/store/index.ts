@@ -107,7 +107,7 @@ export interface SettingsState {
   resetAll: () => void;
 }
 
-const DEFAULT_ACTION: ActionSettings = {
+export const DEFAULT_ACTION: ActionSettings = {
   mode: ActionMode.AV,
   sound: ActionSound.BEEP,
   color: '#0000ff',
@@ -115,14 +115,14 @@ const DEFAULT_ACTION: ActionSettings = {
   count: 6,
 };
 
-const DEFAULT_TIMER: TimerSettings = {
+export const DEFAULT_TIMER: TimerSettings = {
   console: Console.NDS_SLOT1,
   customFramerate: 60.0,
   precisionCalibration: false,
   refreshInterval: 8,
 };
 
-const DEFAULT_GEN5: Gen5Settings = {
+export const DEFAULT_GEN5: Gen5Settings = {
   mode: Gen5Mode.STANDARD,
   calibration: -95,
   frameCalibration: 0,
@@ -132,14 +132,14 @@ const DEFAULT_GEN5: Gen5Settings = {
   targetAdvances: 100,
 };
 
-const DEFAULT_GEN4: Gen4Settings = {
+export const DEFAULT_GEN4: Gen4Settings = {
   targetDelay: 600,
   targetSecond: 50,
   calibratedDelay: 500,
   calibratedSecond: 14,
 };
 
-const DEFAULT_GEN3: Gen3Settings = {
+export const DEFAULT_GEN3: Gen3Settings = {
   mode: Gen3Mode.STANDARD,
   preTimer: 5000,
   targetFrame: 1000,

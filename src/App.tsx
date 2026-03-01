@@ -77,10 +77,8 @@ export default function App() {
 
   const handleReset = useCallback(() => {
     if (running) return;
+    if (!confirm('Are you sure you want to reset the current timer to defaults?')) return;
     const ref = currentRef?.current;
-    if (ref && ref.canCalibrate()) {
-      if (!confirm('Are you sure you want to reset the current timer? This operation cannot be undone.')) return;
-    }
     ref?.reset();
     updatePhases();
   }, [running, currentRef, updatePhases]);
