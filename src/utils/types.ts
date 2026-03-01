@@ -36,6 +36,13 @@ export enum ActionSound {
   TICK = 'Tick',
 }
 
+// ─── Theme ───
+export enum Theme {
+  LIGHT = 'Light',
+  DARK = 'Dark',
+  SYSTEM = 'System',
+}
+
 // ─── Custom Phase ───
 export enum CustomUnit {
   MILLISECONDS = 'ms',

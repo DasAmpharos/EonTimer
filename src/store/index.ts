@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {
   Console, Gen5Mode, Gen3Mode,
-  ActionMode, ActionSound, CustomUnit,
+  ActionMode, ActionSound, CustomUnit, Theme,
 } from '../utils/types';
 import { INFINITY } from '../utils/constants';
 import type { CustomPhase } from '../timers/customTimer';
@@ -94,6 +94,7 @@ export interface SettingsState {
   gen3: Gen3Settings;
   custom: { phases: CustomPhase[] };
   tabIndex: number;
+  theme: Theme;
 
   updateAction: (patch: Partial<ActionSettings>) => void;
   updateTimer: (patch: Partial<TimerSettings>) => void;
@@ -102,6 +103,7 @@ export interface SettingsState {
   updateGen3: (patch: Partial<Gen3Settings>) => void;
   setCustomPhases: (phases: CustomPhase[]) => void;
   setTabIndex: (index: number) => void;
+  setTheme: (theme: Theme) => void;
   resetAll: () => void;
 }
 
@@ -154,6 +156,7 @@ export const useSettingsStore = create<SettingsState>()(
       gen3: { ...DEFAULT_GEN3 },
       custom: { phases: [] },
       tabIndex: 0,
+      theme: Theme.SYSTEM,
 
       updateAction: (patch) => set((s) => ({ action: { ...s.action, ...patch } })),
       updateTimer: (patch) => set((s) => ({ timer: { ...s.timer, ...patch } })),
@@ -162,6 +165,7 @@ export const useSettingsStore = create<SettingsState>()(
       updateGen3: (patch) => set((s) => ({ gen3: { ...s.gen3, ...patch } })),
       setCustomPhases: (phases) => set({ custom: { phases } }),
       setTabIndex: (index) => set({ tabIndex: index }),
+      setTheme: (theme) => set({ theme }),
       resetAll: () =>
         set({
           action: { ...DEFAULT_ACTION },
@@ -171,6 +175,7 @@ export const useSettingsStore = create<SettingsState>()(
           gen3: { ...DEFAULT_GEN3 },
           custom: { phases: [] },
           tabIndex: 0,
+          theme: Theme.SYSTEM,
         }),
     }),
     { name: 'eontimer-settings' },

@@ -10,9 +10,100 @@ html, body, #root {
   overflow: hidden;
 }
 
+/* ─── Theme variables ─── */
+:root {
+  --color-bg-1: #c8dce8;
+  --color-bg-2: #a8c4d8;
+  --color-bg-3: #b0cce0;
+  --color-panel: rgba(255, 255, 255, 0.35);
+  --color-panel-border: rgba(0, 0, 0, 0.15);
+  --color-text: #1a1a1a;
+  --color-text-strong: #111;
+  --color-text-secondary: #444;
+  --color-text-muted: #555;
+  --color-text-faint: #888;
+  --color-input-bg: #fff;
+  --color-input-border: #bbb;
+  --color-input-disabled-bg: #eee;
+  --color-input-disabled-text: #999;
+  --color-input-focus: #5b9bd5;
+  --color-input-focus-shadow: rgba(91, 155, 213, 0.2);
+  --color-btn-bg: #f5f5f5;
+  --color-btn-border: #bbb;
+  --color-btn-text: #333;
+  --color-btn-hover-bg: #e8e8e8;
+  --color-btn-hover-border: #999;
+  --color-btn-active-bg: #ddd;
+  --color-accent: #1a6fb5;
+  --color-accent-bg: #5b9bd5;
+  --color-accent-border: #4a8ac4;
+  --color-accent-hover: #4a8ac4;
+  --color-tab-hover-bg: rgba(255, 255, 255, 0.3);
+  --color-tab-bar-bg: rgba(255, 255, 255, 0.4);
+  --color-dialog-bg: #e8eff5;
+  --color-dialog-border: #aaa;
+  --color-dialog-overlay: rgba(0, 0, 0, 0.35);
+  --color-dialog-divider: rgba(0, 0, 0, 0.12);
+  --color-progress-bg: rgba(0, 0, 0, 0.1);
+  --color-play-bg: rgba(0, 0, 0, 0.08);
+  --color-play-hover: rgba(0, 0, 0, 0.15);
+  --color-play-active: rgba(0, 0, 0, 0.22);
+  --color-settings-hover-bg: rgba(0, 0, 0, 0.08);
+  --color-custom-phase-bg: rgba(255, 255, 255, 0.5);
+  --color-custom-phase-border: rgba(0, 0, 0, 0.12);
+  --color-scroll-border: rgba(0, 0, 0, 0.1);
+  --color-scroll-bg: rgba(255, 255, 255, 0.4);
+  --color-body-bg: #b8cfe0;
+}
+
+[data-theme="dark"] {
+  --color-bg-1: #1a2332;
+  --color-bg-2: #0f1923;
+  --color-bg-3: #162230;
+  --color-panel: rgba(255, 255, 255, 0.07);
+  --color-panel-border: rgba(255, 255, 255, 0.1);
+  --color-text: #d8dde3;
+  --color-text-strong: #eef1f4;
+  --color-text-secondary: #a0aab4;
+  --color-text-muted: #8090a0;
+  --color-text-faint: #607080;
+  --color-input-bg: rgba(255, 255, 255, 0.07);
+  --color-input-border: rgba(255, 255, 255, 0.15);
+  --color-input-disabled-bg: rgba(255, 255, 255, 0.04);
+  --color-input-disabled-text: #506070;
+  --color-input-focus: #6aafdf;
+  --color-input-focus-shadow: rgba(106, 175, 223, 0.25);
+  --color-btn-bg: rgba(255, 255, 255, 0.08);
+  --color-btn-border: rgba(255, 255, 255, 0.15);
+  --color-btn-text: #c0cad4;
+  --color-btn-hover-bg: rgba(255, 255, 255, 0.14);
+  --color-btn-hover-border: rgba(255, 255, 255, 0.22);
+  --color-btn-active-bg: rgba(255, 255, 255, 0.18);
+  --color-accent: #6aafdf;
+  --color-accent-bg: #5b9bd5;
+  --color-accent-border: #4a8ac4;
+  --color-accent-hover: #4a8ac4;
+  --color-tab-hover-bg: rgba(255, 255, 255, 0.06);
+  --color-tab-bar-bg: rgba(255, 255, 255, 0.04);
+  --color-dialog-bg: #1c2838;
+  --color-dialog-border: rgba(255, 255, 255, 0.12);
+  --color-dialog-overlay: rgba(0, 0, 0, 0.6);
+  --color-dialog-divider: rgba(255, 255, 255, 0.08);
+  --color-progress-bg: rgba(255, 255, 255, 0.1);
+  --color-play-bg: rgba(255, 255, 255, 0.1);
+  --color-play-hover: rgba(255, 255, 255, 0.18);
+  --color-play-active: rgba(255, 255, 255, 0.25);
+  --color-settings-hover-bg: rgba(255, 255, 255, 0.1);
+  --color-custom-phase-bg: rgba(255, 255, 255, 0.06);
+  --color-custom-phase-border: rgba(255, 255, 255, 0.08);
+  --color-scroll-border: rgba(255, 255, 255, 0.08);
+  --color-scroll-bg: rgba(255, 255, 255, 0.05);
+  --color-body-bg: #0f1923;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
-  color: #1a1a1a;
-  background: #b8cfe0;
+  color: var(--color-text);
+  background: var(--color-body-bg);
 }

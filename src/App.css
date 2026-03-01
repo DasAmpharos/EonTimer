@@ -8,7 +8,7 @@
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #c8dce8 0%, #a8c4d8 40%, #b0cce0 100%);
+  background: linear-gradient(135deg, var(--color-bg-1) 0%, var(--color-bg-2) 40%, var(--color-bg-3) 100%);
   padding: 16px;
   overflow: hidden;
   user-select: none;
@@ -30,8 +30,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.35);
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--color-panel);
+  border: 1px solid var(--color-panel-border);
   border-radius: 6px;
   padding: 20px 16px 14px;
   gap: 8px;
@@ -49,7 +49,7 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #888;
+  color: var(--color-text-faint);
   font-size: 16px;
   cursor: pointer;
   display: flex;
@@ -59,8 +59,8 @@
 }
 
 .timer-settings-btn:hover:not(:disabled) {
-  color: #333;
-  background: rgba(0, 0, 0, 0.08);
+  color: var(--color-btn-text);
+  background: var(--color-settings-hover-bg);
 }
 
 .timer-settings-btn:disabled {
@@ -74,7 +74,7 @@
   font-weight: 700;
   letter-spacing: 4px;
   line-height: 1;
-  color: #111;
+  color: var(--color-text-strong);
   text-align: center;
 }
 
@@ -82,7 +82,7 @@
 .timer-progress-bar {
   width: 100%;
   height: 6px;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--color-progress-bg);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -116,20 +116,20 @@
   height: 52px;
   border: none;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.08);
-  color: #333;
+  background: var(--color-play-bg);
+  color: var(--color-btn-text);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, transform 0.1s;
 }
 
 .timer-play-stop:hover {
-  background: rgba(0, 0, 0, 0.15);
-  color: #111;
+  background: var(--color-play-hover);
+  color: var(--color-text-strong);
   transform: scale(1.08);
 }
 
 .timer-play-stop:active {
-  background: rgba(0, 0, 0, 0.22);
+  background: var(--color-play-active);
   transform: scale(0.96);
 }
 
@@ -139,7 +139,7 @@
   grid-template-columns: 1fr 1fr 1fr;
   width: 100%;
   font-size: 13px;
-  color: #444;
+  color: var(--color-text-secondary);
 }
 
 .timer-meta > span {
@@ -179,8 +179,8 @@
 .app-tabs {
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.35);
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--color-panel);
+  border: 1px solid var(--color-panel-border);
   border-radius: 6px;
   overflow: hidden;
   min-height: 0;
@@ -190,8 +190,8 @@
 /* Tab bar */
 .tab-bar {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid var(--color-dialog-divider);
+  background: var(--color-tab-bar-bg);
 }
 
 .tab {
@@ -201,20 +201,20 @@
   background: transparent;
   font-size: 14px;
   cursor: pointer;
-  color: #555;
+  color: var(--color-text-muted);
   border-bottom: 2px solid transparent;
   transition: all 0.15s;
   text-align: center;
 }
 
 .tab:hover:not(:disabled) {
-  color: #222;
-  background: rgba(255, 255, 255, 0.3);
+  color: var(--color-text-strong);
+  background: var(--color-tab-hover-bg);
 }
 
 .tab.active {
-  color: #1a6fb5;
-  border-bottom-color: #1a6fb5;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -246,9 +246,9 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-scroll-border);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--color-scroll-bg);
   padding: 10px;
 }
 
@@ -274,7 +274,7 @@
 .form-field-label {
   font-size: 12px;
   font-weight: 500;
-  color: #555;
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 
@@ -289,12 +289,12 @@ input[type="text"],
 .float-input {
   width: 100%;
   padding: 5px 8px;
-  border: 1px solid #bbb;
+  border: 1px solid var(--color-input-border);
   border-radius: 3px;
   font-size: 14px;
   font-family: inherit;
-  background: #fff;
-  color: #111;
+  background: var(--color-input-bg);
+  color: var(--color-text);
   outline: none;
   transition: border-color 0.15s;
 }
@@ -302,13 +302,13 @@ input[type="text"],
 input[type="text"]:focus,
 .int-input:focus,
 .float-input:focus {
-  border-color: #5b9bd5;
-  box-shadow: 0 0 0 2px rgba(91, 155, 213, 0.2);
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 2px var(--color-input-focus-shadow);
 }
 
 input:disabled {
-  background: #eee;
-  color: #999;
+  background: var(--color-input-disabled-bg);
+  color: var(--color-input-disabled-text);
 }
 
 /* Select */
@@ -316,24 +316,24 @@ select,
 .enum-select {
   width: 100%;
   padding: 5px 8px;
-  border: 1px solid #bbb;
+  border: 1px solid var(--color-input-border);
   border-radius: 3px;
   font-size: 14px;
   font-family: inherit;
-  background: #fff;
-  color: #111;
+  background: var(--color-input-bg);
+  color: var(--color-text);
   outline: none;
   cursor: pointer;
 }
 
 select:focus {
-  border-color: #5b9bd5;
-  box-shadow: 0 0 0 2px rgba(91, 155, 213, 0.2);
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 2px var(--color-input-focus-shadow);
 }
 
 select:disabled {
-  background: #eee;
-  color: #999;
+  background: var(--color-input-disabled-bg);
+  color: var(--color-input-disabled-text);
 }
 
 /* Checkbox */
@@ -354,7 +354,7 @@ input[type="checkbox"] {
 .color-input {
   width: 60px;
   height: 30px;
-  border: 1px solid #bbb;
+  border: 1px solid var(--color-input-border);
   border-radius: 3px;
   padding: 2px;
   cursor: pointer;
@@ -363,23 +363,23 @@ input[type="checkbox"] {
 /* ─── Buttons ─── */
 .btn {
   padding: 6px 16px;
-  border: 1px solid #bbb;
+  border: 1px solid var(--color-btn-border);
   border-radius: 3px;
-  background: #f5f5f5;
+  background: var(--color-btn-bg);
   font-size: 14px;
   cursor: pointer;
-  color: #333;
+  color: var(--color-btn-text);
   transition: all 0.15s;
   white-space: nowrap;
 }
 
 .btn:hover:not(:disabled) {
-  background: #e8e8e8;
-  border-color: #999;
+  background: var(--color-btn-hover-bg);
+  border-color: var(--color-btn-hover-border);
 }
 
 .btn:active:not(:disabled) {
-  background: #ddd;
+  background: var(--color-btn-active-bg);
 }
 
 .btn:disabled {
@@ -388,13 +388,13 @@ input[type="checkbox"] {
 }
 
 .btn-primary {
-  background: #5b9bd5;
+  background: var(--color-accent-bg);
   color: #fff;
-  border-color: #4a8ac4;
+  border-color: var(--color-accent-border);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #4a8ac4;
+  background: var(--color-accent-hover);
 }
 
 .btn-update {
@@ -442,7 +442,7 @@ input[type="checkbox"] {
 /* ─── Status bar ─── */
 .app-status-bar {
   font-size: 12px;
-  color: #444;
+  color: var(--color-text-secondary);
   padding: 2px 4px;
   min-height: 20px;
   text-align: center;
@@ -463,7 +463,7 @@ input[type="checkbox"] {
 .custom-phase-index {
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: var(--color-text-muted);
   padding-top: 8px;
   min-width: 20px;
   text-align: right;
@@ -471,9 +471,9 @@ input[type="checkbox"] {
 
 .custom-phase-group {
   flex: 1;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--color-custom-phase-border);
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--color-custom-phase-bg);
   padding: 10px;
 }
 
@@ -497,7 +497,7 @@ input[type="checkbox"] {
 .dialog-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--color-dialog-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -505,8 +505,8 @@ input[type="checkbox"] {
 }
 
 .dialog {
-  background: #e8eff5;
-  border: 1px solid #aaa;
+  background: var(--color-dialog-bg);
+  border: 1px solid var(--color-dialog-border);
   border-radius: 6px;
   width: min(480px, 90vw);
   max-height: 90vh;
@@ -519,12 +519,12 @@ input[type="checkbox"] {
   font-size: 16px;
   font-weight: 600;
   padding: 12px 16px 8px;
-  color: #222;
+  color: var(--color-text-strong);
 }
 
 .dialog-tabs {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid var(--color-dialog-divider);
   padding: 0 12px;
 }
 
@@ -534,13 +534,13 @@ input[type="checkbox"] {
   background: transparent;
   font-size: 13px;
   cursor: pointer;
-  color: #555;
+  color: var(--color-text-muted);
   border-bottom: 2px solid transparent;
 }
 
 .dialog-tab.active {
-  color: #1a6fb5;
-  border-bottom-color: #1a6fb5;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -560,7 +560,7 @@ input[type="checkbox"] {
   display: flex;
   gap: 10px;
   padding: 12px 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--color-dialog-divider);
   justify-content: flex-end;
 }
 

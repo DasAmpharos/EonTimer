@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSettingsStore, type ActionSettings, type TimerSettings } from '../store';
-import { ActionMode, ActionSound, Console } from '../utils/types';
+import { ActionMode, ActionSound, Console, Theme } from '../utils/types';
 import { INT_MAX } from '../utils/constants';
 import { FormField } from './common/FormField';
 import { IntInput } from './common/IntInput';
@@ -11,6 +11,7 @@ import { getSoundPlayer, resumeAudio } from '../audio/sounds';
 const ACTION_MODES = Object.values(ActionMode) as ActionMode[];
 const ACTION_SOUNDS = Object.values(ActionSound) as ActionSound[];
 const CONSOLES = Object.values(Console) as Console[];
+const THEMES = Object.values(Theme) as Theme[];
 
 interface SettingsDialogProps {
   open: boolean;
@@ -20,13 +21,16 @@ interface SettingsDialogProps {
 export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   const storeAction = useSettingsStore((s) => s.action);
   const storeTimer = useSettingsStore((s) => s.timer);
+  const storeTheme = useSettingsStore((s) => s.theme);
   const updateAction = useSettingsStore((s) => s.updateAction);
   const updateTimer = useSettingsStore((s) => s.updateTimer);
+  const setTheme = useSettingsStore((s) => s.setTheme);
   const resetAll = useSettingsStore((s) => s.resetAll);
 
   // Local copies for editing
   const [action, setAction] = useState<ActionSettings>({ ...storeAction });
   const [timer, setTimer] = useState<TimerSettings>({ ...storeTimer });
+  const [theme, setLocalTheme] = useState<Theme>(storeTheme);
   const [tab, setTab] = useState(0);
 
   // Reset local state when dialog opens
@@ -34,6 +38,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   if (open && !lastOpen) {
     setAction({ ...storeAction });
     setTimer({ ...storeTimer });
+    setLocalTheme(storeTheme);
     setTab(0);
   }
   if (open !== lastOpen) setLastOpen(open);
@@ -41,8 +46,9 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   const handleOk = useCallback(() => {
     updateAction(action);
     updateTimer(timer);
+    setTheme(theme);
     onClose(true);
-  }, [action, timer, updateAction, updateTimer, onClose]);
+  }, [action, timer, theme, updateAction, updateTimer, setTheme, onClose]);
 
   const handleCancel = useCallback(() => {
     onClose(false);
@@ -106,6 +112,9 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
           )}
           {tab === 1 && (
             <div className="settings-panel">
+              <FormField label="Theme">
+                <EnumSelect values={THEMES} value={theme} onChange={(v) => setLocalTheme(v)} />
+              </FormField>
               <FormField label="Console">
                 <EnumSelect values={CONSOLES} value={timer.console} onChange={(v) => setTimer({ ...timer, console: v })} />
               </FormField>

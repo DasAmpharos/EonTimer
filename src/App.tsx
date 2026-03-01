@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { useAppStore, useSettingsStore } from './store';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
+import { useTheme } from './hooks/useTheme';
 import { TimerDisplay } from './components/TimerDisplay';
 import { Gen5Panel, type TimerPanelHandle } from './components/Gen5Panel';
 import { Gen4Panel } from './components/Gen4Panel';
@@ -24,6 +25,7 @@ export default function App() {
   const setPhases = useAppStore((s) => s.setPhases);
 
   const { toggle, registerFlash } = usePhaseRunner();
+  useTheme();
 
   const gen5Ref = useRef<TimerPanelHandle>(null);
   const gen4Ref = useRef<TimerPanelHandle>(null);
