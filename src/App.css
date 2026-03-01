@@ -90,7 +90,9 @@
 .timer-progress-fill {
   height: 100%;
   border-radius: 3px;
-  transition: width 0.05s linear;
+  width: 100%;
+  transform-origin: left;
+  will-change: transform;
 }
 
 .zone-normal .timer-progress-fill {

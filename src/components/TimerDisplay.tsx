@@ -88,7 +88,7 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
       </button>
       <div className="timer-current-phase">{formatTime(Math.max(0, displayValue))}</div>
       <div className={`timer-progress-bar zone-${displayZone}`}>
-        <div className="timer-progress-fill" style={{ width: `${progressValue}%` }} />
+        <div className="timer-progress-fill" style={{ transform: `scaleX(${progressValue / 100})` }} />
       </div>
       <div className="timer-meta">
         <span className="timer-info-item">
