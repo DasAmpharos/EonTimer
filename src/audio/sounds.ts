@@ -1,18 +1,32 @@
 // Web Audio API sound synthesis — no external files needed.
 
 let audioCtx: AudioContext | null = null;
+let audioUnlocked = false;
 
 function getContext(): AudioContext {
   if (!audioCtx) {
-    audioCtx = new AudioContext();
+    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
   }
   return audioCtx;
 }
 
+/**
+ * Resume the AudioContext and play a silent buffer to unlock audio on iOS.
+ * Must be called from a user-gesture event handler (click/tap/keydown).
+ */
 export function resumeAudio(): void {
   const ctx = getContext();
   if (ctx.state === 'suspended') {
     ctx.resume();
+  }
+  // iOS requires playing a buffer from a user gesture to fully unlock audio
+  if (!audioUnlocked) {
+    audioUnlocked = true;
+    const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0);
   }
 }
 

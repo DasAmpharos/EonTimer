@@ -85,6 +85,8 @@ export function usePhaseRunner() {
   }, [setRunning]);
 
   const toggle = useCallback(() => {
+    // Resume audio in the user-gesture call stack (required by iOS Safari / Chrome autoplay policy)
+    resumeAudio();
     if (useAppStore.getState().running) {
       stop();
     } else {
