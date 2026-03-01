@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 interface FloatInputProps {
   value: number;
@@ -19,9 +19,9 @@ export function FloatInput({
   disabled,
   id,
 }: FloatInputProps) {
-  const [text, setText] = React.useState(String(value));
+  const [text, setText] = useState(String(value));
 
-  React.useEffect(() => {
+  useEffect(() => {
     setText(String(value));
   }, [value]);
 
@@ -38,6 +38,10 @@ export function FloatInput({
     [onChange, min, max],
   );
 
+  const handleBlur = useCallback(() => {
+    setText(String(value));
+  }, [value]);
+
   return (
     <input
       id={id}
@@ -45,6 +49,7 @@ export function FloatInput({
       className="float-input"
       value={text}
       onChange={handleChange}
+      onBlur={handleBlur}
       placeholder={placeholder}
       disabled={disabled}
     />

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 interface IntInputProps {
   value: number | null;
@@ -23,16 +23,25 @@ export function IntInput({
   radix = 10,
   id,
 }: IntInputProps) {
-  const displayValue = value === null ? '' : (radix === 16 ? value.toString(16).toUpperCase() : String(value));
+  const format = (v: number | null) =>
+    v === null ? '' : radix === 16 ? v.toString(16).toUpperCase() : String(v);
+
+  const [text, setText] = useState(format(value));
+
+  useEffect(() => {
+    setText(format(value));
+  }, [value, radix]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value.trim();
-      if (raw === '' && allowBlank) {
-        onChange(null);
+      const raw = e.target.value;
+      setText(raw);
+      const trimmed = raw.trim();
+      if (trimmed === '') {
+        if (allowBlank) onChange(null);
         return;
       }
-      const parsed = radix === 16 ? parseInt(raw, 16) : parseInt(raw, 10);
+      const parsed = radix === 16 ? parseInt(trimmed, 16) : parseInt(trimmed, 10);
       if (isNaN(parsed)) return;
       if (min !== undefined && parsed < min) return;
       if (max !== undefined && parsed > max) return;
@@ -41,13 +50,18 @@ export function IntInput({
     [onChange, min, max, allowBlank, radix],
   );
 
+  const handleBlur = useCallback(() => {
+    setText(format(value));
+  }, [value, radix]);
+
   return (
     <input
       id={id}
       type="text"
       className="int-input"
-      value={displayValue}
+      value={text}
       onChange={handleChange}
+      onBlur={handleBlur}
       placeholder={placeholder}
       disabled={disabled}
     />
