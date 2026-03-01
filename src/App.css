@@ -1,0 +1,636 @@
+/* ============================================================
+   EonTimer-Web — vertical layout with centered timer
+   ============================================================ */
+
+/* ─── App shell ─── */
+.app {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #c8dce8 0%, #a8c4d8 40%, #b0cce0 100%);
+  padding: 16px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 520px;
+  min-height: 0;
+  max-height: 100%;
+}
+
+/* ─── Timer display ─── */
+.timer-display {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 20px 16px 14px;
+  gap: 8px;
+  transition: background-color 0.05s;
+}
+
+/* Small settings gear in bottom-left corner */
+.timer-settings-btn {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #888;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.timer-settings-btn:hover:not(:disabled) {
+  color: #333;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.timer-settings-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.timer-current-phase {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: clamp(48px, 12vw, 80px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  line-height: 1;
+  color: #111;
+  text-align: center;
+}
+
+/* Progress bar */
+.timer-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.timer-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.05s linear;
+}
+
+.zone-normal .timer-progress-fill {
+  background: #5b9bd5;
+}
+
+.zone-action .timer-progress-fill {
+  background: #e8a838;
+}
+
+.zone-complete .timer-progress-fill {
+  background: #5cb85c;
+}
+
+/* Play/Stop button inside timer display */
+.timer-play-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.08);
+  color: #333;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.timer-play-stop:hover {
+  background: rgba(0, 0, 0, 0.15);
+  color: #111;
+  transform: scale(1.08);
+}
+
+.timer-play-stop:active {
+  background: rgba(0, 0, 0, 0.22);
+  transform: scale(0.96);
+}
+
+/* Phase / Next / Total in 3 equal columns */
+.timer-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  font-size: 13px;
+  color: #444;
+}
+
+.timer-meta > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.timer-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.timer-info-label {
+  white-space: nowrap;
+}
+
+.mono {
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+/* ─── Action bar (Start/Stop, Update, etc.) ─── */
+.app-action-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.app-action-bar .btn-update {
+  flex: 1;
+}
+
+/* ─── Tab panel ─── */
+.app-tabs {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  min-height: 0;
+  flex: 0 1 auto;
+}
+
+/* Tab bar */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  color: #555;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.tab:hover:not(:disabled) {
+  color: #222;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tab.active {
+  color: #1a6fb5;
+  border-bottom-color: #1a6fb5;
+  font-weight: 600;
+}
+
+.tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Tab content */
+.tab-content {
+  flex: 1;
+  display: flex;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  min-height: 0;
+}
+
+/* ─── Timer panels ─── */
+.timer-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.panel-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 10px;
+}
+
+.panel-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-hit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ─── Form fields ─── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.form-field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  white-space: nowrap;
+}
+
+.form-field-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Inputs ─── */
+input[type="text"],
+.int-input,
+.float-input {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: #111;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input[type="text"]:focus,
+.int-input:focus,
+.float-input:focus {
+  border-color: #5b9bd5;
+  box-shadow: 0 0 0 2px rgba(91, 155, 213, 0.2);
+}
+
+input:disabled {
+  background: #eee;
+  color: #999;
+}
+
+/* Select */
+select,
+.enum-select {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: #111;
+  outline: none;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #5b9bd5;
+  box-shadow: 0 0 0 2px rgba(91, 155, 213, 0.2);
+}
+
+select:disabled {
+  background: #eee;
+  color: #999;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Color picker */
+.color-input {
+  width: 60px;
+  height: 30px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+/* ─── Buttons ─── */
+.btn {
+  padding: 6px 16px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  background: #f5f5f5;
+  font-size: 14px;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  background: #e8e8e8;
+  border-color: #999;
+}
+
+.btn:active:not(:disabled) {
+  background: #ddd;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #5b9bd5;
+  color: #fff;
+  border-color: #4a8ac4;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #4a8ac4;
+}
+
+.btn-update {
+  flex: 1;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.btn-success {
+  background: #4caf50;
+  color: #fff;
+  border-color: #43a047;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #43a047;
+}
+
+.btn-danger {
+  background: #d9534f;
+  color: #fff;
+  border-color: #c9302c;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #c9302c;
+}
+
+.btn-add {
+  width: 100%;
+  padding: 8px;
+}
+
+/* ─── Status bar ─── */
+.app-status-bar {
+  font-size: 12px;
+  color: #444;
+  padding: 2px 4px;
+  min-height: 20px;
+  text-align: center;
+}
+
+/* ─── Custom panel ─── */
+.custom-scroll {
+  padding: 10px;
+}
+
+.custom-phase-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.custom-phase-index {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  padding-top: 8px;
+  min-width: 20px;
+  text-align: right;
+}
+
+.custom-phase-group {
+  flex: 1;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+}
+
+.custom-phase-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-unit-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.custom-unit-row .enum-select {
+  flex: 1;
+}
+
+/* ─── Settings dialog ─── */
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: #e8eff5;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  width: min(480px, 90vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-title {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 16px 8px;
+  color: #222;
+}
+
+.dialog-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0 12px;
+}
+
+.dialog-tab {
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  color: #555;
+  border-bottom: 2px solid transparent;
+}
+
+.dialog-tab.active {
+  color: #1a6fb5;
+  border-bottom-color: #1a6fb5;
+  font-weight: 600;
+}
+
+.dialog-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  justify-content: flex-end;
+}
+
+.dialog-buttons .btn-icon {
+  margin-right: auto;
+}
+
+/* ─── Responsive: mobile ─── */
+@media (max-width: 540px) {
+  .app {
+    padding: 8px;
+  }
+
+  .app-container {
+    max-width: none;
+    gap: 8px;
+  }
+
+  .timer-display {
+    padding: 14px 10px 10px;
+  }
+
+  .timer-current-phase {
+    font-size: clamp(36px, 14vw, 56px);
+    letter-spacing: 2px;
+  }
+
+  .timer-meta {
+    font-size: 12px;
+  }
+
+  .timer-play-stop {
+    width: 44px;
+    height: 44px;
+  }
+
+  .timer-play-stop svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .app-tabs {
+    flex: 1 1 0;
+  }
+
+  .tab {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .app-action-bar {
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .app {
+    padding: 4px;
+  }
+
+  .timer-current-phase {
+    font-size: 32px;
+  }
+}
