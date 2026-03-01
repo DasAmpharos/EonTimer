@@ -22,6 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Python (macOS universal2)
+        if: matrix.os == 'macos'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          allow-prereleases: true
+
+      - name: Force uv to use system Python (macOS)
+        if: matrix.os == 'macos'
+        run: echo "UV_PYTHON_PREFERENCE=only-system" >> $GITHUB_ENV
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:

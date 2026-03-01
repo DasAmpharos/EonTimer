@@ -7,7 +7,6 @@ from eon_timer import app
 from eon_timer.app_widget import AppWidget
 from eon_timer.update_manager import UpdateManager
 from eon_timer.util.pyside.name_service import NameService
-from eon_timer.welcome_dialog import WelcomeDialog
 
 
 class AppWindow(QMainWindow):
@@ -38,9 +37,5 @@ class AppWindow(QMainWindow):
 
     def show(self):
         super().show()
-        if not self.settings.value('first_run_complete', False, bool):
-            dialog = WelcomeDialog(self)
-            dialog.exec()
-            self.settings.setValue('first_run_complete', True)
         if app.is_bundled() and self.update_manager.check_on_startup:
             self.update_manager.check_for_updates(self)
