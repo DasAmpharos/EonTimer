@@ -92,6 +92,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   value={action.color}
                   onChange={(e) => setAction({ ...action, color: e.target.value })}
                   className="color-input"
+                  style={{ width: '100%' }}
                 />
               </FormField>
               <FormField label="Interval">
@@ -100,12 +101,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
               <FormField label="Count">
                 <IntInput value={action.count} onChange={(v) => setAction({ ...action, count: v ?? 1 })} min={0} max={INT_MAX} />
               </FormField>
-              <div className="form-field">
-                <label className="form-field-label">&nbsp;</label>
-                <div className="form-field-input">
-                  <button className="btn" onClick={handleTestAction}>Test Action</button>
-                </div>
-              </div>
+              <button className="btn" style={{ width: '100%' }} onClick={handleTestAction}>Test Action</button>
             </div>
           )}
           {tab === 1 && (

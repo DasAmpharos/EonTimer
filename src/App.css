@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  max-width: 520px;
+  max-width: 600px;
   min-height: 0;
   max-height: 100%;
 }
