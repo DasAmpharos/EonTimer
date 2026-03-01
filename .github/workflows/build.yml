@@ -22,6 +22,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Free disk space (macOS)
+        if: matrix.os == 'macos'
+        run: |
+          sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes
+          brew cleanup --prune=all
+
       - name: Install Python (macOS universal2)
         if: matrix.os == 'macos'
         uses: actions/setup-python@v5
@@ -49,6 +55,7 @@ jobs:
         if: matrix.os == 'macos'
         run: |
           ARCHFLAGS="-arch x86_64 -arch arm64" uv pip install --reinstall --no-binary libsass,charset-normalizer libsass charset-normalizer
+          uv cache clean
 
       - name: Inject Properties
         shell: bash
@@ -82,7 +89,6 @@ jobs:
           rm -rf build/
           rm -rf .venv/
           rm -f dist/EonTimer
-          uv cache clean
 
       - name: Get Artifact Name
         id: artifact
