@@ -1,6 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 import os
+import sys
 
 
 datas = [
@@ -32,30 +33,62 @@ a = Analysis(
 )
 pyz = PYZ(a.pure)
 
-exe = EXE(
-    pyz,
-    a.scripts,
-    a.binaries,
-    a.datas,
-    [],
-    name='EonTimer',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch='universal2',
-    codesign_identity=None,
-    entitlements_file=None,
-    icon='eon_timer/resources/icon-512.png'
-)
-app = BUNDLE(
-    exe,
-    name='EonTimer.app',
-    icon='eon_timer/resources/icon-512.png',
-    bundle_identifier=None,
-)
+if sys.platform == 'darwin':
+    # onedir mode: required for macOS .app bundles
+    exe = EXE(
+        pyz,
+        a.scripts,
+        [],
+        exclude_binaries=True,
+        name='EonTimer',
+        debug=False,
+        bootloader_ignore_signals=False,
+        strip=False,
+        upx=True,
+        upx_exclude=[],
+        console=False,
+        disable_windowed_traceback=False,
+        argv_emulation=False,
+        target_arch='universal2',
+        codesign_identity=None,
+        entitlements_file=None,
+        icon='eon_timer/resources/icon-512.png',
+    )
+    coll = COLLECT(
+        exe,
+        a.binaries,
+        a.datas,
+        strip=False,
+        upx=True,
+        upx_exclude=[],
+        name='EonTimer',
+    )
+    app = BUNDLE(
+        coll,
+        name='EonTimer.app',
+        icon='eon_timer/resources/icon-512.png',
+        bundle_identifier=None,
+    )
+else:
+    # onefile mode for Windows and Linux
+    exe = EXE(
+        pyz,
+        a.scripts,
+        a.binaries,
+        a.datas,
+        [],
+        name='EonTimer',
+        debug=False,
+        bootloader_ignore_signals=False,
+        strip=False,
+        upx=True,
+        upx_exclude=[],
+        runtime_tmpdir=None,
+        console=False,
+        disable_windowed_traceback=False,
+        argv_emulation=False,
+        target_arch=None,
+        codesign_identity=None,
+        entitlements_file=None,
+        icon='eon_timer/resources/icon-512.png',
+    )
