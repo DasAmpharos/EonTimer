@@ -169,6 +169,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .app-action-bar .btn-update {
@@ -184,7 +185,7 @@
   border-radius: 6px;
   overflow: hidden;
   min-height: 0;
-  flex: 0 1 auto;
+  flex: 1 1 0;
 }
 
 /* Tab bar */
@@ -441,11 +442,46 @@ input[type="checkbox"] {
 
 /* ─── Status bar ─── */
 .app-status-bar {
+  display: flex;
+  align-items: center;
   font-size: 12px;
   color: var(--color-text-secondary);
   padding: 2px 4px;
   min-height: 20px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.app-status-bar > span:first-child {
+  flex: 1;
+  min-width: 0;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-status-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.status-link {
+  color: var(--color-text-faint);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.status-link:hover {
+  color: var(--color-text-secondary);
+}
+
+.sponsor-link:hover {
+  color: #db61a2;
 }
 
 /* ─── Custom panel ─── */
@@ -600,10 +636,6 @@ input[type="checkbox"] {
   .timer-play-stop svg {
     width: 26px;
     height: 26px;
-  }
-
-  .app-tabs {
-    flex: 1 1 0;
   }
 
   .tab {
