@@ -80,7 +80,7 @@ export default function App() {
     if (!confirm('Are you sure you want to reset the current timer to defaults?')) return;
     const ref = currentRef?.current;
     ref?.reset();
-    updatePhases();
+    setTimeout(updatePhases, 0);
   }, [running, currentRef, updatePhases]);
 
   const handleToggle = useCallback(() => {
