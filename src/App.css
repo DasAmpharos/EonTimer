@@ -45,6 +45,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  align-self: stretch;
   min-height: 28px;
 }
 
@@ -86,9 +87,14 @@
 
 .timer-display-link {
   color: var(--color-text-faint);
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
+  cursor: pointer;
+  min-width: 14px;
+  min-height: 14px;
+  flex-shrink: 0;
   transition: color 0.15s;
 }
 
@@ -96,7 +102,7 @@
   color: var(--color-text-secondary);
 }
 
-.timer-display-link.sponsor-link:hover {
+.timer-display-link.heart-link:hover {
   color: #db61a2;
 }
 
