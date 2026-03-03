@@ -128,6 +128,7 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
             role="link"
             tabIndex={0}
             aria-label="Support this project"
+            data-tooltip="Support this project"
             className="timer-display-link heart-link"
             onClick={() => window.open('https://github.com/sponsors/DasAmpharos', '_blank', 'noopener,noreferrer')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') window.open('https://github.com/sponsors/DasAmpharos', '_blank', 'noopener,noreferrer'); }}
