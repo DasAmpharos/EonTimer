@@ -106,8 +106,18 @@
   color: #c94f72;
 }
 
+.timer-display-link.heart-link svg {
+  fill: none;
+  stroke: currentColor;
+}
+
 .timer-display-link.heart-link:hover {
   color: #db61a2;
+}
+
+.timer-display-link.heart-link:hover svg {
+  fill: currentColor;
+  stroke: none;
 }
 
 .timer-current-phase {
