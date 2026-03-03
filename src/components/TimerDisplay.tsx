@@ -129,7 +129,7 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
             onClick={() => window.open('https://github.com/sponsors/DasAmpharos', '_blank', 'noopener,noreferrer')}
             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') window.open('https://github.com/sponsors/DasAmpharos', '_blank', 'noopener,noreferrer'); }}
           >
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" style={{ display: 'block' }}><path d="M7.655 14.916h-.002l-.006-.003-.018-.01a7.6 7.6 0 0 1-.31-.17 22.1 22.1 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.886 6.818a22.1 22.1 0 0 1-3.433 2.414 7.6 7.6 0 0 1-.31.17l-.018.01-.006.003h-.002a.625.625 0 0 1-.636 0z"/></svg>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </span>
         </div>
       </div>
