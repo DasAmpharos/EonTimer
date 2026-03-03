@@ -39,14 +39,14 @@
   flex-shrink: 0;
 }
 
-/* Footer row: settings gear on left, links on right */
+/* Footer row: settings gear on left, play/stop center, links on right */
 .timer-display-footer {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   width: 100%;
   align-self: stretch;
-  min-height: 28px;
+  min-height: 52px;
 }
 
 /* Small settings gear */
