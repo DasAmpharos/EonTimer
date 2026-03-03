@@ -36,6 +36,7 @@
   padding: 16px 16px 8px;
   gap: 8px;
   transition: none;
+  flex-shrink: 0;
 }
 
 /* Footer row: settings gear on left, links on right */
