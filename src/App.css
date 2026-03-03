@@ -102,6 +102,10 @@
   color: var(--color-text-secondary);
 }
 
+.timer-display-link.heart-link {
+  color: #c0607a;
+}
+
 .timer-display-link.heart-link:hover {
   color: #db61a2;
 }
