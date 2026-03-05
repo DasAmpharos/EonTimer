@@ -16,7 +16,7 @@ class TimerWidget(QGroupBox):
         self.state: Final = state
         self.action_settings: Final = action_settings
         self.name_service: Final = name_service
-        self.current_phase_lbl: Final = QLabel('0:000')
+        self.current_phase_lbl: Final = QLabel('0.000')
         self.current_phase_lbl.setProperty('monospace', True)
         self.phase_index_lbl: Final = QLabel('Phase 1 of 1')
         self.progress_bar: Final = QProgressBar()
@@ -152,5 +152,5 @@ class TimerWidget(QGroupBox):
         seconds = milliseconds // 1000
         milliseconds_part = milliseconds % 1000
         if seconds >= 1000:
-            return f'{seconds}:...'
-        return f'{seconds}:{milliseconds_part:03d}'
+            return f'{seconds}...'
+        return f'{seconds}.{milliseconds_part:03d}'
