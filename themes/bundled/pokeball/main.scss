@@ -76,6 +76,12 @@ QLineEdit {
   border: 1px solid $neutral-a10;
   border-radius: $border-radius;
 
+  &:disabled {
+    color: withAlpha($neutral-a40, 0.5);
+    background-color: withAlpha($neutral-a0, 0.5);
+    border: 1px solid withAlpha($neutral-a10, 0.5);
+  }
+
   &:focus {
     border: 1px solid $accent-a0;
   }
