@@ -131,7 +131,7 @@ class TimerWidget(QGroupBox):
 
     def __on_next_phase_changed(self, new_value: float):
         is_last = self.state.current_phase_index + 1 >= len(self.state.phases)
-        self.next_phase_lbl.setText('—' if is_last else self.__format_time(new_value))
+        self.next_phase_lbl.setText('—' if is_last else f'{self.__format_time(new_value)}s')
 
     @staticmethod
     def __format_total(phases: list[float]) -> str:
