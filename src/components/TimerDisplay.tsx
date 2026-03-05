@@ -35,6 +35,7 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
   const actionInterval = useSettingsStore((s) => s.action.interval);
   const actionCount = useSettingsStore((s) => s.action.count);
   const confirmExternalLinks = useSettingsStore((s) => s.timer.confirmExternalLinks);
+  const updateTimer = useSettingsStore((s) => s.updateTimer);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const flashTimeoutRef = useRef<number>(0);
@@ -48,10 +49,11 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
     }
   }, [confirmExternalLinks]);
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback((disableConfirm: boolean) => {
     if (pendingUrl) window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+    if (disableConfirm) updateTimer({ confirmExternalLinks: false });
     setPendingUrl(null);
-  }, [pendingUrl]);
+  }, [pendingUrl, updateTimer]);
 
   const handleCancel = useCallback(() => {
     setPendingUrl(null);
