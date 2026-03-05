@@ -4,6 +4,7 @@ from typing import Final, Optional
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGroupBox, QLabel, QSizePolicy, QWidget
 
+from eon_timer.util import pyside
 from eon_timer.util.pyside.name_service import NameService
 
 from .field_set import FieldSet
@@ -64,10 +65,7 @@ class FormWidget(QWidget):
 
     def _add_form_group(self, group_name: str) -> tuple['QGroupBox', FormLayout]:
         """Add a themed, expanding QGroupBox to self._layout and return it with its FormLayout."""
-        from PySide6.QtWidgets import QGroupBox as _QGroupBox
-        from eon_timer.util import pyside
-
-        group = _QGroupBox()
+        group = QGroupBox()
         if self.name_service is not None:
             self.name_service.set_name(group, group_name)
         self._layout.add_row(group)
