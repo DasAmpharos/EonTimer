@@ -5,15 +5,11 @@ from PySide6.QtGui import QColor
 
 from eon_timer.settings.action.model import ActionSettingsModel
 from eon_timer.timer_widget import TimerWidget
-from eon_timer.util.injector import component
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 
 
-@component()
 class VisualManager(QObject):
-    def __init__(self,
-                 timer_widget: TimerWidget,
-                 action_settings: ActionSettingsModel):
+    def __init__(self, timer_widget: TimerWidget, action_settings: ActionSettingsModel):
         super().__init__(None)
         self.__active = False
         self.__timer: Final = QTimer(self)

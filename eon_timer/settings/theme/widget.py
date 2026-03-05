@@ -4,33 +4,32 @@ import subprocess
 from typing import Final
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QCheckBox, QComboBox, QGridLayout, QHBoxLayout, QLabel, QMessageBox, QPushButton, \
-    QSizePolicy, QWidget
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QComboBox,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QSizePolicy,
+    QWidget,
+)
 
 from eon_timer.theme.theme_manager import ThemeManager
-from eon_timer.util.injector import component
 from eon_timer.util.loggers import log_method_calls
-from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import Property, BoolProperty
-from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.name_service import NameService
+
 from .model import ThemeSettingsModel
 
 
-@component()
 class ThemeSettingsWidget(QWidget):
-    def __init__(self,
-                 model: ThemeSettingsModel,
-                 theme_manager: ThemeManager,
-                 name_service: NameService) -> None:
+    def __init__(self, model: ThemeSettingsModel, theme_manager: ThemeManager, name_service: NameService) -> None:
         super().__init__()
         self.model: Final = model
         self.theme_manager: Final = theme_manager
         self.name_service: Final = name_service
-
-        self.theme: Final = Property(model.theme.get())
-        self.element_name_tooltip: Final = BoolProperty(model.element_name_tooltip.get())
 
         self.__theme_field: Final = QComboBox()
         self.__import_theme_field: Final = FileSelectorWidget()
@@ -54,16 +53,15 @@ class ThemeSettingsWidget(QWidget):
         layout.addWidget(label, 0, 0)
         # ----- field -----
         self.name_service.set_name(self.__theme_field, 'themeSettingsThemeField')
-        bindings.bind_str_combobox(self.__theme_field, self.theme)
         layout.addWidget(self.__theme_field, 0, 1)
         # ----- import_theme_field -----
         self.name_service.set_name(self.__import_theme_field, 'themeSettingsImportThemeField')
         self.__import_theme_field.title = 'Select Theme'
         self.__import_theme_field.filter = 'Theme Files (*.zip)'
-        self.__import_theme_field.file.on_change(self.__on_import_theme_file_changed)
+        self.__import_theme_field.file_changed.connect(self.__on_import_theme_file_changed)
         layout.addWidget(self.__import_theme_field, 1, 0, 1, 2)
         # ----- open theme dir -----
-        button = QPushButton(chr(0xf07b))
+        button = QPushButton(chr(0xF07B))
         button.setFont('Font Awesome 5 Free')
         button.setToolTip('Open Theme Directory')
         button.clicked.connect(self.__open_theme_dir)
@@ -88,27 +86,28 @@ class ThemeSettingsWidget(QWidget):
         self.name_service.set_name(label, 'themeSettingsElementNameTooltipLabel')
         group_layout.addWidget(label, stretch=0)
         # ----- field -----
-        field = QCheckBox()
-        self.name_service.set_name(field, 'themeSettingsElementNameTooltipField')
-        bindings.bind_checkbox(field, self.element_name_tooltip)
-        group_layout.addWidget(field, stretch=1)
+        self._element_name_tooltip_field = QCheckBox()
+        self._element_name_tooltip_field.setChecked(self.model.element_name_tooltip.get())
+        self.name_service.set_name(self._element_name_tooltip_field, 'themeSettingsElementNameTooltipField')
+        group_layout.addWidget(self._element_name_tooltip_field, stretch=1)
 
     def __on_themes_changed(self):
-        theme = self.theme.get()
+        current = self.__theme_field.currentText()
+        theme = current if current else self.model.theme.get()
         self.__theme_field.clear()
         self.__theme_field.addItems(self.theme_manager.list_theme_names())
         self.__theme_field.setCurrentText(theme)
 
     def __on_import(self):
         try:
-            file = self.__import_theme_field.file.get()
+            file = self.__import_theme_field.file
             self.theme_manager.install_theme(file)
-            self.__import_theme_field.file.set('')
+            self.__import_theme_field.file = ''
         except Exception as e:
             QMessageBox.critical(self, 'Import Theme', f'Failed to import theme: {e}')
 
-    def __on_import_theme_file_changed(self, event: PropertyChangeEvent[str]):
-        self.__import_btn.setDisabled(not event.new_value)
+    def __on_import_theme_file_changed(self, file: str):
+        self.__import_btn.setDisabled(not file)
 
     def __open_theme_dir(self):
         if platform.system() == 'Windows':
@@ -119,16 +118,13 @@ class ThemeSettingsWidget(QWidget):
             subprocess.Popen(['xdg-open', self.theme_manager.user_theme_dir])
 
     def on_accepted(self):
-        self.model.theme.update(self.theme)
-        self.model.element_name_tooltip.update(self.element_name_tooltip)
+        self.model.theme.set(self.__theme_field.currentText())
+        self.model.element_name_tooltip.set(self._element_name_tooltip_field.isChecked())
 
     def on_rejected(self):
-        self.__reset_properties()
+        self.__theme_field.setCurrentText(self.model.theme.get())
+        self._element_name_tooltip_field.setChecked(self.model.element_name_tooltip.get())
 
     def on_reset(self):
         self.model.reset()
-        self.__reset_properties()
-
-    def __reset_properties(self):
-        self.theme.update(self.model.theme)
-        self.element_name_tooltip.update(self.model.element_name_tooltip)
+        self.on_rejected()

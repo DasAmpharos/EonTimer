@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import Mock
 
 from eon_timer.timers import Calibrator, DelayTimer, EnhancedEntralinkTimer, EntralinkTimer, SecondTimer
-from eon_timer.timers.gen5.model import Gen5Model, Gen5Mode
+from eon_timer.timers.gen5.model import Gen5Mode, Gen5Model
 from eon_timer.timers.gen5.timer import Gen5Timer
 
 
@@ -15,11 +15,9 @@ class Gen5TimerTest(unittest.TestCase):
         self.second_timer = Mock(spec=SecondTimer)
         self.entralink_timer = Mock(spec=EntralinkTimer)
         self.enhanced_entralink_timer = Mock(spec=EnhancedEntralinkTimer)
-        self.test_subject = Gen5Timer(self.calibrator,
-                                      self.delay_timer,
-                                      self.second_timer,
-                                      self.entralink_timer,
-                                      self.enhanced_entralink_timer)
+        self.test_subject = Gen5Timer(
+            self.calibrator, self.delay_timer, self.second_timer, self.entralink_timer, self.enhanced_entralink_timer
+        )
 
     def test_calibrate_standard_mode(self):
         self.model.mode.get.return_value = Gen5Mode.STANDARD

@@ -1,19 +1,15 @@
 from PySide6.QtCore import QSettings
 
 from eon_timer.theme.theme_manager import ThemeManager
-from eon_timer.util.injector import component
-from eon_timer.util.properties.property import Property, BoolProperty
+from eon_timer.util.properties.property import BoolProperty, Property
 from eon_timer.util.properties.settings import Settings
 
 
-@component()
 class ThemeSettingsModel(Settings):
     theme = Property(ThemeManager.DEFAULT_THEME)
     element_name_tooltip = BoolProperty(False)
 
-    def __init__(self,
-                 settings: QSettings,
-                 theme_manager: ThemeManager):
+    def __init__(self, settings: QSettings, theme_manager: ThemeManager):
         Settings.__init__(self, settings)
         if self.theme.get() not in theme_manager.list_theme_names():
             self.theme.set(ThemeManager.DEFAULT_THEME)

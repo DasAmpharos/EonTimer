@@ -3,11 +3,9 @@ from typing import Final
 from PySide6.QtWidgets import QWidget
 
 from eon_timer.settings.theme.model import ThemeSettingsModel
-from eon_timer.util.injector import component
 from eon_timer.util.properties.property_change import PropertyChangeEvent
 
 
-@component()
 class NameService:
     def __init__(self, model: ThemeSettingsModel):
         self.model: Final = model

@@ -4,7 +4,6 @@ from typing import Final, override
 from PySide6.QtGui import QColor
 
 from eon_timer.util.enum import EnhancedEnum
-from eon_timer.util.injector import component
 from eon_timer.util.properties.property import EnumProperty, IntProperty, Property
 from eon_timer.util.properties.settings import Settings
 
@@ -23,7 +22,6 @@ class ActionSound(EnhancedEnum, StrEnum):
     CUSTOM = 'Custom'
 
 
-@component()
 class ActionSettingsModel(Settings):
     mode: Final = EnumProperty(ActionMode.AV)
     sound: Final = EnumProperty(ActionSound.BEEP)

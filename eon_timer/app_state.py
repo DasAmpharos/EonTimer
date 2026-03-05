@@ -3,10 +3,8 @@ from typing import Final
 from PySide6.QtCore import QObject, Signal
 
 from eon_timer.util import const
-from eon_timer.util.injector import component
 
 
-@component()
 class AppState(QObject):
     current_phase_changed: Final = Signal(float)
     current_phase_elapsed_changed: Final = Signal(float)
@@ -15,6 +13,7 @@ class AppState(QObject):
 
     running_changed: Final = Signal(bool)
     action_triggered: Final = Signal()
+    phases_changed: Final = Signal()
 
     def __init__(self):
         super().__init__()
@@ -30,10 +29,12 @@ class AppState(QObject):
     @phases.setter
     def phases(self, phases: list[float]):
         self.__phases = list(phases)
+        self.phases_changed.emit()
         self.reset()
 
     def set_phase(self, index: int, phase: float):
         self.__phases[index] = phase
+        self.phases_changed.emit()
         # update current_phase / next_phase
         match index:
             case self.current_phase_index:
@@ -41,7 +42,7 @@ class AppState(QObject):
             case self.next_phase_index:
                 self.next_phase_changed.emit(phase)
         # update minutes_before_target
-        remaining_phases = self.__phases[self.__current_phase_index:]
+        remaining_phases = self.__phases[self.__current_phase_index :]
         remaining_phases[0] -= self.__current_phase_elapsed
         self.__update_minutes_before_target(remaining_phases)
 

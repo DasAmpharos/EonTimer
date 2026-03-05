@@ -1,16 +1,13 @@
 from typing import Final, override
 
-from eon_timer.util.injector import component
 from eon_timer.util.properties.property import ListProperty
 from eon_timer.util.properties.settings import Settings
+
 from .custom_phase import CustomPhase
 
 
-@component()
 class CustomTimerModel(Settings):
-    phases: Final = ListProperty([], CustomPhase,
-                                 element_reader=CustomPhase.read,
-                                 element_writer=CustomPhase.write)
+    phases: Final = ListProperty([], CustomPhase, element_reader=CustomPhase.read, element_writer=CustomPhase.write)
 
     @property
     @override

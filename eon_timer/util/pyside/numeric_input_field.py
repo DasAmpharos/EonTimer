@@ -4,7 +4,7 @@ from numbers import Number
 from typing import Callable, Final, Generic, TypeVar, final, override
 
 from PySide6.QtCore import QObject
-from PySide6.QtGui import QDoubleValidator, QKeyEvent, QValidator, Qt
+from PySide6.QtGui import QKeyEvent, Qt, QValidator
 from PySide6.QtWidgets import QLineEdit
 
 from eon_timer.util import strings
@@ -22,10 +22,9 @@ class Radix(IntEnum):
 
 
 class RadixValidator(QValidator, Generic[NumericT]):
-    def __init__(self,
-                 converter: Callable[[str, Radix], NumericT],
-                 radix: Radix = Radix.DECIMAL,
-                 parent: QObject | None = None):
+    def __init__(
+        self, converter: Callable[[str, Radix], NumericT], radix: Radix = Radix.DECIMAL, parent: QObject | None = None
+    ):
         super().__init__(parent)
         self.lower_bound: NumericT | None = None
         self.upper_bound: NumericT | None = None
@@ -55,7 +54,43 @@ class RadixValidator(QValidator, Generic[NumericT]):
 
     def set_range(self, lower_bound: NumericT, upper_bound: NumericT):
         if lower_bound > upper_bound:
-            raise ValueError(f'lower_bound must be less than or equal to upper_bound')
+            raise ValueError('lower_bound must be less than or equal to upper_bound')
+        self.lower_bound = lower_bound
+        self.upper_bound = upper_bound
+
+
+class FloatValidator(QValidator):
+    """Locale-independent float validator with optional min/max bounds."""
+
+    def __init__(self, parent: QObject | None = None):
+        super().__init__(parent)
+        self.lower_bound: float | None = None
+        self.upper_bound: float | None = None
+
+    @override
+    def validate(self, s: str, pos: int):
+        try:
+            value = float(s)
+            if self.lower_bound is not None and value < self.lower_bound:
+                return QValidator.State.Invalid, s, pos
+            if self.upper_bound is not None and value > self.upper_bound:
+                return QValidator.State.Invalid, s, pos
+            return QValidator.State.Acceptable, s, pos
+        except ValueError:
+            if s in ('', '-', '.', '-.'):
+                return QValidator.State.Intermediate, s, pos
+            return QValidator.State.Invalid, s, pos
+
+    @override
+    def fixup(self, s: str) -> str:
+        try:
+            return str(float(s))
+        except ValueError:
+            return ''
+
+    def set_range(self, lower_bound: float, upper_bound: float):
+        if lower_bound > upper_bound:
+            raise ValueError('lower_bound must be less than or equal to upper_bound')
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
 
@@ -69,22 +104,21 @@ class NumericInputField(QLineEdit, Generic[NumericT]):
     def __init__(self, p_property: Property[NumericT], parent: QObject | None = None):
         QLineEdit.__init__(self, parent)
         self.value: Final = p_property
+        self._updating = False
         self.setText(str(self.get_value()))
         self.value.on_change(self.__on_property_changed)
         self.textChanged.connect(self.__on_text_changed)
+        self.editingFinished.connect(self.__on_editing_finished)
         self.blank_behavior = BlankBehavior.PLACEHOLDER
 
     @abstractmethod
-    def to_number(self, s: str | None) -> NumericT | None:
-        ...
+    def to_number(self, s: str | None) -> NumericT | None: ...
 
     @abstractmethod
-    def to_string(self, n: NumericT | None) -> str:
-        ...
+    def to_string(self, n: NumericT | None) -> str: ...
 
     @abstractmethod
-    def set_range(self, lower_bound: NumericT, upper_bound: NumericT) -> None:
-        ...
+    def set_range(self, lower_bound: NumericT, upper_bound: NumericT) -> None: ...
 
     @final
     @override
@@ -103,7 +137,8 @@ class NumericInputField(QLineEdit, Generic[NumericT]):
         self.value.set(value)
 
     def __on_property_changed(self, event: PropertyChangeEvent[NumericT]) -> None:
-        self.setText(self.to_string(event.new_value))
+        if not self._updating:
+            self.setText(self.to_string(event.new_value))
 
     def __on_text_changed(self, text: str) -> None:
         value = self.to_number(text)
@@ -112,21 +147,58 @@ class NumericInputField(QLineEdit, Generic[NumericT]):
             return
         if value is not None and value != self.get_value():
             self.setPlaceholderText('')
-            self.value.set(value)
+            self._updating = True
+            try:
+                self.value.set(value)
+            finally:
+                self._updating = False
+
+    def __on_editing_finished(self) -> None:
+        # Reformat to canonical string (e.g. "6" → "6.00") once the user commits.
+        # Skip if the field is intentionally blank.
+        if self.to_number(self.text()) is not None:
+            self._updating = True
+            try:
+                self.setText(self.to_string(self.value.get()))
+            finally:
+                self._updating = False
 
 
 class IntInputField(NumericInputField[int]):
-    def __init__(self, value: int = 0, parent: QObject | None = None):
+    def __init__(
+        self,
+        value: int = 0,
+        *,
+        min_val: int | None = None,
+        max_val: int | None = None,
+        blank_behavior: BlankBehavior | None = None,
+        placeholder: str | None = None,
+        tooltip: str | None = None,
+        parent: QObject | None = None,
+    ):
         NumericInputField.__init__(self, IntProperty(value), parent)
         self.validator: Final = RadixValidator(lambda s, radix: int(s, radix))
         super().setValidator(self.validator)
+        if min_val is not None and max_val is not None:
+            self.set_range(min_val, max_val)
+        if blank_behavior is not None:
+            self.blank_behavior = blank_behavior
+        if placeholder is not None:
+            self.setPlaceholderText(placeholder)
+        if tooltip is not None:
+            self.setToolTip(tooltip)
+        if blank_behavior == BlankBehavior.BLANK:
+            self.setText('')
 
     @override
     def to_number(self, s: str | None) -> int | None:
         s = strings.strip_to_none(s)
         if s is None:
             return None
-        return int(s, self.validator.radix)
+        try:
+            return int(s, self.validator.radix)
+        except ValueError:
+            return None
 
     @override
     def to_string(self, n: int | None) -> str:
@@ -151,9 +223,9 @@ class IntInputField(NumericInputField[int]):
 
     @override
     def set_value(self, value: int) -> None:
-        if self.validator.lower_bound > value:
+        if self.validator.lower_bound is not None and self.validator.lower_bound > value:
             raise ValueError(f'new_value must be greater than or equal to {self.validator.lower_bound}')
-        if self.validator.upper_bound < value:
+        if self.validator.upper_bound is not None and self.validator.upper_bound < value:
             raise ValueError(f'new_value must be less than or equal to {self.validator.upper_bound}')
         super().set_value(value)
 
@@ -169,17 +241,33 @@ class IntInputField(NumericInputField[int]):
 
 
 class FloatInputField(NumericInputField[float]):
-    def __init__(self, value: float = 0.0, parent: QObject | None = None):
+    def __init__(
+        self,
+        value: float = 0.0,
+        *,
+        min_val: float | None = None,
+        max_val: float | None = None,
+        tooltip: str | None = None,
+        parent: QObject | None = None,
+    ):
         NumericInputField.__init__(self, FloatProperty(value), parent)
-        self.validator: Final = QDoubleValidator()
+        self.validator: Final = FloatValidator()
         super().setValidator(self.validator)
         self.precision = 2
+        if min_val is not None and max_val is not None:
+            self.set_range(min_val, max_val)
+        if tooltip is not None:
+            self.setToolTip(tooltip)
 
     @override
     def to_number(self, s: str | None) -> float | None:
+        s = strings.strip_to_none(s)
         if s is None:
             return None
-        return float(s)
+        try:
+            return float(s)
+        except ValueError:
+            return None
 
     @override
     def to_string(self, n: float | None) -> str:
@@ -189,16 +277,16 @@ class FloatInputField(NumericInputField[float]):
 
     @override
     def set_range(self, lower_bound: float, upper_bound: float) -> None:
-        self.validator.setRange(lower_bound, upper_bound)
+        self.validator.set_range(lower_bound, upper_bound)
         value = min(max(self.value.get(), lower_bound), upper_bound)
         self.value.set(value)
 
     @override
     def set_value(self, value: float) -> None:
-        if self.validator.bottom() > value:
-            raise ValueError(f'new_value must be greater than or equal to {self.validator.bottom()}')
-        if self.validator.top() < value:
-            raise ValueError(f'new_value must be less than or equal to {self.validator.top()}')
+        if self.validator.lower_bound is not None and self.validator.lower_bound > value:
+            raise ValueError(f'new_value must be greater than or equal to {self.validator.lower_bound}')
+        if self.validator.upper_bound is not None and self.validator.upper_bound < value:
+            raise ValueError(f'new_value must be less than or equal to {self.validator.upper_bound}')
         super().set_value(value)
 
     @property

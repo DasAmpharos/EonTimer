@@ -6,10 +6,11 @@ from PySide6.QtWidgets import QMessageBox, QWidget
 
 from eon_timer import app
 from eon_timer.settings.other.update_model import UpdateSettingsModel
-from eon_timer.util.injector import component
+from eon_timer.util import loggers
+
+_logger: Final = loggers.get_logger(__name__)
 
 
-@component()
 class UpdateManager:
     def __init__(self, update_settings: UpdateSettingsModel):
         self.update_settings: Final = update_settings
@@ -21,9 +22,13 @@ class UpdateManager:
             current_version = app.get_version()
             if tag_name != current_version and tag_name != self.update_settings.acknowledged.get():
                 message = f'A new version of EonTimer is available: {tag_name}'
-                reply = QMessageBox.information(parent, 'Update Available', message,
-                                                QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Ignore,
-                                                QMessageBox.StandardButton.Open)
+                reply = QMessageBox.information(
+                    parent,
+                    'Update Available',
+                    message,
+                    QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Ignore,
+                    QMessageBox.StandardButton.Open,
+                )
                 if reply == QMessageBox.StandardButton.Open:
                     html_url = latest_release.get('html_url', '')
                     QDesktopServices.openUrl(html_url)
@@ -35,13 +40,11 @@ class UpdateManager:
         try:
             response = requests.get('https://api.github.com/repos/DasAmpharos/EonTimer/releases/latest', timeout=1.5)
             if response.status_code != 200:
-                print(f'Error: {response.status_code}')
-                print(f'Error: {response.content.decode()}')
-                print(f'Error: {response.headers}')
+                _logger.error(f'HTTP {response.status_code}: {response.content.decode()}')
                 return None
             return response.json()
-        except requests.exceptions.Timeout as error:
-            print(f'Error: {error}')
+        except requests.exceptions.RequestException as error:
+            _logger.error(f'Update check failed: {error}')
             return None
 
     @property

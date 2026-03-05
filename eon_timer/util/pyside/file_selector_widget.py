@@ -1,29 +1,32 @@
 import os.path
 from typing import Callable, Final, Optional
 
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QLineEdit, QPushButton, QWidget
-
-from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import Property
 
 
 class FileSelectorWidget(QWidget):
-    def __init__(self,
-                 title: str = 'Select File',
-                 filter: str | None = None,
-                 file: str | None = None,
-                 validator: Optional[Callable[[str], bool]] = None,
-                 parent: Optional[QWidget] = None):
+    file_changed: Final = Signal(str)
+
+    def __init__(
+        self,
+        title: str = 'Select File',
+        filter: str | None = None,
+        file: str | None = None,
+        validator: Optional[Callable[[str], bool]] = None,
+        parent: Optional[QWidget] = None,
+    ):
         super().__init__(parent)
         self.title: Optional[str] = title
         self.filter: Optional[str] = filter
-        self.file: Final = Property(file or '')
         self.file_validator: Optional[Callable[[str], bool]] = validator
 
         self.__line_edit: Final = QLineEdit()
         self.__button: Final = QPushButton('...')
-        bindings.bind_line_edit(self.__line_edit, self.file)
+        self.__line_edit.textChanged.connect(self.file_changed)
         self.__init_components()
+        if file:
+            self.file = file
 
     def __init_components(self):
         layout = QHBoxLayout(self)
@@ -37,8 +40,16 @@ class FileSelectorWidget(QWidget):
         layout.addWidget(self.__line_edit)
         layout.addWidget(self.__button)
 
+    @property
+    def file(self) -> str:
+        return self.__line_edit.text()
+
+    @file.setter
+    def file(self, value: str) -> None:
+        self.__line_edit.setText(value)
+
     def __on_button_clicked(self):
-        filename = self.file.get()
+        filename = self.file
         dirname = os.path.dirname(filename) if filename else os.curdir
 
         args = {'parent': self, 'caption': self.title, 'dir': dirname}
@@ -50,4 +61,4 @@ class FileSelectorWidget(QWidget):
         if self.file_validator is not None:
             is_valid = self.file_validator(filename)
         if is_valid:
-            self.file.set(filename)
+            self.file = filename

@@ -6,13 +6,15 @@ from .form_layout import FormLayout
 
 
 class FieldSet:
-    def __init__(self,
-                 row: int,
-                 field: QWidget,
-                 label: Optional[QLabel],
-                 layout: FormLayout,
-                 enabled: bool = True,
-                 visible: bool = True) -> None:
+    def __init__(
+        self,
+        row: int,
+        field: QWidget,
+        label: Optional[QLabel],
+        layout: FormLayout,
+        enabled: bool = True,
+        visible: bool = True,
+    ) -> None:
         self.row: Final = row
         self.field: Final = field
         self.label: Final = label

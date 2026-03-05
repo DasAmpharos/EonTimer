@@ -1,26 +1,24 @@
 import functools
 from typing import Final
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QColor, QIcon, QPixmap
 from PySide6.QtWidgets import QColorDialog, QPushButton
 
 from eon_timer.util import const
-from eon_timer.util.injector import component
 from eon_timer.util.loggers import log_method_calls
-from eon_timer.util.properties import bindings
-from eon_timer.util.properties.property import Property
-from eon_timer.util.properties.property_change import PropertyChangeEvent
 from eon_timer.util.pyside import EnumComboBox
 from eon_timer.util.pyside.file_selector_widget import FileSelectorWidget
 from eon_timer.util.pyside.form import FormWidget
 from eon_timer.util.pyside.name_service import NameService
 from eon_timer.util.pyside.numeric_input_field import IntInputField
+
 from .model import ActionMode, ActionSettingsModel, ActionSound
 
 
-@component()
 class ActionSettingsWidget(FormWidget):
+    test_action: Final = Signal()
+
     class Field(FormWidget.Field):
         MODE = 'Mode'
         SOUND = 'Sound'
@@ -29,92 +27,95 @@ class ActionSettingsWidget(FormWidget):
         INTERVAL = 'Interval'
         COUNT = 'Count'
 
-    def __init__(self,
-                 name_service: NameService,
-                 model: ActionSettingsModel) -> None:
+    def __init__(self, name_service: NameService, model: ActionSettingsModel) -> None:
         super().__init__(name_service)
-        self.mode: Final = Property(model.mode.get())
-        self.sound: Final = Property(model.sound.get())
-        self.color: Final = Property(model.color.get())
-        self.custom_sound: Final = Property(model.custom_sound.get(), str)
-        self.interval: Final = Property(model.interval.get())
-        self.count: Final = Property(model.count.get())
         self.model: Final = model
+        self._color: QColor = model.color.get()
         self.__init_components()
 
     @log_method_calls()
     def __init_components(self) -> None:
         self.name_service.set_name(self, 'actionSettingsWidget')
-        # ----- layout -----
-        self._layout.set_alignment(Qt.AlignmentFlag.AlignTop)
-        self._layout.set_content_margins(10, 10, 10, 10)
         # ----- mode -----
-        field = EnumComboBox(ActionMode)
-        self.add_field(self.Field.MODE, field, name='actionSettingsMode')
-        bindings.bind_enum_combobox(field, self.mode)
+        self._mode_field = EnumComboBox(ActionMode, self.model.mode.get())
+        self._mode_field.setToolTip('Whether to use an audio cue, visual flash, or both')
+        self.add_field(self.Field.MODE, self._mode_field, name='actionSettingsMode')
         # ----- sound -----
-        field = EnumComboBox(ActionSound)
-        self.add_field(self.Field.SOUND, field, name='actionSettingsSound')
-        bindings.bind_enum_combobox(field, self.sound)
+        self._sound_field = EnumComboBox(ActionSound, self.model.sound.get())
+        self._sound_field.setToolTip('Built-in sound to play when the action fires')
+        self._sound_field.value_changed.connect(self.__on_sound_changed)
+        self.add_field(self.Field.SOUND, self._sound_field, name='actionSettingsSound')
         # ----- custom_sound -----
-        field = FileSelectorWidget(title='Select Sound',
-                                   filter='Sound Files (*.wav *.mp3)')
-        self.add_field(self.Field.CUSTOM_SOUND, field,
-                       visible=self.sound.get() == ActionSound.CUSTOM,
-                       name='actionSettingsCustomSound')
-        bindings.bind(field.file, self.custom_sound, True)
-        self.sound.on_change(self.__on_sound_changed)
+        self._custom_sound_field = FileSelectorWidget(title='Select Sound', filter='Sound Files (*.wav *.mp3)')
+        self._custom_sound_field.file = self.model.custom_sound.get()
+        self._custom_sound_field.setToolTip('Path to a custom .wav or .mp3 file to play instead of a built-in sound')
+        self.add_field(
+            self.Field.CUSTOM_SOUND,
+            self._custom_sound_field,
+            visible=self.model.sound.get() == ActionSound.CUSTOM,
+            name='actionSettingsCustomSound',
+        )
         # ----- color -----
-        field = QPushButton()
-        field.clicked.connect(functools.partial(self.__on_color_clicked, field))
-        self.add_field(self.Field.COLOR, field, name='actionSettingsColor')
-        self.__set_icon_color(field)
+        self._color_button = QPushButton()
+        self._color_button.clicked.connect(functools.partial(self.__on_color_clicked, self._color_button))
+        self._color_button.setToolTip('Color used for the visual flash overlay')
+        self.add_field(self.Field.COLOR, self._color_button, name='actionSettingsColor')
+        self.__set_icon_color(self._color_button)
         # ----- interval -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        bindings.bind(field.value, self.interval)
-        self.add_field(self.Field.INTERVAL, field, name='actionSettingsInterval')
+        self._interval_field = IntInputField(
+            value=self.model.interval.get(),
+            min_val=0,
+            max_val=const.INT_MAX,
+            tooltip='Milliseconds between consecutive action cues (e.g. 500 = two cues 500 ms apart)',
+        )
+        self.add_field(self.Field.INTERVAL, self._interval_field, name='actionSettingsInterval')
         # ----- count -----
-        field = IntInputField()
-        field.set_range(0, const.INT_MAX)
-        bindings.bind(field.value, self.count)
-        self.add_field(self.Field.COUNT, field, name='actionSettingsCount')
+        self._count_field = IntInputField(
+            value=self.model.count.get(),
+            min_val=0,
+            max_val=const.INT_MAX,
+            tooltip='Number of times the action repeats before the phase ends (set 1 for a single cue)',
+        )
+        self.add_field(self.Field.COUNT, self._count_field, name='actionSettingsCount')
+        # ----- test button -----
+        test_btn = QPushButton('Test Action')
+        test_btn.setToolTip('Fire the current action once to preview the sound/visual settings')
+        self.name_service.set_name(test_btn, 'actionSettingsTestButton')
+        test_btn.clicked.connect(self.test_action.emit)
+        self._layout.add_row(test_btn)
 
-    def __on_sound_changed(self, event: PropertyChangeEvent[ActionSound]) -> None:
-        self.set_visible(self.Field.CUSTOM_SOUND, event.new_value == ActionSound.CUSTOM)
+    def __on_sound_changed(self, sound: ActionSound) -> None:
+        self.set_visible(self.Field.CUSTOM_SOUND, sound == ActionSound.CUSTOM)
 
     def __on_color_clicked(self, button: QPushButton) -> None:
-        color = self.color.get()
-        color = QColorDialog.getColor(color, self)
+        color = QColorDialog.getColor(self._color, self)
         if color.isValid():
-            self.color.set(color)
+            self._color = color
             self.__set_icon_color(button)
 
     def __set_icon_color(self, button: QPushButton) -> None:
         pixmap = QPixmap(64, 64)
-        pixmap.fill(self.color.get())
+        pixmap.fill(self._color)
         button.setIcon(QIcon(pixmap))
 
     def on_accepted(self):
-        self.model.mode.update(self.mode)
-        self.model.sound.update(self.sound)
-        self.model.custom_sound.update(self.custom_sound)
-        self.model.color.update(self.color)
-        self.model.interval.update(self.interval)
-        self.model.count.update(self.count)
+        self.model.mode.set(self._mode_field.get_value())
+        self.model.sound.set(self._sound_field.get_value())
+        self.model.custom_sound.set(self._custom_sound_field.file)
+        self.model.color.set(self._color)
+        self.model.interval.set(self._interval_field.value.get())
+        self.model.count.set(self._count_field.value.get())
         self.model.settings_changed.emit()
 
     def on_rejected(self):
-        self.__reset_properties()
+        self._mode_field.set_value(self.model.mode.get())
+        self._sound_field.set_value(self.model.sound.get())
+        self._custom_sound_field.file = self.model.custom_sound.get()
+        self._color = self.model.color.get()
+        self.__set_icon_color(self._color_button)
+        self._interval_field.value.set(self.model.interval.get())
+        self._count_field.value.set(self.model.count.get())
 
     def on_reset(self):
         self.model.reset()
-        self.__reset_properties()
-
-    def __reset_properties(self):
-        self.mode.update(self.model.mode)
-        self.sound.update(self.model.sound)
-        self.custom_sound.update(self.model.custom_sound)
-        self.color.update(self.model.color)
-        self.interval.update(self.model.interval)
-        self.count.update(self.model.count)
+        self.on_rejected()

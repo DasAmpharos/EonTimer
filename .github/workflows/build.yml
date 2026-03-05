@@ -22,27 +22,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Free disk space (macOS)
+        if: matrix.os == 'macos'
+        run: |
+          sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes
+          brew cleanup --prune=all
+
+      - name: Install Python (macOS universal2)
+        if: matrix.os == 'macos'
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
-          cache: pip
+          python-version: "3.14"
+          allow-prereleases: true
 
-      - name: Install Dependencies
-        if: matrix.os != 'windows'
-        run: pip install -r requirements.txt
+      - name: Force uv to use system Python (macOS)
+        if: matrix.os == 'macos'
+        run: echo "UV_PYTHON_PREFERENCE=only-system" >> $GITHUB_ENV
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.14"
 
       - name: Install Dependencies (Ubuntu)
         if: matrix.os == 'ubuntu'
         run: sudo apt update && sudo apt install -y libegl1-mesa-dev
 
-      - name: Install Dependencies (Windows)
-        if: matrix.os == 'windows'
-        shell: bash
+      - name: Install Dependencies
+        run: uv sync --group build
+
+      - name: Rebuild native extensions for universal2 (macOS)
+        if: matrix.os == 'macos'
         run: |
-          grep -v 'libsass' requirements.txt > requirements-win.txt
-          pip install -r requirements-win.txt
-          pip install libsass==0.23.0
+          ARCHFLAGS="-arch x86_64 -arch arm64" uv pip install --reinstall --no-binary libsass,charset-normalizer libsass charset-normalizer
+          uv cache clean
 
       - name: Inject Properties
         shell: bash
@@ -62,13 +75,20 @@ jobs:
           EOF
 
       - name: Unit Tests
-        run: python -m unittest discover -v -s test -p "*_test.py"
+        run: uv run python -m unittest discover -v -s test -p "*_test.py"
 
       - name: Build Bundled Themes
-        run: python theme.py build --bundled
+        run: uv run python theme.py build --bundled
 
       - name: Build
-        run: pyinstaller EonTimer.spec
+        run: uv run pyinstaller EonTimer.spec
+
+      - name: Clean up disk space (macOS)
+        if: matrix.os == 'macos'
+        run: |
+          rm -rf build/
+          rm -rf .venv/
+          rm -rf dist/EonTimer
 
       - name: Get Artifact Name
         id: artifact
@@ -96,10 +116,11 @@ jobs:
         run: |
           release_artifact="EonTimer-${{ matrix.os }}.zip"
           echo "artifact_name=${release_artifact}" >> "$GITHUB_OUTPUT"
-          python3 bin/create-release-artifact.py -d dist -o EonTimer-${{ matrix.os }}.zip ${{ steps.artifact.outputs.artifact_name }}
+          uv run python3 bin/create-release-artifact.py -d dist -o EonTimer-${{ matrix.os }}.zip ${{ steps.artifact.outputs.artifact_name }}
 
       - name: Upload Release Artifact
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: dist/${{ steps.release-artifact.outputs.artifact_name }}
+
