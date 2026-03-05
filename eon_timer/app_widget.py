@@ -87,7 +87,12 @@ class AppWidget(QWidget, CloseListener):
         self.gen5_timer_widget.timer_changed.connect(self.__update_update_btn_state)
         self.gen4_timer_widget.timer_changed.connect(self.__update_update_btn_state)
         self.gen3_timer_widget.timer_changed.connect(self.__update_update_btn_state)
-        timer_widgets = [self.gen5_timer_widget, self.gen4_timer_widget, self.gen3_timer_widget, self.custom_timer_widget]
+        timer_widgets = [
+            self.gen5_timer_widget,
+            self.gen4_timer_widget,
+            self.gen3_timer_widget,
+            self.custom_timer_widget,
+        ]
         for widget, label, tooltip in zip(timer_widgets, _TAB_LABELS, _TAB_TOOLTIPS):
             self.tab_widget.addTab(widget, label)
             idx = self.tab_widget.count() - 1

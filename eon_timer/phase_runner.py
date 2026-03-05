@@ -121,4 +121,3 @@ class PhaseRunner(QObject, CloseListener):
 
     def _on_close(self):
         self.stop()
-

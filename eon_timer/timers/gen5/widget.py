@@ -34,19 +34,22 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
     def __init__(self, state: AppState, model: Gen5Model, timer: Gen5Timer, name_service: NameService):
         self.state: Final = state
         self.delay_hit_field: Final = IntInputField(
-            min_val=0, max_val=const.INT_MAX,
+            min_val=0,
+            max_val=const.INT_MAX,
             blank_behavior=BlankBehavior.BLANK,
             placeholder='Enter delay hit',
             tooltip='The delay you actually hit — enter this after each run to calibrate',
         )
         self.second_hit_field: Final = IntInputField(
-            min_val=0, max_val=const.INT_MAX,
+            min_val=0,
+            max_val=const.INT_MAX,
             blank_behavior=BlankBehavior.BLANK,
             placeholder='Enter second hit',
             tooltip='The second you actually hit — enter this after each run to calibrate',
         )
         self.advances_hit_field: Final = IntInputField(
-            min_val=0, max_val=const.INT_MAX,
+            min_val=0,
+            max_val=const.INT_MAX,
             blank_behavior=BlankBehavior.BLANK,
             placeholder='Enter advances hit',
             tooltip='The advances you actually hit — enter this after each run to calibrate',
@@ -91,33 +94,71 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
         form_layout = FormLayout(form_widget)
         form_layout.set_spacing(10)
         # ----- target_delay -----
-        self.add_bound_field(self.Field.TARGET_DELAY,
+        self.add_bound_field(
+            self.Field.TARGET_DELAY,
             IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The delay value from your target seed'),
-            self.model.target_delay, layout=form_layout, name='gen5TargetDelay')
+            self.model.target_delay,
+            layout=form_layout,
+            name='gen5TargetDelay',
+        )
         # ----- target_second -----
-        self.add_bound_field(self.Field.TARGET_SECOND,
+        self.add_bound_field(
+            self.Field.TARGET_SECOND,
             IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The second value from your target seed'),
-            self.model.target_second, layout=form_layout, name='gen5TargetSecond')
+            self.model.target_second,
+            layout=form_layout,
+            name='gen5TargetSecond',
+        )
         # ----- target_advances -----
-        self.add_bound_field(self.Field.TARGET_ADVANCES,
+        self.add_bound_field(
+            self.Field.TARGET_ADVANCES,
             IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The advances/frames value from your target seed'),
-            self.model.target_advances, layout=form_layout, name='gen5TargetAdvances')
+            self.model.target_advances,
+            layout=form_layout,
+            name='gen5TargetAdvances',
+        )
         # ----- calibration -----
-        self.add_bound_field(self.Field.CALIBRATION,
-            IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Delay calibration offset (auto-updated after each run)'),
-            self.model.calibration, layout=form_layout, name='gen5Calibration')
+        self.add_bound_field(
+            self.Field.CALIBRATION,
+            IntInputField(
+                min_val=const.INT_MIN,
+                max_val=const.INT_MAX,
+                tooltip='Delay calibration offset (auto-updated after each run)',
+            ),
+            self.model.calibration,
+            layout=form_layout,
+            name='gen5Calibration',
+        )
         # ----- entralink_calibration -----
-        self.add_bound_field(self.Field.ENTRALINK_CALIBRATION,
-            IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Entralink-specific delay calibration (auto-updated after each run)'),
-            self.model.entralink_calibration, layout=form_layout, name='gen5EntralinkCalibration')
+        self.add_bound_field(
+            self.Field.ENTRALINK_CALIBRATION,
+            IntInputField(
+                min_val=const.INT_MIN,
+                max_val=const.INT_MAX,
+                tooltip='Entralink-specific delay calibration (auto-updated after each run)',
+            ),
+            self.model.entralink_calibration,
+            layout=form_layout,
+            name='gen5EntralinkCalibration',
+        )
         # ----- frame_calibration -----
-        self.add_bound_field(self.Field.FRAME_CALIBRATION,
-            IntInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Frame/advances calibration offset (auto-updated after each run)'),
-            self.model.frame_calibration, layout=form_layout, name='gen5FrameCalibration')
+        self.add_bound_field(
+            self.Field.FRAME_CALIBRATION,
+            IntInputField(
+                min_val=const.INT_MIN,
+                max_val=const.INT_MAX,
+                tooltip='Frame/advances calibration offset (auto-updated after each run)',
+            ),
+            self.model.frame_calibration,
+            layout=form_layout,
+            name='gen5FrameCalibration',
+        )
         # ----- delay_hit / second_hit / advances_hit -----
         self.add_bound_field(self.Field.DELAY_HIT, self.delay_hit_field, self.model.delay_hit, name='gen5DelayHit')
         self.add_bound_field(self.Field.SECOND_HIT, self.second_hit_field, self.model.second_hit, name='gen5SecondHit')
-        self.add_bound_field(self.Field.ADVANCES_HIT, self.advances_hit_field, self.model.advances_hit, name='gen5AdvancesHit')
+        self.add_bound_field(
+            self.Field.ADVANCES_HIT, self.advances_hit_field, self.model.advances_hit, name='gen5AdvancesHit'
+        )
         # update field visibility
         self.model.mode.on_change(self.__on_mode_changed)
         event = PropertyChangeEvent(None, self.model.mode.get())

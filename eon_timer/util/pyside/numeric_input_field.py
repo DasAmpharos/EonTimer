@@ -298,4 +298,3 @@ class FloatInputField(NumericInputField[float]):
         self.__precision = value
         new_text = self.to_string(self.value.get())
         self.setText(new_text)
-

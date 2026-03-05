@@ -29,7 +29,8 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
     def __init__(self, state: AppState, model: Gen3Model, timer: Gen3Timer, name_service: NameService) -> None:
         self.state: Final = state
         self.frame_hit_field: Final = IntInputField(
-            min_val=0, max_val=const.INT_MAX,
+            min_val=0,
+            max_val=const.INT_MAX,
             blank_behavior=BlankBehavior.BLANK,
             placeholder='Enter frame hit',
             tooltip='The frame you actually landed on — enter this after each run to calibrate',
@@ -49,17 +50,37 @@ class Gen3TimerWidget(TimerWidget[Gen3Model, Gen3Timer], FormWidget):
         # ----- form_group -----
         _, form_layout = self._add_form_group('gen3FormGroup')
         # ----- pre_timer -----
-        self.add_bound_field(self.Field.PRE_TIMER,
-            IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='Milliseconds to wait before the first phase (typically 1000–3000)'),
-            self.model.pre_timer, layout=form_layout, name='gen3PreTimer')
+        self.add_bound_field(
+            self.Field.PRE_TIMER,
+            IntInputField(
+                min_val=0,
+                max_val=const.INT_MAX,
+                tooltip='Milliseconds to wait before the first phase (typically 1000–3000)',
+            ),
+            self.model.pre_timer,
+            layout=form_layout,
+            name='gen3PreTimer',
+        )
         # ----- target_frame -----
-        self.add_bound_field(self.Field.TARGET_FRAME,
+        self.add_bound_field(
+            self.Field.TARGET_FRAME,
             IntInputField(min_val=0, max_val=const.INT_MAX, tooltip='The frame number you want to land on'),
-            self.model.target_frame, layout=form_layout, name='gen3TargetFrame')
+            self.model.target_frame,
+            layout=form_layout,
+            name='gen3TargetFrame',
+        )
         # ----- calibration -----
-        self.add_bound_field(self.Field.CALIBRATION,
-            FloatInputField(min_val=const.INT_MIN, max_val=const.INT_MAX, tooltip='Calibration offset in milliseconds (auto-updated after each run)'),
-            self.model.calibration, layout=form_layout, name='gen3Calibration')
+        self.add_bound_field(
+            self.Field.CALIBRATION,
+            FloatInputField(
+                min_val=const.INT_MIN,
+                max_val=const.INT_MAX,
+                tooltip='Calibration offset in milliseconds (auto-updated after each run)',
+            ),
+            self.model.calibration,
+            layout=form_layout,
+            name='gen3Calibration',
+        )
         # ----- set_target_frame_btn -----
         field = QPushButton(self.Field.SET_TARGET_FRAME.value)
         self.name_service.set_name(field, 'gen3SetTargetFrameButton')

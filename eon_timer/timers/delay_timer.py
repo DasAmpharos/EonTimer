@@ -23,9 +23,8 @@ class DelayTimer:
 
     def __create_phase1(self, target_delay: int, target_second: int, calibration: float) -> float:
         return timers.to_minimum_length(
-            self.second_timer.create(target_second, calibration)[0] -
-            self.calibrator.to_milliseconds(target_delay),
-            self.calibrator.minimum_length
+            self.second_timer.create(target_second, calibration)[0] - self.calibrator.to_milliseconds(target_delay),
+            self.calibrator.minimum_length,
         )
 
     def __create_phase2(self, target_delay: int, calibration: float) -> float:

@@ -89,7 +89,9 @@ class CustomPhaseWidget(QWidget):
         self.__remove_btn = QPushButton(chr(0xF057))
         self.__remove_btn.setFont('Font Awesome 5 Free')
         self.__remove_btn.setToolTip('Remove')
-        group_layout.addWidget(self.__remove_btn, stretch=0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight)
+        group_layout.addWidget(
+            self.__remove_btn, stretch=0, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignRight
+        )
         self.__remove_btn.clicked.connect(self.__on_remove_button_clicked)
         pyside.set_class(self.__remove_btn, ['danger'])
 

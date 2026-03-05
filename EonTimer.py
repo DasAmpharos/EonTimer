@@ -33,6 +33,6 @@ def main() -> int:
     return _app.exec()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(main())

@@ -5,9 +5,9 @@ from eon_timer.timers.calibrator import Calibrator
 from eon_timer.util.properties.property import BoolProperty, EnumProperty, FloatProperty, IntProperty
 
 
-def build_mock_timer_settings(fps: float = 1000.0,
-                               precision_calibration: bool = False,
-                               minimum_length: int = 14) -> TimerSettingsModel:
+def build_mock_timer_settings(
+    fps: float = 1000.0, precision_calibration: bool = False, minimum_length: int = 14
+) -> TimerSettingsModel:
     """Create a mock TimerSettingsModel for use in unit tests.
 
     Args:

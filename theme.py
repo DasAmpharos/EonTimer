@@ -45,13 +45,13 @@ def __build_bundled_themes() -> int:
 
 def __build_impl(dirname: str, output: str | None) -> int:
     if not os.path.isdir(dirname):
-        print(f"Directory {dirname} does not exist", file=sys.stderr)
+        print(f'Directory {dirname} does not exist', file=sys.stderr)
         return -1
 
     # get and validate info
     info_filepath = os.path.join(dirname, 'info.json')
     if not os.path.exists(info_filepath):
-        print(f"File {info_filepath} does not exist", file=sys.stderr)
+        print(f'File {info_filepath} does not exist', file=sys.stderr)
         return -1
     with open(info_filepath, 'r') as file:
         info = json.load(file)
@@ -59,7 +59,7 @@ def __build_impl(dirname: str, output: str | None) -> int:
     # get and validate entrypoint
     entrypoint_path = os.path.join(dirname, 'main.scss')
     if not os.path.exists(entrypoint_path):
-        print(f"File {entrypoint_path} does not exist", file=sys.stderr)
+        print(f'File {entrypoint_path} does not exist', file=sys.stderr)
         return -1
 
     # get/create output if not exists

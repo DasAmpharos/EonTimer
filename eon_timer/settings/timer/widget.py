@@ -22,7 +22,9 @@ class TimerSettingsWidget(FormWidget):
         PRECISION_CALIBRATION = 'Precision Calibration'
         CHECK_FOR_UPDATES = 'Check for Updates on Startup'
 
-    def __init__(self, name_service: NameService, model: TimerSettingsModel, update_settings: UpdateSettingsModel) -> None:
+    def __init__(
+        self, name_service: NameService, model: TimerSettingsModel, update_settings: UpdateSettingsModel
+    ) -> None:
         super().__init__(name_service)
         self.model: Final = model
         self.update_settings: Final = update_settings
@@ -37,7 +39,12 @@ class TimerSettingsWidget(FormWidget):
         self._console_field.setToolTip('Select your game console to use the correct framerate')
         self.add_field(self.Field.CONSOLE, self._console_field, name='timerSettingsConsole')
         # ----- custom framerate -----
-        self._custom_framerate_field = FloatInputField(value=self.model.custom_framerate.get(), min_val=0.001, max_val=INT_MAX, tooltip='Frames per second for the "Custom" console option (must be > 0)')
+        self._custom_framerate_field = FloatInputField(
+            value=self.model.custom_framerate.get(),
+            min_val=0.001,
+            max_val=INT_MAX,
+            tooltip='Frames per second for the "Custom" console option (must be > 0)',
+        )
         self.add_field(
             self.Field.CUSTOM_FRAMERATE,
             self._custom_framerate_field,
@@ -45,25 +52,36 @@ class TimerSettingsWidget(FormWidget):
             name='timerSettingsCustomFramerate',
         )
         # ----- refresh interval -----
-        self._refresh_interval_field = IntInputField(value=self.model.refresh_interval.get(), min_val=1, max_val=INT_MAX, tooltip='How often (in ms) the timer display updates — lower is smoother but uses more CPU')
+        self._refresh_interval_field = IntInputField(
+            value=self.model.refresh_interval.get(),
+            min_val=1,
+            max_val=INT_MAX,
+            tooltip='How often (in ms) the timer display updates — lower is smoother but uses more CPU',
+        )
         self.add_field(self.Field.REFRESH_INTERVAL, self._refresh_interval_field, name='timerSettingsRefreshInterval')
         # ----- minimum length -----
         self._minimum_length_field = IntInputField(value=self.model.minimum_length.get())
         self._minimum_length_field.set_range(0, INT_MAX)
-        self._minimum_length_field.setToolTip('Minimum total timer duration in seconds before a minute is added; '
-                                              'reduce this if your target falls naturally within a short window (e.g. ~8s on DS/Lite)')
+        self._minimum_length_field.setToolTip(
+            'Minimum total timer duration in seconds before a minute is added; '
+            'reduce this if your target falls naturally within a short window (e.g. ~8s on DS/Lite)'
+        )
         self.add_field(self.Field.MINIMUM_LENGTH, self._minimum_length_field, name='timerSettingsMinimumLength')
         # ----- precision calibration -----
         self._precision_field = QCheckBox()
         self._precision_field.setTristate(False)
         self._precision_field.setChecked(self.model.precision_calibration.get())
         self._precision_field.setToolTip('Apply a sub-frame precision adjustment to improve calibration accuracy')
-        self.add_field(self.Field.PRECISION_CALIBRATION, self._precision_field, name='timerSettingsPrecisionCalibration')
+        self.add_field(
+            self.Field.PRECISION_CALIBRATION, self._precision_field, name='timerSettingsPrecisionCalibration'
+        )
         # ----- check for updates -----
         self._check_on_startup_field = QCheckBox()
         self._check_on_startup_field.setTristate(False)
         self._check_on_startup_field.setChecked(self.update_settings.check_on_startup.get())
-        self._check_on_startup_field.setToolTip('Automatically check for a new EonTimer release when the application starts')
+        self._check_on_startup_field.setToolTip(
+            'Automatically check for a new EonTimer release when the application starts'
+        )
         self.add_field(self.Field.CHECK_FOR_UPDATES, self._check_on_startup_field, name='timerSettingsCheckForUpdates')
 
     def __on_console_changed(self, console: Console):

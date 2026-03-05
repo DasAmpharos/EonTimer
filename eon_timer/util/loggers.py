@@ -11,10 +11,7 @@ from loguru import logger
 def init():
     logger.remove()  # Remove the default stderr handler
 
-    fmt = (
-        '{time:YYYY-MM-DD HH:mm:ss} {level:>5} [{process}] --- '
-        '[{thread.name}] {extra[name]:<30} : {message}'
-    )
+    fmt = '{time:YYYY-MM-DD HH:mm:ss} {level:>5} [{process}] --- [{thread.name}] {extra[name]:<30} : {message}'
     logger.add(sys.stdout, format=fmt, level='DEBUG', colorize=False)
 
     log_dir = platformdirs.user_log_dir('EonTimer', 'DasAmpharos', ensure_exists=True)
@@ -70,4 +67,3 @@ def __abbreviate(s: str) -> str:
     for i in range(len(components) - 1):
         components[i] = components[i][0]
     return '.'.join(components)
-

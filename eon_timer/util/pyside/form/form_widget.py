@@ -59,6 +59,7 @@ class FormWidget(QWidget):
     ) -> FieldSet:
         """Add a field and bidirectionally bind its `.value` property to `prop`."""
         from eon_timer.util.properties import bindings
+
         result = self.add_field(field, widget, with_label=with_label, layout=layout, visible=visible, name=name)
         bindings.bind(widget.value, prop)
         return result
