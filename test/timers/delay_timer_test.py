@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from eon_timer.settings.timer.model import Console, TimerSettingsModel
 from eon_timer.timers import Calibrator, SecondTimer
 from eon_timer.timers.delay_timer import DelayTimer
-from eon_timer.util.properties.property import EnumProperty, FloatProperty
+from eon_timer.util.properties.property import EnumProperty, FloatProperty, IntProperty
 
 
 class DelayTimerTest(unittest.TestCase):
@@ -14,9 +14,14 @@ class DelayTimerTest(unittest.TestCase):
         timer_settings.console.get.return_value = Console.CUSTOM
         timer_settings.custom_framerate = Mock(FloatProperty)
         timer_settings.custom_framerate.get.return_value = 1.0
+        timer_settings.precision_calibration = Mock(spec=IntProperty)
+        timer_settings.precision_calibration.get.return_value = False
+        timer_settings.minimum_length = Mock(spec=IntProperty)
+        timer_settings.minimum_length.get.return_value = 14
+        calibrator = Calibrator(timer_settings)
         self.delay_timer = DelayTimer(
-            Calibrator(timer_settings),
-            SecondTimer()
+            calibrator,
+            SecondTimer(calibrator)
         )
 
     def test_create(self):
