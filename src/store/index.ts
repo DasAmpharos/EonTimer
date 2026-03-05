@@ -85,6 +85,7 @@ export interface TimerSettings {
   precisionCalibration: boolean;
   refreshInterval: number;
   minimumLength: number; // in seconds
+  confirmExternalLinks: boolean;
 }
 
 export interface SettingsState {
@@ -122,6 +123,7 @@ export const DEFAULT_TIMER: TimerSettings = {
   precisionCalibration: false,
   refreshInterval: 8,
   minimumLength: 14,
+  confirmExternalLinks: true,
 };
 
 export const DEFAULT_GEN5: Gen5Settings = {

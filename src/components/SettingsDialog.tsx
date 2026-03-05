@@ -136,6 +136,15 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   />
                 </label>
               </FormField>
+              <FormField label="Confirm External Links" tooltip="Show a confirmation dialog before opening GitHub or sponsor links in a new tab">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={timer.confirmExternalLinks}
+                    onChange={(e) => setTimer({ ...timer, confirmExternalLinks: e.target.checked })}
+                  />
+                </label>
+              </FormField>
             </div>
           )}
         </div>

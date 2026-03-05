@@ -647,6 +647,18 @@ input[type="checkbox"] {
   gap: 12px;
 }
 
+.external-link-url {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  word-break: break-all;
+  color: var(--color-text-secondary);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin-top: 6px;
+}
+
 .dialog-buttons {
   display: flex;
   gap: 10px;

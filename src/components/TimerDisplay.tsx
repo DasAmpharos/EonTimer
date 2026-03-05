@@ -34,14 +34,19 @@ export function TimerDisplay({ registerFlash, onToggle, onSettings, settingsDisa
   const running = useAppStore((s) => s.running);
   const actionInterval = useSettingsStore((s) => s.action.interval);
   const actionCount = useSettingsStore((s) => s.action.count);
+  const confirmExternalLinks = useSettingsStore((s) => s.timer.confirmExternalLinks);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const flashTimeoutRef = useRef<number>(0);
   const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 
   const openExternal = useCallback((url: string) => {
-    setPendingUrl(url);
-  }, []);
+    if (confirmExternalLinks) {
+      setPendingUrl(url);
+    } else {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }, [confirmExternalLinks]);
 
   const handleConfirm = useCallback(() => {
     if (pendingUrl) window.open(pendingUrl, '_blank', 'noopener,noreferrer');
