@@ -1,7 +1,7 @@
 from typing import Final
 
-from PySide6.QtCore import QEvent, Qt
-from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QProgressBar, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QProgressBar, QVBoxLayout, QWidget
 
 from eon_timer.app_state import AppState
 from eon_timer.settings.action.model import ActionSettingsModel
@@ -10,34 +10,13 @@ from eon_timer.util.loggers import log_method_calls
 from eon_timer.util.pyside.name_service import NameService
 
 
-class _TemplateWidthLabel(QLabel):
-    """QLabel that fixes its width to the rendered width of a template string,
-    recalculating whenever the font changes (e.g. after stylesheet application)."""
-
-    def __init__(self, template: str, parent=None):
-        super().__init__(parent)
-        self._template = template
-
-    def showEvent(self, event: QEvent) -> None:
-        super().showEvent(event)
-        self._update_width()
-
-    def changeEvent(self, event: QEvent) -> None:
-        super().changeEvent(event)
-        if event.type() == QEvent.Type.FontChange:
-            self._update_width()
-
-    def _update_width(self) -> None:
-        self.setFixedWidth(self.fontMetrics().horizontalAdvance(self._template))
-
-
 class TimerWidget(QGroupBox):
     def __init__(self, state: AppState, action_settings: ActionSettingsModel, name_service: NameService):
         super().__init__()
         self.state: Final = state
         self.action_settings: Final = action_settings
         self.name_service: Final = name_service
-        self.current_phase_lbl: Final = _TemplateWidthLabel('999.999')
+        self.current_phase_lbl: Final = QLabel('0:000')
         self.current_phase_lbl.setProperty('monospace', True)
         self.phase_index_lbl: Final = QLabel('Phase 1 of 1')
         self.progress_bar: Final = QProgressBar()
@@ -56,7 +35,6 @@ class TimerWidget(QGroupBox):
         # ===== current phase =====
         self.name_service.set_name(self.current_phase_lbl, 'currentPhaseValueLabel')
         self.current_phase_lbl.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.current_phase_lbl.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         layout.addWidget(self.current_phase_lbl, alignment=Qt.AlignmentFlag.AlignLeft)
         # ===== progress bar =====
         self.name_service.set_name(self.progress_bar, 'timerProgressBar')
@@ -174,5 +152,5 @@ class TimerWidget(QGroupBox):
         seconds = milliseconds // 1000
         milliseconds_part = milliseconds % 1000
         if seconds >= 1000:
-            return f'{seconds}...'
-        return f'{seconds}.{milliseconds_part:03d}'
+            return f'{seconds}:...'
+        return f'{seconds}:{milliseconds_part:03d}'
