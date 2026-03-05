@@ -97,6 +97,9 @@
   flex-shrink: 0;
   position: relative;
   transition: color 0.15s;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .timer-display-link:hover {
