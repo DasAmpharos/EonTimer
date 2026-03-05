@@ -268,7 +268,7 @@
   border-radius: 6px;
   overflow: hidden;
   min-height: 0;
-  flex: 1 1 0;
+  flex: 0 1 auto;
 }
 
 /* Tab bar */
@@ -311,8 +311,7 @@
 .tab-content {
   flex: 1;
   display: flex;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   padding: 10px;
   min-height: 0;
 }
@@ -323,13 +322,12 @@
   flex-direction: column;
   flex: 1;
   gap: 10px;
-  overflow: hidden;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .panel-scroll-area {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
   border: 1px solid var(--color-scroll-border);
   border-radius: 4px;
   background: var(--color-scroll-bg);
