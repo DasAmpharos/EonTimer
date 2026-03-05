@@ -40,7 +40,8 @@ export const Gen3Panel = forwardRef<TimerPanelHandle, Gen3PanelProps>(
       console: timer.console,
       customFramerate: timer.customFramerate,
       precisionCalibration: timer.precisionCalibration,
-    }), [timer.console, timer.customFramerate, timer.precisionCalibration]);
+      minimumLength: timer.minimumLength * 1000,
+    }), [timer.console, timer.customFramerate, timer.precisionCalibration, timer.minimumLength]);
 
     const createPhases = useCallback(() => {
       return createGen3Phases(calSettings, gen3);

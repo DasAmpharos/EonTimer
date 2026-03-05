@@ -90,7 +90,7 @@ export default function App() {
   const handleSettingsClose = useCallback(
     (accepted: boolean) => {
       setSettingsOpen(false);
-      if (accepted) updatePhases();
+      if (accepted) setTimeout(updatePhases, 0);
     },
     [updatePhases],
   );

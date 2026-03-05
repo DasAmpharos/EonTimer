@@ -86,13 +86,13 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
         <div className="dialog-content">
           {tab === 0 && (
             <div className="settings-panel">
-              <FormField label="Mode">
+              <FormField label="Mode" tooltip="How the timer signals each phase transition — audio, visual flash, or both">
                 <EnumSelect values={ACTION_MODES} value={action.mode} onChange={(v) => setAction({ ...action, mode: v })} />
               </FormField>
-              <FormField label="Sound">
+              <FormField label="Sound" tooltip="Sound effect played on each action signal">
                 <EnumSelect values={ACTION_SOUNDS} value={action.sound} onChange={(v) => setAction({ ...action, sound: v })} />
               </FormField>
-              <FormField label="Color">
+              <FormField label="Color" tooltip="Flash color used for visual action alerts">
                 <input
                   type="color"
                   value={action.color}
@@ -101,10 +101,10 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   style={{ width: '100%' }}
                 />
               </FormField>
-              <FormField label="Interval">
+              <FormField label="Interval" tooltip="Time between action signals in milliseconds">
                 <IntInput value={action.interval} onChange={(v) => setAction({ ...action, interval: v ?? 500 })} min={0} max={INT_MAX} />
               </FormField>
-              <FormField label="Count">
+              <FormField label="Count" tooltip="Number of action signals per phase transition">
                 <IntInput value={action.count} onChange={(v) => setAction({ ...action, count: v ?? 1 })} min={0} max={INT_MAX} />
               </FormField>
               <button className="btn" style={{ width: '100%' }} onClick={handleTestAction}>Test Action</button>
@@ -112,19 +112,22 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
           )}
           {tab === 1 && (
             <div className="settings-panel">
-              <FormField label="Theme">
+              <FormField label="Theme" tooltip="Application color theme">
                 <EnumSelect values={THEMES} value={theme} onChange={(v) => setLocalTheme(v)} />
               </FormField>
-              <FormField label="Console">
+              <FormField label="Console" tooltip="Target console; determines the frame rate used for delay calculations">
                 <EnumSelect values={CONSOLES} value={timer.console} onChange={(v) => setTimer({ ...timer, console: v })} />
               </FormField>
-              <FormField label="Custom Framerate (FPS)" visible={timer.console === Console.CUSTOM}>
+              <FormField label="Custom Framerate (FPS)" visible={timer.console === Console.CUSTOM} tooltip="Framerate of your custom console in frames per second">
                 <FloatInput value={timer.customFramerate} onChange={(v) => setTimer({ ...timer, customFramerate: v })} min={0.001} max={INT_MAX} />
               </FormField>
-              <FormField label="Refresh Interval">
+              <FormField label="Refresh Interval" tooltip="How often the timer updates in milliseconds; lower values are smoother but use more CPU">
                 <IntInput value={timer.refreshInterval} onChange={(v) => setTimer({ ...timer, refreshInterval: v ?? 8 })} min={1} max={INT_MAX} />
               </FormField>
-              <FormField label="Precision Calibration">
+              <FormField label="Minimum Length (s)" tooltip="Minimum total timer duration in seconds before a minute is added; reduce this if your target falls naturally within a short window (e.g. ~8s on DS/Lite)">
+                <IntInput value={timer.minimumLength} onChange={(v) => setTimer({ ...timer, minimumLength: v ?? 14 })} min={0} max={INT_MAX} />
+              </FormField>
+              <FormField label="Precision Calibration" tooltip="Store calibration in milliseconds rather than delays for sub-frame precision">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"

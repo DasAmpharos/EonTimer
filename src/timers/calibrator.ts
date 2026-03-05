@@ -9,6 +9,7 @@ export interface CalibratorSettings {
   console: Console;
   customFramerate: number;
   precisionCalibration: boolean;
+  minimumLength: number; // in milliseconds
 }
 
 function getFramerate(settings: CalibratorSettings): number {
