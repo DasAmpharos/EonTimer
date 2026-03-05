@@ -36,7 +36,8 @@ export const Gen5Panel = forwardRef<TimerPanelHandle, Gen5PanelProps>(
       console: timer.console,
       customFramerate: timer.customFramerate,
       precisionCalibration: timer.precisionCalibration,
-    }), [timer.console, timer.customFramerate, timer.precisionCalibration]);
+      minimumLength: timer.minimumLength * 1000,
+    }), [timer.console, timer.customFramerate, timer.precisionCalibration, timer.minimumLength]);
 
     const createPhases = useCallback(() => {
       return createGen5Phases(calSettings, gen5);
