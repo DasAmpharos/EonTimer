@@ -34,6 +34,11 @@ class AppWindow(QMainWindow):
         self.setMinimumSize(600, 450)
         self.resize(600, 450)
         self.statusBar().showMessage('Ready')
+        self.statusBar().messageChanged.connect(self.__on_status_message_changed)
+
+    def __on_status_message_changed(self, message: str) -> None:
+        if not message:
+            self.statusBar().showMessage('Ready')
 
     def show(self):
         super().show()
