@@ -9,7 +9,7 @@ from .second_timer import SecondTimer
 MINIMUM_LENGTH: Final = 14000
 
 
-def to_minimum_length(value: int | float) -> int | float:
-    while value < MINIMUM_LENGTH:
+def to_minimum_length(value: int | float, minimum_length: int | float = MINIMUM_LENGTH) -> int | float:
+    while value < minimum_length:
         value += 60000
     return value

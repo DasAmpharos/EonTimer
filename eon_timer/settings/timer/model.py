@@ -54,6 +54,7 @@ class TimerSettingsModel(Settings):
     custom_framerate = FloatProperty(60.0)
     precision_calibration = BoolProperty(False)
     refresh_interval = IntProperty(8)
+    minimum_length = IntProperty(14)
 
     @property
     @override

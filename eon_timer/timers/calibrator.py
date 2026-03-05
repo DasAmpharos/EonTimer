@@ -34,5 +34,9 @@ class Calibrator:
         return self.timer_settings.precision_calibration.get()
 
     @property
+    def minimum_length(self) -> int:
+        return self.timer_settings.minimum_length.get() * 1000
+
+    @property
     def framerate(self) -> float:
         return self.console.framerate or self.timer_settings.custom_framerate.get()
