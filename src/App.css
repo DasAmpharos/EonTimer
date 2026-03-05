@@ -33,16 +33,24 @@
   background: var(--color-panel);
   border: 1px solid var(--color-panel-border);
   border-radius: 6px;
-  padding: 20px 16px 14px;
+  padding: 16px 16px 8px;
   gap: 8px;
   transition: none;
+  flex-shrink: 0;
 }
 
-/* Small settings gear in bottom-left corner */
+/* Footer row: settings gear on left, play/stop center, links on right */
+.timer-display-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  align-self: stretch;
+  min-height: 52px;
+}
+
+/* Small settings gear */
 .timer-settings-btn {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
   width: 28px;
   height: 28px;
   padding: 0;
@@ -56,6 +64,7 @@
   align-items: center;
   justify-content: center;
   transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
 }
 
 .timer-settings-btn:hover:not(:disabled) {
@@ -66,6 +75,80 @@
 .timer-settings-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+/* GitHub / sponsor links */
+.timer-display-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.timer-display-link {
+  color: var(--color-text-faint);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  min-width: 14px;
+  min-height: 14px;
+  flex-shrink: 0;
+  position: relative;
+  transition: color 0.15s;
+}
+
+.timer-display-link:hover {
+  color: var(--color-text-secondary);
+}
+
+/* CSS tooltip */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  white-space: nowrap;
+  background: var(--color-dialog-bg);
+  border: 1px solid var(--color-dialog-border);
+  color: var(--color-text);
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s, transform 0.15s;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.timer-display-link.heart-link {
+  color: #c94f72;
+}
+
+.timer-display-link.heart-link svg {
+  fill: none;
+  stroke: currentColor;
+}
+
+.timer-display-link.heart-link:hover {
+  color: #db61a2;
+}
+
+.timer-display-link.heart-link:hover svg {
+  fill: currentColor;
+  stroke: none;
 }
 
 .timer-current-phase {
@@ -169,6 +252,7 @@
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .app-action-bar .btn-update {
@@ -184,7 +268,7 @@
   border-radius: 6px;
   overflow: hidden;
   min-height: 0;
-  flex: 0 1 auto;
+  flex: 1 1 0;
 }
 
 /* Tab bar */
@@ -441,10 +525,14 @@ input[type="checkbox"] {
 
 /* ─── Status bar ─── */
 .app-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 12px;
   color: var(--color-text-secondary);
   padding: 2px 4px;
   min-height: 20px;
+  flex-shrink: 0;
   text-align: center;
 }
 
@@ -580,7 +668,7 @@ input[type="checkbox"] {
   }
 
   .timer-display {
-    padding: 14px 10px 10px;
+    padding: 10px 10px 6px;
   }
 
   .timer-current-phase {
@@ -600,10 +688,6 @@ input[type="checkbox"] {
   .timer-play-stop svg {
     width: 26px;
     height: 26px;
-  }
-
-  .app-tabs {
-    flex: 1 1 0;
   }
 
   .tab {

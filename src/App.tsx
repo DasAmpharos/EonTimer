@@ -175,7 +175,9 @@ export default function App() {
         </div>
 
         {/* Status bar */}
-        <div className="app-status-bar">{statusMessage}</div>
+        <div className="app-status-bar">
+          <span>{statusMessage}</span>
+        </div>
       </div>
 
       {/* Settings dialog */}
