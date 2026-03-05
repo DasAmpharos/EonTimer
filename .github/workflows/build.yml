@@ -35,6 +35,10 @@ jobs:
         if: matrix.os == 'ubuntu'
         run: sudo apt update && sudo apt install -y libegl1-mesa-dev
 
+      - name: Install Dependencies (Windows)
+        if: matrix.os == 'windows'
+        run: pip install libsass==0.23.0
+
       - name: Inject Properties
         shell: bash
         run: |
