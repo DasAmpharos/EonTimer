@@ -323,11 +323,14 @@
   flex: 1;
   gap: 10px;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .panel-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
   border: 1px solid var(--color-scroll-border);
   border-radius: 4px;
   background: var(--color-scroll-bg);
