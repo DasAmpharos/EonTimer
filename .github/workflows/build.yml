@@ -29,6 +29,7 @@ jobs:
           cache: pip
 
       - name: Install Dependencies
+        if: matrix.os != 'windows'
         run: pip install -r requirements.txt
 
       - name: Install Dependencies (Ubuntu)
@@ -37,7 +38,11 @@ jobs:
 
       - name: Install Dependencies (Windows)
         if: matrix.os == 'windows'
-        run: pip install libsass==0.23.0
+        shell: bash
+        run: |
+          grep -v 'libsass' requirements.txt > requirements-win.txt
+          pip install -r requirements-win.txt
+          pip install libsass==0.23.0
 
       - name: Inject Properties
         shell: bash
