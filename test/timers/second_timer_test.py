@@ -1,11 +1,23 @@
 import unittest
+from unittest.mock import Mock
 
-from eon_timer.timers import SecondTimer
+from eon_timer.settings.timer.model import Console, TimerSettingsModel
+from eon_timer.timers import Calibrator, SecondTimer
+from eon_timer.util.properties.property import EnumProperty, FloatProperty, IntProperty
 
 
 class SecondTimerTest(unittest.TestCase):
     def setUp(self):
-        self.second_timer = SecondTimer()
+        timer_settings = Mock(spec=TimerSettingsModel)
+        timer_settings.console = Mock(spec=EnumProperty)
+        timer_settings.console.get.return_value = Console.CUSTOM
+        timer_settings.custom_framerate = Mock(spec=FloatProperty)
+        timer_settings.custom_framerate.get.return_value = 1.0
+        timer_settings.precision_calibration = Mock(spec=IntProperty)
+        timer_settings.precision_calibration.get.return_value = False
+        timer_settings.minimum_length = Mock(spec=IntProperty)
+        timer_settings.minimum_length.get.return_value = 14
+        self.second_timer = SecondTimer(Calibrator(timer_settings))
 
     def test_create(self):
         # < minimum length
