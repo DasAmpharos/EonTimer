@@ -84,6 +84,7 @@ export interface TimerSettings {
   customFramerate: number;
   precisionCalibration: boolean;
   refreshInterval: number;
+  minimumLength: number; // in seconds
 }
 
 export interface SettingsState {
@@ -120,6 +121,7 @@ export const DEFAULT_TIMER: TimerSettings = {
   customFramerate: 60.0,
   precisionCalibration: false,
   refreshInterval: 8,
+  minimumLength: 14,
 };
 
 export const DEFAULT_GEN5: Gen5Settings = {
@@ -178,6 +180,19 @@ export const useSettingsStore = create<SettingsState>()(
           theme: Theme.SYSTEM,
         }),
     }),
-    { name: 'eontimer-settings' },
+    { name: 'eontimer-settings',
+      merge: (persisted: unknown, current: SettingsState): SettingsState => {
+        const p = persisted as Partial<SettingsState>;
+        return {
+          ...current,
+          ...p,
+          action: { ...current.action, ...p.action },
+          timer: { ...current.timer, ...p.timer },
+          gen5: { ...current.gen5, ...p.gen5 },
+          gen4: { ...current.gen4, ...p.gen4 },
+          gen3: { ...current.gen3, ...p.gen3 },
+        };
+      },
+    },
   ),
 );

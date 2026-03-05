@@ -30,7 +30,7 @@ export function createGen5Phases(settings: CalibratorSettings, model: Gen5Model)
 
   switch (model.mode) {
     case Gen5Mode.STANDARD:
-      return createSecondPhases(model.targetSecond, calibration);
+      return createSecondPhases(model.targetSecond, calibration, settings.minimumLength);
     case Gen5Mode.C_GEAR:
       return createDelayPhases(settings, model.targetDelay, model.targetSecond, calibration);
     case Gen5Mode.ENTRALINK:

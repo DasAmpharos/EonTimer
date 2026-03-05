@@ -40,7 +40,8 @@ export const CustomPanel = forwardRef<TimerPanelHandle, CustomPanelProps>(
       console: timer.console,
       customFramerate: timer.customFramerate,
       precisionCalibration: timer.precisionCalibration,
-    }), [timer.console, timer.customFramerate, timer.precisionCalibration]);
+      minimumLength: timer.minimumLength * 1000,
+    }), [timer.console, timer.customFramerate, timer.precisionCalibration, timer.minimumLength]);
 
     const persist = useCallback(
       (updated: PhaseState[]) => {

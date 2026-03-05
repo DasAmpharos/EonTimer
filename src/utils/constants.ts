@@ -3,8 +3,8 @@ export const INT_MAX = 2 ** 31 - 1;
 export const INT_MIN = -(2 ** 31 - 1);
 export const MINIMUM_LENGTH = 14000;
 
-export function toMinimumLength(value: number): number {
-  while (value < MINIMUM_LENGTH) {
+export function toMinimumLength(value: number, minimumLength: number = MINIMUM_LENGTH): number {
+  while (value < minimumLength) {
     value += 60000;
   }
   return value;
