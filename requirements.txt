@@ -4,7 +4,7 @@ charset-normalizer @ git+https://github.com/Ousret/charset_normalizer.git@79dce4
 idna==3.7
 libsass @ git+https://github.com/sass/libsass-python.git@af3c4bf4ab0b852447fc2b2f46001e499c615011
 macholib==1.16.3
-packaging==24.0
+packaging==24.1
 pillow==10.3.0
 pip-autoremove==0.10.0
 pipdeptree==2.23.1
