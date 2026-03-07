@@ -30,7 +30,8 @@ export function createGen5Phases(settings: CalibratorSettings, model: Gen5Model)
 
   switch (model.mode) {
     case Gen5Mode.STANDARD:
-      return createSecondPhases(model.targetSecond, calibration, settings.minimumLength);
+      // Standard mode is second-based; calibration is stored in ms, no frame conversion needed
+      return createSecondPhases(model.targetSecond, model.calibration, settings.minimumLength);
     case Gen5Mode.C_GEAR:
       return createDelayPhases(settings, model.targetDelay, model.targetSecond, calibration);
     case Gen5Mode.ENTRALINK:
@@ -69,9 +70,8 @@ export function calibrateGen5(
   switch (model.mode) {
     case Gen5Mode.STANDARD:
       if (input.secondHit !== null) {
-        calibrationDelta = calibrateToDelays(
-          settings, calibrateSecond(model.targetSecond, input.secondHit),
-        );
+        // Standard mode calibration is in ms; return directly without converting to delays
+        calibrationDelta = calibrateSecond(model.targetSecond, input.secondHit);
       }
       break;
     case Gen5Mode.C_GEAR:
