@@ -4,11 +4,10 @@ import {
   type Gen3Settings,
   type Gen4Settings,
   type Gen5Settings,
-  type ActionSettings,
   type TimerSettings,
 } from '../store';
 import type { CustomPhase } from '../timers/customTimer';
-import { Console, Gen3Mode, Gen5Mode, ActionMode, ActionSound, Theme, CustomUnit } from '../utils/types';
+import { Console, Gen3Mode, Gen5Mode, CustomUnit } from '../utils/types';
 
 /** Map from URL segment or `tab` query param to tab index (0=Gen5, 1=Gen4, 2=Gen3, 3=Custom). */
 const TAB_SEGMENT_MAP: Record<string, number> = {
@@ -62,34 +61,6 @@ function parseConsole(raw: string | null): Console | undefined {
   return undefined;
 }
 
-function parseActionMode(raw: string | null): ActionMode | undefined {
-  if (!raw) return undefined;
-  const v = raw.toLowerCase().replace(/[-_\s/]/g, '');
-  if (v === 'av') return ActionMode.AV;
-  if (v === 'audio') return ActionMode.AUDIO;
-  if (v === 'visual') return ActionMode.VISUAL;
-  return undefined;
-}
-
-function parseActionSound(raw: string | null): ActionSound | undefined {
-  if (!raw) return undefined;
-  const v = raw.toLowerCase();
-  if (v === 'beep') return ActionSound.BEEP;
-  if (v === 'ding') return ActionSound.DING;
-  if (v === 'pop') return ActionSound.POP;
-  if (v === 'tick') return ActionSound.TICK;
-  return undefined;
-}
-
-function parseTheme(raw: string | null): Theme | undefined {
-  if (!raw) return undefined;
-  const v = raw.toLowerCase();
-  if (v === 'light') return Theme.LIGHT;
-  if (v === 'dark') return Theme.DARK;
-  if (v === 'system') return Theme.SYSTEM;
-  return undefined;
-}
-
 function toBool(params: URLSearchParams, key: string): boolean | undefined {
   const val = params.get(key);
   if (val === null) return undefined;
@@ -116,9 +87,7 @@ function parseCustomUnit(raw: string | null): CustomUnit {
  *   Supported tab values: 3, 4, 5, custom
  *
  * Global settings (applied regardless of active tab):
- *   console, customFramerate, precisionCalibration, refreshInterval, minimumLength
- *   actionMode, actionSound, actionColor, actionInterval, actionCount
- *   theme
+ *   console, customFramerate, precisionCalibration, minimumLength
  *
  * Gen 3 params: mode, preTimer, targetFrame, calibration
  * Gen 4 params: targetDelay, targetSecond, calibratedDelay, calibratedSecond
@@ -159,27 +128,9 @@ export function useUrlParams(): void {
     if (customFramerate !== undefined) timerPatch.customFramerate = customFramerate;
     const precisionCalibration = toBool(params, 'precisionCalibration');
     if (precisionCalibration !== undefined) timerPatch.precisionCalibration = precisionCalibration;
-    const refreshInterval = toInt(params, 'refreshInterval');
-    if (refreshInterval !== undefined) timerPatch.refreshInterval = refreshInterval;
     const minimumLength = toInt(params, 'minimumLength');
     if (minimumLength !== undefined) timerPatch.minimumLength = minimumLength;
     if (Object.keys(timerPatch).length) store.updateTimer(timerPatch);
-
-    const actionPatch: Partial<ActionSettings> = {};
-    const actionMode = parseActionMode(params.get('actionMode'));
-    if (actionMode !== undefined) actionPatch.mode = actionMode;
-    const actionSound = parseActionSound(params.get('actionSound'));
-    if (actionSound !== undefined) actionPatch.sound = actionSound;
-    const actionColor = params.get('actionColor');
-    if (actionColor) actionPatch.color = actionColor;
-    const actionInterval = toInt(params, 'actionInterval');
-    if (actionInterval !== undefined) actionPatch.interval = actionInterval;
-    const actionCount = toInt(params, 'actionCount');
-    if (actionCount !== undefined) actionPatch.count = actionCount;
-    if (Object.keys(actionPatch).length) store.updateAction(actionPatch);
-
-    const theme = parseTheme(params.get('theme'));
-    if (theme !== undefined) store.setTheme(theme);
 
     // ── Tab-specific timer fields ────────────────────────────────────────────
 
@@ -190,12 +141,6 @@ export function useUrlParams(): void {
         const patch: Partial<Gen5Settings> = {};
         const mode = parseGen5Mode(params.get('mode'));
         if (mode !== undefined) patch.mode = mode;
-        const calibration = toInt(params, 'calibration');
-        if (calibration !== undefined) patch.calibration = calibration;
-        const frameCalibration = toInt(params, 'frameCalibration');
-        if (frameCalibration !== undefined) patch.frameCalibration = frameCalibration;
-        const entralinkCalibration = toInt(params, 'entralinkCalibration');
-        if (entralinkCalibration !== undefined) patch.entralinkCalibration = entralinkCalibration;
         const targetDelay = toInt(params, 'targetDelay');
         if (targetDelay !== undefined) patch.targetDelay = targetDelay;
         const targetSecond = toInt(params, 'targetSecond');
@@ -212,10 +157,6 @@ export function useUrlParams(): void {
         if (targetDelay !== undefined) patch.targetDelay = targetDelay;
         const targetSecond = toInt(params, 'targetSecond');
         if (targetSecond !== undefined) patch.targetSecond = targetSecond;
-        const calibratedDelay = toInt(params, 'calibratedDelay');
-        if (calibratedDelay !== undefined) patch.calibratedDelay = calibratedDelay;
-        const calibratedSecond = toInt(params, 'calibratedSecond');
-        if (calibratedSecond !== undefined) patch.calibratedSecond = calibratedSecond;
         if (Object.keys(patch).length) store.updateGen4(patch);
         break;
       }
@@ -228,8 +169,6 @@ export function useUrlParams(): void {
         if (preTimer !== undefined) patch.preTimer = preTimer;
         const targetFrame = toInt(params, 'targetFrame');
         if (targetFrame !== undefined) patch.targetFrame = targetFrame;
-        const calibration = toFloat(params, 'calibration');
-        if (calibration !== undefined) patch.calibration = calibration;
         if (Object.keys(patch).length) store.updateGen3(patch);
         break;
       }
