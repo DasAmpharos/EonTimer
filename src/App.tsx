@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { useAppStore, useSettingsStore } from './store';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
+import { useAudio } from './hooks/useAudio';
 import { useTheme } from './hooks/useTheme';
 import { useUrlParams } from './hooks/useUrlParams';
 import { TimerDisplay } from './components/TimerDisplay';
@@ -25,7 +26,16 @@ export default function App() {
   const running = useAppStore((s) => s.running);
   const setPhases = useAppStore((s) => s.setPhases);
 
-  const { toggle, registerFlash } = usePhaseRunner();
+  const { start, toggle, registerFlash } = usePhaseRunner();
+  const { isListening, isDetected, startListening, stopListening } = useAudio({
+    onDetect: () => {
+      if (useAppStore.getState().running) return;
+      start();
+      stopListening();
+      setStatusMessage('Sound detected — timer started.');
+      setTimeout(() => setStatusMessage('Ready'), 4000);
+    },
+  });
   useUrlParams();
   useTheme();
 
@@ -86,8 +96,22 @@ export default function App() {
   }, [running, currentRef, updatePhases]);
 
   const handleToggle = useCallback(() => {
+    if (!running && isListening) {
+      stopListening();
+    }
     toggle();
-  }, [toggle]);
+  }, [running, isListening, stopListening, toggle]);
+
+  const handleAudioToggle = useCallback(() => {
+    if (running) return;
+    if (isListening) {
+      stopListening();
+      setStatusMessage('Audio trigger stopped.');
+    } else {
+      void startListening();
+      setStatusMessage('Listening for sound to start timer...');
+    }
+  }, [running, isListening, startListening, stopListening]);
 
   const handleSettingsClose = useCallback(
     (accepted: boolean) => {
@@ -129,11 +153,26 @@ export default function App() {
     prevRunning.current = running;
   }, [running]);
 
+  // Keep microphone off while a run is active.
+  useEffect(() => {
+    if (running && isListening) {
+      stopListening();
+    }
+  }, [running, isListening, stopListening]);
+
   return (
     <div className="app">
       <div className="app-container">
         {/* Timer display */}
-        <TimerDisplay registerFlash={registerFlash} onToggle={handleToggle} onSettings={() => setSettingsOpen(true)} settingsDisabled={running} />
+        <TimerDisplay
+          registerFlash={registerFlash}
+          onToggle={handleToggle}
+          onSettings={() => setSettingsOpen(true)}
+          onToggleAudioListening={handleAudioToggle}
+          settingsDisabled={running}
+          audioListening={isListening}
+          audioDetected={isDetected}
+        />
 
         {/* Tab panel */}
         <div className="app-tabs">
