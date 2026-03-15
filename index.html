@@ -8,6 +8,28 @@
     <link rel="apple-touch-icon" href="/icon-192.svg" />
     <title>EonTimer</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Restore path redirected by 404.html for GitHub Pages SPA routing.
+      // Converts /?/3&preTimer=10000 back to /EonTimer/3?preTimer=10000.
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&');
+            });
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) +
+              decoded[0] +
+              (decoded.slice(1).length ? '?' + decoded.slice(1).join('&') : '') +
+              l.hash,
+          );
+        }
+      })(window.location);
+    </script>
   </head>
   <body>
     <div id="root"></div>
