@@ -35,7 +35,7 @@ export function usePhaseRunner() {
               workerRef.current.postMessage({
                 type: 'updatePhase',
                 index: i,
-                value: state.phases[i],
+                value: state.phases[i]
               });
             }
           }
@@ -107,7 +107,7 @@ export function usePhaseRunner() {
       phases,
       actionInterval: action.interval,
       actionCount: action.count,
-      refreshInterval: timer.refreshInterval,
+      refreshInterval: timer.refreshInterval
     });
 
     // Pre-schedule audio for the first phase

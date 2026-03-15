@@ -17,14 +17,14 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.floor(ms))));
 }
 
-function buildActions(phase: number, elapsed: number, interval: number, count: number): number[] {
+function buildActions(scheduledTime: number, elapsed: number, interval: number, count: number): number[] {
   const actions: number[] = [];
-  const remaining = phase - elapsed;
+  // const remaining = phase - elapsed;
   for (let i = 0; i < count; i++) {
-    const action = interval * i;
-    if (action < remaining) {
-      actions.push(action);
-    }
+    const action = scheduledTime - (interval * i);
+    // if (action < remaining) {
+    actions.push(action);
+    // }
   }
   // Don't reverse: pop() naturally yields highest value first (matching Python's iter(reversed()) + next())
   return actions;
@@ -33,55 +33,53 @@ function buildActions(phase: number, elapsed: number, interval: number, count: n
 async function executePhase(
   phase: number,
   phaseIndex: number,
+  scheduledTime: number,
   totalPhases: number,
   actionInterval: number,
   actionCount: number,
   refreshInterval: number,
 ): Promise<void> {
-  const phaseStart = sinceStart();
-  let lastUiUpdate = 0;
-  let actions = buildActions(phase, 0, actionInterval, actionCount);
+  const start = scheduledTime - phase;
+  let lastUiUpdate = performance.now();
+  let actions = buildActions(scheduledTime, 0, actionInterval, actionCount);
   let nextAction = actions.length > 0 ? actions.pop()! : 0;
 
   while (running) {
-    let elapsed = sinceStart() - phaseStart;
-    const remainingUntilAction = phase - elapsed - nextAction;
+    let now = performance.now();
+
+    let elapsed = now - start;
+    const remainingUntilAction = nextAction - now;
 
     if (remainingUntilAction > SPINWAIT_MS) {
       const sleepMs = Math.min(refreshInterval, remainingUntilAction - SPINWAIT_MS);
       await sleep(sleepMs);
-    } else if (phase - elapsed > 0) {
+    } else {
       // Spin-wait for precision near action triggers
-      while (running && sinceStart() - phaseStart < phase - nextAction) {
+      while (running && now < nextAction) {
         // tight loop — acceptable in a Worker
+        now = performance.now();
       }
-    }
-
-    elapsed = sinceStart() - phaseStart;
-    const remaining = phase - elapsed;
-
-    if (remaining <= nextAction) {
       self.postMessage({ type: 'action' });
       nextAction = actions.length > 0 ? actions.pop()! : 0;
     }
 
-    if (elapsed - lastUiUpdate >= UI_UPDATE_INTERVAL) {
+    if (now - lastUiUpdate >= UI_UPDATE_INTERVAL) {
       self.postMessage({
         type: 'tick',
         elapsed,
         phaseIndex,
         totalPhases,
       });
-      lastUiUpdate = elapsed;
+      lastUiUpdate = now;
     }
 
-    if (elapsed >= phase) {
+    if (now >= scheduledTime) {
       break;
     }
   }
 
   // Final elapsed
-  const actualElapsed = sinceStart() - phaseStart;
+  const actualElapsed = performance.now() - start;
   console.info(`[PhaseRunner] Finished executing phase ${phaseIndex + 1}/${totalPhases}: expected=${phase.toFixed(3)}ms, actual=${actualElapsed.toFixed(3)}ms`);
   self.postMessage({
     type: 'tick',
@@ -97,6 +95,7 @@ async function runPhases(
   actionCount: number,
   refreshInterval: number,
 ): Promise<void> {
+  let scheduledTime = 0;
   for (let i = 0; i < phases.length && running; i++) {
     const phase = phases[i];
     if (phase === Infinity) {
@@ -118,7 +117,7 @@ async function runPhases(
       if (running && phases[i] !== Infinity) {
         const remaining = phases[i] - (sinceStart() - phaseStart);
         if (remaining > 0) {
-          await executePhase(remaining, i, phases.length, actionInterval, actionCount, refreshInterval);
+          await executePhase(remaining, i, remaining, phases.length, actionInterval, actionCount, refreshInterval);
         }
         if (!running || i + 1 >= phases.length) continue;
         self.postMessage({ type: 'phaseAdvance', phaseIndex: i + 1 });
@@ -135,7 +134,8 @@ async function runPhases(
       break;
     }
 
-    await executePhase(phase, i, phases.length, actionInterval, actionCount, refreshInterval);
+    scheduledTime += phase;
+    await executePhase(phase, i, scheduledTime, phases.length, actionInterval, actionCount, refreshInterval);
 
     if (!running || i + 1 >= phases.length) break;
 
@@ -144,7 +144,7 @@ async function runPhases(
   }
 
   running = false;
-  const totalElapsed = sinceStart();
+  const totalElapsed = performance.now();
   console.info(`[PhaseRunner] Run complete: total time=${totalElapsed.toFixed(3)}ms`);
   self.postMessage({ type: 'finished' });
 }
