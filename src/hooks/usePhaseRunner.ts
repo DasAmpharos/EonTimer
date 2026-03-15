@@ -92,7 +92,10 @@ export function usePhaseRunner() {
           }
           break;
         case 'finished':
-          cancelAllScheduled();
+          // Delay cleanup so the last pre-scheduled audio cue finishes
+          // playing — it fires at approximately the same wall-clock moment
+          // this message arrives, creating a race with cancelAllScheduled.
+          setTimeout(() => cancelAllScheduled(), 500);
           useAppStore.getState().setRunning(false);
           break;
       }
