@@ -98,6 +98,14 @@ function toBool(params: URLSearchParams, key: string): boolean | undefined {
   return undefined;
 }
 
+function parseCustomUnit(raw: string | null): CustomUnit {
+  if (!raw) return CustomUnit.MILLISECONDS;
+  const v = raw.toLowerCase().trim();
+  if (v === 'advances' || v === 'adv') return CustomUnit.ADVANCES;
+  if (v === 'hex' || v === 'seed') return CustomUnit.HEX;
+  return CustomUnit.MILLISECONDS;
+}
+
 /**
  * Reads the URL path and query parameters on mount and applies them to the
  * settings store, enabling pre-populated timer links.
@@ -116,7 +124,8 @@ function toBool(params: URLSearchParams, key: string): boolean | undefined {
  * Gen 4 params: targetDelay, targetSecond, calibratedDelay, calibratedSecond
  * Gen 5 params: mode, calibration, frameCalibration, entralinkCalibration,
  *               targetDelay, targetSecond, targetAdvances
- * Custom params: phases (comma-separated ms values, e.g. phases=5000,3000)
+ * Custom params: phases (comma-separated, optional :unit suffix — ms, advances/adv, hex/seed)
+ *               e.g. phases=5000,100:advances,1A2B:hex
  */
 export function useUrlParams(): void {
   useEffect(() => {
@@ -225,14 +234,24 @@ export function useUrlParams(): void {
         break;
       }
       case 3: {
-        // Custom — comma-separated ms values, e.g. phases=5000,3000,1000
+        // Custom — comma-separated phases with optional :unit suffix.
+        // Format: target[:unit] where unit is ms, advances/adv, or hex/seed.
+        // Defaults to ms when unit is omitted. e.g. phases=5000,100:advances,1A2B:hex
         const phasesParam = params.get('phases');
         if (phasesParam) {
           const phases: CustomPhase[] = phasesParam
             .split(',')
-            .map((s) => Number(s.trim()))
-            .filter((n) => Number.isFinite(n) && n > 0)
-            .map((target) => ({ unit: CustomUnit.MILLISECONDS, target, calibration: 0 }));
+            .map((s): CustomPhase | null => {
+              const colonIdx = s.lastIndexOf(':');
+              const rawValue = colonIdx !== -1 ? s.slice(0, colonIdx).trim() : s.trim();
+              const rawUnit = colonIdx !== -1 ? s.slice(colonIdx + 1).trim() : null;
+              const unit = parseCustomUnit(rawUnit);
+              const target =
+                unit === CustomUnit.HEX ? parseInt(rawValue, 16) : Number(rawValue);
+              if (!Number.isFinite(target) || target < 0) return null;
+              return { unit, target, calibration: 0 };
+            })
+            .filter((p): p is CustomPhase => p !== null);
           if (phases.length) store.setCustomPhases(phases);
         }
         break;
