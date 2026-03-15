@@ -5,13 +5,8 @@ const SPINWAIT_MS = 2.0;
 const UI_UPDATE_INTERVAL = 32; // ~30 fps
 
 let running = false;
-let globalStart = 0;
 // Pending phase update from the main thread (used for Variable Target mode)
 let pendingPhaseUpdate: { index: number; value: number } | null = null;
-
-function sinceStart(): number {
-  return performance.now() - globalStart;
-}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.floor(ms))));
@@ -100,7 +95,8 @@ async function runPhases(
     const phase = phases[i];
     if (phase === Infinity) {
       // Infinite phase: tick until stopped or phase is updated to a finite value
-      const phaseStart = sinceStart();
+      // scheduledTime is the scheduled end of the previous phase = scheduled start of this one
+      const phaseStart = scheduledTime;
       while (running) {
         // Check for phase update (e.g. Gen3 Variable Target "Set Target Frame")
         if (pendingPhaseUpdate && pendingPhaseUpdate.index === i) {
@@ -109,21 +105,24 @@ async function runPhases(
           // Re-enter the loop with the now-finite phase
           break;
         }
-        const elapsed = sinceStart() - phaseStart;
+        const elapsed = performance.now() - phaseStart;
         self.postMessage({ type: 'tick', elapsed, phaseIndex: i, totalPhases: phases.length });
         await sleep(UI_UPDATE_INTERVAL);
       }
-      // If phase was updated to a finite value, execute it normally
+      // If phase was updated to a finite value, execute it using scheduled time.
+      // Pass the full phase duration (not remaining) so that elapsed is measured
+      // from phaseStart, giving the UI the correct already-elapsed offset.
       if (running && phases[i] !== Infinity) {
-        const remaining = phases[i] - (sinceStart() - phaseStart);
-        if (remaining > 0) {
-          await executePhase(remaining, i, remaining, phases.length, actionInterval, actionCount, refreshInterval);
-        }
+        scheduledTime = phaseStart + phases[i];
+        const remaining = scheduledTime - performance.now();
+        // Notify the UI so it can schedule audio cues for the remaining time
+        self.postMessage({ type: 'phaseResolved', phaseIndex: i, remaining: Math.max(0, remaining) });
+        await executePhase(phases[i], i, scheduledTime, phases.length, actionInterval, actionCount, refreshInterval);
         if (!running || i + 1 >= phases.length) continue;
         self.postMessage({ type: 'phaseAdvance', phaseIndex: i + 1 });
         continue;
       }
-      const actualElapsed = sinceStart() - phaseStart;
+      const actualElapsed = performance.now() - phaseStart;
       console.info(`[PhaseRunner] Finished executing phase ${i + 1}/${phases.length}: expected=∞, actual=${actualElapsed.toFixed(3)}ms (stopped by user)`);
       self.postMessage({
         type: 'tick',
@@ -153,7 +152,6 @@ self.onmessage = (e: MessageEvent) => {
   const { type } = e.data;
   if (type === 'start') {
     running = true;
-    globalStart = performance.now();
     const { phases, actionInterval, actionCount, refreshInterval } = e.data;
     runPhases(phases, actionInterval, actionCount, refreshInterval);
   } else if (type === 'stop') {

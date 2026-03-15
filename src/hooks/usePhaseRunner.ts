@@ -84,6 +84,13 @@ export function usePhaseRunner() {
           }
           break;
         }
+        case 'phaseResolved':
+          // Infinite phase resolved to a finite value: schedule audio cues
+          // using the remaining time so they land at the correct absolute moment.
+          if (useAudio) {
+            schedulePhaseActions(e.data.remaining, actionInterval, actionCount, actionSound);
+          }
+          break;
         case 'action':
           // Audio is pre-scheduled on the Web Audio timeline for
           // sample-accurate timing; action messages only drive visual flash
