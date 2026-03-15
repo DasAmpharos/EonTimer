@@ -6,6 +6,8 @@ const UI_UPDATE_INTERVAL = 32; // ~30 fps
 
 let running = false;
 let globalStart = 0;
+// Pending phase update from the main thread (used for Variable Target mode)
+let pendingPhaseUpdate: { index: number; value: number } | null = null;
 
 function sinceStart(): number {
   return performance.now() - globalStart;
@@ -98,12 +100,29 @@ async function runPhases(
   for (let i = 0; i < phases.length && running; i++) {
     const phase = phases[i];
     if (phase === Infinity) {
-      // Infinite phase: just tick until stopped
+      // Infinite phase: tick until stopped or phase is updated to a finite value
       const phaseStart = sinceStart();
       while (running) {
+        // Check for phase update (e.g. Gen3 Variable Target "Set Target Frame")
+        if (pendingPhaseUpdate && pendingPhaseUpdate.index === i) {
+          phases[i] = pendingPhaseUpdate.value;
+          pendingPhaseUpdate = null;
+          // Re-enter the loop with the now-finite phase
+          break;
+        }
         const elapsed = sinceStart() - phaseStart;
         self.postMessage({ type: 'tick', elapsed, phaseIndex: i, totalPhases: phases.length });
         await sleep(UI_UPDATE_INTERVAL);
+      }
+      // If phase was updated to a finite value, execute it normally
+      if (running && phases[i] !== Infinity) {
+        const remaining = phases[i] - (sinceStart() - phaseStart);
+        if (remaining > 0) {
+          await executePhase(remaining, i, phases.length, actionInterval, actionCount, refreshInterval);
+        }
+        if (!running || i + 1 >= phases.length) continue;
+        self.postMessage({ type: 'phaseAdvance', phaseIndex: i + 1 });
+        continue;
       }
       const actualElapsed = sinceStart() - phaseStart;
       console.info(`[PhaseRunner] Finished executing phase ${i + 1}/${phases.length}: expected=∞, actual=${actualElapsed.toFixed(3)}ms (stopped by user)`);
@@ -139,5 +158,8 @@ self.onmessage = (e: MessageEvent) => {
     runPhases(phases, actionInterval, actionCount, refreshInterval);
   } else if (type === 'stop') {
     running = false;
+  } else if (type === 'updatePhase') {
+    const { index, value } = e.data;
+    pendingPhaseUpdate = { index, value };
   }
 };
