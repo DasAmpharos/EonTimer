@@ -50,6 +50,11 @@ export function usePhaseRunner() {
     const { action, timer } = useSettingsStore.getState();
     if (phases.length === 0) return;
 
+    // Capture the click time as an absolute timestamp before any async work.
+    // Sent to the worker so it can anchor scheduledTime to this moment rather
+    // than to the worker's own (later) time origin.
+    const absoluteStart = performance.timeOrigin + performance.now();
+
     console.info('[PhaseRunner] Starting phase runner');
     resumeAudio();
     cancelAllScheduled();
@@ -112,6 +117,7 @@ export function usePhaseRunner() {
     worker.postMessage({
       type: 'start',
       phases,
+      absoluteStart,
       actionInterval: action.interval,
       actionCount: action.count,
       refreshInterval: timer.refreshInterval

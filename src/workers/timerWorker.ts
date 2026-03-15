@@ -12,16 +12,20 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.floor(ms))));
 }
 
-function buildActions(scheduledTime: number, elapsed: number, interval: number, count: number): number[] {
+function now(): number {
+  return performance.timeOrigin + performance.now();
+}
+
+function buildActions(scheduledTime: number, interval: number, count: number): number[] {
+  const t = now();
   const actions: number[] = [];
-  // const remaining = phase - elapsed;
   for (let i = 0; i < count; i++) {
     const action = scheduledTime - (interval * i);
-    // if (action < remaining) {
-    actions.push(action);
-    // }
+    if (action > t) {
+      actions.push(action);
+    }
   }
-  // Don't reverse: pop() naturally yields highest value first (matching Python's iter(reversed()) + next())
+  // Array is descending; pop() yields the earliest (lowest) action time first.
   return actions;
 }
 
@@ -35,46 +39,48 @@ async function executePhase(
   refreshInterval: number,
 ): Promise<void> {
   const start = scheduledTime - phase;
-  let lastUiUpdate = performance.now();
-  let actions = buildActions(scheduledTime, 0, actionInterval, actionCount);
-  let nextAction = actions.length > 0 ? actions.pop()! : 0;
+  let lastUiUpdate = now();
+  let actions = buildActions(scheduledTime, actionInterval, actionCount);
+  let nextAction = actions.length > 0 ? actions.pop()! : Infinity;
 
   while (running) {
-    let now = performance.now();
+    let t = now();
 
-    let elapsed = now - start;
-    const remainingUntilAction = nextAction - now;
+    let elapsed = t - start;
+    const remainingUntilAction = nextAction - t;
 
     if (remainingUntilAction > SPINWAIT_MS) {
       const sleepMs = Math.min(refreshInterval, remainingUntilAction - SPINWAIT_MS);
       await sleep(sleepMs);
+      t = now();
+      elapsed = t - start;
     } else {
       // Spin-wait for precision near action triggers
-      while (running && now < nextAction) {
+      while (running && t < nextAction) {
         // tight loop — acceptable in a Worker
-        now = performance.now();
+        t = now();
       }
       self.postMessage({ type: 'action' });
-      nextAction = actions.length > 0 ? actions.pop()! : 0;
+      nextAction = actions.length > 0 ? actions.pop()! : Infinity;
     }
 
-    if (now - lastUiUpdate >= UI_UPDATE_INTERVAL) {
+    if (t - lastUiUpdate >= UI_UPDATE_INTERVAL) {
       self.postMessage({
         type: 'tick',
         elapsed,
         phaseIndex,
         totalPhases,
       });
-      lastUiUpdate = now;
+      lastUiUpdate = t;
     }
 
-    if (now >= scheduledTime) {
+    if (t >= scheduledTime) {
       break;
     }
   }
 
   // Final elapsed
-  const actualElapsed = performance.now() - start;
+  const actualElapsed = now() - start;
   console.info(`[PhaseRunner] Finished executing phase ${phaseIndex + 1}/${totalPhases}: expected=${phase.toFixed(3)}ms, actual=${actualElapsed.toFixed(3)}ms`);
   self.postMessage({
     type: 'tick',
@@ -89,8 +95,9 @@ async function runPhases(
   actionInterval: number,
   actionCount: number,
   refreshInterval: number,
+  startTime: number,
 ): Promise<void> {
-  let scheduledTime = 0;
+  let scheduledTime = startTime;
   for (let i = 0; i < phases.length && running; i++) {
     const phase = phases[i];
     if (phase === Infinity) {
@@ -105,7 +112,7 @@ async function runPhases(
           // Re-enter the loop with the now-finite phase
           break;
         }
-        const elapsed = performance.now() - phaseStart;
+        const elapsed = now() - phaseStart;
         self.postMessage({ type: 'tick', elapsed, phaseIndex: i, totalPhases: phases.length });
         await sleep(UI_UPDATE_INTERVAL);
       }
@@ -114,7 +121,7 @@ async function runPhases(
       // from phaseStart, giving the UI the correct already-elapsed offset.
       if (running && phases[i] !== Infinity) {
         scheduledTime = phaseStart + phases[i];
-        const remaining = scheduledTime - performance.now();
+        const remaining = scheduledTime - now();
         // Notify the UI so it can schedule audio cues for the remaining time
         self.postMessage({ type: 'phaseResolved', phaseIndex: i, remaining: Math.max(0, remaining) });
         await executePhase(phases[i], i, scheduledTime, phases.length, actionInterval, actionCount, refreshInterval);
@@ -122,7 +129,7 @@ async function runPhases(
         self.postMessage({ type: 'phaseAdvance', phaseIndex: i + 1 });
         continue;
       }
-      const actualElapsed = performance.now() - phaseStart;
+      const actualElapsed = now() - phaseStart;
       console.info(`[PhaseRunner] Finished executing phase ${i + 1}/${phases.length}: expected=∞, actual=${actualElapsed.toFixed(3)}ms (stopped by user)`);
       self.postMessage({
         type: 'tick',
@@ -143,8 +150,7 @@ async function runPhases(
   }
 
   running = false;
-  const totalElapsed = performance.now();
-  console.info(`[PhaseRunner] Run complete: total time=${totalElapsed.toFixed(3)}ms`);
+  console.info(`[PhaseRunner] Run complete: total time=${(now() - startTime).toFixed(3)}ms`);
   self.postMessage({ type: 'finished' });
 }
 
@@ -152,8 +158,8 @@ self.onmessage = (e: MessageEvent) => {
   const { type } = e.data;
   if (type === 'start') {
     running = true;
-    const { phases, actionInterval, actionCount, refreshInterval } = e.data;
-    runPhases(phases, actionInterval, actionCount, refreshInterval);
+    const { phases, absoluteStart, actionInterval, actionCount, refreshInterval } = e.data;
+    runPhases(phases, actionInterval, actionCount, refreshInterval, absoluteStart);
   } else if (type === 'stop') {
     running = false;
   } else if (type === 'updatePhase') {
