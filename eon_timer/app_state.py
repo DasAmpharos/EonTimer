@@ -2,13 +2,11 @@ from typing import Final
 
 from PySide6.QtCore import QObject, Signal
 
-from eon_timer.util import const
-
 
 class AppState(QObject):
     current_phase_changed: Final = Signal(float)
     current_phase_elapsed_changed: Final = Signal(float)
-    minutes_before_target_changed: Final = Signal(int)
+    minutes_before_target_changed: Final = Signal(object)
     next_phase_changed: Final = Signal(float)
 
     running_changed: Final = Signal(bool)
@@ -21,6 +19,7 @@ class AppState(QObject):
         self.__current_phase_index: int = 0
         self.__current_phase_elapsed: float = 0
         self.__running = False
+        self.__minutes_before_target: int | None = None
 
     @property
     def phases(self) -> list[float]:
@@ -41,10 +40,6 @@ class AppState(QObject):
                 self.current_phase_changed.emit(phase)
             case self.next_phase_index:
                 self.next_phase_changed.emit(phase)
-        # update minutes_before_target
-        remaining_phases = self.__phases[self.__current_phase_index :]
-        remaining_phases[0] -= self.__current_phase_elapsed
-        self.__update_minutes_before_target(remaining_phases)
 
     @property
     def current_phase(self) -> float:
@@ -94,13 +89,16 @@ class AppState(QObject):
             self.running_changed.emit(new_value)
             self.reset()
 
+    @property
+    def minutes_before_target(self) -> int | None:
+        return self.__minutes_before_target
+
+    @minutes_before_target.setter
+    def minutes_before_target(self, value: int | None):
+        self.__minutes_before_target = value
+        self.minutes_before_target_changed.emit(value)
+
     def reset(self):
         self.current_phase_index = 0
         self.current_phase_elapsed = 0.0
-        self.__update_minutes_before_target(self.__phases)
-
-    def __update_minutes_before_target(self, phases: list[float]):
-        minutes_before_target = -1
-        if const.INFINITY not in phases:
-            minutes_before_target = int(sum(phases) // 60_000)
-        self.minutes_before_target_changed.emit(minutes_before_target)
+        self.minutes_before_target_changed.emit(self.__minutes_before_target)

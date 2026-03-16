@@ -1,5 +1,6 @@
 from typing import Final, override
 
+from eon_timer.timers import get_minutes_before_target
 from eon_timer.timers.calibrator import Calibrator
 from eon_timer.timers.delay_timer import DelayTimer
 from eon_timer.timers.entralink_timer import EnhancedEntralinkTimer, EntralinkTimer
@@ -86,3 +87,16 @@ class Gen5Timer(Timer[Gen5Model]):
 
     def get_advances_calibration(self, model: Gen5Model) -> float:
         return self.enhanced_entralink_timer.calibrate(model.target_advances.get(), model.advances_hit.get())
+
+    def minutes_before_target(self, model: Gen5Model) -> int:
+        """Compute minutes before target without calibration."""
+        match model.mode.get():
+            case Gen5Mode.STANDARD:
+                phases = self.second_timer.create(model.target_second.get(), 0)
+            case Gen5Mode.C_GEAR:
+                phases = self.delay_timer.create(model.target_delay.get(), model.target_second.get(), 0)
+            case Gen5Mode.ENTRALINK | Gen5Mode.ENTRALINK_PLUS:
+                phases = self.entralink_timer.create(model.target_delay.get(), model.target_second.get(), 0, 0)
+            case _ as mode:
+                raise ValueError(f'Unsupported Gen5Mode: {mode}')
+        return get_minutes_before_target(phases)

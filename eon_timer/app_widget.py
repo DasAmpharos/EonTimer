@@ -244,6 +244,8 @@ class AppWidget(QWidget, CloseListener):
         if create_phases is not None:
             phases = create_phases()
             self.state.phases = phases
+        get_mbt = getattr(widget, 'minutes_before_target', None)
+        self.state.minutes_before_target = get_mbt() if get_mbt is not None else None
 
     def _on_close(self):
         self.settings.setValue(self.TAB_INDEX, self.tab_widget.currentIndex())

@@ -1,5 +1,6 @@
 from typing import Final, override
 
+from eon_timer.timers import get_minutes_before_target
 from eon_timer.timers.calibrator import Calibrator
 from eon_timer.timers.delay_timer import DelayTimer
 from eon_timer.timers.timer import Timer
@@ -27,3 +28,8 @@ class Gen4Timer(Timer[Gen4Model]):
 
     def get_calibration(self, model: Gen4Model) -> float:
         return self.calibrator.create_calibration(model.calibrated_delay.get(), model.calibrated_second.get())
+
+    def minutes_before_target(self, model: Gen4Model) -> int:
+        """Compute minutes before target without calibration."""
+        phases = self.delay_timer.create(model.target_delay.get(), model.target_second.get(), 0)
+        return get_minutes_before_target(phases)

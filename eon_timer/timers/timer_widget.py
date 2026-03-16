@@ -49,6 +49,10 @@ class TimerWidget(Generic[ModelT, TimerT]):
     def calibrate(self):
         self.timer.calibrate(self.model)
 
+    def minutes_before_target(self) -> int | None:
+        """Return minutes before target without calibration, or None if not applicable."""
+        return None
+
     @final
     def reset(self):
         self.__resetting = True
