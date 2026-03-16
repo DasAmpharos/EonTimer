@@ -60,6 +60,11 @@ async function executePhase(
         // tight loop — acceptable in a Worker
         t = now();
       }
+    }
+
+    // Fire all actions that became due — handles both the spin-wait path and
+    // sleep overshoot (setTimeout resolves late, waking past the action time).
+    while (t >= nextAction) {
       self.postMessage({ type: 'action' });
       nextAction = actions.length > 0 ? actions.pop()! : Infinity;
     }
