@@ -13,7 +13,8 @@ def init(level: int = logging.DEBUG):
     logger = logging.getLogger()
     formatter = logging.Formatter(
         fmt='%(asctime)s %(levelname)5s [%(processid)d] --- [%(threadname)s] %(name)-30s : %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S')
+        datefmt='%Y-%m-%d %H:%M:%S',
+    )
     logger.setLevel(level)
 
     console_handler = logging.StreamHandler(sys.stdout)
