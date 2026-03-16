@@ -1,3 +1,4 @@
+import { getMinutesBeforeTarget } from '../utils/constants';
 import {
   CalibratorSettings,
   createCalibration,
@@ -19,6 +20,10 @@ function getCalibration(settings: CalibratorSettings, model: Gen4Model): number 
 
 export function createGen4Phases(settings: CalibratorSettings, model: Gen4Model): number[] {
   return createDelayPhases(settings, model.targetDelay, model.targetSecond, getCalibration(settings, model));
+}
+
+export function getGen4MinutesBeforeTarget(settings: CalibratorSettings, model: Gen4Model): number {
+  return getMinutesBeforeTarget(createDelayPhases(settings, model.targetDelay, model.targetSecond, 0));
 }
 
 export function calibrateGen4(
