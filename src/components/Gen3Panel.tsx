@@ -8,7 +8,7 @@ import { FloatInput } from './common/FloatInput';
 import { EnumSelect } from './common/EnumSelect';
 import { CalibratorSettings } from '../timers/calibrator';
 import { createGen3Phases, calibrateGen3, createFramePhase } from '../timers/gen3Timer';
-import type { TimerPanelHandle } from './Gen5Panel';
+import type { TimerPanelHandle } from './timerPanel';
 
 const GEN3_MODES = Object.values(Gen3Mode) as Gen3Mode[];
 
@@ -43,8 +43,11 @@ export const Gen3Panel = forwardRef<TimerPanelHandle, Gen3PanelProps>(
       minimumLength: timer.minimumLength * 1000,
     }), [timer.console, timer.customFramerate, timer.precisionCalibration, timer.minimumLength]);
 
-    const createPhases = useCallback(() => {
-      return createGen3Phases(calSettings, gen3);
+    const createDisplayData = useCallback(() => {
+      return {
+        phases: createGen3Phases(calSettings, gen3),
+        minutesBeforeTarget: null,
+      };
     }, [calSettings, gen3]);
 
     const canCalibrate = useCallback(() => frameHit !== null, [frameHit]);
@@ -62,7 +65,7 @@ export const Gen3Panel = forwardRef<TimerPanelHandle, Gen3PanelProps>(
       setTargetFrameLocked(false);
     }, [updateGen3]);
 
-    useImperativeHandle(ref, () => ({ createPhases, calibrate, canCalibrate, reset }), [createPhases, calibrate, canCalibrate, reset]);
+    useImperativeHandle(ref, () => ({ createDisplayData, calibrate, canCalibrate, reset }), [createDisplayData, calibrate, canCalibrate, reset]);
 
     const update = useCallback(
       (patch: Partial<typeof gen3>) => {

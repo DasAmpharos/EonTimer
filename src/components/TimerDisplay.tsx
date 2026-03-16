@@ -44,6 +44,7 @@ export function TimerDisplay({
   const running = useAppStore((s) => s.running);
   const actionInterval = useSettingsStore((s) => s.action.interval);
   const actionCount = useSettingsStore((s) => s.action.count);
+  const minutesBeforeTarget = useAppStore((s) => s.minutesBeforeTarget);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const flashTimeoutRef = useRef<number>(0);
@@ -98,7 +99,7 @@ export function TimerDisplay({
       <div className={`timer-progress-bar zone-${displayZone}`}>
         <div className="timer-progress-fill" style={{ transform: `scaleX(${progressValue / 100})` }} />
       </div>
-      <div className="timer-meta">
+      <div className="timer-meta" style={minutesBeforeTarget !== null ? { gridTemplateColumns: '1fr 1fr 1fr 1fr' } : undefined}>
         <span className="timer-info-item">
           <span className="timer-info-label">Phase:</span>
           <span className="mono">{currentPhaseIndex + 1} of {phases.length || 1}</span>
@@ -111,6 +112,12 @@ export function TimerDisplay({
           <span className="timer-info-label">Total:</span>
           <span className="mono">{formatTotal(phases)}</span>
         </span>
+        {minutesBeforeTarget !== null && (
+          <span className="timer-info-item" title="Set your clock this many minutes before your target time">
+            <span className="timer-info-label">Mins Before:</span>
+            <span className="mono">{minutesBeforeTarget}</span>
+          </span>
+        )}
       </div>
       <div className="timer-display-footer">
         <div className="timer-footer-controls">

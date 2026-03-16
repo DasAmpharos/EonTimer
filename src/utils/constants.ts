@@ -10,6 +10,15 @@ export function toMinimumLength(value: number, minimumLength: number = MINIMUM_L
   return value;
 }
 
+export function getMinutesBeforeTarget(phases: number[]): number {
+  let total = 0;
+  for (const phase of phases) {
+    if (phase === INFINITY) continue;
+    total += phase;
+  }
+  return Math.floor(total / 60000);
+}
+
 // Console framerates
 export const GBA_FPS = 59.7275;
 export const NDS_SLOT1_FPS = 59.8261;

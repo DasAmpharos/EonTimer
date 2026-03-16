@@ -4,8 +4,8 @@ import { INT_MAX, INT_MIN } from '../utils/constants';
 import { FormField } from './common/FormField';
 import { IntInput } from './common/IntInput';
 import { CalibratorSettings } from '../timers/calibrator';
-import { createGen4Phases, calibrateGen4 } from '../timers/gen4Timer';
-import type { TimerPanelHandle } from './Gen5Panel';
+import { createGen4Phases, calibrateGen4, getGen4MinutesBeforeTarget } from '../timers/gen4Timer';
+import type { TimerPanelHandle } from './timerPanel';
 
 interface Gen4PanelProps {
   onPhasesChange: () => void;
@@ -27,8 +27,12 @@ export const Gen4Panel = forwardRef<TimerPanelHandle, Gen4PanelProps>(
       minimumLength: timer.minimumLength * 1000,
     }), [timer.console, timer.customFramerate, timer.precisionCalibration, timer.minimumLength]);
 
-    const createPhases = useCallback(() => {
-      return createGen4Phases(calSettings, gen4);
+    const createDisplayData = useCallback(() => {
+      const phases = createGen4Phases(calSettings, gen4);
+      return {
+        phases,
+        minutesBeforeTarget: getGen4MinutesBeforeTarget(calSettings, gen4),
+      };
     }, [calSettings, gen4]);
 
     const canCalibrate = useCallback(() => delayHit !== null, [delayHit]);
@@ -45,7 +49,7 @@ export const Gen4Panel = forwardRef<TimerPanelHandle, Gen4PanelProps>(
       setDelayHit(null);
     }, [updateGen4]);
 
-    useImperativeHandle(ref, () => ({ createPhases, calibrate, canCalibrate, reset }), [createPhases, calibrate, canCalibrate, reset]);
+    useImperativeHandle(ref, () => ({ createDisplayData, calibrate, canCalibrate, reset }), [createDisplayData, calibrate, canCalibrate, reset]);
 
     const update = useCallback(
       (patch: Partial<typeof gen4>) => {

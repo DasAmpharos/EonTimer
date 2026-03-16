@@ -12,6 +12,29 @@ export interface CalibratorSettings {
   minimumLength: number; // in milliseconds
 }
 
+// Match the desktop timer's C# Math.Round(decimal) midpoint-to-even behavior.
+function roundHalfToEven(value: number): number {
+  if (!Number.isFinite(value)) {
+    return Math.round(value);
+  }
+
+  const lower = Math.floor(value);
+  const upper = Math.ceil(value);
+  if (lower === upper) {
+    return lower;
+  }
+
+  const lowerDistance = value - lower;
+  const upperDistance = upper - value;
+  const epsilon = Number.EPSILON * Math.max(1, Math.abs(value));
+
+  if (Math.abs(lowerDistance - upperDistance) <= epsilon) {
+    return Math.abs(lower) % 2 === 0 ? lower : upper;
+  }
+
+  return lowerDistance < upperDistance ? lower : upper;
+}
+
 function getFramerate(settings: CalibratorSettings): number {
   switch (settings.console) {
     case Console.GBA:
@@ -34,15 +57,15 @@ function getFramerate(settings: CalibratorSettings): number {
 }
 
 export function toDelays(settings: CalibratorSettings, milliseconds: number): number {
-  return Math.floor(milliseconds / getFramerate(settings));
+  return roundHalfToEven(milliseconds / getFramerate(settings));
 }
 
 export function toMilliseconds(settings: CalibratorSettings, delays: number): number {
-  return getFramerate(settings) * delays;
+  return roundHalfToEven(getFramerate(settings) * delays);
 }
 
 export function calibrateToDelays(settings: CalibratorSettings, milliseconds: number): number {
-  return settings.precisionCalibration ? Math.round(milliseconds) : toDelays(settings, milliseconds);
+  return settings.precisionCalibration ? roundHalfToEven(milliseconds) : toDelays(settings, milliseconds);
 }
 
 export function calibrateToMilliseconds(settings: CalibratorSettings, delays: number): number {
