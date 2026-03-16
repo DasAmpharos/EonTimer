@@ -22,6 +22,7 @@ def get_minutes_before_target(phases: list[float]) -> int:
     phases without short-circuiting the calculation.
     """
     from eon_timer.util.const import INFINITY
+
     total = 0
     for phase in phases:
         if phase == INFINITY:

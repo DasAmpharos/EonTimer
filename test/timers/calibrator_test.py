@@ -28,9 +28,9 @@ class CalibratorTest(unittest.TestCase):
         self.assertEqual(3, self.calibrator.to_milliseconds(3))
 
         self.timer_settings.custom_framerate.get.return_value = 1000 / 1.5  # → 1.5 ms/frame
-        self.assertEqual(2, self.calibrator.to_milliseconds(1))   # round(1.5) = 2 (banker's)
-        self.assertEqual(3, self.calibrator.to_milliseconds(2))   # round(3.0) = 3
-        self.assertEqual(4, self.calibrator.to_milliseconds(3))   # round(4.5) = 4 (banker's)
+        self.assertEqual(2, self.calibrator.to_milliseconds(1))  # round(1.5) = 2 (banker's)
+        self.assertEqual(3, self.calibrator.to_milliseconds(2))  # round(3.0) = 3
+        self.assertEqual(4, self.calibrator.to_milliseconds(3))  # round(4.5) = 4 (banker's)
 
         self.timer_settings.custom_framerate.get.return_value = 500.0  # 500 fps → 2 ms/frame
         self.assertEqual(2, self.calibrator.to_milliseconds(1))
