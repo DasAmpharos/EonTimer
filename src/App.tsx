@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { useAppStore, useSettingsStore } from './store';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
 import { useTheme } from './hooks/useTheme';
@@ -35,7 +35,7 @@ export default function App() {
   const gen3Ref = useRef<TimerPanelHandle>(null);
   const customRef = useRef<TimerPanelHandle>(null);
 
-  const refs = [gen5Ref, gen4Ref, gen3Ref, customRef];
+  const refs = useMemo(() => [gen5Ref, gen4Ref, gen3Ref, customRef], []);
   const currentRef = refs[tabIndex];
 
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -47,7 +47,7 @@ export default function App() {
     const ref = refs[tab];
     const displayData = ref?.current?.createDisplayData();
     if (displayData) setPhases(displayData.phases, displayData.minutesBeforeTarget);
-  }, [setPhases]);
+  }, [refs, setPhases]);
 
   // Initial phases
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function App() {
         if (displayData) setPhases(displayData.phases, displayData.minutesBeforeTarget);
       }, 0);
     },
-    [running, setTabIndex, setPhases],
+    [refs, running, setTabIndex, setPhases],
   );
 
   const handleUpdate = useCallback(() => {
@@ -135,7 +135,12 @@ export default function App() {
     <div className="app">
       <div className="app-container">
         {/* Timer display */}
-        <TimerDisplay registerFlash={registerFlash} onToggle={handleToggle} onSettings={() => setSettingsOpen(true)} settingsDisabled={running} />
+        <TimerDisplay
+          registerFlash={registerFlash}
+          onToggle={handleToggle}
+          onSettings={() => setSettingsOpen(true)}
+          settingsDisabled={running}
+        />
 
         {/* Tab panel */}
         <div className="app-tabs">
@@ -146,23 +151,49 @@ export default function App() {
                 className={`tab ${i === tabIndex ? 'active' : ''}`}
                 onClick={() => handleTabChange(i)}
                 disabled={running && i !== tabIndex}
-                title={running && i !== tabIndex ? 'Stop the timer to switch modes' : TAB_TOOLTIPS[i]}
+                title={
+                  running && i !== tabIndex ? 'Stop the timer to switch modes' : TAB_TOOLTIPS[i]
+                }
               >
                 {label}
               </button>
             ))}
           </div>
           <div className="tab-content">
-            <div style={{ display: tabIndex === 0 ? 'flex' : 'none', flex: 1, flexDirection: 'column' }}>
+            <div
+              style={{
+                display: tabIndex === 0 ? 'flex' : 'none',
+                flex: 1,
+                flexDirection: 'column',
+              }}
+            >
               <Gen5Panel ref={gen5Ref} onPhasesChange={updatePhases} disabled={running} />
             </div>
-            <div style={{ display: tabIndex === 1 ? 'flex' : 'none', flex: 1, flexDirection: 'column' }}>
+            <div
+              style={{
+                display: tabIndex === 1 ? 'flex' : 'none',
+                flex: 1,
+                flexDirection: 'column',
+              }}
+            >
               <Gen4Panel ref={gen4Ref} onPhasesChange={updatePhases} disabled={running} />
             </div>
-            <div style={{ display: tabIndex === 2 ? 'flex' : 'none', flex: 1, flexDirection: 'column' }}>
+            <div
+              style={{
+                display: tabIndex === 2 ? 'flex' : 'none',
+                flex: 1,
+                flexDirection: 'column',
+              }}
+            >
               <Gen3Panel ref={gen3Ref} onPhasesChange={updatePhases} disabled={running} />
             </div>
-            <div style={{ display: tabIndex === 3 ? 'flex' : 'none', flex: 1, flexDirection: 'column' }}>
+            <div
+              style={{
+                display: tabIndex === 3 ? 'flex' : 'none',
+                flex: 1,
+                flexDirection: 'column',
+              }}
+            >
               <CustomPanel ref={customRef} onPhasesChange={updatePhases} disabled={running} />
             </div>
           </div>
@@ -170,10 +201,20 @@ export default function App() {
 
         {/* Reset / Update buttons */}
         <div className="app-action-bar">
-          <button className="btn btn-icon" onClick={handleReset} disabled={running} title="Reset Timer (F5)">
+          <button
+            className="btn btn-icon"
+            onClick={handleReset}
+            disabled={running}
+            title="Reset Timer (F5)"
+          >
             ↺
           </button>
-          <button className="btn btn-update" onClick={handleUpdate} disabled={running} title="Apply calibration from hit values (F6)">
+          <button
+            className="btn btn-update"
+            onClick={handleUpdate}
+            disabled={running}
+            title="Apply calibration from hit values (F6)"
+          >
             Update
           </button>
         </div>

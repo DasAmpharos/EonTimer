@@ -20,7 +20,7 @@ function buildActions(scheduledTime: number, interval: number, count: number): n
   const t = now();
   const actions: number[] = [];
   for (let i = 0; i < count; i++) {
-    const action = scheduledTime - (interval * i);
+    const action = scheduledTime - interval * i;
     if (action > t) {
       actions.push(action);
     }
@@ -40,7 +40,7 @@ async function executePhase(
 ): Promise<void> {
   const start = scheduledTime - phase;
   let lastUiUpdate = now();
-  let actions = buildActions(scheduledTime, actionInterval, actionCount);
+  const actions = buildActions(scheduledTime, actionInterval, actionCount);
   let nextAction = actions.length > 0 ? actions.pop()! : Infinity;
 
   while (running) {
@@ -86,7 +86,9 @@ async function executePhase(
 
   // Final elapsed
   const actualElapsed = now() - start;
-  console.info(`[PhaseRunner] Finished executing phase ${phaseIndex + 1}/${totalPhases}: expected=${phase.toFixed(3)}ms, actual=${actualElapsed.toFixed(3)}ms`);
+  console.info(
+    `[PhaseRunner] Finished executing phase ${phaseIndex + 1}/${totalPhases}: expected=${phase.toFixed(3)}ms, actual=${actualElapsed.toFixed(3)}ms`,
+  );
   self.postMessage({
     type: 'tick',
     elapsed: actualElapsed,
@@ -128,14 +130,28 @@ async function runPhases(
         scheduledTime = phaseStart + phases[i];
         const remaining = scheduledTime - now();
         // Notify the UI so it can schedule audio cues for the remaining time
-        self.postMessage({ type: 'phaseResolved', phaseIndex: i, remaining: Math.max(0, remaining) });
-        await executePhase(phases[i], i, scheduledTime, phases.length, actionInterval, actionCount, refreshInterval);
+        self.postMessage({
+          type: 'phaseResolved',
+          phaseIndex: i,
+          remaining: Math.max(0, remaining),
+        });
+        await executePhase(
+          phases[i],
+          i,
+          scheduledTime,
+          phases.length,
+          actionInterval,
+          actionCount,
+          refreshInterval,
+        );
         if (!running || i + 1 >= phases.length) continue;
         self.postMessage({ type: 'phaseAdvance', phaseIndex: i + 1 });
         continue;
       }
       const actualElapsed = now() - phaseStart;
-      console.info(`[PhaseRunner] Finished executing phase ${i + 1}/${phases.length}: expected=∞, actual=${actualElapsed.toFixed(3)}ms (stopped by user)`);
+      console.info(
+        `[PhaseRunner] Finished executing phase ${i + 1}/${phases.length}: expected=∞, actual=${actualElapsed.toFixed(3)}ms (stopped by user)`,
+      );
       self.postMessage({
         type: 'tick',
         elapsed: actualElapsed,
@@ -146,7 +162,15 @@ async function runPhases(
     }
 
     scheduledTime += phase;
-    await executePhase(phase, i, scheduledTime, phases.length, actionInterval, actionCount, refreshInterval);
+    await executePhase(
+      phase,
+      i,
+      scheduledTime,
+      phases.length,
+      actionInterval,
+      actionCount,
+      refreshInterval,
+    );
 
     if (!running || i + 1 >= phases.length) break;
 

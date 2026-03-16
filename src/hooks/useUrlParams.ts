@@ -185,8 +185,7 @@ export function useUrlParams(): void {
               const rawValue = colonIdx !== -1 ? s.slice(0, colonIdx).trim() : s.trim();
               const rawUnit = colonIdx !== -1 ? s.slice(colonIdx + 1).trim() : null;
               const unit = parseCustomUnit(rawUnit);
-              const target =
-                unit === CustomUnit.HEX ? parseInt(rawValue, 16) : Number(rawValue);
+              const target = unit === CustomUnit.HEX ? parseInt(rawValue, 16) : Number(rawValue);
               if (!Number.isFinite(target) || target < 0) return null;
               return { unit, target, calibration: 0 };
             })

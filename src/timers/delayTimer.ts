@@ -13,7 +13,8 @@ export function createDelayPhases(
   calibration: number,
 ): number[] {
   const phase1 = toMinimumLength(
-    createSecondPhases(targetSecond, calibration, settings.minimumLength)[0] - toMilliseconds(settings, targetDelay),
+    createSecondPhases(targetSecond, calibration, settings.minimumLength)[0] -
+      toMilliseconds(settings, targetDelay),
     settings.minimumLength,
   );
   const phase2 = toMilliseconds(settings, targetDelay) - calibration;

@@ -9,8 +9,6 @@ export function usePhaseRunner() {
 
   const running = useAppStore((s) => s.running);
   const setRunning = useAppStore((s) => s.setRunning);
-  const setCurrentPhaseIndex = useAppStore((s) => s.setCurrentPhaseIndex);
-  const setCurrentPhaseElapsed = useAppStore((s) => s.setCurrentPhaseElapsed);
 
   // Register visual flash callback
   const registerFlash = useCallback((fn: () => void) => {
@@ -27,21 +25,19 @@ export function usePhaseRunner() {
   // Forward phase updates to the running worker (e.g. Gen3 Variable Target "Set Target Frame")
   useEffect(() => {
     if (!running || !workerRef.current) return;
-    const unsubscribe = useAppStore.subscribe(
-      (state, prevState) => {
-        if (state.phases !== prevState.phases && workerRef.current) {
-          for (let i = 0; i < state.phases.length; i++) {
-            if (state.phases[i] !== prevState.phases[i]) {
-              workerRef.current.postMessage({
-                type: 'updatePhase',
-                index: i,
-                value: state.phases[i]
-              });
-            }
+    const unsubscribe = useAppStore.subscribe((state, prevState) => {
+      if (state.phases !== prevState.phases && workerRef.current) {
+        for (let i = 0; i < state.phases.length; i++) {
+          if (state.phases[i] !== prevState.phases[i]) {
+            workerRef.current.postMessage({
+              type: 'updatePhase',
+              index: i,
+              value: state.phases[i],
+            });
           }
         }
-      },
-    );
+      }
+    });
     return unsubscribe;
   }, [running]);
 
@@ -59,10 +55,9 @@ export function usePhaseRunner() {
     resumeAudio();
     cancelAllScheduled();
 
-    const worker = new Worker(
-      new URL('../workers/timerWorker.ts', import.meta.url),
-      { type: 'module' },
-    );
+    const worker = new Worker(new URL('../workers/timerWorker.ts', import.meta.url), {
+      type: 'module',
+    });
     workerRef.current = worker;
 
     const actionMode = action.mode;
@@ -85,7 +80,12 @@ export function usePhaseRunner() {
           // Pre-schedule audio for the new phase on the Web Audio timeline
           if (useAudio) {
             const currentPhases = useAppStore.getState().phases;
-            schedulePhaseActions(currentPhases[phaseIndex], actionInterval, actionCount, actionSound);
+            schedulePhaseActions(
+              currentPhases[phaseIndex],
+              actionInterval,
+              actionCount,
+              actionSound,
+            );
           }
           break;
         }
@@ -120,14 +120,14 @@ export function usePhaseRunner() {
       absoluteStart,
       actionInterval: action.interval,
       actionCount: action.count,
-      refreshInterval: timer.refreshInterval
+      refreshInterval: timer.refreshInterval,
     });
 
     // Pre-schedule audio for the first phase
     if (useAudio) {
       schedulePhaseActions(phases[0], actionInterval, actionCount, actionSound);
     }
-  }, [setRunning, setCurrentPhaseIndex, setCurrentPhaseElapsed]);
+  }, [setRunning]);
 
   const stop = useCallback(() => {
     cancelAllScheduled();
