@@ -8,7 +8,7 @@ import { FloatInput } from './common/FloatInput';
 import { EnumSelect } from './common/EnumSelect';
 import { CalibratorSettings } from '../timers/calibrator';
 import { createCustomPhases, calibrateCustomPhase, type CustomPhase } from '../timers/customTimer';
-import type { TimerPanelHandle } from './Gen5Panel';
+import type { TimerPanelHandle } from './timerPanel';
 
 const CUSTOM_UNITS = Object.values(CustomUnit) as CustomUnit[];
 
@@ -50,9 +50,12 @@ export const CustomPanel = forwardRef<TimerPanelHandle, CustomPanelProps>(
       [setCustomPhases],
     );
 
-    const createPhasesCalc = useCallback(() => {
+    const createDisplayData = useCallback(() => {
       const models: CustomPhase[] = phases.map(({ unit, target, calibration }) => ({ unit, target, calibration }));
-      return createCustomPhases(calSettings, models);
+      return {
+        phases: createCustomPhases(calSettings, models),
+        minutesBeforeTarget: null,
+      };
     }, [calSettings, phases]);
 
     const canCalibrate = useCallback(() => {
@@ -76,7 +79,7 @@ export const CustomPanel = forwardRef<TimerPanelHandle, CustomPanelProps>(
       persist(initial);
     }, [persist]);
 
-    useImperativeHandle(ref, () => ({ createPhases: createPhasesCalc, calibrate, canCalibrate, reset }), [createPhasesCalc, calibrate, canCalibrate, reset]);
+    useImperativeHandle(ref, () => ({ createDisplayData, calibrate, canCalibrate, reset }), [createDisplayData, calibrate, canCalibrate, reset]);
 
     const updatePhase = useCallback(
       (index: number, patch: Partial<PhaseState>) => {

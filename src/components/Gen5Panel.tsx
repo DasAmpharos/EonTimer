@@ -6,16 +6,11 @@ import { FormField } from './common/FormField';
 import { IntInput } from './common/IntInput';
 import { EnumSelect } from './common/EnumSelect';
 import { CalibratorSettings } from '../timers/calibrator';
-import { createGen5Phases, calibrateGen5 } from '../timers/gen5Timer';
+import { createGen5Phases, calibrateGen5, getGen5MinutesBeforeTarget } from '../timers/gen5Timer';
+import type { TimerPanelHandle } from './timerPanel';
+export type { TimerPanelData, TimerPanelHandle } from './timerPanel';
 
 const GEN5_MODES = Object.values(Gen5Mode) as Gen5Mode[];
-
-export interface TimerPanelHandle {
-  createPhases: () => number[];
-  calibrate: () => void;
-  canCalibrate: () => boolean;
-  reset: () => void;
-}
 
 interface Gen5PanelProps {
   onPhasesChange: () => void;
@@ -39,8 +34,12 @@ export const Gen5Panel = forwardRef<TimerPanelHandle, Gen5PanelProps>(
       minimumLength: timer.minimumLength * 1000,
     }), [timer.console, timer.customFramerate, timer.precisionCalibration, timer.minimumLength]);
 
-    const createPhases = useCallback(() => {
-      return createGen5Phases(calSettings, gen5);
+    const createDisplayData = useCallback(() => {
+      const phases = createGen5Phases(calSettings, gen5);
+      return {
+        phases,
+        minutesBeforeTarget: getGen5MinutesBeforeTarget(calSettings, gen5),
+      };
     }, [calSettings, gen5]);
 
     const canCalibrate = useCallback(() => {
@@ -72,7 +71,7 @@ export const Gen5Panel = forwardRef<TimerPanelHandle, Gen5PanelProps>(
       setAdvancesHit(null);
     }, [updateGen5]);
 
-    useImperativeHandle(ref, () => ({ createPhases, calibrate, canCalibrate, reset }), [createPhases, calibrate, canCalibrate, reset]);
+    useImperativeHandle(ref, () => ({ createDisplayData, calibrate, canCalibrate, reset }), [createDisplayData, calibrate, canCalibrate, reset]);
 
     const update = useCallback(
       (patch: Partial<typeof gen5>) => {
