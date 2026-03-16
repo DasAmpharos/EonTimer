@@ -23,6 +23,9 @@ class TimerWidget(QGroupBox):
         self.next_phase_lbl: Final = QLabel('0.000')
         self.next_phase_lbl.setProperty('monospace', True)
         self.total_time_lbl: Final = QLabel('0m 0.000s')
+        self.mins_before_row: Final = QWidget()
+        self.mins_before_lbl: Final = QLabel('0')
+        self.mins_before_lbl.setProperty('monospace', True)
         self.__init_components()
         self.__init_listeners()
 
@@ -72,6 +75,21 @@ class TimerWidget(QGroupBox):
         row_layout.addWidget(self.total_time_lbl)
         row_layout.addStretch(1)
         layout.addWidget(row)
+        # ===== mins before =====
+        self.name_service.set_name(self.mins_before_row, 'minsBeforeRow')
+        row_layout = QHBoxLayout(self.mins_before_row)
+        row_layout.setContentsMargins(0, 0, 0, 0)
+        row_layout.setSpacing(5)
+        label = QLabel('Mins Before:')
+        label.setToolTip('Set your clock this many minutes before your target time')
+        self.name_service.set_name(label, 'minsBeforeLabel')
+        row_layout.addWidget(label)
+        self.name_service.set_name(self.mins_before_lbl, 'minsBeforeValueLabel')
+        self.mins_before_lbl.setToolTip('Set your clock this many minutes before your target time')
+        row_layout.addWidget(self.mins_before_lbl)
+        row_layout.addStretch(1)
+        self.mins_before_row.setVisible(False)
+        layout.addWidget(self.mins_before_row)
 
     def __init_listeners(self):
         self.state.current_phase_changed.connect(self.__on_current_phase_changed)
@@ -79,6 +97,7 @@ class TimerWidget(QGroupBox):
         self.state.next_phase_changed.connect(self.__on_next_phase_changed)
         self.state.phases_changed.connect(self.__on_phases_changed)
         self.state.running_changed.connect(self.__on_running_changed)
+        self.state.minutes_before_target_changed.connect(self.__on_minutes_before_target_changed)
 
     def __on_current_phase_changed(self):
         current_phase = self.state.current_phase
@@ -132,6 +151,13 @@ class TimerWidget(QGroupBox):
     def __on_next_phase_changed(self, new_value: float):
         is_last = self.state.current_phase_index + 1 >= len(self.state.phases)
         self.next_phase_lbl.setText('—' if is_last else f'{self.__format_time(new_value)}s')
+
+    def __on_minutes_before_target_changed(self, value: int | None):
+        if value is None:
+            self.mins_before_row.setVisible(False)
+        else:
+            self.mins_before_lbl.setText(str(value))
+            self.mins_before_row.setVisible(True)
 
     @staticmethod
     def __format_total(phases: list[float]) -> str:

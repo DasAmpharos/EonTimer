@@ -210,6 +210,10 @@ class Gen5TimerWidget(TimerWidget[Gen5Model, Gen5Timer], FormWidget):
             case Gen5Mode.ENTRALINK_PLUS:
                 return delay_hit is not None and second_hit is not None and advances_hit is not None
 
+    @override
+    def minutes_before_target(self) -> int | None:
+        return self.timer.minutes_before_target(self.model)
+
     def __on_mode_changed(self, event: PropertyChangeEvent[Gen5Mode]):
         self.set_visible(self.Field.TARGET_DELAY, event.new_value != Gen5Mode.STANDARD)
         self.set_visible(self.Field.TARGET_ADVANCES, event.new_value == Gen5Mode.ENTRALINK_PLUS)

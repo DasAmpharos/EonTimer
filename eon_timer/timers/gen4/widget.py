@@ -99,3 +99,7 @@ class Gen4TimerWidget(TimerWidget[Gen4Model, Gen4Timer], FormWidget):
 
     def can_calibrate(self) -> bool:
         return strings.strip_to_none(self.delay_hit_field.text()) is not None
+
+    @override
+    def minutes_before_target(self) -> int | None:
+        return self.timer.minutes_before_target(self.model)
