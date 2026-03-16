@@ -33,7 +33,13 @@ export function createEnhancedEntralinkPhases(
   entralinkCalibration: number,
   frameCalibration: number,
 ): number[] {
-  const phases = createEntralinkPhases(settings, targetDelay, targetSecond, calibration, entralinkCalibration);
+  const phases = createEntralinkPhases(
+    settings,
+    targetDelay,
+    targetSecond,
+    calibration,
+    entralinkCalibration,
+  );
   phases.push((targetAdvances / ENTRALINK_FRAME_RATE) * 1000 + frameCalibration);
   return phases;
 }

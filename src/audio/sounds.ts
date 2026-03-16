@@ -10,7 +10,10 @@ const scheduledSources: Set<AudioScheduledSourceNode> = new Set();
 
 function getContext(): AudioContext {
   if (!audioCtx) {
-    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioCtx = new (
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    )();
   }
   return audioCtx;
 }
@@ -37,7 +40,12 @@ export function resumeAudio(): void {
 
 // ─── Immediate playback (fire-and-forget) ───
 
-function playTone(frequency: number, duration: number, type: OscillatorType = 'sine', gain = 0.3): void {
+function playTone(
+  frequency: number,
+  duration: number,
+  type: OscillatorType = 'sine',
+  gain = 0.3,
+): void {
   const ctx = getContext();
   const osc = ctx.createOscillator();
   const vol = ctx.createGain();
@@ -95,11 +103,15 @@ export type SoundPlayer = () => void;
 
 export function getSoundPlayer(sound: string): SoundPlayer {
   switch (sound) {
-    case 'Ding': return playDing;
-    case 'Pop': return playPop;
-    case 'Tick': return playTick;
+    case 'Ding':
+      return playDing;
+    case 'Pop':
+      return playPop;
+    case 'Tick':
+      return playTick;
     case 'Beep':
-    default: return playBeep;
+    default:
+      return playBeep;
   }
 }
 
@@ -175,11 +187,19 @@ function scheduleTickAt(audioTime: number): void {
 
 function scheduleSoundAt(sound: string, audioTime: number): void {
   switch (sound) {
-    case 'Ding': scheduleDingAt(audioTime); break;
-    case 'Pop': schedulePopAt(audioTime); break;
-    case 'Tick': scheduleTickAt(audioTime); break;
+    case 'Ding':
+      scheduleDingAt(audioTime);
+      break;
+    case 'Pop':
+      schedulePopAt(audioTime);
+      break;
+    case 'Tick':
+      scheduleTickAt(audioTime);
+      break;
     case 'Beep':
-    default: scheduleBeepAt(audioTime); break;
+    default:
+      scheduleBeepAt(audioTime);
+      break;
   }
 }
 
