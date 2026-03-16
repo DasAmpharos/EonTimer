@@ -1,51 +1,65 @@
 import functools
 import glob
+import logging
 import os
 import sys
+import threading
 from datetime import datetime
 
 import platformdirs
-from loguru import logger
 
 
-def init():
-    logger.remove()  # Remove the default stderr handler
+def init(level: int = logging.DEBUG):
+    logger = logging.getLogger()
+    formatter = logging.Formatter(
+        fmt='%(asctime)s %(levelname)5s [%(processid)d] --- [%(threadname)s] %(name)-30s : %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
+    logger.setLevel(level)
 
-    fmt = '{time:YYYY-MM-DD HH:mm:ss} {level:>5} [{process}] --- [{thread.name}] {extra[name]:<30} : {message}'
-    logger.add(sys.stdout, format=fmt, level='DEBUG', colorize=False)
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(level)
 
+    now = datetime.now()
+    timestamp = now.strftime('%Y%m%d-%H%M%S')
     log_dir = platformdirs.user_log_dir('EonTimer', 'DasAmpharos', ensure_exists=True)
-    timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
-    log_path = os.path.join(log_dir, f'EonTimer-{timestamp}.log')
-    logger.add(log_path, format=fmt, level='DEBUG')
+    file_handler = logging.FileHandler(os.path.join(log_dir, f'EonTimer-{timestamp}.log'))
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(level)
 
     # Remove old log files, keeping the 5 most recent
     files = glob.glob('EonTimer-*.log', root_dir=log_dir)
-    files = [os.path.join(log_dir, f) for f in files]
+    files = list(map(lambda it: os.path.join(log_dir, it), files))
     files.sort(key=os.path.getmtime, reverse=True)
-    for old_file in files[5:]:
-        os.remove(old_file)
+    while len(files) > 5:
+        os.remove(files.pop())
+
+    custom_filter = CustomAttributesFilter()
+    console_handler.addFilter(custom_filter)
+    file_handler.addFilter(custom_filter)
+
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
 
 
-def get_logger(arg: str | object | type):
+def get_logger(arg: str | object | type) -> logging.Logger:
     if isinstance(arg, str):
-        name = __abbreviate(arg)
-    else:
-        if not isinstance(arg, type):
-            arg = type(arg)
-        name = __get_name(arg)
-    return logger.bind(name=name)
+        return logging.getLogger(__abbreviate(arg))
+
+    if isinstance(arg, object):
+        arg = type(arg)
+    return logging.getLogger(__get_name(arg))
 
 
-def log_method_calls(level: str = 'DEBUG'):
+def log_method_calls(level: int = logging.DEBUG):
     def decorator(func):
-        _log = get_logger(__get_name_for_function(func))
+        logger = get_logger(__get_name_for_function(func))
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            _log.log(level, f'Entering :: {func.__name__} ...')
+            logger.log(level, f'Entering :: {func.__name__} ...')
             result = func(*args, **kwargs)
-            _log.log(level, f'Exiting :: {func.__name__} ...')
+            logger.log(level, f'Exiting :: {func.__name__} ...')
             return result
 
         return wrapper
@@ -67,3 +81,11 @@ def __abbreviate(s: str) -> str:
     for i in range(len(components) - 1):
         components[i] = components[i][0]
     return '.'.join(components)
+
+
+class CustomAttributesFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord):
+        setattr(record, 'processid', os.getpid())
+        current_thread = threading.current_thread()
+        setattr(record, 'threadname', current_thread.name)
+        return True
