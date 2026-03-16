@@ -78,21 +78,22 @@ function parseCustomUnit(raw: string | null): CustomUnit {
 }
 
 /**
- * Reads the URL path and query parameters on mount and applies them to the
- * settings store, enabling pre-populated timer links.
+ * Reads URL query parameters on mount and applies them to the settings store,
+ * enabling pre-populated timer links.
  *
- * Tab selection (two equivalent forms):
- *   Path segment: /EonTimer/3?preTimer=10000
- *   Query param:  /EonTimer/?tab=3&preTimer=10000  (GitHub Pages compatible)
+ * Tab selection (query param only):
+ *   /EonTimer/?tab=3&preTimer=10000
  *   Supported tab values: 3, 4, 5, custom
+ *
+ * If only ?tab is present and no other field params follow, the existing store
+ * values for that tab are preserved unchanged.
  *
  * Global settings (applied regardless of active tab):
  *   console, customFramerate, precisionCalibration, minimumLength
  *
- * Gen 3 params: mode, preTimer, targetFrame, calibration
- * Gen 4 params: targetDelay, targetSecond, calibratedDelay, calibratedSecond
- * Gen 5 params: mode, calibration, frameCalibration, entralinkCalibration,
- *               targetDelay, targetSecond, targetAdvances
+ * Gen 3 params: mode, preTimer, targetFrame
+ * Gen 4 params: targetDelay, targetSecond
+ * Gen 5 params: mode, targetDelay, targetSecond, targetAdvances
  * Custom params: phases (comma-separated, optional :unit suffix — ms, advances/adv, hex/seed)
  *               e.g. phases=5000,100:advances,1A2B:hex
  */
@@ -100,24 +101,21 @@ export function useUrlParams(): void {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
-    // Derive the path segment after the base URL, e.g. "3" from "/EonTimer/3"
-    const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // e.g. "/EonTimer"
-    const segment = window.location.pathname
-      .slice(base.length) // strip base
-      .replace(/^\/|\/$/g, ''); // strip surrounding slashes
-
-    // Path-based tab wins; fall back to ?tab= query param
-    const tabIndex =
-      TAB_SEGMENT_MAP[segment] ??
-      (params.has('tab') ? (TAB_SEGMENT_MAP[params.get('tab')!] ?? null) : null);
-
-    if (tabIndex === null && !params.toString()) return;
+    // Tab is specified via the ?tab= query param only.
+    // Supported values: 3, 4, 5, custom
+    const tabIndex = params.has('tab') ? (TAB_SEGMENT_MAP[params.get('tab')!] ?? null) : null;
 
     const store = useSettingsStore.getState();
 
     if (tabIndex !== null) {
       store.setTabIndex(tabIndex);
     }
+
+    // If the only thing in the URL was the tab identifier, there are no field
+    // params to apply — use all existing store values as-is.
+    const actionableParams = new URLSearchParams(params);
+    actionableParams.delete('tab');
+    if (!actionableParams.toString()) return;
 
     // ── Global settings (applied regardless of active tab) ──────────────────
 

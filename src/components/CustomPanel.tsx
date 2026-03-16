@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, forwardRef, useImperativeHandle } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { useSettingsStore } from '../store';
 import { CustomUnit } from '../utils/types';
 import { INT_MAX, INT_MIN } from '../utils/constants';
@@ -36,6 +36,25 @@ export const CustomPanel = forwardRef<TimerPanelHandle, CustomPanelProps>(
         : [{ unit: CustomUnit.MILLISECONDS, target: 0, calibration: 0, hit: null }],
     );
 
+    // Tracks whether the last store update came from within this component.
+    // Used to skip the sync effect when the component itself wrote to the store.
+    const isInternalUpdate = useRef(false);
+
+    // Sync local state when custom.phases is changed externally (e.g. by
+    // useUrlParams or Zustand rehydration completing after first render).
+    useEffect(() => {
+      if (isInternalUpdate.current) {
+        isInternalUpdate.current = false;
+        return;
+      }
+      setPhases(
+        custom.phases.length > 0
+          ? custom.phases.map((p) => ({ ...p, hit: null }))
+          : [{ unit: CustomUnit.MILLISECONDS, target: 0, calibration: 0, hit: null }],
+      );
+      setTimeout(onPhasesChange, 0);
+    }, [custom]); // eslint-disable-line react-hooks/exhaustive-deps
+
     const calSettings: CalibratorSettings = useMemo(() => ({
       console: timer.console,
       customFramerate: timer.customFramerate,
@@ -45,6 +64,7 @@ export const CustomPanel = forwardRef<TimerPanelHandle, CustomPanelProps>(
 
     const persist = useCallback(
       (updated: PhaseState[]) => {
+        isInternalUpdate.current = true;
         setCustomPhases(updated.map(({ unit, target, calibration }) => ({ unit, target, calibration })));
       },
       [setCustomPhases],
