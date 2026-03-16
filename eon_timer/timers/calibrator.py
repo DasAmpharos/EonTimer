@@ -1,4 +1,3 @@
-import math
 from typing import Final
 
 from eon_timer.settings.timer.model import Console, TimerSettingsModel
@@ -9,10 +8,12 @@ class Calibrator:
         self.timer_settings: Final = timer_settings
 
     def to_delays(self, milliseconds: float) -> int:
-        return math.floor(milliseconds / self.framerate)
+        # Use banker's rounding (round half to even) to match C# Math.Round
+        return round(milliseconds / self.framerate)
 
     def to_milliseconds(self, delays: int) -> float:
-        return self.framerate * delays
+        # Use banker's rounding (round half to even) to match C# Math.Round
+        return round(self.framerate * delays)
 
     def calibrate_to_delays(self, milliseconds: float) -> int:
         return round(milliseconds) if self.precision_calibration else self.to_delays(milliseconds)

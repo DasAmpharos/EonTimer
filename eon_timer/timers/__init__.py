@@ -13,3 +13,18 @@ def to_minimum_length(value: int | float, minimum_length: int | float = MINIMUM_
     while value < minimum_length:
         value += 60000
     return value
+
+
+def get_minutes_before_target(phases: list[float]) -> int:
+    """Compute the number of whole minutes in the total phase duration.
+
+    INFINITY phases are skipped so callers can include variable-length
+    phases without short-circuiting the calculation.
+    """
+    from eon_timer.util.const import INFINITY
+    total = 0
+    for phase in phases:
+        if phase == INFINITY:
+            continue
+        total += phase
+    return int(total // 60_000)

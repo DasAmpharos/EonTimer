@@ -100,7 +100,10 @@ class AppState(QObject):
         self.__update_minutes_before_target(self.__phases)
 
     def __update_minutes_before_target(self, phases: list[float]):
-        minutes_before_target = -1
-        if const.INFINITY not in phases:
-            minutes_before_target = int(sum(phases) // 60_000)
+        total = 0
+        for phase in phases:
+            if phase == const.INFINITY:
+                continue
+            total += phase
+        minutes_before_target = int(total // 60_000)
         self.minutes_before_target_changed.emit(minutes_before_target)

@@ -2,6 +2,8 @@
 <img src="docs/icon.svg" width="128"/>
 
 ### EonTimer
+A precision timer for Pokémon RNG manipulation — also available on the [web](https://dasampharos.github.io/EonTimer/).
+
 A port of the Pokémon RNG Timer originally written by
 [ToastPlusOne](https://bitbucket.org/ToastPlusOne/eontimer/downloads/).
 
