@@ -1,8 +1,4 @@
-import {
-  GBA_FRAMERATE,
-  NDS_SLOT1_FRAMERATE,
-  NDS_SLOT2_FRAMERATE,
-} from '../utils/constants';
+import { GBA_FRAMERATE, NDS_SLOT1_FRAMERATE, NDS_SLOT2_FRAMERATE } from '../utils/constants';
 import { Console } from '../utils/types';
 
 export interface CalibratorSettings {
@@ -65,13 +61,19 @@ export function toMilliseconds(settings: CalibratorSettings, delays: number): nu
 }
 
 export function calibrateToDelays(settings: CalibratorSettings, milliseconds: number): number {
-  return settings.precisionCalibration ? roundHalfToEven(milliseconds) : toDelays(settings, milliseconds);
+  return settings.precisionCalibration
+    ? roundHalfToEven(milliseconds)
+    : toDelays(settings, milliseconds);
 }
 
 export function calibrateToMilliseconds(settings: CalibratorSettings, delays: number): number {
   return settings.precisionCalibration ? delays : toMilliseconds(settings, delays);
 }
 
-export function createCalibration(settings: CalibratorSettings, delays: number, seconds: number): number {
+export function createCalibration(
+  settings: CalibratorSettings,
+  delays: number,
+  seconds: number,
+): number {
   return toMilliseconds(settings, delays - toDelays(settings, seconds * 1000));
 }

@@ -23,7 +23,13 @@ export function EnumSelect<T extends string>({
   );
 
   return (
-    <select id={id} className="enum-select" value={value} onChange={handleChange} disabled={disabled}>
+    <select
+      id={id}
+      className="enum-select"
+      value={value}
+      onChange={handleChange}
+      disabled={disabled}
+    >
       {values.map((v) => (
         <option key={v} value={v}>
           {v}
