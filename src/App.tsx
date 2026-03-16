@@ -4,7 +4,8 @@ import { usePhaseRunner } from './hooks/usePhaseRunner';
 import { useTheme } from './hooks/useTheme';
 import { useUrlParams } from './hooks/useUrlParams';
 import { TimerDisplay } from './components/TimerDisplay';
-import { Gen5Panel, type TimerPanelHandle } from './components/Gen5Panel';
+import { Gen5Panel } from './components/Gen5Panel';
+import type { TimerPanelHandle } from './components/timerPanel';
 import { Gen4Panel } from './components/Gen4Panel';
 import { Gen3Panel } from './components/Gen3Panel';
 import { CustomPanel } from './components/CustomPanel';
@@ -42,9 +43,10 @@ export default function App() {
 
   // Update phases when tab or settings change
   const updatePhases = useCallback(() => {
-    const ref = refs[useSettingsStore.getState().tabIndex];
-    const phases = ref?.current?.createPhases();
-    if (phases) setPhases(phases);
+    const tab = useSettingsStore.getState().tabIndex;
+    const ref = refs[tab];
+    const displayData = ref?.current?.createDisplayData();
+    if (displayData) setPhases(displayData.phases, displayData.minutesBeforeTarget);
   }, [setPhases]);
 
   // Initial phases
@@ -59,8 +61,8 @@ export default function App() {
       setTabIndex(index);
       setTimeout(() => {
         const ref = refs[index];
-        const phases = ref?.current?.createPhases();
-        if (phases) setPhases(phases);
+        const displayData = ref?.current?.createDisplayData();
+        if (displayData) setPhases(displayData.phases, displayData.minutesBeforeTarget);
       }, 0);
     },
     [running, setTabIndex, setPhases],

@@ -10,11 +10,12 @@ import type { CustomPhase } from '../timers/customTimer';
 // ─── App runtime state (not persisted) ───
 export interface AppState {
   phases: number[];
+  minutesBeforeTarget: number | null;
   currentPhaseIndex: number;
   currentPhaseElapsed: number;
   running: boolean;
 
-  setPhases: (phases: number[]) => void;
+  setPhases: (phases: number[], minutesBeforeTarget?: number | null) => void;
   setPhase: (index: number, value: number) => void;
   setCurrentPhaseIndex: (index: number) => void;
   setCurrentPhaseElapsed: (elapsed: number) => void;
@@ -24,11 +25,12 @@ export interface AppState {
 
 export const useAppStore = create<AppState>((set, get) => ({
   phases: [],
+  minutesBeforeTarget: null,
   currentPhaseIndex: 0,
   currentPhaseElapsed: 0,
   running: false,
 
-  setPhases: (phases) => set({ phases, currentPhaseIndex: 0, currentPhaseElapsed: 0 }),
+  setPhases: (phases, minutesBeforeTarget = null) => set({ phases, minutesBeforeTarget, currentPhaseIndex: 0, currentPhaseElapsed: 0 }),
   setPhase: (index, value) => {
     const phases = [...get().phases];
     phases[index] = value;
