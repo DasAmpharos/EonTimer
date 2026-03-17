@@ -11,6 +11,7 @@ import { Gen4Panel } from './components/Gen4Panel';
 import { Gen3Panel } from './components/Gen3Panel';
 import { CustomPanel } from './components/CustomPanel';
 import { SettingsDialog } from './components/SettingsDialog';
+import { resumeAudio } from './audio/sounds';
 import './App.css';
 
 const TAB_LABELS = ['Gen 5', 'Gen 4', 'Gen 3', 'Custom'];
@@ -110,8 +111,11 @@ export default function App() {
       stopListening();
       setStatusMessage('Audio trigger stopped.');
     } else {
-      void startListening();
-      setStatusMessage('Listening for sound to start timer...');
+      resumeAudio();
+      startListening().then(
+        () => setStatusMessage('Listening for sound to start timer...'),
+        (err: unknown) => setStatusMessage(`Microphone error: ${err instanceof Error ? err.message : err}`),
+      );
     }
   }, [running, isListening, startListening, stopListening]);
 
