@@ -17,6 +17,7 @@ export const useAudio = (options?: UseAudioOptions) => {
     const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const requestRef = useRef<number | null>(null);
+    const dataArrayRef = useRef<Uint8Array | null>(null);
     const detectedRef = useRef(false);
     const onDetectRef = useRef<UseAudioOptions['onDetect']>(options?.onDetect);
 
@@ -43,7 +44,7 @@ export const useAudio = (options?: UseAudioOptions) => {
             return;
         }
 
-        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        const dataArray = dataArrayRef.current!;
         analyser.getByteTimeDomainData(dataArray);
 
         const maxDeviation = calculateMaxDeviation(dataArray);
@@ -77,6 +78,7 @@ export const useAudio = (options?: UseAudioOptions) => {
             audioContextRef.current = null;
         }
 
+        dataArrayRef.current = null;
         detectedRef.current = false;
         setIsListening(false);
         setIsDetected(false);
@@ -102,6 +104,7 @@ export const useAudio = (options?: UseAudioOptions) => {
         analyserRef.current = analyser;
         sourceRef.current = source;
         streamRef.current = stream;
+        dataArrayRef.current = new Uint8Array(analyser.fftSize);
 
         detectedRef.current = false;
         setIsListening(true);
