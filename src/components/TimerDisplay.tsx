@@ -132,6 +132,8 @@ export function TimerDisplay({
             onClick={onToggleAudioListening}
             disabled={settingsDisabled}
             title={audioListening ? 'Stop audio trigger' : 'Start audio trigger'}
+            aria-label={audioListening ? 'Stop audio trigger' : 'Start audio trigger'}
+            aria-pressed={audioListening}
           >
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
               <path d="M12 1a3 3 0 0 1 3 3v8a3 3 0 0 1-6 0V4a3 3 0 0 1 3-3z" />
