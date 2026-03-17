@@ -81,7 +81,6 @@ export const useAudio = (options?: UseAudioOptions) => {
         dataArrayRef.current = null;
         detectedRef.current = false;
         setIsListening(false);
-        setIsDetected(false);
     }, []);
 
     const startListening = async () => {
