@@ -87,28 +87,26 @@ export const useAudio = (options?: UseAudioOptions) => {
             return;
         }
 
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-            const audioContext = new window.AudioContext();
-            const analyser = audioContext.createAnalyser();
-            const source = audioContext.createMediaStreamSource(stream);
-
-            source.connect(analyser);
-
-            audioContextRef.current = audioContext;
-            analyserRef.current = analyser;
-            sourceRef.current = source;
-            streamRef.current = stream;
-
-            detectedRef.current = false;
-            setIsListening(true);
-            setIsDetected(false);
-            analyzeSound();
-        } catch (error) {
-            alert('Error accessing microphone: ' + error);
-            stopListening();
+        if (!navigator.mediaDevices?.getUserMedia) {
+            throw new Error('Microphone access requires a secure context (HTTPS or localhost).');
         }
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        const audioContext = new window.AudioContext();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+
+        source.connect(analyser);
+
+        audioContextRef.current = audioContext;
+        analyserRef.current = analyser;
+        sourceRef.current = source;
+        streamRef.current = stream;
+
+        detectedRef.current = false;
+        setIsListening(true);
+        setIsDetected(false);
+        analyzeSound();
     };
 
     useEffect(() => stopListening, [stopListening]);
