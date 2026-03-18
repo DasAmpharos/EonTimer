@@ -8,7 +8,12 @@
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, var(--color-bg-1) 0%, var(--color-bg-2) 40%, var(--color-bg-3) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-1) 0%,
+    var(--color-bg-2) 40%,
+    var(--color-bg-3) 100%
+  );
   padding: 16px;
   overflow: hidden;
   user-select: none;
@@ -70,7 +75,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
   flex-shrink: 0;
 }
 
@@ -163,7 +170,9 @@
   pointer-events: none;
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.15s, transform 0.15s;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
@@ -242,7 +251,10 @@
   background: var(--color-play-bg);
   color: var(--color-btn-text);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    transform 0.1s;
 }
 
 .timer-play-stop:hover {
@@ -409,7 +421,7 @@
 }
 
 /* ─── Inputs ─── */
-input[type="text"],
+input[type='text'],
 .int-input,
 .float-input {
   width: 100%;
@@ -424,7 +436,7 @@ input[type="text"],
   transition: border-color 0.15s;
 }
 
-input[type="text"]:focus,
+input[type='text']:focus,
 .int-input:focus,
 .float-input:focus {
   border-color: var(--color-input-focus);
@@ -469,7 +481,7 @@ select:disabled {
   cursor: pointer;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   width: 16px;
   height: 16px;
   cursor: pointer;

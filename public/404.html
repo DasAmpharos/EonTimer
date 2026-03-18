@@ -1,9 +1,8 @@
 <!doctype html>
 <script>
   // GitHub Pages SPA routing redirect.
-  // When GH Pages serves a 404 for a deep path like /EonTimer/3?preTimer=10000,
-  // redirect to /EonTimer/?/3&preTimer=10000 so that the main app can restore it.
-  // See: https://github.com/rafgraph/spa-github-pages
+  // Any path served as a 404 is redirected to the app root,
+  // preserving the original query string and hash.
   var l = window.location;
   var segmentsToKeep = 1; // keep the /EonTimer base segment
   l.replace(
@@ -12,9 +11,8 @@
       l.hostname +
       (l.port ? ':' + l.port : '') +
       l.pathname.split('/').slice(0, 1 + segmentsToKeep).join('/') +
-      '/?/' +
-      l.pathname.slice(1).split('/').slice(segmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash,
+      '/' +
+      (l.search || '') +
+      (l.hash || ''),
   );
 </script>

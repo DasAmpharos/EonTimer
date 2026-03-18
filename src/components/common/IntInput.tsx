@@ -23,14 +23,17 @@ export function IntInput({
   radix = 10,
   id,
 }: IntInputProps) {
-  const format = (v: number | null) =>
-    v === null ? '' : radix === 16 ? v.toString(16).toUpperCase() : String(v);
+  const format = useCallback(
+    (v: number | null) =>
+      v === null ? '' : radix === 16 ? v.toString(16).toUpperCase() : String(v),
+    [radix],
+  );
 
   const [text, setText] = useState(format(value));
 
   useEffect(() => {
     setText(format(value));
-  }, [value, radix]);
+  }, [format, value]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +55,7 @@ export function IntInput({
 
   const handleBlur = useCallback(() => {
     setText(format(value));
-  }, [value, radix]);
+  }, [format, value]);
 
   return (
     <input
