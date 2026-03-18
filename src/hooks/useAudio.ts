@@ -53,8 +53,10 @@ export const useAudio = (options?: UseAudioOptions) => {
             detectedRef.current = true;
             setIsDetected(true);
             onDetectRef.current?.();
+            return;
         }
 
+        if (!analyserRef.current) return;
         requestRef.current = requestAnimationFrame(analyzeSound);
     }, [options?.threshold]);
 
