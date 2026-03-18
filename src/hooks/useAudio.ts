@@ -19,6 +19,7 @@ export const useAudio = (options?: UseAudioOptions) => {
     const requestRef = useRef<number | null>(null);
     const dataArrayRef = useRef<Uint8Array | null>(null);
     const detectedRef = useRef(false);
+    const startingRef = useRef(false);
     const onDetectRef = useRef<UseAudioOptions['onDetect']>(options?.onDetect);
 
     useEffect(() => {
@@ -86,31 +87,37 @@ export const useAudio = (options?: UseAudioOptions) => {
     }, []);
 
     const startListening = async () => {
-        if (isListening) {
+        if (isListening || startingRef.current) {
             return;
         }
 
         if (!navigator.mediaDevices?.getUserMedia) {
             throw new Error('Microphone access requires a secure context (HTTPS or localhost).');
         }
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-        const audioContext = new window.AudioContext();
-        const analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaStreamSource(stream);
+        startingRef.current = true;
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-        source.connect(analyser);
+            const audioContext = new window.AudioContext();
+            const analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaStreamSource(stream);
 
-        audioContextRef.current = audioContext;
-        analyserRef.current = analyser;
-        sourceRef.current = source;
-        streamRef.current = stream;
-        dataArrayRef.current = new Uint8Array(analyser.fftSize);
+            source.connect(analyser);
 
-        detectedRef.current = false;
-        setIsListening(true);
-        setIsDetected(false);
-        analyzeSound();
+            audioContextRef.current = audioContext;
+            analyserRef.current = analyser;
+            sourceRef.current = source;
+            streamRef.current = stream;
+            dataArrayRef.current = new Uint8Array(analyser.fftSize);
+
+            detectedRef.current = false;
+            setIsListening(true);
+            setIsDetected(false);
+            analyzeSound();
+        } finally {
+            startingRef.current = false;
+        }
     };
 
     useEffect(() => stopListening, [stopListening]);
