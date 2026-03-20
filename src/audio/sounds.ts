@@ -28,7 +28,9 @@ export function resumeAudio(): void {
   if (ctx.state === 'suspended') {
     ctx.resume();
   }
-  // iOS requires playing a buffer from a user gesture to fully unlock audio
+  // iOS requires playing a buffer from a user gesture to fully unlock audio.
+  // Also serves as a warmup to prime the audio pipeline so the first real
+  // beep doesn't suffer extra latency from oscillator creation.
   if (!audioUnlocked) {
     audioUnlocked = true;
     const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
