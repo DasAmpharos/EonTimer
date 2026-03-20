@@ -194,6 +194,18 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   />
                 </label>
               </FormField>
+              <FormField
+                label="Keep Screen Awake"
+                tooltip="Prevent the screen from sleeping while the timer is running"
+              >
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={timer.keepAwake}
+                    onChange={(e) => setTimer({ ...timer, keepAwake: e.target.checked })}
+                  />
+                </label>
+              </FormField>
             </div>
           )}
         </div>

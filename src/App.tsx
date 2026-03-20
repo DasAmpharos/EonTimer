@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { useAppStore, useSettingsStore } from './store';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
+import { useWakeLock } from './hooks/useWakeLock';
 import { useTheme } from './hooks/useTheme';
 import { useUrlParams } from './hooks/useUrlParams';
 import { TimerDisplay } from './components/TimerDisplay';
@@ -27,6 +28,7 @@ export default function App() {
   const setPhases = useAppStore((s) => s.setPhases);
 
   const { toggle, registerFlash } = usePhaseRunner();
+  useWakeLock();
   useUrlParams();
   useTheme();
 

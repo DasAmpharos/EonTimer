@@ -82,6 +82,7 @@ export interface TimerSettings {
   console: Console;
   customFramerate: number;
   precisionCalibration: boolean;
+  keepAwake: boolean;
   refreshInterval: number;
   minimumLength: number; // in seconds
 }
@@ -119,6 +120,7 @@ export const DEFAULT_TIMER: TimerSettings = {
   console: Console.NDS_SLOT1,
   customFramerate: 60.0,
   precisionCalibration: false,
+  keepAwake: true,
   refreshInterval: 8,
   minimumLength: 14,
 };
