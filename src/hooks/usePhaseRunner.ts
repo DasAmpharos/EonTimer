@@ -51,7 +51,6 @@ export function usePhaseRunner() {
     const absoluteStart = performance.timeOrigin + performance.now();
 
     console.info('[PhaseRunner] Starting phase runner');
-    resumeAudio();
 
     const worker = new Worker(new URL('../workers/timerWorker.ts', import.meta.url), {
       type: 'module',
@@ -111,7 +110,9 @@ export function usePhaseRunner() {
   }, [setRunning]);
 
   const toggle = useCallback(() => {
-    // Resume audio in the user-gesture call stack (required by iOS Safari / Chrome autoplay policy)
+    // Resume audio in the user-gesture call stack (required by iOS Safari /
+    // Chrome autoplay policy). Also warms up the AudioContext so it is fully
+    // active by the time the first action fires.
     resumeAudio();
     if (useAppStore.getState().running) {
       stop();
