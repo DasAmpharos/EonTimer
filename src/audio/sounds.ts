@@ -18,6 +18,12 @@ function getContext(): AudioContext {
  * Must be called from a user-gesture event handler (click/tap/keydown).
  */
 export function resumeAudio(): void {
+  // Request "playback" audio session so audio is heard even when the iOS
+  // silent switch is on (Safari 17+). No-ops on unsupported browsers.
+  if ('audioSession' in navigator) {
+    (navigator.audioSession as { type: string }).type = 'playback';
+  }
+
   const ctx = getContext();
   if (ctx.state === 'suspended') {
     ctx.resume();
