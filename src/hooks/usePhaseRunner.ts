@@ -1,6 +1,6 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { useAppStore, useSettingsStore } from '../store';
-import { resumeAudio, schedulePhaseActions, cancelAllScheduled } from '../audio/sounds';
+import { resumeAudio, getSoundPlayer } from '../audio/sounds';
 import { ActionMode } from '../utils/types';
 
 export function usePhaseRunner() {
@@ -18,7 +18,6 @@ export function usePhaseRunner() {
   useEffect(() => {
     return () => {
       workerRef.current?.terminate();
-      cancelAllScheduled();
     };
   }, []);
 
@@ -53,7 +52,6 @@ export function usePhaseRunner() {
 
     console.info('[PhaseRunner] Starting phase runner');
     resumeAudio();
-    cancelAllScheduled();
 
     const worker = new Worker(new URL('../workers/timerWorker.ts', import.meta.url), {
       type: 'module',
@@ -61,11 +59,9 @@ export function usePhaseRunner() {
     workerRef.current = worker;
 
     const actionMode = action.mode;
-    const actionInterval = action.interval;
-    const actionCount = action.count;
-    const actionSound = action.sound;
     const useAudio = actionMode === ActionMode.AV || actionMode === ActionMode.AUDIO;
     const useVisual = actionMode === ActionMode.AV || actionMode === ActionMode.VISUAL;
+    const soundPlayer = useAudio ? getSoundPlayer(action.sound) : null;
 
     worker.onmessage = (e: MessageEvent) => {
       const { type } = e.data;
@@ -77,37 +73,17 @@ export function usePhaseRunner() {
           const phaseIndex = e.data.phaseIndex;
           useAppStore.getState().setCurrentPhaseIndex(phaseIndex);
           useAppStore.getState().setCurrentPhaseElapsed(0);
-          // Pre-schedule audio for the new phase on the Web Audio timeline
-          if (useAudio) {
-            const currentPhases = useAppStore.getState().phases;
-            schedulePhaseActions(
-              currentPhases[phaseIndex],
-              actionInterval,
-              actionCount,
-              actionSound,
-            );
-          }
           break;
         }
-        case 'phaseResolved':
-          // Infinite phase resolved to a finite value: schedule audio cues
-          // using the remaining time so they land at the correct absolute moment.
-          if (useAudio) {
-            schedulePhaseActions(e.data.remaining, actionInterval, actionCount, actionSound);
-          }
-          break;
         case 'action':
-          // Audio is pre-scheduled on the Web Audio timeline for
-          // sample-accurate timing; action messages only drive visual flash
+          if (useAudio) {
+            soundPlayer!();
+          }
           if (useVisual) {
             flashRef.current?.();
           }
           break;
         case 'finished':
-          // Delay cleanup so the last pre-scheduled audio cue finishes
-          // playing — it fires at approximately the same wall-clock moment
-          // this message arrives, creating a race with cancelAllScheduled.
-          setTimeout(() => cancelAllScheduled(), 500);
           useAppStore.getState().setRunning(false);
           break;
       }
@@ -122,15 +98,9 @@ export function usePhaseRunner() {
       actionCount: action.count,
       refreshInterval: timer.refreshInterval,
     });
-
-    // Pre-schedule audio for the first phase
-    if (useAudio) {
-      schedulePhaseActions(phases[0], actionInterval, actionCount, actionSound);
-    }
   }, [setRunning]);
 
   const stop = useCallback(() => {
-    cancelAllScheduled();
     if (workerRef.current) {
       console.info('[PhaseRunner] Stopping phase runner');
       workerRef.current.postMessage({ type: 'stop' });
