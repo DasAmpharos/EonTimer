@@ -1,4 +1,8 @@
-import { GBA_FRAMERATE, NDS_SLOT1_FRAMERATE, NDS_SLOT2_FRAMERATE } from '../utils/constants';
+import {
+  GBA_MS_PER_FRAME,
+  NDS_SLOT1_MS_PER_FRAME,
+  NDS_SLOT2_MS_PER_FRAME,
+} from '../utils/constants';
 import { Console } from '../utils/types';
 
 export interface CalibratorSettings {
@@ -31,16 +35,16 @@ function roundHalfToEven(value: number): number {
   return lowerDistance < upperDistance ? lower : upper;
 }
 
-function getFramerate(settings: CalibratorSettings): number {
+function getMsPerFrame(settings: CalibratorSettings): number {
   switch (settings.console) {
     case Console.GBA:
-      return GBA_FRAMERATE;
+      return GBA_MS_PER_FRAME;
     case Console.NDS_SLOT2:
-      return NDS_SLOT2_FRAMERATE;
+      return NDS_SLOT2_MS_PER_FRAME;
     case Console.NDS_SLOT1:
     case Console.DSI:
     case Console.THREE_DS:
-      return NDS_SLOT1_FRAMERATE;
+      return NDS_SLOT1_MS_PER_FRAME;
     case Console.CUSTOM: {
       if (settings.customFramerate === 0) {
         throw new Error('Custom framerate must be greater than 0');
@@ -48,16 +52,16 @@ function getFramerate(settings: CalibratorSettings): number {
       return 1000 / settings.customFramerate;
     }
     default:
-      return NDS_SLOT1_FRAMERATE;
+      return NDS_SLOT1_MS_PER_FRAME;
   }
 }
 
 export function toDelays(settings: CalibratorSettings, milliseconds: number): number {
-  return roundHalfToEven(milliseconds / getFramerate(settings));
+  return roundHalfToEven(milliseconds / getMsPerFrame(settings));
 }
 
 export function toMilliseconds(settings: CalibratorSettings, delays: number): number {
-  return roundHalfToEven(getFramerate(settings) * delays);
+  return roundHalfToEven(getMsPerFrame(settings) * delays);
 }
 
 export function calibrateToDelays(settings: CalibratorSettings, milliseconds: number): number {

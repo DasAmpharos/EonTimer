@@ -20,10 +20,10 @@ export function getMinutesBeforeTarget(phases: number[]): number {
 }
 
 // Console framerates
-export const GBA_FPS = 59.7275;
-export const NDS_SLOT1_FPS = 59.8261;
-export const NDS_SLOT2_FPS = 59.6555;
+export const GBA_FRAMERATE = 16777216 / 280896;
+export const NDS_SLOT1_FRAMERATE = 59.8261;
+export const NDS_SLOT2_FRAMERATE = 59.6555;
 
-export const GBA_FRAMERATE = 1000 / GBA_FPS;
-export const NDS_SLOT1_FRAMERATE = 1000 / NDS_SLOT1_FPS;
-export const NDS_SLOT2_FRAMERATE = 1000 / NDS_SLOT2_FPS;
+export const GBA_MS_PER_FRAME = 1000 / GBA_FRAMERATE;
+export const NDS_SLOT1_MS_PER_FRAME = 1000 / NDS_SLOT1_FRAMERATE;
+export const NDS_SLOT2_MS_PER_FRAME = 1000 / NDS_SLOT2_FRAMERATE;
