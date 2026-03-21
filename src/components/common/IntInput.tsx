@@ -61,6 +61,7 @@ export function IntInput({
     <input
       id={id}
       type="text"
+      inputMode={radix === 10 ? 'numeric' : 'text'}
       className="int-input"
       value={text}
       onChange={handleChange}
