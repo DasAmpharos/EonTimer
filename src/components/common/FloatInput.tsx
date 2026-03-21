@@ -46,6 +46,7 @@ export function FloatInput({
     <input
       id={id}
       type="text"
+      inputMode="decimal"
       className="float-input"
       value={text}
       onChange={handleChange}
