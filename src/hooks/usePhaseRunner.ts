@@ -3,6 +3,12 @@ import { useAppStore, useSettingsStore } from '../store';
 import { resumeAudio, getSoundPlayer } from '../audio/sounds';
 import { ActionMode } from '../utils/types';
 
+function createWorker(): Worker {
+  return new Worker(new URL('../workers/timerWorker.ts', import.meta.url), {
+    type: 'module',
+  });
+}
+
 export function usePhaseRunner() {
   const workerRef = useRef<Worker | null>(null);
   const flashRef = useRef<(() => void) | null>(null);
@@ -15,9 +21,12 @@ export function usePhaseRunner() {
     flashRef.current = fn;
   }, []);
 
+  // Create the worker eagerly on mount so it's ready for the first start
   useEffect(() => {
+    workerRef.current = createWorker();
     return () => {
       workerRef.current?.terminate();
+      workerRef.current = null;
     };
   }, []);
 
@@ -45,17 +54,15 @@ export function usePhaseRunner() {
     const { action, timer } = useSettingsStore.getState();
     if (phases.length === 0) return;
 
+    const worker = workerRef.current;
+    if (!worker) return;
+
     // Capture the click time as an absolute timestamp before any async work.
     // Sent to the worker so it can anchor scheduledTime to this moment rather
     // than to the worker's own (later) time origin.
     const absoluteStart = performance.timeOrigin + performance.now();
 
     console.info('[PhaseRunner] Starting phase runner');
-
-    const worker = new Worker(new URL('../workers/timerWorker.ts', import.meta.url), {
-      type: 'module',
-    });
-    workerRef.current = worker;
 
     const actionMode = action.mode;
     const useAudio = actionMode === ActionMode.AV || actionMode === ActionMode.AUDIO;
@@ -104,7 +111,8 @@ export function usePhaseRunner() {
       console.info('[PhaseRunner] Stopping phase runner');
       workerRef.current.postMessage({ type: 'stop' });
       workerRef.current.terminate();
-      workerRef.current = null;
+      // Immediately create a fresh worker so it's ready for the next start
+      workerRef.current = createWorker();
     }
     setRunning(false);
   }, [setRunning]);
