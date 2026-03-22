@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { useAppStore, useSettingsStore } from './store';
+import { useProfilesStore, DEFAULT_PROFILE_ID, type TimerProfile } from './store/profiles';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
 import { useWakeLock } from './hooks/useWakeLock';
 import { useTheme } from './hooks/useTheme';
@@ -11,6 +12,11 @@ import { Gen4Panel } from './components/Gen4Panel';
 import { Gen3Panel } from './components/Gen3Panel';
 import { CustomPanel } from './components/CustomPanel';
 import { SettingsDialog } from './components/SettingsDialog';
+import { ProfileSelector } from './components/ProfileSelector';
+import { NewProfileDialog } from './components/NewProfileDialog';
+import { TimerType, Gen5Mode, Gen3Mode } from './utils/types';
+import { DEFAULT_GEN5, DEFAULT_GEN4, DEFAULT_GEN3 } from './store';
+import { parseProfileImport } from './utils/profileIO';
 import './App.css';
 
 const TAB_LABELS = ['Gen 5', 'Gen 4', 'Gen 3', 'Custom'];
@@ -21,11 +27,83 @@ const TAB_TOOLTIPS = [
   'Define your own phase sequence',
 ];
 
+// Maps a TimerType to the tab index in the classic layout
+function timerTypeToTabIndex(timerType: TimerType): number | null {
+  switch (timerType) {
+    case TimerType.GEN5_STANDARD:
+    case TimerType.GEN5_C_GEAR:
+    case TimerType.GEN5_ENTRALINK:
+    case TimerType.GEN5_ENTRALINK_PLUS:
+      return 0;
+    case TimerType.GEN4:
+      return 1;
+    case TimerType.GEN3_STANDARD:
+    case TimerType.GEN3_VARIABLE_TARGET:
+      return 2;
+    case TimerType.CUSTOM:
+      return 3;
+    default:
+      return null;
+  }
+}
+
+// Returns the Gen5Mode for a given TimerType, or null
+function timerTypeToGen5Mode(timerType: TimerType): Gen5Mode | null {
+  switch (timerType) {
+    case TimerType.GEN5_STANDARD:
+      return Gen5Mode.STANDARD;
+    case TimerType.GEN5_C_GEAR:
+      return Gen5Mode.C_GEAR;
+    case TimerType.GEN5_ENTRALINK:
+      return Gen5Mode.ENTRALINK;
+    case TimerType.GEN5_ENTRALINK_PLUS:
+      return Gen5Mode.ENTRALINK_PLUS;
+    default:
+      return null;
+  }
+}
+
+// Returns the Gen3Mode for a given TimerType, or null
+function timerTypeToGen3Mode(timerType: TimerType): Gen3Mode | null {
+  switch (timerType) {
+    case TimerType.GEN3_STANDARD:
+      return Gen3Mode.STANDARD;
+    case TimerType.GEN3_VARIABLE_TARGET:
+      return Gen3Mode.VARIABLE_TARGET;
+    default:
+      return null;
+  }
+}
+
+function getDefaultSettingsForType(timerType: TimerType) {
+  const gen5Mode = timerTypeToGen5Mode(timerType);
+  const gen3Mode = timerTypeToGen3Mode(timerType);
+  return {
+    gen5: gen5Mode ? { ...DEFAULT_GEN5, mode: gen5Mode } : null,
+    gen4: timerType === TimerType.GEN4 ? { ...DEFAULT_GEN4 } : null,
+    gen3: gen3Mode ? { ...DEFAULT_GEN3, mode: gen3Mode } : null,
+    custom: timerType === TimerType.CUSTOM ? { phases: [] } : null,
+  };
+}
+
 export default function App() {
   const tabIndex = useSettingsStore((s) => s.tabIndex);
   const setTabIndex = useSettingsStore((s) => s.setTabIndex);
   const running = useAppStore((s) => s.running);
   const setPhases = useAppStore((s) => s.setPhases);
+
+  const profiles = useProfilesStore((s) => s.profiles);
+  const activeProfileId = useProfilesStore((s) => s.activeProfileId);
+  const autoSave = useProfilesStore((s) => s.autoSave);
+  const setAutoSave = useProfilesStore((s) => s.setAutoSave);
+  const createProfile = useProfilesStore((s) => s.createProfile);
+  const updateProfile = useProfilesStore((s) => s.updateProfile);
+
+  const activeProfile = useMemo(
+    () => profiles.find((p) => p.id === activeProfileId),
+    [profiles, activeProfileId],
+  );
+  const isDefault = activeProfileId === DEFAULT_PROFILE_ID;
 
   const { toggle, registerFlash } = usePhaseRunner();
   useWakeLock();
@@ -38,18 +116,95 @@ export default function App() {
   const customRef = useRef<TimerPanelHandle>(null);
 
   const refs = useMemo(() => [gen5Ref, gen4Ref, gen3Ref, customRef], []);
-  const currentRef = refs[tabIndex];
+
+  // Determine which panel is active
+  const singleTabIndex = isDefault
+    ? null
+    : timerTypeToTabIndex(activeProfile?.timerType ?? TimerType.DEFAULT);
+
+  const effectiveTabIndex = isDefault ? tabIndex : (singleTabIndex ?? 0);
+  const currentRef = refs[effectiveTabIndex];
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [newProfileOpen, setNewProfileOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState('Ready');
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Track unsaved changes for non-default profiles when auto-save is off
+  const savedSnapshotRef = useRef<string | null>(null);
+
+  const getSettingsSnapshot = useCallback((tabIdx: number | null) => {
+    if (tabIdx === null) return null;
+    const s = useSettingsStore.getState();
+    if (tabIdx === 0) return JSON.stringify(s.gen5);
+    if (tabIdx === 1) return JSON.stringify(s.gen4);
+    if (tabIdx === 2) return JSON.stringify(s.gen3);
+    if (tabIdx === 3) return JSON.stringify(s.custom);
+    return null;
+  }, []);
+
+  // Dirty state tracking: reset baseline and subscribe to settings changes
+  useEffect(() => {
+    if (isDefault || autoSave) {
+      savedSnapshotRef.current = null;
+      // Defer state update to avoid synchronous setState in effect
+      const t = setTimeout(() => setIsDirty(false), 0);
+      return () => clearTimeout(t);
+    }
+    // Capture baseline snapshot after profile settings are applied
+    const t = setTimeout(() => {
+      savedSnapshotRef.current = getSettingsSnapshot(singleTabIndex);
+      setIsDirty(false);
+    }, 50);
+    const unsub = useSettingsStore.subscribe(() => {
+      const current = getSettingsSnapshot(singleTabIndex);
+      if (savedSnapshotRef.current !== null && current !== savedSnapshotRef.current) {
+        setIsDirty(true);
+      } else {
+        setIsDirty(false);
+      }
+    });
+    return () => {
+      clearTimeout(t);
+      unsub();
+    };
+  }, [isDefault, autoSave, activeProfileId, singleTabIndex, getSettingsSnapshot]);
+
+  // Apply profile settings to the store when profile changes (non-default)
+  const lastAppliedProfileRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (isDefault || !activeProfile) {
+      lastAppliedProfileRef.current = null;
+      return;
+    }
+    if (lastAppliedProfileRef.current === activeProfile.id) return;
+    lastAppliedProfileRef.current = activeProfile.id;
+
+    const gen5Mode = timerTypeToGen5Mode(activeProfile.timerType);
+    const gen3Mode = timerTypeToGen3Mode(activeProfile.timerType);
+    const settings = useSettingsStore.getState();
+
+    if (gen5Mode !== null && activeProfile.gen5) {
+      settings.updateGen5({ ...activeProfile.gen5, mode: gen5Mode });
+    }
+    if (activeProfile.timerType === TimerType.GEN4 && activeProfile.gen4) {
+      settings.updateGen4(activeProfile.gen4);
+    }
+    if (gen3Mode !== null && activeProfile.gen3) {
+      settings.updateGen3({ ...activeProfile.gen3, mode: gen3Mode });
+    }
+    if (activeProfile.timerType === TimerType.CUSTOM && activeProfile.custom) {
+      settings.setCustomPhases(activeProfile.custom.phases);
+    }
+  }, [activeProfile, isDefault]);
 
   // Update phases when tab or settings change
   const updatePhases = useCallback(() => {
-    const tab = useSettingsStore.getState().tabIndex;
-    const ref = refs[tab];
+    const idx = isDefault ? useSettingsStore.getState().tabIndex : (singleTabIndex ?? 0);
+    const ref = refs[idx];
     const displayData = ref?.current?.createDisplayData();
     if (displayData) setPhases(displayData.phases, displayData.minutesBeforeTarget);
-  }, [refs, setPhases]);
+  }, [refs, setPhases, isDefault, singleTabIndex]);
 
   // Initial phases
   useEffect(() => {
@@ -101,6 +256,99 @@ export default function App() {
     [updatePhases],
   );
 
+  const handleProfileChange = useCallback(() => {
+    // Reset the applied-profile tracker so the effect will re-apply settings
+    lastAppliedProfileRef.current = null;
+    setTimeout(updatePhases, 0);
+  }, [updatePhases]);
+
+  const handleCreateProfile = useCallback(
+    (data: { name: string; timerType: TimerType; description: string }) => {
+      const defaults = getDefaultSettingsForType(data.timerType);
+      createProfile({
+        name: data.name,
+        timerType: data.timerType,
+        description: data.description,
+        gen5: defaults.gen5 ?? undefined,
+        gen4: defaults.gen4 ?? undefined,
+        gen3: defaults.gen3 ?? undefined,
+        custom: defaults.custom ?? undefined,
+      });
+      // Reset so the new profile's settings get applied
+      lastAppliedProfileRef.current = null;
+      setTimeout(updatePhases, 0);
+    },
+    [createProfile, updatePhases],
+  );
+
+  const handleImport = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.eontimer.json';
+    input.onchange = () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = parseProfileImport(reader.result as string);
+        if (!result.ok) {
+          alert(result.error);
+          return;
+        }
+        const p = result.profile;
+        createProfile({
+          name: p.name,
+          timerType: p.timerType,
+          description: p.description,
+          gen5: p.gen5 ?? undefined,
+          gen4: p.gen4 ?? undefined,
+          gen3: p.gen3 ?? undefined,
+          custom: p.custom ?? undefined,
+        });
+        lastAppliedProfileRef.current = null;
+        setTimeout(updatePhases, 0);
+        setStatusMessage(`Imported profile "${p.name}".`);
+        setTimeout(() => setStatusMessage('Ready'), 4000);
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }, [createProfile, updatePhases]);
+
+  // Save current settings to profile
+  const handleSaveProfile = useCallback(() => {
+    if (isDefault || !activeProfile) return;
+    const settings = useSettingsStore.getState();
+    const tabIdx = singleTabIndex ?? 0;
+    const patch: Partial<TimerProfile> = {};
+    if (tabIdx === 0) patch.gen5 = { ...settings.gen5 };
+    if (tabIdx === 1) patch.gen4 = { ...settings.gen4 };
+    if (tabIdx === 2) patch.gen3 = { ...settings.gen3 };
+    if (tabIdx === 3) patch.custom = { phases: [...settings.custom.phases] };
+    updateProfile(activeProfile.id, patch);
+    // Reset dirty state after save
+    savedSnapshotRef.current = getSettingsSnapshot(singleTabIndex);
+    setIsDirty(false);
+    setStatusMessage('Profile saved.');
+    setTimeout(() => setStatusMessage('Ready'), 4000);
+  }, [isDefault, activeProfile, singleTabIndex, updateProfile, getSettingsSnapshot]);
+
+  // Auto-save on settings changes
+  useEffect(() => {
+    if (!autoSave || isDefault || !activeProfile) return;
+    const unsub = useSettingsStore.subscribe(() => {
+      const settings = useSettingsStore.getState();
+      const tabIdx = singleTabIndex ?? 0;
+      const patch: Partial<TimerProfile> = {};
+      if (tabIdx === 0) patch.gen5 = { ...settings.gen5 };
+      if (tabIdx === 1) patch.gen4 = { ...settings.gen4 };
+      if (tabIdx === 2) patch.gen3 = { ...settings.gen3 };
+      if (tabIdx === 3) patch.custom = { phases: [...settings.custom.phases] };
+      updateProfile(activeProfile.id, patch);
+    });
+    return unsub;
+  }, [autoSave, isDefault, activeProfile, singleTabIndex, updateProfile]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -116,11 +364,14 @@ export default function App() {
       } else if (e.code === 'F6') {
         e.preventDefault();
         handleUpdate();
+      } else if ((e.ctrlKey || e.metaKey) && e.code === 'KeyS') {
+        e.preventDefault();
+        handleSaveProfile();
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleToggle, handleReset, handleUpdate]);
+  }, [handleToggle, handleReset, handleUpdate, handleSaveProfile]);
 
   // Update status on run complete
   const prevRunning = useRef(running);
@@ -144,64 +395,107 @@ export default function App() {
           settingsDisabled={running}
         />
 
-        {/* Tab panel */}
-        <div className="app-tabs">
-          <div className="tab-bar">
-            {TAB_LABELS.map((label, i) => (
-              <button
-                key={label}
-                className={`tab ${i === tabIndex ? 'active' : ''}`}
-                onClick={() => handleTabChange(i)}
-                disabled={running && i !== tabIndex}
-                title={
-                  running && i !== tabIndex ? 'Stop the timer to switch modes' : TAB_TOOLTIPS[i]
-                }
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <div className="tab-content">
-            <div
-              style={{
-                display: tabIndex === 0 ? 'flex' : 'none',
-                flex: 1,
-                flexDirection: 'column',
-              }}
-            >
-              <Gen5Panel ref={gen5Ref} onPhasesChange={updatePhases} disabled={running} />
-            </div>
-            <div
-              style={{
-                display: tabIndex === 1 ? 'flex' : 'none',
-                flex: 1,
-                flexDirection: 'column',
-              }}
-            >
-              <Gen4Panel ref={gen4Ref} onPhasesChange={updatePhases} disabled={running} />
-            </div>
-            <div
-              style={{
-                display: tabIndex === 2 ? 'flex' : 'none',
-                flex: 1,
-                flexDirection: 'column',
-              }}
-            >
-              <Gen3Panel ref={gen3Ref} onPhasesChange={updatePhases} disabled={running} />
-            </div>
-            <div
-              style={{
-                display: tabIndex === 3 ? 'flex' : 'none',
-                flex: 1,
-                flexDirection: 'column',
-              }}
-            >
-              <CustomPanel ref={customRef} onPhasesChange={updatePhases} disabled={running} />
-            </div>
-          </div>
-        </div>
+        {/* Profile selector */}
+        <ProfileSelector
+          disabled={running}
+          isDirty={isDirty}
+          onProfileChange={handleProfileChange}
+          onNewProfile={() => setNewProfileOpen(true)}
+          onImport={handleImport}
+        />
 
-        {/* Reset / Update buttons */}
+        {/* Profile description */}
+        {activeProfile?.description && (
+          <div className="profile-description">{activeProfile.description}</div>
+        )}
+
+        {/* Tab panel */}
+        {isDefault ? (
+          // Default profile: show all tabs (classic layout)
+          <div className="app-tabs">
+            <div className="tab-bar">
+              {TAB_LABELS.map((label, i) => (
+                <button
+                  key={label}
+                  className={`tab ${i === tabIndex ? 'active' : ''}`}
+                  onClick={() => handleTabChange(i)}
+                  disabled={running && i !== tabIndex}
+                  title={
+                    running && i !== tabIndex ? 'Stop the timer to switch modes' : TAB_TOOLTIPS[i]
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <div className="tab-content">
+              <div
+                style={{
+                  display: tabIndex === 0 ? 'flex' : 'none',
+                  flex: 1,
+                  flexDirection: 'column',
+                }}
+              >
+                <Gen5Panel ref={gen5Ref} onPhasesChange={updatePhases} disabled={running} />
+              </div>
+              <div
+                style={{
+                  display: tabIndex === 1 ? 'flex' : 'none',
+                  flex: 1,
+                  flexDirection: 'column',
+                }}
+              >
+                <Gen4Panel ref={gen4Ref} onPhasesChange={updatePhases} disabled={running} />
+              </div>
+              <div
+                style={{
+                  display: tabIndex === 2 ? 'flex' : 'none',
+                  flex: 1,
+                  flexDirection: 'column',
+                }}
+              >
+                <Gen3Panel ref={gen3Ref} onPhasesChange={updatePhases} disabled={running} />
+              </div>
+              <div
+                style={{
+                  display: tabIndex === 3 ? 'flex' : 'none',
+                  flex: 1,
+                  flexDirection: 'column',
+                }}
+              >
+                <CustomPanel ref={customRef} onPhasesChange={updatePhases} disabled={running} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Non-default profile: show single panel
+          <div className="app-tabs">
+            <div className="tab-content">
+              {singleTabIndex === 0 && (
+                <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+                  <Gen5Panel ref={gen5Ref} onPhasesChange={updatePhases} disabled={running} />
+                </div>
+              )}
+              {singleTabIndex === 1 && (
+                <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+                  <Gen4Panel ref={gen4Ref} onPhasesChange={updatePhases} disabled={running} />
+                </div>
+              )}
+              {singleTabIndex === 2 && (
+                <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+                  <Gen3Panel ref={gen3Ref} onPhasesChange={updatePhases} disabled={running} />
+                </div>
+              )}
+              {singleTabIndex === 3 && (
+                <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+                  <CustomPanel ref={customRef} onPhasesChange={updatePhases} disabled={running} />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Reset / Update / Save buttons */}
         <div className="app-action-bar">
           <button
             className="btn btn-icon"
@@ -219,6 +513,26 @@ export default function App() {
           >
             Update
           </button>
+          {!isDefault && (
+            <div className="save-controls">
+              <button
+                className={`btn${isDirty ? ' btn-dirty' : ''}`}
+                onClick={handleSaveProfile}
+                disabled={running}
+                title="Save profile (Ctrl+S)"
+              >
+                Save{isDirty ? ' •' : ''}
+              </button>
+              <label className="auto-save-label" title="Auto-save changes to this profile">
+                <input
+                  type="checkbox"
+                  checked={autoSave}
+                  onChange={(e) => setAutoSave(e.target.checked)}
+                />
+                Auto
+              </label>
+            </div>
+          )}
         </div>
 
         {/* Status bar */}
@@ -246,6 +560,13 @@ export default function App() {
 
       {/* Settings dialog */}
       <SettingsDialog open={settingsOpen} onClose={handleSettingsClose} />
+
+      {/* New Profile dialog */}
+      <NewProfileDialog
+        open={newProfileOpen}
+        onClose={() => setNewProfileOpen(false)}
+        onCreate={handleCreateProfile}
+      />
     </div>
   );
 }

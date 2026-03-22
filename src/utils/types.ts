@@ -49,3 +49,16 @@ export enum CustomUnit {
   ADVANCES = 'Advances',
   HEX = 'Seed (Hex)',
 }
+
+// ─── Timer Type (profile) ───
+export enum TimerType {
+  DEFAULT = 'Default',
+  GEN5_STANDARD = 'Gen 5 - Standard',
+  GEN5_C_GEAR = 'Gen 5 - C-Gear',
+  GEN5_ENTRALINK = 'Gen 5 - Entralink',
+  GEN5_ENTRALINK_PLUS = 'Gen 5 - Entralink+',
+  GEN4 = 'Gen 4',
+  GEN3_STANDARD = 'Gen 3 - Standard',
+  GEN3_VARIABLE_TARGET = 'Gen 3 - Variable Target',
+  CUSTOM = 'Custom',
+}

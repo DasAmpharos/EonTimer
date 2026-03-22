@@ -536,6 +536,157 @@ input[type='checkbox'] {
   padding: 8px;
 }
 
+/* ─── Profile selector ─── */
+.profile-selector-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-dropdown-wrapper {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile-dropdown {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--color-input-border);
+  border-radius: 3px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  outline: none;
+  cursor: pointer;
+}
+
+.profile-dropdown:focus {
+  border-color: var(--color-input-focus);
+  box-shadow: 0 0 0 2px var(--color-input-focus-shadow);
+}
+
+.profile-dirty-dot {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e8a317;
+  pointer-events: none;
+}
+
+.profile-rename-input {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--color-input-focus);
+  border-radius: 3px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-input-focus-shadow);
+}
+
+.profile-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+.profile-menu-container {
+  position: relative;
+}
+
+.profile-context-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 140px;
+  background: var(--color-dialog-bg);
+  border: 1px solid var(--color-dialog-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+  padding: 4px 0;
+}
+
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.profile-menu-item:hover {
+  background: var(--color-tab-hover-bg);
+}
+
+.profile-menu-item-danger {
+  color: #d9534f;
+}
+
+.profile-menu-item-danger:hover {
+  background: rgba(217, 83, 79, 0.1);
+}
+
+.profile-menu-divider {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--color-dialog-divider);
+}
+
+/* Profile description in single-timer mode */
+.profile-description {
+  font-size: 12px;
+  color: var(--color-text-faint);
+  text-align: center;
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Save controls in action bar */
+.save-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.auto-save-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-dirty {
+  border-color: #e8a317;
+  color: #e8a317;
+}
+
 /* ─── Status bar ─── */
 .app-status-bar {
   display: flex;
