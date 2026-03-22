@@ -14,7 +14,7 @@ import { CustomPanel } from './components/CustomPanel';
 import { SettingsDialog } from './components/SettingsDialog';
 import { ProfileSelector } from './components/ProfileSelector';
 import { NewProfileDialog } from './components/NewProfileDialog';
-import { TimerType, Gen5Mode, Gen3Mode } from './utils/types';
+import { TimerType } from './utils/types';
 import { DEFAULT_GEN5, DEFAULT_GEN4, DEFAULT_GEN3 } from './store';
 import { parseProfileImport } from './utils/profileIO';
 import './App.css';
@@ -30,15 +30,11 @@ const TAB_TOOLTIPS = [
 // Maps a TimerType to the tab index in the classic layout
 function timerTypeToTabIndex(timerType: TimerType): number | null {
   switch (timerType) {
-    case TimerType.GEN5_STANDARD:
-    case TimerType.GEN5_C_GEAR:
-    case TimerType.GEN5_ENTRALINK:
-    case TimerType.GEN5_ENTRALINK_PLUS:
+    case TimerType.GEN5:
       return 0;
     case TimerType.GEN4:
       return 1;
-    case TimerType.GEN3_STANDARD:
-    case TimerType.GEN3_VARIABLE_TARGET:
+    case TimerType.GEN3:
       return 2;
     case TimerType.CUSTOM:
       return 3;
@@ -47,41 +43,11 @@ function timerTypeToTabIndex(timerType: TimerType): number | null {
   }
 }
 
-// Returns the Gen5Mode for a given TimerType, or null
-function timerTypeToGen5Mode(timerType: TimerType): Gen5Mode | null {
-  switch (timerType) {
-    case TimerType.GEN5_STANDARD:
-      return Gen5Mode.STANDARD;
-    case TimerType.GEN5_C_GEAR:
-      return Gen5Mode.C_GEAR;
-    case TimerType.GEN5_ENTRALINK:
-      return Gen5Mode.ENTRALINK;
-    case TimerType.GEN5_ENTRALINK_PLUS:
-      return Gen5Mode.ENTRALINK_PLUS;
-    default:
-      return null;
-  }
-}
-
-// Returns the Gen3Mode for a given TimerType, or null
-function timerTypeToGen3Mode(timerType: TimerType): Gen3Mode | null {
-  switch (timerType) {
-    case TimerType.GEN3_STANDARD:
-      return Gen3Mode.STANDARD;
-    case TimerType.GEN3_VARIABLE_TARGET:
-      return Gen3Mode.VARIABLE_TARGET;
-    default:
-      return null;
-  }
-}
-
 function getDefaultSettingsForType(timerType: TimerType) {
-  const gen5Mode = timerTypeToGen5Mode(timerType);
-  const gen3Mode = timerTypeToGen3Mode(timerType);
   return {
-    gen5: gen5Mode ? { ...DEFAULT_GEN5, mode: gen5Mode } : null,
+    gen5: timerType === TimerType.GEN5 ? { ...DEFAULT_GEN5 } : null,
     gen4: timerType === TimerType.GEN4 ? { ...DEFAULT_GEN4 } : null,
-    gen3: gen3Mode ? { ...DEFAULT_GEN3, mode: gen3Mode } : null,
+    gen3: timerType === TimerType.GEN3 ? { ...DEFAULT_GEN3 } : null,
     custom: timerType === TimerType.CUSTOM ? { phases: [] } : null,
   };
 }
@@ -180,18 +146,16 @@ export default function App() {
     if (lastAppliedProfileRef.current === activeProfile.id) return;
     lastAppliedProfileRef.current = activeProfile.id;
 
-    const gen5Mode = timerTypeToGen5Mode(activeProfile.timerType);
-    const gen3Mode = timerTypeToGen3Mode(activeProfile.timerType);
     const settings = useSettingsStore.getState();
 
-    if (gen5Mode !== null && activeProfile.gen5) {
-      settings.updateGen5({ ...activeProfile.gen5, mode: gen5Mode });
+    if (activeProfile.timerType === TimerType.GEN5 && activeProfile.gen5) {
+      settings.updateGen5(activeProfile.gen5);
     }
     if (activeProfile.timerType === TimerType.GEN4 && activeProfile.gen4) {
       settings.updateGen4(activeProfile.gen4);
     }
-    if (gen3Mode !== null && activeProfile.gen3) {
-      settings.updateGen3({ ...activeProfile.gen3, mode: gen3Mode });
+    if (activeProfile.timerType === TimerType.GEN3 && activeProfile.gen3) {
+      settings.updateGen3(activeProfile.gen3);
     }
     if (activeProfile.timerType === TimerType.CUSTOM && activeProfile.custom) {
       settings.setCustomPhases(activeProfile.custom.phases);

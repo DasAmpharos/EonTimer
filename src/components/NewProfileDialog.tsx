@@ -3,7 +3,8 @@ import { TimerType } from '../utils/types';
 import { FormField } from './common/FormField';
 import { EnumSelect } from './common/EnumSelect';
 
-const TIMER_TYPES = Object.values(TimerType) as TimerType[];
+// Exclude Default — that's the built-in profile
+const TIMER_TYPES = Object.values(TimerType).filter((t) => t !== TimerType.DEFAULT) as TimerType[];
 
 interface NewProfileDialogProps {
   open: boolean;
@@ -13,13 +14,13 @@ interface NewProfileDialogProps {
 
 export function NewProfileDialog({ open, onClose, onCreate }: NewProfileDialogProps) {
   const [name, setName] = useState('');
-  const [timerType, setTimerType] = useState<TimerType>(TimerType.GEN5_STANDARD);
+  const [timerType, setTimerType] = useState<TimerType>(TimerType.GEN5);
   const [description, setDescription] = useState('');
 
   const [lastOpen, setLastOpen] = useState(false);
   if (open && !lastOpen) {
     setName('');
-    setTimerType(TimerType.GEN5_STANDARD);
+    setTimerType(TimerType.GEN5);
     setDescription('');
   }
   if (open !== lastOpen) setLastOpen(open);
