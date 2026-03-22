@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect } from 'react';
-import { useAppStore, useSettingsStore } from '../store';
+import { useAppStore } from '../store';
+import { getEffectiveSettings } from './useEffectiveSettings';
 import { resumeAudio, getSoundPlayer } from '../audio/sounds';
 import { ActionMode } from '../utils/types';
 
@@ -51,7 +52,7 @@ export function usePhaseRunner() {
 
   const start = useCallback(() => {
     const { phases } = useAppStore.getState();
-    const { action, timer } = useSettingsStore.getState();
+    const { action, timer } = getEffectiveSettings();
     if (phases.length === 0) return;
 
     const worker = workerRef.current;

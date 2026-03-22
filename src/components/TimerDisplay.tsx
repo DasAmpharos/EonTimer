@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
-import { useAppStore, useSettingsStore } from '../store';
+import { useAppStore } from '../store';
+import { useEffectiveSettings, getEffectiveSettings } from '../hooks/useEffectiveSettings';
 import { INFINITY } from '../utils/constants';
 
 function formatTime(milliseconds: number): string {
@@ -36,8 +37,9 @@ export function TimerDisplay({
   const currentPhaseIndex = useAppStore((s) => s.currentPhaseIndex);
   const currentPhaseElapsed = useAppStore((s) => s.currentPhaseElapsed);
   const running = useAppStore((s) => s.running);
-  const actionInterval = useSettingsStore((s) => s.action.interval);
-  const actionCount = useSettingsStore((s) => s.action.count);
+  const { action: effectiveAction } = useEffectiveSettings();
+  const actionInterval = effectiveAction.interval;
+  const actionCount = effectiveAction.count;
   const minutesBeforeTarget = useAppStore((s) => s.minutesBeforeTarget);
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -69,8 +71,8 @@ export function TimerDisplay({
   const flash = useCallback(() => {
     const el = panelRef.current;
     if (!el) return;
-    const color = useSettingsStore.getState().action.color;
-    el.style.backgroundColor = color;
+    const { action } = getEffectiveSettings();
+    el.style.backgroundColor = action.color;
     clearTimeout(flashTimeoutRef.current);
     flashTimeoutRef.current = window.setTimeout(() => {
       el.style.backgroundColor = '';

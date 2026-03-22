@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { useAppStore, useSettingsStore } from '../store';
+import { useAppStore } from '../store';
+import { useEffectiveSettings } from './useEffectiveSettings';
 
 /**
  * Acquires a Screen Wake Lock while the timer is running and the
@@ -8,7 +9,8 @@ import { useAppStore, useSettingsStore } from '../store';
  */
 export function useWakeLock(): void {
   const running = useAppStore((s) => s.running);
-  const keepAwake = useSettingsStore((s) => s.timer.keepAwake);
+  const { timer } = useEffectiveSettings();
+  const keepAwake = timer.keepAwake;
   const lockRef = useRef<WakeLockSentinel | null>(null);
 
   useEffect(() => {

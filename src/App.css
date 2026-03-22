@@ -816,6 +816,13 @@ input[type='checkbox'] {
   gap: 12px;
 }
 
+.settings-override-hint {
+  font-size: 12px;
+  color: var(--color-text-faint);
+  font-style: italic;
+  padding: 4px 0 0;
+}
+
 .dialog-buttons {
   display: flex;
   gap: 10px;

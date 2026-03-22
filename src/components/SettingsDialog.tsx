@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSettingsStore, type ActionSettings, type TimerSettings } from '../store';
+import { useProfilesStore, DEFAULT_PROFILE_ID } from '../store/profiles';
 import { ActionMode, ActionSound, Console, Theme } from '../utils/types';
 import { INT_MAX } from '../utils/constants';
 import { FormField } from './common/FormField';
@@ -27,28 +28,96 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   const setTheme = useSettingsStore((s) => s.setTheme);
   const resetAll = useSettingsStore((s) => s.resetAll);
 
+  const profiles = useProfilesStore((s) => s.profiles);
+  const activeProfileId = useProfilesStore((s) => s.activeProfileId);
+  const updateProfile = useProfilesStore((s) => s.updateProfile);
+  const isDefault = activeProfileId === DEFAULT_PROFILE_ID;
+  const activeProfile = profiles.find((p) => p.id === activeProfileId);
+
   // Local copies for editing
   const [action, setAction] = useState<ActionSettings>({ ...storeAction });
   const [timer, setTimer] = useState<TimerSettings>({ ...storeTimer });
   const [theme, setLocalTheme] = useState<Theme>(storeTheme);
   const [tab, setTab] = useState(0);
+  const [actionOverrideEnabled, setActionOverrideEnabled] = useState(false);
+  const [timerOverrideEnabled, setTimerOverrideEnabled] = useState(false);
 
   // Reset local state when dialog opens
   const [lastOpen, setLastOpen] = useState(false);
   if (open && !lastOpen) {
-    setAction({ ...storeAction });
-    setTimer({ ...storeTimer });
+    const hasActionOverride = !isDefault && activeProfile?.actionOverride != null;
+    const hasTimerOverride = !isDefault && activeProfile?.timerOverride != null;
+    setActionOverrideEnabled(hasActionOverride);
+    setTimerOverrideEnabled(hasTimerOverride);
+    setAction(hasActionOverride ? { ...activeProfile!.actionOverride! } : { ...storeAction });
+    setTimer(hasTimerOverride ? { ...activeProfile!.timerOverride! } : { ...storeTimer });
     setLocalTheme(storeTheme);
     setTab(0);
   }
   if (open !== lastOpen) setLastOpen(open);
 
+  const handleToggleActionOverride = useCallback(
+    (enabled: boolean) => {
+      setActionOverrideEnabled(enabled);
+      if (enabled) {
+        // Copy current global settings as starting point for override
+        setAction({ ...storeAction });
+      } else {
+        // Revert to global settings
+        setAction({ ...storeAction });
+      }
+    },
+    [storeAction],
+  );
+
+  const handleToggleTimerOverride = useCallback(
+    (enabled: boolean) => {
+      setTimerOverrideEnabled(enabled);
+      if (enabled) {
+        setTimer({ ...storeTimer });
+      } else {
+        setTimer({ ...storeTimer });
+      }
+    },
+    [storeTimer],
+  );
+
   const handleOk = useCallback(() => {
-    updateAction(action);
-    updateTimer(timer);
+    if (actionOverrideEnabled && !isDefault) {
+      // Save to profile override
+      updateProfile(activeProfileId, { actionOverride: { ...action } });
+    } else {
+      // Save to global settings
+      updateAction(action);
+      if (!isDefault) {
+        // Clear any existing override
+        updateProfile(activeProfileId, { actionOverride: null });
+      }
+    }
+    if (timerOverrideEnabled && !isDefault) {
+      updateProfile(activeProfileId, { timerOverride: { ...timer } });
+    } else {
+      updateTimer(timer);
+      if (!isDefault) {
+        updateProfile(activeProfileId, { timerOverride: null });
+      }
+    }
     setTheme(theme);
     onClose(true);
-  }, [action, timer, theme, updateAction, updateTimer, setTheme, onClose]);
+  }, [
+    action,
+    timer,
+    theme,
+    actionOverrideEnabled,
+    timerOverrideEnabled,
+    isDefault,
+    activeProfileId,
+    updateAction,
+    updateTimer,
+    updateProfile,
+    setTheme,
+    onClose,
+  ]);
 
   const handleCancel = useCallback(() => {
     onClose(false);
@@ -57,9 +126,12 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   const handleReset = useCallback(() => {
     if (confirm('Are you sure you want to reset all settings? This operation cannot be undone.')) {
       resetAll();
+      if (!isDefault) {
+        updateProfile(activeProfileId, { actionOverride: null, timerOverride: null });
+      }
       onClose(true);
     }
-  }, [resetAll, onClose]);
+  }, [resetAll, isDefault, activeProfileId, updateProfile, onClose]);
 
   const handleTestAction = useCallback(() => {
     resumeAudio();
@@ -86,6 +158,26 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
         <div className="dialog-content">
           {tab === 0 && (
             <div className="settings-panel">
+              {!isDefault && (
+                <FormField
+                  label="Profile Override"
+                  tooltip="When enabled, these action settings apply only to this profile instead of using the global settings"
+                >
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={actionOverrideEnabled}
+                      onChange={(e) => handleToggleActionOverride(e.target.checked)}
+                    />
+                  </label>
+                </FormField>
+              )}
+              {!isDefault && !actionOverrideEnabled && (
+                <div className="settings-override-hint">
+                  Editing global action settings. Enable &ldquo;Profile Override&rdquo; to customize
+                  for this profile only.
+                </div>
+              )}
               <FormField
                 label="Mode"
                 tooltip="How the timer signals each phase transition — audio, visual flash, or both"
@@ -135,6 +227,26 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
           )}
           {tab === 1 && (
             <div className="settings-panel">
+              {!isDefault && (
+                <FormField
+                  label="Profile Override"
+                  tooltip="When enabled, these timer settings apply only to this profile instead of using the global settings"
+                >
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={timerOverrideEnabled}
+                      onChange={(e) => handleToggleTimerOverride(e.target.checked)}
+                    />
+                  </label>
+                </FormField>
+              )}
+              {!isDefault && !timerOverrideEnabled && (
+                <div className="settings-override-hint">
+                  Editing global timer settings. Enable &ldquo;Profile Override&rdquo; to customize
+                  for this profile only.
+                </div>
+              )}
               <FormField label="Theme" tooltip="Application color theme">
                 <EnumSelect values={THEMES} value={theme} onChange={(v) => setLocalTheme(v)} />
               </FormField>
