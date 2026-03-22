@@ -549,6 +549,14 @@ input[type='checkbox'] {
   text-align: center;
 }
 
+.app-version {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 /* ─── Custom panel ─── */
 .custom-scroll {
   padding: 10px;
