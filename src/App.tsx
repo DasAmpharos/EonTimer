@@ -225,6 +225,11 @@ export default function App() {
         <div className="app-status-bar">
           <span>{statusMessage}</span>
         </div>
+
+        {/* Version footer */}
+        <div className="app-version">
+          {__APP_VERSION__} ({__COMMIT_HASH__})
+        </div>
       </div>
 
       {/* Settings dialog */}

@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { execSync } from 'child_process';
+const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+const commitDate = execSync('git log -1 --format=%cs').toString().trim().replaceAll('-', '.');
 
 export default defineConfig({
   base: '/EonTimer/',
+  define: {
+    __APP_VERSION__: JSON.stringify(commitDate),
+    __COMMIT_HASH__: JSON.stringify(commitHash),
+  },
   plugins: [
     react(),
     VitePWA({
