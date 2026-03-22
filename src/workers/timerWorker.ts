@@ -1,7 +1,7 @@
 // EonTimer Web Worker — precision phase runner
 // Uses performance.now() with spin-wait for sub-millisecond action accuracy.
 
-const SPINWAIT_MS = 2.0;
+const SPINWAIT_MS = 4.0;
 const UI_UPDATE_INTERVAL = 32; // ~30 fps
 
 let running = false;
