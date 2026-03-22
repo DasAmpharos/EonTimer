@@ -229,6 +229,18 @@ export default function App() {
         {/* Version footer */}
         <div className="app-version">
           {__APP_VERSION__} ({__COMMIT_HASH__})
+          {__PR_NUMBER__ && (
+            <>
+              {' · '}
+              <a
+                href={`https://github.com/DasAmpharos/EonTimer/pull/${__PR_NUMBER__}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                PR #{__PR_NUMBER__}
+              </a>
+            </>
+          )}
         </div>
       </div>
 

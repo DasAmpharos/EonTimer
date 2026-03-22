@@ -10,6 +10,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(commitDate),
     __COMMIT_HASH__: JSON.stringify(commitHash),
+    __PR_NUMBER__: JSON.stringify(process.env.PR_NUMBER ?? ''),
   },
   plugins: [
     react(),
