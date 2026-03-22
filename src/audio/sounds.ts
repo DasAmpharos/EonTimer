@@ -1,21 +1,67 @@
-// Web Audio API sound synthesis — no external files needed.
+// Web Audio API sound synthesis — pre-rendered buffers for minimal playback latency.
 
-let audioCtx: AudioContext | null = null;
-let audioUnlocked = false;
+const audioCtx: AudioContext = new (
+  window.AudioContext ||
+  (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+)();
 
-function getContext(): AudioContext {
-  if (!audioCtx) {
-    audioCtx = new (
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-    )();
+// ─── Buffer synthesis (runs once at module load) ───
+
+function renderTone(frequency: number, duration: number, gain: number): AudioBuffer {
+  const length = Math.ceil(audioCtx.sampleRate * duration);
+  const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  // Exponential gain ramp from `gain` → 0.001 over `duration`
+  const decayRate = Math.log(0.001 / gain) / duration;
+  for (let i = 0; i < length; i++) {
+    const t = i / audioCtx.sampleRate;
+    data[i] = Math.sin(2 * Math.PI * frequency * t) * gain * Math.exp(decayRate * t);
   }
-  return audioCtx;
+  return buffer;
 }
 
+function renderPop(): AudioBuffer {
+  const duration = 0.08;
+  const sweepDuration = 0.06;
+  const gain = 0.4;
+  const length = Math.ceil(audioCtx.sampleRate * duration);
+  const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  const decayRate = Math.log(0.001 / gain) / sweepDuration;
+  let phase = 0;
+  for (let i = 0; i < length; i++) {
+    const t = i / audioCtx.sampleRate;
+    // Frequency sweeps 400 → 100 Hz exponentially over sweepDuration
+    const freq = 400 * Math.pow(100 / 400, Math.min(t, sweepDuration) / sweepDuration);
+    const envelope = t <= sweepDuration ? gain * Math.exp(decayRate * t) : 0;
+    data[i] = Math.sin(phase) * envelope;
+    phase += (2 * Math.PI * freq) / audioCtx.sampleRate;
+  }
+  return buffer;
+}
+
+function renderTick(): AudioBuffer {
+  const gain = 0.3;
+  const length = Math.ceil(audioCtx.sampleRate * 0.02);
+  const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < length; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (length * 0.1)) * gain;
+  }
+  return buffer;
+}
+
+const beepBuffer = renderTone(800, 0.15, 0.4);
+const dingBuffer = renderTone(1200, 0.3, 0.3);
+const popBuffer = renderPop();
+const tickBuffer = renderTick();
+
+// ─── Keepalive & resume ───
+
 /**
- * Resume the AudioContext and play a silent buffer to unlock audio on iOS.
- * Must be called from a user-gesture event handler (click/tap/keydown).
+ * Resume the AudioContext and keep the audio pipeline active with a silent
+ * oscillator so the hardware doesn't idle between the user click and the
+ * first real beep.  Must be called from a user-gesture handler (click/tap).
  */
 export function resumeAudio(): void {
   // Request "playback" audio session so audio is heard even when the iOS
@@ -24,82 +70,34 @@ export function resumeAudio(): void {
     (navigator.audioSession as { type: string }).type = 'playback';
   }
 
-  const ctx = getContext();
-  if (ctx.state === 'suspended') {
-    ctx.resume();
-  }
-  // iOS requires playing a buffer from a user gesture to fully unlock audio.
-  // Also serves as a warmup to prime the audio pipeline so the first real
-  // beep doesn't suffer extra latency from oscillator creation.
-  if (!audioUnlocked) {
-    audioUnlocked = true;
-    const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-    src.connect(ctx.destination);
-    src.start(0);
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
   }
 }
 
 // ─── Playback (fire-and-forget) ───
 
-function playTone(
-  frequency: number,
-  duration: number,
-  type: OscillatorType = 'sine',
-  gain = 0.3,
-): void {
-  const ctx = getContext();
-  const osc = ctx.createOscillator();
-  const vol = ctx.createGain();
-  osc.type = type;
-  osc.frequency.value = frequency;
-  vol.gain.value = gain;
-  vol.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-  osc.connect(vol);
-  vol.connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + duration);
+function playBuffer(buffer: AudioBuffer): void {
+  const src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+  src.connect(audioCtx.destination);
+  src.start(audioCtx.currentTime);
 }
 
 export function playBeep(): void {
-  playTone(800, 0.15, 'sine', 0.4);
+  playBuffer(beepBuffer);
 }
 
 export function playDing(): void {
-  playTone(1200, 0.3, 'sine', 0.3);
+  playBuffer(dingBuffer);
 }
 
 export function playPop(): void {
-  const ctx = getContext();
-  const osc = ctx.createOscillator();
-  const vol = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.value = 400;
-  osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.06);
-  vol.gain.value = 0.4;
-  vol.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
-  osc.connect(vol);
-  vol.connect(ctx.destination);
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.08);
+  playBuffer(popBuffer);
 }
 
 export function playTick(): void {
-  const ctx = getContext();
-  const bufferSize = Math.ceil(ctx.sampleRate * 0.02);
-  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < bufferSize; i++) {
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
-  }
-  const source = ctx.createBufferSource();
-  const vol = ctx.createGain();
-  source.buffer = buffer;
-  vol.gain.value = 0.3;
-  source.connect(vol);
-  vol.connect(ctx.destination);
-  source.start(ctx.currentTime);
+  playBuffer(tickBuffer);
 }
 
 export type SoundPlayer = () => void;
