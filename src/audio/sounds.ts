@@ -7,11 +7,7 @@ const audioCtx: AudioContext = new (
 
 // ─── Buffer synthesis (runs once at module load) ───
 
-function renderTone(
-  frequency: number,
-  duration: number,
-  gain: number,
-): AudioBuffer {
+function renderTone(frequency: number, duration: number, gain: number): AudioBuffer {
   const length = Math.ceil(audioCtx.sampleRate * duration);
   const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
   const data = buffer.getChannelData(0);
