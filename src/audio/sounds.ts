@@ -1,60 +1,27 @@
-// Web Audio API sound synthesis — pre-rendered buffers for minimal playback latency.
+// Web Audio API playback from pre-rendered WAV files.
+
+import beepUrl from './beep.wav';
+import dingUrl from './ding.wav';
+import popUrl from './pop.wav';
+import tickUrl from './tick.wav';
 
 const audioCtx: AudioContext = new (
   window.AudioContext ||
   (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
 )();
 
-// ─── Buffer synthesis (runs once at module load) ───
+// ─── Buffer loading ───
 
-function renderTone(frequency: number, duration: number, gain: number): AudioBuffer {
-  const length = Math.ceil(audioCtx.sampleRate * duration);
-  const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-  // Exponential gain ramp from `gain` → 0.001 over `duration`
-  const decayRate = Math.log(0.001 / gain) / duration;
-  for (let i = 0; i < length; i++) {
-    const t = i / audioCtx.sampleRate;
-    data[i] = Math.sin(2 * Math.PI * frequency * t) * gain * Math.exp(decayRate * t);
-  }
-  return buffer;
+async function loadBuffer(url: string): Promise<AudioBuffer> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  return audioCtx.decodeAudioData(arrayBuffer);
 }
 
-function renderPop(): AudioBuffer {
-  const duration = 0.08;
-  const sweepDuration = 0.06;
-  const gain = 0.4;
-  const length = Math.ceil(audioCtx.sampleRate * duration);
-  const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-  const decayRate = Math.log(0.001 / gain) / sweepDuration;
-  let phase = 0;
-  for (let i = 0; i < length; i++) {
-    const t = i / audioCtx.sampleRate;
-    // Frequency sweeps 400 → 100 Hz exponentially over sweepDuration
-    const freq = 400 * Math.pow(100 / 400, Math.min(t, sweepDuration) / sweepDuration);
-    const envelope = t <= sweepDuration ? gain * Math.exp(decayRate * t) : 0;
-    data[i] = Math.sin(phase) * envelope;
-    phase += (2 * Math.PI * freq) / audioCtx.sampleRate;
-  }
-  return buffer;
-}
-
-function renderTick(): AudioBuffer {
-  const gain = 0.3;
-  const length = Math.ceil(audioCtx.sampleRate * 0.02);
-  const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < length; i++) {
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (length * 0.1)) * gain;
-  }
-  return buffer;
-}
-
-const beepBuffer = renderTone(800, 0.15, 0.4);
-const dingBuffer = renderTone(1200, 0.3, 0.3);
-const popBuffer = renderPop();
-const tickBuffer = renderTick();
+const beepBuffer = loadBuffer(beepUrl);
+const dingBuffer = loadBuffer(dingUrl);
+const popBuffer = loadBuffer(popUrl);
+const tickBuffer = loadBuffer(tickUrl);
 
 // ─── Keepalive & resume ───
 
@@ -77,30 +44,44 @@ export function resumeAudio(): void {
 
 // ─── Playback (fire-and-forget) ───
 
-function playBuffer(buffer: AudioBuffer): void {
-  const src = audioCtx.createBufferSource();
-  src.buffer = buffer;
-  src.connect(audioCtx.destination);
-  src.start(audioCtx.currentTime);
+function playBuffer(buffer: Promise<AudioBuffer>, label: string, receivedAt: number): void {
+  const mark = performance.mark(`audio:${label}`);
+  buffer.then((resolved) => {
+    const initiatedAt = performance.timeOrigin + performance.now();
+    console.debug(
+      `[Audio] ${label} play initiated, dispatch→init=${(initiatedAt - receivedAt).toFixed(3)}ms`,
+    );
+    const src = audioCtx.createBufferSource();
+    src.buffer = resolved;
+    src.connect(audioCtx.destination);
+    src.onended = () => {
+      const completedAt = performance.timeOrigin + performance.now();
+      console.debug(
+        `[Audio] ${label} play complete, duration=${(completedAt - initiatedAt).toFixed(3)}ms`,
+      );
+      performance.measure(`audio:${label}`, { start: mark.startTime, end: performance.now() });
+    };
+    src.start(audioCtx.currentTime);
+  });
 }
 
-export function playBeep(): void {
-  playBuffer(beepBuffer);
+export function playBeep(receivedAt: number): void {
+  playBuffer(beepBuffer, 'beep', receivedAt);
 }
 
-export function playDing(): void {
-  playBuffer(dingBuffer);
+export function playDing(receivedAt: number): void {
+  playBuffer(dingBuffer, 'ding', receivedAt);
 }
 
-export function playPop(): void {
-  playBuffer(popBuffer);
+export function playPop(receivedAt: number): void {
+  playBuffer(popBuffer, 'pop', receivedAt);
 }
 
-export function playTick(): void {
-  playBuffer(tickBuffer);
+export function playTick(receivedAt: number): void {
+  playBuffer(tickBuffer, 'tick', receivedAt);
 }
 
-export type SoundPlayer = () => void;
+export type SoundPlayer = (receivedAt: number) => void;
 
 export function getSoundPlayer(sound: string): SoundPlayer {
   switch (sound) {

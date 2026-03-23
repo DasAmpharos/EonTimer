@@ -63,7 +63,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
 
   const handleTestAction = useCallback(() => {
     resumeAudio();
-    getSoundPlayer(action.sound)();
+    getSoundPlayer(action.sound)(performance.timeOrigin + performance.now());
   }, [action.sound]);
 
   if (!open) return null;

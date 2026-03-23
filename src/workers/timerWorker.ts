@@ -1,8 +1,8 @@
 // EonTimer Web Worker — precision phase runner
 // Uses performance.now() with spin-wait for sub-millisecond action accuracy.
 
-const SPINWAIT_MS = 2.0;
-const UI_UPDATE_INTERVAL = 32; // ~30 fps
+const SPINWAIT_MS = 4.0;
+const UI_UPDATE_INTERVAL = 1000 / 30;
 
 let running = false;
 // Pending phase update from the main thread (used for Variable Target mode)
@@ -45,7 +45,6 @@ async function executePhase(
 
   while (running) {
     let t = now();
-
     let elapsed = t - start;
     const remainingUntilAction = nextAction - t;
 
@@ -65,7 +64,9 @@ async function executePhase(
     // Fire all actions that became due — handles both the spin-wait path and
     // sleep overshoot (setTimeout resolves late, waking past the action time).
     while (t >= nextAction) {
-      self.postMessage({ type: 'action' });
+      const postedAt = now();
+      console.debug(`[Worker] posting action @ ${postedAt.toFixed(3)}`);
+      self.postMessage({ type: 'action', postedAt });
       nextAction = actions.length > 0 ? actions.pop()! : Infinity;
     }
 
