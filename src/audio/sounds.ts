@@ -44,32 +44,44 @@ export function resumeAudio(): void {
 
 // ─── Playback (fire-and-forget) ───
 
-function playBuffer(buffer: Promise<AudioBuffer>): void {
+function playBuffer(buffer: Promise<AudioBuffer>, label: string, receivedAt: number): void {
+  const mark = performance.mark(`audio:${label}`);
   buffer.then((resolved) => {
+    const initiatedAt = performance.timeOrigin + performance.now();
+    console.debug(
+      `[Audio] ${label} play initiated, dispatch→init=${(initiatedAt - receivedAt).toFixed(3)}ms`,
+    );
     const src = audioCtx.createBufferSource();
     src.buffer = resolved;
     src.connect(audioCtx.destination);
+    src.onended = () => {
+      const completedAt = performance.timeOrigin + performance.now();
+      console.debug(
+        `[Audio] ${label} play complete, duration=${(completedAt - initiatedAt).toFixed(3)}ms`,
+      );
+      performance.measure(`audio:${label}`, { start: mark.startTime, end: performance.now() });
+    };
     src.start(audioCtx.currentTime);
   });
 }
 
-export function playBeep(): void {
-  playBuffer(beepBuffer);
+export function playBeep(receivedAt: number): void {
+  playBuffer(beepBuffer, 'beep', receivedAt);
 }
 
-export function playDing(): void {
-  playBuffer(dingBuffer);
+export function playDing(receivedAt: number): void {
+  playBuffer(dingBuffer, 'ding', receivedAt);
 }
 
-export function playPop(): void {
-  playBuffer(popBuffer);
+export function playPop(receivedAt: number): void {
+  playBuffer(popBuffer, 'pop', receivedAt);
 }
 
-export function playTick(): void {
-  playBuffer(tickBuffer);
+export function playTick(receivedAt: number): void {
+  playBuffer(tickBuffer, 'tick', receivedAt);
 }
 
-export type SoundPlayer = () => void;
+export type SoundPlayer = (receivedAt: number) => void;
 
 export function getSoundPlayer(sound: string): SoundPlayer {
   switch (sound) {

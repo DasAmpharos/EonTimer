@@ -81,14 +81,19 @@ export function usePhaseRunner() {
           useAppStore.getState().setCurrentPhaseElapsed(0);
           break;
         }
-        case 'action':
+        case 'action': {
+          const receivedAt = performance.timeOrigin + performance.now();
+          console.debug(
+            `[PhaseRunner] received action, ipc latency=${(receivedAt - e.data.postedAt).toFixed(3)}ms`,
+          );
           if (useAudio) {
-            soundPlayer!();
+            soundPlayer!(receivedAt);
           }
           if (useVisual) {
             flashRef.current?.();
           }
           break;
+        }
         case 'finished':
           useAppStore.getState().setRunning(false);
           break;
