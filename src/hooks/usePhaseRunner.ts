@@ -1,6 +1,6 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { useAppStore, useSettingsStore } from '../store';
-import { resumeAudio, getSoundPlayer } from '../audio/sounds';
+import { resumeAudio, getSoundPlayer, setTimerRunning } from '../audio/sounds';
 import { ActionMode } from '../utils/types';
 
 function createWorker(): Worker {
@@ -95,11 +95,13 @@ export function usePhaseRunner() {
           break;
         }
         case 'finished':
+          setTimerRunning(false);
           useAppStore.getState().setRunning(false);
           break;
       }
     };
 
+    setTimerRunning(true);
     setRunning(true);
     worker.postMessage({
       type: 'start',
@@ -119,18 +121,19 @@ export function usePhaseRunner() {
       // Immediately create a fresh worker so it's ready for the next start
       workerRef.current = createWorker();
     }
+    setTimerRunning(false);
     setRunning(false);
   }, [setRunning]);
 
-  const toggle = useCallback(() => {
-    // Resume audio in the user-gesture call stack (required by iOS Safari /
-    // Chrome autoplay policy). Also warms up the AudioContext so it is fully
-    // active by the time the first action fires.
-    resumeAudio();
+  const toggle = useCallback(async () => {
+    const resumePromise = resumeAudio();
     if (useAppStore.getState().running) {
       stop();
     } else {
-      start();
+      await resumePromise;
+      if (!useAppStore.getState().running) {
+        start();
+      }
     }
   }, [start, stop]);
 
