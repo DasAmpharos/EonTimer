@@ -37,9 +37,9 @@ const tickBuffer = loadBuffer(tickUrl);
 // ─── Keepalive oscillator ───
 
 /**
- * Keeps samples flowing through the MediaStream during silent phases.  
+ * Keeps samples flowing through the MediaStream during silent phases.
  * Without this, Chrome idles the audio hardware and swallows the first beep.
- */ 
+ */
 let keepAliveOsc: OscillatorNode | null = null;
 let keepAliveGain: GainNode | null = null;
 
