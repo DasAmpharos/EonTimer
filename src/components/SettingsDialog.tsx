@@ -6,7 +6,7 @@ import { FormField } from './common/FormField';
 import { IntInput } from './common/IntInput';
 import { FloatInput } from './common/FloatInput';
 import { EnumSelect } from './common/EnumSelect';
-import { getSoundPlayer, resumeAudio } from '../audio/sounds';
+import { getSoundPlayer, resumeAudioSync } from '../audio/sounds';
 
 const ACTION_MODES = Object.values(ActionMode) as ActionMode[];
 const ACTION_SOUNDS = Object.values(ActionSound) as ActionSound[];
@@ -62,7 +62,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
   }, [resetAll, onClose]);
 
   const handleTestAction = useCallback(() => {
-    resumeAudio();
+    resumeAudioSync();
     getSoundPlayer(action.sound)(performance.timeOrigin + performance.now());
   }, [action.sound]);
 
