@@ -54,6 +54,13 @@
   min-height: 52px;
 }
 
+.timer-footer-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 /* Small settings gear */
 .timer-settings-btn {
   width: 28px;
@@ -80,6 +87,41 @@
 }
 
 .timer-settings-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.timer-mic-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.timer-mic-btn:hover:not(:disabled) {
+  color: var(--color-btn-text);
+  background: var(--color-settings-hover-bg);
+}
+
+.timer-mic-btn.active {
+  color: #53b36c;
+}
+
+.timer-mic-btn.detected {
+  color: #e8a838;
+}
+
+.timer-mic-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }

@@ -1,0 +1,120 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+const THRESHOLD = 60;
+const SILENCE_CENTER = 128;
+
+interface UseAudioOptions {
+  onDetect?: () => void;
+  threshold?: number;
+}
+
+export const useAudio = (options?: UseAudioOptions) => {
+  const [isDetected, setIsDetected] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const requestRef = useRef<number | null>(null);
+  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const detectedRef = useRef(false);
+  const startingRef = useRef(false);
+  const onDetectRef = useRef<UseAudioOptions['onDetect']>(options?.onDetect);
+
+  useEffect(() => {
+    onDetectRef.current = options?.onDetect;
+  }, [options?.onDetect]);
+
+  function calculateMaxDeviation(dataArray: Uint8Array) {
+    let maxDeviation = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+      const deviation = Math.abs(dataArray[i] - SILENCE_CENTER);
+      if (deviation > maxDeviation) {
+        maxDeviation = deviation;
+      }
+    }
+    return maxDeviation;
+  }
+
+  const analyzeSound = useCallback(() => {
+    const analyser = analyserRef.current;
+    if (!analyser) return;
+
+    const dataArray = dataArrayRef.current!;
+    analyser.getByteTimeDomainData(dataArray);
+
+    const maxDeviation = calculateMaxDeviation(dataArray);
+    const threshold = options?.threshold ?? THRESHOLD;
+    if (maxDeviation > threshold && !detectedRef.current) {
+      detectedRef.current = true;
+      setIsDetected(true);
+      onDetectRef.current?.();
+      return;
+    }
+
+    if (!analyserRef.current) return;
+    requestRef.current = requestAnimationFrame(analyzeSound);
+  }, [options?.threshold]);
+
+  const stopListening = useCallback(() => {
+    if (requestRef.current !== null) {
+      cancelAnimationFrame(requestRef.current);
+      requestRef.current = null;
+    }
+
+    sourceRef.current?.disconnect();
+    sourceRef.current = null;
+
+    analyserRef.current?.disconnect();
+    analyserRef.current = null;
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+
+    if (audioContextRef.current) {
+      void audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+
+    dataArrayRef.current = null;
+    detectedRef.current = false;
+    setIsListening(false);
+  }, []);
+
+  const startListening = async () => {
+    if (isListening || startingRef.current) return;
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error('Microphone access requires a secure context (HTTPS or localhost).');
+    }
+
+    startingRef.current = true;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const audioContext = new window.AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+
+      source.connect(analyser);
+
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      sourceRef.current = source;
+      streamRef.current = stream;
+      dataArrayRef.current = new Uint8Array(analyser.fftSize);
+
+      detectedRef.current = false;
+      setIsListening(true);
+      setIsDetected(false);
+      analyzeSound();
+    } finally {
+      startingRef.current = false;
+    }
+  };
+
+  useEffect(() => stopListening, [stopListening]);
+
+  return { isListening, isDetected, startListening, stopListening };
+};
