@@ -95,13 +95,13 @@ export function usePhaseRunner() {
           break;
         }
         case 'finished':
-          setTimerRunning(false);
+          if (useAudio) setTimerRunning(false);
           useAppStore.getState().setRunning(false);
           break;
       }
     };
 
-    setTimerRunning(true);
+    if (useAudio) setTimerRunning(true);
     setRunning(true);
     worker.postMessage({
       type: 'start',

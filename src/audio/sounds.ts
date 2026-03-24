@@ -49,6 +49,10 @@ function startKeepAlive(): void {
   keepAliveGain = audioCtx.createGain();
   keepAliveGain.gain.value = 1e-5; // non-zero — Chrome optimises away gain=0
   keepAliveOsc.connect(keepAliveGain);
+  // Route to streamDest so the MediaStream stays active (signals browser media
+  // is playing, preventing background-tab throttling). Also route to
+  // audioCtx.destination to keep the hardware pipeline warm between beeps so
+  // Chrome doesn't idle the output device and swallow the first real sound.
   keepAliveGain.connect(streamDest);
   keepAliveGain.connect(audioCtx.destination);
   keepAliveOsc.start();
@@ -89,6 +93,18 @@ export async function resumeAudio(): Promise<void> {
   }
 }
 
+/**
+ * Fire-and-forget wrapper for resumeAudio().
+ *
+ * Does NOT guarantee the AudioContext is fully resumed before the next sound
+ * plays — callers that need that guarantee should `await resumeAudio()`.
+ * Intended for synchronous call sites (e.g. test-action button) where
+ * best-effort resume is acceptable.
+ */
+export function resumeAudioSync(): void {
+  void resumeAudio();
+}
+
 let resumePromise: Promise<void> | null = null;
 
 /** Coordinate keepalive lifecycle with timer start/stop. */
@@ -99,6 +115,12 @@ export function setTimerRunning(active: boolean): void {
     keepAliveEl.play().catch(() => {});
   } else {
     stopKeepAlive();
+    try {
+      keepAliveEl.pause();
+    } catch {
+      // ignore pause errors
+    }
+    keepAliveEl.currentTime = 0;
   }
 }
 
@@ -108,9 +130,17 @@ function ensureRunning(): Promise<void> {
     return Promise.resolve();
   }
   if (!resumePromise) {
-    resumePromise = audioCtx.resume().then(() => {
-      resumePromise = null;
-    });
+    resumePromise = audioCtx
+      .resume()
+      .then(() => {
+        resumePromise = null;
+      })
+      .catch((err) => {
+        // Clear on failure so the next call can retry instead of reusing a
+        // permanently-rejected promise.
+        resumePromise = null;
+        throw err;
+      });
   }
   return resumePromise;
 }
