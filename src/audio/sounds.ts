@@ -47,7 +47,12 @@ function startKeepAlive(): void {
   if (keepAliveOsc) return;
   keepAliveOsc = audioCtx.createOscillator();
   keepAliveGain = audioCtx.createGain();
-  keepAliveGain.gain.value = 1e-5; // non-zero — Chrome optimises away gain=0
+  // Schedule gain at t=0 (always in the past) so it is guaranteed to be
+  // applied from the very first rendering quantum. Using gain.value (which is
+  // setValueAtTime at currentTime) risks a one-quantum window where the
+  // GainNode default of 1.0 is in effect, producing a loud transient.
+  // 1e-5 is non-zero so Chrome doesn't optimise the node away.
+  keepAliveGain.gain.setValueAtTime(1e-5, 0);
   keepAliveOsc.connect(keepAliveGain);
   // Route to streamDest so the MediaStream stays active (signals browser media
   // is playing, preventing background-tab throttling). Also route to
