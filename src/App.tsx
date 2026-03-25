@@ -75,7 +75,7 @@ export default function App() {
     const ref = currentRef?.current;
     if (ref && ref.canCalibrate()) {
       ref.calibrate();
-      updatePhases();
+      setTimeout(updatePhases, 0);
       setStatusMessage('Calibration applied.');
       setTimeout(() => setStatusMessage('Ready'), 4000);
     }
