@@ -14,14 +14,14 @@ permissions:
 
 jobs:
   analyze:
-    name: Analyze (javascript-typescript)
+    name: Analyze (javascript)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: github/codeql-action/init@v3
         with:
-          languages: javascript-typescript
+          languages: javascript
 
       - uses: github/codeql-action/autobuild@v3
 
