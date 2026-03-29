@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { useAppStore, useSettingsStore } from './store';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
+import { useAudio } from './hooks/useAudio';
 import { useWakeLock } from './hooks/useWakeLock';
 import { useTheme } from './hooks/useTheme';
 import { useUrlParams } from './hooks/useUrlParams';
@@ -11,6 +12,7 @@ import { Gen4Panel } from './components/Gen4Panel';
 import { Gen3Panel } from './components/Gen3Panel';
 import { CustomPanel } from './components/CustomPanel';
 import { SettingsDialog } from './components/SettingsDialog';
+import { resumeAudioSync } from './audio/sounds';
 import './App.css';
 
 const TAB_LABELS = ['Gen 5', 'Gen 4', 'Gen 3', 'Custom'];
@@ -27,7 +29,16 @@ export default function App() {
   const running = useAppStore((s) => s.running);
   const setPhases = useAppStore((s) => s.setPhases);
 
-  const { toggle, registerFlash } = usePhaseRunner();
+  const { start, toggle, registerFlash } = usePhaseRunner();
+  const { isListening, isDetected, startListening, stopListening } = useAudio({
+    onDetect: () => {
+      if (useAppStore.getState().running) return;
+      start();
+      stopListening();
+      setStatusMessage('Sound detected — timer started.');
+      setTimeout(() => setStatusMessage('Ready'), 4000);
+    },
+  });
   useWakeLock();
   useUrlParams();
   useTheme();
@@ -79,7 +90,7 @@ export default function App() {
       setStatusMessage('Calibration applied.');
       setTimeout(() => setStatusMessage('Ready'), 4000);
     }
-  }, [running, currentRef, updatePhases]);
+  }, [running, currentRef, updatePhases, setStatusMessage]);
 
   const handleReset = useCallback(() => {
     if (running) return;
@@ -90,15 +101,33 @@ export default function App() {
   }, [running, currentRef, updatePhases]);
 
   const handleToggle = useCallback(() => {
+    if (!running && isListening) {
+      stopListening();
+    }
     toggle();
-  }, [toggle]);
+  }, [running, isListening, stopListening, toggle]);
+
+  const handleAudioToggle = useCallback(() => {
+    if (running) return;
+    if (isListening) {
+      stopListening();
+      setStatusMessage('Audio trigger stopped.');
+    } else {
+      resumeAudioSync();
+      startListening().then(
+        () => setStatusMessage('Listening for sound to start timer...'),
+        (err: unknown) =>
+          setStatusMessage(`Microphone error: ${err instanceof Error ? err.message : err}`),
+      );
+    }
+  }, [running, isListening, startListening, stopListening, setStatusMessage]);
 
   const handleSettingsClose = useCallback(
     (accepted: boolean) => {
       setSettingsOpen(false);
       if (accepted) setTimeout(updatePhases, 0);
     },
-    [updatePhases],
+    [updatePhases, setSettingsOpen],
   );
 
   // Keyboard shortcuts
@@ -133,6 +162,13 @@ export default function App() {
     prevRunning.current = running;
   }, [running]);
 
+  // Stop microphone when a run becomes active.
+  useEffect(() => {
+    if (running && isListening) {
+      stopListening();
+    }
+  }, [running, isListening, stopListening]);
+
   return (
     <div className="app">
       <div className="app-container">
@@ -141,7 +177,10 @@ export default function App() {
           registerFlash={registerFlash}
           onToggle={handleToggle}
           onSettings={() => setSettingsOpen(true)}
+          onToggleAudioListening={handleAudioToggle}
           settingsDisabled={running}
+          audioListening={isListening}
+          audioDetected={isDetected}
         />
 
         {/* Tab panel */}

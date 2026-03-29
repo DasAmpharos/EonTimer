@@ -145,6 +145,11 @@ function ensureRunning(): Promise<void> {
   return resumePromise;
 }
 
+/** Fire-and-forget wrapper for use in event handlers. */
+export function resumeAudioSync(): void {
+  resumeAudio();
+}
+
 // ─── Playback (fire-and-forget) ───
 
 function playBuffer(buffer: Promise<AudioBuffer>, label: string, receivedAt: number): void {
