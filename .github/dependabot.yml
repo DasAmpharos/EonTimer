@@ -36,6 +36,8 @@ updates:
       # Re-evaluate when vite-plugin-pwa adds vite 8 support.
       - dependency-name: "vite"
         update-types: ["version-update:semver-major"]
+      - dependency-name: "@vitejs/*"
+        update-types: ["version-update:semver-major"]
       # typescript-eslint 8.x has a hard cap of typescript <6.0.0.
       # Re-evaluate when typescript-eslint releases typescript 6 support.
       - dependency-name: "typescript"
