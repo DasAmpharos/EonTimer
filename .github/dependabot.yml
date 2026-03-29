@@ -25,6 +25,22 @@ updates:
           - "@types/react"
           - "@types/react-dom"
 
+    ignore:
+      # eslint-plugin-react-hooks and eslint-plugin-react-refresh don't yet
+      # support eslint 10. Re-evaluate when those plugins release compatibility.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js"
+        update-types: ["version-update:semver-major"]
+      # vite-plugin-pwa doesn't yet support vite 8.
+      # Re-evaluate when vite-plugin-pwa adds vite 8 support.
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      # typescript-eslint 8.x has a hard cap of typescript <6.0.0.
+      # Re-evaluate when typescript-eslint releases typescript 6 support.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
