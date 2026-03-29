@@ -1,0 +1,118 @@
+name: Stale Issues
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  stale:
+    name: Mark & Close Stale Issues
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const OWNER = context.repo.owner;
+            const REPO = context.repo.repo;
+            const EXEMPT_AUTHOR = 'DasAmpharos';
+            const START_DATE = new Date('2026-01-01T00:00:00Z');
+            const STALE_LABEL = 'stale';
+            const DAYS_BEFORE_STALE = 60;
+            const DAYS_BEFORE_CLOSE = 14;
+
+            const now = new Date();
+            const msPerDay = 24 * 60 * 60 * 1000;
+
+            // Ensure stale label exists
+            try {
+              await github.rest.issues.getLabel({ owner: OWNER, repo: REPO, name: STALE_LABEL });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner: OWNER, repo: REPO,
+                name: STALE_LABEL,
+                color: 'c0c0c0',
+                description: 'No activity for 60+ days. Will be closed if no response in 14 days.',
+              });
+            }
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: OWNER,
+              repo: REPO,
+              state: 'open',
+              per_page: 100,
+            });
+
+            for (const issue of issues) {
+              // Skip pull requests
+              if (issue.pull_request) continue;
+
+              // Skip issues by the repo owner
+              if (issue.user.login === EXEMPT_AUTHOR) continue;
+
+              // Skip issues created before 2026
+              const createdAt = new Date(issue.created_at);
+              if (createdAt < START_DATE) continue;
+
+              const labels = issue.labels.map(l => l.name);
+              const isStale = labels.includes(STALE_LABEL);
+
+              // Determine last activity date (last comment or creation)
+              let lastActivity = createdAt;
+              if (issue.updated_at) {
+                const updatedAt = new Date(issue.updated_at);
+                if (updatedAt > lastActivity) lastActivity = updatedAt;
+              }
+
+              const daysSinceActivity = (now - lastActivity) / msPerDay;
+
+              if (isStale) {
+                // Check when stale label was added by looking at timeline
+                const events = await github.paginate(github.rest.issues.listEvents, {
+                  owner: OWNER, repo: REPO,
+                  issue_number: issue.number,
+                  per_page: 100,
+                });
+                const staleEvent = events.filter(e => e.event === 'labeled' && e.label?.name === STALE_LABEL).pop();
+                const staledAt = staleEvent ? new Date(staleEvent.created_at) : lastActivity;
+                const daysSinceStale = (now - staledAt) / msPerDay;
+
+                if (daysSinceStale >= DAYS_BEFORE_CLOSE) {
+                  // Close the issue
+                  await github.rest.issues.createComment({
+                    owner: OWNER, repo: REPO,
+                    issue_number: issue.number,
+                    body: "This issue has been automatically closed due to inactivity. If this is still relevant, please reopen it with updated information. Thank you!",
+                  });
+                  await github.rest.issues.update({
+                    owner: OWNER, repo: REPO,
+                    issue_number: issue.number,
+                    state: 'closed',
+                    state_reason: 'not_planned',
+                  });
+                  core.info(`Closed stale issue #${issue.number}: ${issue.title}`);
+                } else {
+                  core.info(`Issue #${issue.number} is stale, ${Math.floor(daysSinceStale)}/${DAYS_BEFORE_CLOSE} days until close`);
+                }
+              } else {
+                if (daysSinceActivity >= DAYS_BEFORE_STALE) {
+                  // Mark as stale
+                  await github.rest.issues.addLabels({
+                    owner: OWNER, repo: REPO,
+                    issue_number: issue.number,
+                    labels: [STALE_LABEL],
+                  });
+                  await github.rest.issues.createComment({
+                    owner: OWNER, repo: REPO,
+                    issue_number: issue.number,
+                    body: "This issue has been marked as stale due to 60 days of inactivity. It will be closed in 14 days if there is no further activity. If this issue is still relevant, please leave a comment or update the description.",
+                  });
+                  core.info(`Marked issue #${issue.number} as stale: ${issue.title}`);
+                } else {
+                  core.info(`Issue #${issue.number} is active (${Math.floor(daysSinceActivity)} days inactive)`);
+                }
+              }
+            }
