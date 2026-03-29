@@ -11,12 +11,13 @@ updates:
           - "vite"
           - "@vitejs/*"
           - "vite-plugin-*"
-      eslint:
+      typescript:
         patterns:
+          - "typescript"
+          - "typescript-eslint"
           - "eslint"
           - "@eslint/*"
           - "eslint-*"
-          - "typescript-eslint"
       react:
         patterns:
           - "react"
