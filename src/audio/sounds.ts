@@ -10,6 +10,17 @@ const audioCtx: AudioContext = new (
   (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
 )();
 
+// ─── Keepalive media stream ───
+
+/**
+ * Signals the browser that media is playing, preventing background throttling.
+ * Only the keepalive feeds into this — sounds go to audioCtx.destination
+ * directly (MediaStreamDestination re-encodes and degrades quality).
+ */
+const streamDest: MediaStreamAudioDestinationNode = audioCtx.createMediaStreamDestination();
+const keepAliveEl: HTMLAudioElement = new Audio();
+keepAliveEl.srcObject = streamDest.stream;
+
 // ─── Buffer loading ───
 
 async function loadBuffer(url: string): Promise<AudioBuffer> {
@@ -23,14 +34,48 @@ const dingBuffer = loadBuffer(dingUrl);
 const popBuffer = loadBuffer(popUrl);
 const tickBuffer = loadBuffer(tickUrl);
 
-// ─── Keepalive & resume ───
+// ─── Keepalive oscillator ───
+
+/**
+ * Keeps samples flowing through the MediaStream during silent phases.
+ * Without this, Chrome idles the audio hardware and swallows the first beep.
+ */
+let keepAliveOsc: OscillatorNode | null = null;
+let keepAliveGain: GainNode | null = null;
+
+function startKeepAlive(): void {
+  if (keepAliveOsc) return;
+  keepAliveOsc = audioCtx.createOscillator();
+  keepAliveGain = audioCtx.createGain();
+  keepAliveGain.gain.value = 1e-5; // non-zero — Chrome optimises away gain=0
+  keepAliveOsc.connect(keepAliveGain);
+  // Route to streamDest so the MediaStream stays active (signals browser media
+  // is playing, preventing background-tab throttling). Also route to
+  // audioCtx.destination to keep the hardware pipeline warm between beeps so
+  // Chrome doesn't idle the output device and swallow the first real sound.
+  keepAliveGain.connect(streamDest);
+  keepAliveGain.connect(audioCtx.destination);
+  keepAliveOsc.start();
+}
+
+function stopKeepAlive(): void {
+  if (keepAliveOsc) {
+    keepAliveOsc.stop();
+    keepAliveOsc.disconnect();
+    keepAliveOsc = null;
+  }
+  if (keepAliveGain) {
+    keepAliveGain.disconnect();
+    keepAliveGain = null;
+  }
+}
 
 /**
  * Resume the AudioContext and keep the audio pipeline active with a silent
  * oscillator so the hardware doesn't idle between the user click and the
  * first real beep.  Must be called from a user-gesture handler (click/tap).
  */
-export function resumeAudio(): void {
+export async function resumeAudio(): Promise<void> {
   // Request "playback" audio session so audio is heard even when the iOS
   // silent switch is on (Safari 17+). No-ops on unsupported browsers.
   if ('audioSession' in navigator) {
@@ -38,8 +83,66 @@ export function resumeAudio(): void {
   }
 
   if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    await audioCtx.resume();
   }
+
+  try {
+    await keepAliveEl.play();
+  } catch {
+    // play() may reject outside a user gesture on first attempt.
+  }
+}
+
+/**
+ * Fire-and-forget wrapper for resumeAudio().
+ *
+ * Does NOT guarantee the AudioContext is fully resumed before the next sound
+ * plays — callers that need that guarantee should `await resumeAudio()`.
+ * Intended for synchronous call sites (e.g. test-action button) where
+ * best-effort resume is acceptable.
+ */
+export function resumeAudioSync(): void {
+  void resumeAudio();
+}
+
+let resumePromise: Promise<void> | null = null;
+
+/** Coordinate keepalive lifecycle with timer start/stop. */
+export function setTimerRunning(active: boolean): void {
+  if (active) {
+    ensureRunning();
+    startKeepAlive();
+    keepAliveEl.play().catch(() => {});
+  } else {
+    stopKeepAlive();
+    try {
+      keepAliveEl.pause();
+    } catch {
+      // ignore pause errors
+    }
+    keepAliveEl.currentTime = 0;
+  }
+}
+
+function ensureRunning(): Promise<void> {
+  if (audioCtx.state !== 'suspended') {
+    resumePromise = null;
+    return Promise.resolve();
+  }
+  if (!resumePromise) {
+    resumePromise = audioCtx
+      .resume()
+      .then(() => {
+        resumePromise = null;
+      })
+      .catch((err) => {
+        // Clear on failure so the next call can retry instead of reusing a
+        // permanently-rejected promise.
+        resumePromise = null;
+        throw err;
+      });
+  }
+  return resumePromise;
 }
 
 /** Fire-and-forget wrapper for use in event handlers. */
@@ -51,7 +154,7 @@ export function resumeAudioSync(): void {
 
 function playBuffer(buffer: Promise<AudioBuffer>, label: string, receivedAt: number): void {
   const mark = performance.mark(`audio:${label}`);
-  buffer.then((resolved) => {
+  const play = (resolved: AudioBuffer) => {
     const initiatedAt = performance.timeOrigin + performance.now();
     console.debug(
       `[Audio] ${label} play initiated, dispatch→init=${(initiatedAt - receivedAt).toFixed(3)}ms`,
@@ -67,7 +170,13 @@ function playBuffer(buffer: Promise<AudioBuffer>, label: string, receivedAt: num
       performance.measure(`audio:${label}`, { start: mark.startTime, end: performance.now() });
     };
     src.start(audioCtx.currentTime);
-  });
+  };
+
+  if (audioCtx.state === 'running') {
+    buffer.then(play);
+  } else {
+    ensureRunning().then(() => buffer.then(play));
+  }
 }
 
 export function playBeep(receivedAt: number): void {
