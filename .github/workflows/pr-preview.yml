@@ -1,12 +1,15 @@
 name: PR Preview
 
 on:
+  workflow_run:
+    workflows: ["PR Build"]
+    types: [completed]
   pull_request_target:
     branches: [main]
-    types: [opened, synchronize, reopened, closed]
+    types: [closed]
 
 concurrency:
-  group: pr-preview-${{ github.event.pull_request.number }}
+  group: pr-preview-${{ github.event.pull_request.number || github.event.workflow_run.head_sha }}
   cancel-in-progress: true
 
 permissions:
@@ -15,24 +18,19 @@ permissions:
 
 jobs:
   deploy:
-    if: github.event.action != 'closed'
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
+          name: pr-preview
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          path: dist/
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '20'
-          cache: npm
-
-      - run: npm ci
-      - run: npx tsc -b
-      - run: npx vite build --base=/EonTimer-dev/pr-${{ github.event.pull_request.number }}/
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - name: Read PR number
+        id: pr
+        run: echo "number=$(cat dist/.pr-number)" >> $GITHUB_OUTPUT
 
       - name: Deploy to EonTimer-dev
         uses: JamesIves/github-pages-deploy-action@v4
@@ -41,14 +39,15 @@ jobs:
           repository-name: DasAmpharos/EonTimer-dev
           branch: gh-pages
           folder: dist
-          target-folder: pr-${{ github.event.pull_request.number }}
-          clean: true  # clean only this PR's subdirectory, not others
+          target-folder: pr-${{ steps.pr.outputs.number }}
+          clean: true
 
       - name: Post preview URL comment
         uses: actions/github-script@v8
         with:
           script: |
-            const prNumber = context.payload.pull_request.number;
+            const fs = require('fs');
+            const prNumber = parseInt(fs.readFileSync('dist/.pr-number', 'utf8').trim());
             const url = `https://dasampharos.github.io/EonTimer-dev/pr-${prNumber}/`;
             const marker = '<!-- pr-preview -->';
             const body = `${marker}\n## 🚀 Preview deployment\n\n**${url}**\n\nUpdated on every push to this PR.`;
@@ -77,7 +76,7 @@ jobs:
             }
 
   cleanup:
-    if: github.event.action == 'closed'
+    if: github.event_name == 'pull_request_target' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
