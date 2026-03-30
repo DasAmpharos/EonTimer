@@ -40,3 +40,4 @@ jobs:
           name: pr-preview
           path: dist/
           retention-days: 1
+          include-hidden-files: true
