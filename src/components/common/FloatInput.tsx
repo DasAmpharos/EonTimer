@@ -46,7 +46,7 @@ export function FloatInput({
     <input
       id={id}
       type="text"
-      inputMode="decimal"
+      inputMode={min !== undefined && min >= 0 ? 'decimal' : 'text'}
       className="float-input"
       value={text}
       onChange={handleChange}
