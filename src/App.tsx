@@ -156,8 +156,10 @@ export default function App() {
   const prevRunning = useRef(running);
   useEffect(() => {
     if (prevRunning.current && !running) {
-      setOverlayOpen(false);
-      setStatusMessage('Run complete — enter values hit and press Update to calibrate.');
+      setTimeout(() => {
+        setOverlayOpen(false);
+        setStatusMessage('Run complete — enter values hit and press Update to calibrate.');
+      }, 0);
       const t = setTimeout(() => setStatusMessage('Ready'), 8000);
       return () => clearTimeout(t);
     }
