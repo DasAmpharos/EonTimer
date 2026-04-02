@@ -101,10 +101,13 @@ export default function App() {
     }
   }, [overlayMode, running, toggle]);
 
-  const handleOverlayTrigger = useCallback(async (absoluteStart: number) => {
-    setOverlayOpen(false);
-    await toggle(absoluteStart);
-  }, [toggle]);
+  const handleOverlayTrigger = useCallback(
+    async (absoluteStart: number) => {
+      setOverlayOpen(false);
+      await toggle(absoluteStart);
+    },
+    [toggle],
+  );
 
   const handleOverlayClose = useCallback(() => {
     setOverlayOpen(false);

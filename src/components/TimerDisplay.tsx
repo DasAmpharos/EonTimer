@@ -159,7 +159,11 @@ export function TimerDisplay({
               className={`timer-settings-btn${overlayMode ? ' timer-settings-btn--active' : ''}`}
               onClick={onOverlayModeToggle}
               aria-pressed={overlayMode}
-              title={overlayMode ? 'Easy-tap mode on — click to disable' : 'Enable easy-tap mode for mobile'}
+              title={
+                overlayMode
+                  ? 'Easy-tap mode on — click to disable'
+                  : 'Enable easy-tap mode for mobile'
+              }
             >
               <svg
                 viewBox="0 0 24 24"

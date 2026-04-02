@@ -9,5 +9,4 @@
  *   and maxTouchPoints may not be exposed (some older Android browsers).
  */
 export const isTouchDevice: boolean =
-  navigator.maxTouchPoints > 0 ||
-  window.matchMedia('(pointer: coarse)').matches;
+  navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;

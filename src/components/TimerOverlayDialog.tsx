@@ -69,11 +69,15 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
 
       <div
         className="timer-overlay-meta"
-        style={minutesBeforeTarget !== null ? { gridTemplateColumns: '1fr 1fr 1fr 1fr' } : undefined}
+        style={
+          minutesBeforeTarget !== null ? { gridTemplateColumns: '1fr 1fr 1fr 1fr' } : undefined
+        }
       >
         <span className="timer-overlay-meta-item">
           <span className="timer-overlay-meta-label">Phase</span>
-          <span className="mono">{currentPhaseIndex + 1} of {phases.length || 1}</span>
+          <span className="mono">
+            {currentPhaseIndex + 1} of {phases.length || 1}
+          </span>
         </span>
         <span className="timer-overlay-meta-item">
           <span className="timer-overlay-meta-label">Next</span>
@@ -86,7 +90,10 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
           <span className="mono">{formatTotal(phases)}</span>
         </span>
         {minutesBeforeTarget !== null && (
-          <span className="timer-overlay-meta-item" title="Set your clock this many minutes before your target time">
+          <span
+            className="timer-overlay-meta-item"
+            title="Set your clock this many minutes before your target time"
+          >
             <span className="timer-overlay-meta-label">Mins Before</span>
             <span className="mono">{minutesBeforeTarget}</span>
           </span>
