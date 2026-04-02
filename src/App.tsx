@@ -5,6 +5,7 @@ import { useWakeLock } from './hooks/useWakeLock';
 import { useTheme } from './hooks/useTheme';
 import { useUrlParams } from './hooks/useUrlParams';
 import { TimerDisplay } from './components/TimerDisplay';
+import { TimerOverlayDialog } from './components/TimerOverlayDialog';
 import { Gen5Panel } from './components/Gen5Panel';
 import type { TimerPanelHandle } from './components/timerPanel';
 import { Gen4Panel } from './components/Gen4Panel';
@@ -42,6 +43,9 @@ export default function App() {
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState('Ready');
+  const [overlayOpen, setOverlayOpen] = useState(false);
+  const overlayMode = useSettingsStore((s) => s.timer.overlayMode);
+  const updateTimer = useSettingsStore((s) => s.updateTimer);
 
   // Update phases when tab or settings change
   const updatePhases = useCallback(() => {
@@ -90,8 +94,30 @@ export default function App() {
   }, [running, currentRef, updatePhases]);
 
   const handleToggle = useCallback(() => {
-    toggle();
-  }, [toggle]);
+    if (overlayMode && !running) {
+      setOverlayOpen(true);
+    } else {
+      toggle();
+    }
+  }, [overlayMode, running, toggle]);
+
+  const handleOverlayTrigger = useCallback(
+    async (absoluteStart: number) => {
+      setOverlayOpen(false);
+      await toggle(absoluteStart);
+    },
+    [toggle],
+  );
+
+  const handleOverlayClose = useCallback(() => {
+    setOverlayOpen(false);
+  }, []);
+
+  const handleOverlayModeToggle = useCallback(() => {
+    const next = !overlayMode;
+    updateTimer({ overlayMode: next });
+    if (!next) setOverlayOpen(false);
+  }, [overlayMode, updateTimer]);
 
   const handleSettingsClose = useCallback(
     (accepted: boolean) => {
@@ -109,7 +135,11 @@ export default function App() {
 
       if (e.code === 'Space') {
         e.preventDefault();
-        handleToggle();
+        if (overlayOpen) {
+          handleOverlayTrigger(performance.timeOrigin + performance.now());
+        } else {
+          toggle();
+        }
       } else if (e.code === 'F5') {
         e.preventDefault();
         handleReset();
@@ -120,13 +150,16 @@ export default function App() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleToggle, handleReset, handleUpdate]);
+  }, [toggle, handleOverlayTrigger, overlayOpen, handleReset, handleUpdate]);
 
   // Update status on run complete
   const prevRunning = useRef(running);
   useEffect(() => {
     if (prevRunning.current && !running) {
-      setStatusMessage('Run complete — enter values hit and press Update to calibrate.');
+      setTimeout(() => {
+        setOverlayOpen(false);
+        setStatusMessage('Run complete — enter values hit and press Update to calibrate.');
+      }, 0);
       const t = setTimeout(() => setStatusMessage('Ready'), 8000);
       return () => clearTimeout(t);
     }
@@ -142,6 +175,8 @@ export default function App() {
           onToggle={handleToggle}
           onSettings={() => setSettingsOpen(true)}
           settingsDisabled={running}
+          overlayMode={overlayMode}
+          onOverlayModeToggle={handleOverlayModeToggle}
         />
 
         {/* Tab panel */}
@@ -246,6 +281,13 @@ export default function App() {
 
       {/* Settings dialog */}
       <SettingsDialog open={settingsOpen} onClose={handleSettingsClose} />
+
+      {/* Easy-tap overlay */}
+      <TimerOverlayDialog
+        open={overlayOpen}
+        onTrigger={handleOverlayTrigger}
+        onClose={handleOverlayClose}
+      />
     </div>
   );
 }

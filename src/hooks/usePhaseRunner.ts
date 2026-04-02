@@ -49,69 +49,72 @@ export function usePhaseRunner() {
     return unsubscribe;
   }, [running]);
 
-  const start = useCallback(() => {
-    const { phases } = useAppStore.getState();
-    const { action, timer } = useSettingsStore.getState();
-    if (phases.length === 0) return;
+  const start = useCallback(
+    (providedAbsoluteStart?: number) => {
+      const { phases } = useAppStore.getState();
+      const { action, timer } = useSettingsStore.getState();
+      if (phases.length === 0) return;
 
-    const worker = workerRef.current;
-    if (!worker) return;
+      const worker = workerRef.current;
+      if (!worker) return;
 
-    // Capture the click time as an absolute timestamp before any async work.
-    // Sent to the worker so it can anchor scheduledTime to this moment rather
-    // than to the worker's own (later) time origin.
-    const absoluteStart = performance.timeOrigin + performance.now();
+      // Use the provided timestamp (e.g. from a touchstart event) if available,
+      // otherwise fall back to capturing now. This avoids the ~300ms click delay
+      // on mobile browsers.
+      const absoluteStart = providedAbsoluteStart ?? performance.timeOrigin + performance.now();
 
-    console.info('[PhaseRunner] Starting phase runner');
+      console.info('[PhaseRunner] Starting phase runner');
 
-    const actionMode = action.mode;
-    const useAudio = actionMode === ActionMode.AV || actionMode === ActionMode.AUDIO;
-    const useVisual = actionMode === ActionMode.AV || actionMode === ActionMode.VISUAL;
-    const soundPlayer = useAudio ? getSoundPlayer(action.sound) : null;
+      const actionMode = action.mode;
+      const useAudio = actionMode === ActionMode.AV || actionMode === ActionMode.AUDIO;
+      const useVisual = actionMode === ActionMode.AV || actionMode === ActionMode.VISUAL;
+      const soundPlayer = useAudio ? getSoundPlayer(action.sound) : null;
 
-    worker.onmessage = (e: MessageEvent) => {
-      const { type } = e.data;
-      switch (type) {
-        case 'tick':
-          useAppStore.getState().setCurrentPhaseElapsed(e.data.elapsed);
-          break;
-        case 'phaseAdvance': {
-          const phaseIndex = e.data.phaseIndex;
-          useAppStore.getState().setCurrentPhaseIndex(phaseIndex);
-          useAppStore.getState().setCurrentPhaseElapsed(0);
-          break;
-        }
-        case 'action': {
-          const receivedAt = performance.timeOrigin + performance.now();
-          console.debug(
-            `[PhaseRunner] received action, ipc latency=${(receivedAt - e.data.postedAt).toFixed(3)}ms`,
-          );
-          if (useAudio) {
-            soundPlayer!(receivedAt);
+      worker.onmessage = (e: MessageEvent) => {
+        const { type } = e.data;
+        switch (type) {
+          case 'tick':
+            useAppStore.getState().setCurrentPhaseElapsed(e.data.elapsed);
+            break;
+          case 'phaseAdvance': {
+            const phaseIndex = e.data.phaseIndex;
+            useAppStore.getState().setCurrentPhaseIndex(phaseIndex);
+            useAppStore.getState().setCurrentPhaseElapsed(0);
+            break;
           }
-          if (useVisual) {
-            flashRef.current?.();
+          case 'action': {
+            const receivedAt = performance.timeOrigin + performance.now();
+            console.debug(
+              `[PhaseRunner] received action, ipc latency=${(receivedAt - e.data.postedAt).toFixed(3)}ms`,
+            );
+            if (useAudio) {
+              soundPlayer!(receivedAt);
+            }
+            if (useVisual) {
+              flashRef.current?.();
+            }
+            break;
           }
-          break;
+          case 'finished':
+            if (useAudio) setTimerRunning(false);
+            useAppStore.getState().setRunning(false);
+            break;
         }
-        case 'finished':
-          if (useAudio) setTimerRunning(false);
-          useAppStore.getState().setRunning(false);
-          break;
-      }
-    };
+      };
 
-    if (useAudio) setTimerRunning(true);
-    setRunning(true);
-    worker.postMessage({
-      type: 'start',
-      phases,
-      absoluteStart,
-      actionInterval: action.interval,
-      actionCount: action.count,
-      refreshInterval: timer.refreshInterval,
-    });
-  }, [setRunning]);
+      if (useAudio) setTimerRunning(true);
+      setRunning(true);
+      worker.postMessage({
+        type: 'start',
+        phases,
+        absoluteStart,
+        actionInterval: action.interval,
+        actionCount: action.count,
+        refreshInterval: timer.refreshInterval,
+      });
+    },
+    [setRunning],
+  );
 
   const stop = useCallback(() => {
     if (workerRef.current) {
@@ -125,20 +128,23 @@ export function usePhaseRunner() {
     setRunning(false);
   }, [setRunning]);
 
-  const toggle = useCallback(async () => {
-    // Resume audio in the user-gesture call stack (required by iOS Safari /
-    // Chrome autoplay policy). Also warms up the AudioContext so it is fully
-    // active by the time the first action fires.
-    const resumePromise = resumeAudio();
-    if (useAppStore.getState().running) {
-      stop();
-    } else {
-      await resumePromise;
-      if (!useAppStore.getState().running) {
-        start();
+  const toggle = useCallback(
+    async (providedAbsoluteStart?: number) => {
+      // Resume audio in the user-gesture call stack (required by iOS Safari /
+      // Chrome autoplay policy). Also warms up the AudioContext so it is fully
+      // active by the time the first action fires.
+      const resumePromise = resumeAudio();
+      if (useAppStore.getState().running) {
+        stop();
+      } else {
+        await resumePromise;
+        if (!useAppStore.getState().running) {
+          start(providedAbsoluteStart);
+        }
       }
-    }
-  }, [start, stop]);
+    },
+    [start, stop],
+  );
 
   return { start, stop, toggle, running, registerFlash };
 }
