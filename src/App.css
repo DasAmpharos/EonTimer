@@ -93,6 +93,16 @@
 
 .timer-settings-btn--active {
   color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+
+.timer-settings-btn--active:hover:not(:disabled) {
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 25%, transparent);
+}
+
+.timer-settings-btn--active {
+  color: var(--color-accent);
   background: var(--color-settings-hover-bg);
 }
 
