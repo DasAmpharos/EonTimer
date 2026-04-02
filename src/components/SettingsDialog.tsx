@@ -206,6 +206,18 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   />
                 </label>
               </FormField>
+              <FormField
+                label="Trigger on Release"
+                tooltip="Activate the timer when Space or the tap button is released rather than pressed — useful for coordinating keyboard and touch-screen inputs simultaneously"
+              >
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={timer.triggerOnRelease}
+                    onChange={(e) => setTimer({ ...timer, triggerOnRelease: e.target.checked })}
+                  />
+                </label>
+              </FormField>
             </div>
           )}
         </div>
