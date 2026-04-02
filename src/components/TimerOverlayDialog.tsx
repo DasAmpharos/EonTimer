@@ -117,7 +117,9 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
         )}
       </div>
 
-      <div className="timer-overlay-hint">{triggerOnRelease ? 'Hold and release to start' : 'Tap anywhere to start'}</div>
+      <div className="timer-overlay-hint">
+        {triggerOnRelease ? 'Hold and release to start' : 'Tap anywhere to start'}
+      </div>
 
       <button
         className="timer-overlay-close"
