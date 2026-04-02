@@ -49,7 +49,7 @@ export function usePhaseRunner() {
     return unsubscribe;
   }, [running]);
 
-  const start = useCallback(() => {
+  const start = useCallback((providedAbsoluteStart?: number) => {
     const { phases } = useAppStore.getState();
     const { action, timer } = useSettingsStore.getState();
     if (phases.length === 0) return;
@@ -57,10 +57,10 @@ export function usePhaseRunner() {
     const worker = workerRef.current;
     if (!worker) return;
 
-    // Capture the click time as an absolute timestamp before any async work.
-    // Sent to the worker so it can anchor scheduledTime to this moment rather
-    // than to the worker's own (later) time origin.
-    const absoluteStart = performance.timeOrigin + performance.now();
+    // Use the provided timestamp (e.g. from a touchstart event) if available,
+    // otherwise fall back to capturing now. This avoids the ~300ms click delay
+    // on mobile browsers.
+    const absoluteStart = providedAbsoluteStart ?? performance.timeOrigin + performance.now();
 
     console.info('[PhaseRunner] Starting phase runner');
 
@@ -125,7 +125,7 @@ export function usePhaseRunner() {
     setRunning(false);
   }, [setRunning]);
 
-  const toggle = useCallback(async () => {
+  const toggle = useCallback(async (providedAbsoluteStart?: number) => {
     // Resume audio in the user-gesture call stack (required by iOS Safari /
     // Chrome autoplay policy). Also warms up the AudioContext so it is fully
     // active by the time the first action fires.
@@ -135,7 +135,7 @@ export function usePhaseRunner() {
     } else {
       await resumePromise;
       if (!useAppStore.getState().running) {
-        start();
+        start(providedAbsoluteStart);
       }
     }
   }, [start, stop]);

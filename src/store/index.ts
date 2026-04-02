@@ -85,6 +85,7 @@ export interface TimerSettings {
   keepAwake: boolean;
   refreshInterval: number;
   minimumLength: number; // in seconds
+  overlayMode: boolean;
 }
 
 export interface SettingsState {
@@ -123,6 +124,7 @@ export const DEFAULT_TIMER: TimerSettings = {
   keepAwake: true,
   refreshInterval: 8,
   minimumLength: 14,
+  overlayMode: false,
 };
 
 export const DEFAULT_GEN5: Gen5Settings = {

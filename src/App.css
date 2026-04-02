@@ -54,6 +54,13 @@
   min-height: 52px;
 }
 
+/* Left cluster: settings gear + overlay-mode toggle */
+.timer-footer-left {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
 /* Small settings gear */
 .timer-settings-btn {
   width: 28px;
@@ -82,6 +89,107 @@
 .timer-settings-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+.timer-settings-btn--active {
+  color: var(--color-accent);
+  background: var(--color-settings-hover-bg);
+}
+
+/* ─── Easy-tap overlay dialog ─── */
+.timer-overlay-dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.timer-overlay-display {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: clamp(64px, 20vw, 120px);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 4px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.timer-overlay-progress-bar {
+  width: min(480px, 80vw);
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.timer-overlay-progress-bar .timer-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  width: 100%;
+  transform-origin: left;
+  will-change: transform;
+}
+
+.timer-overlay-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: min(480px, 80vw);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.65);
+  pointer-events: none;
+}
+
+.timer-overlay-meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.timer-overlay-meta-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.timer-overlay-hint {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.5px;
+  pointer-events: none;
+}
+
+.timer-overlay-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.timer-overlay-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 /* GitHub / sponsor links */
