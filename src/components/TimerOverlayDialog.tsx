@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useAppStore } from '../store';
+import { useAppStore, useSettingsStore } from '../store';
 import { INFINITY } from '../utils/constants';
 
 function formatTime(milliseconds: number): string {
@@ -31,6 +31,7 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
   const currentPhaseIndex = useAppStore((s) => s.currentPhaseIndex);
   const currentPhaseElapsed = useAppStore((s) => s.currentPhaseElapsed);
   const minutesBeforeTarget = useAppStore((s) => s.minutesBeforeTarget);
+  const triggerOnRelease = useSettingsStore((s) => s.timer.triggerOnRelease);
 
   if (!open) return null;
 
@@ -47,16 +48,32 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
       tabIndex={0}
       aria-label="Tap to start timer"
       onTouchStart={() => {
-        touchStartTimeRef.current = performance.timeOrigin + performance.now();
+        if (!triggerOnRelease) {
+          touchStartTimeRef.current = performance.timeOrigin + performance.now();
+        }
+      }}
+      onPointerUp={() => {
+        if (triggerOnRelease) {
+          onTrigger(performance.timeOrigin + performance.now());
+        }
       }}
       onClick={() => {
-        const ts = touchStartTimeRef.current ?? performance.timeOrigin + performance.now();
-        touchStartTimeRef.current = null;
-        onTrigger(ts);
+        if (!triggerOnRelease) {
+          const ts = touchStartTimeRef.current ?? performance.timeOrigin + performance.now();
+          touchStartTimeRef.current = null;
+          onTrigger(ts);
+        }
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
+          if (!triggerOnRelease) {
+            onTrigger(performance.timeOrigin + performance.now());
+          }
+        }
+      }}
+      onKeyUp={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && triggerOnRelease) {
           onTrigger(performance.timeOrigin + performance.now());
         }
       }}
@@ -100,7 +117,9 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
         )}
       </div>
 
-      <div className="timer-overlay-hint">Tap anywhere to start</div>
+      <div className="timer-overlay-hint">
+        {triggerOnRelease ? 'Hold and release to start' : 'Tap anywhere to start'}
+      </div>
 
       <button
         className="timer-overlay-close"

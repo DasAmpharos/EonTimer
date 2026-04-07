@@ -45,6 +45,7 @@ export default function App() {
   const [statusMessage, setStatusMessage] = useState('Ready');
   const [overlayOpen, setOverlayOpen] = useState(false);
   const overlayMode = useSettingsStore((s) => s.timer.overlayMode);
+  const triggerOnRelease = useSettingsStore((s) => s.timer.triggerOnRelease);
   const updateTimer = useSettingsStore((s) => s.updateTimer);
 
   // Update phases when tab or settings change
@@ -129,16 +130,18 @@ export default function App() {
 
   // Keyboard shortcuts
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
 
       if (e.code === 'Space') {
         e.preventDefault();
-        if (overlayOpen) {
-          handleOverlayTrigger(performance.timeOrigin + performance.now());
-        } else {
-          toggle();
+        if (!triggerOnRelease) {
+          if (overlayOpen) {
+            handleOverlayTrigger(performance.timeOrigin + performance.now());
+          } else {
+            toggle();
+          }
         }
       } else if (e.code === 'F5') {
         e.preventDefault();
@@ -148,9 +151,27 @@ export default function App() {
         handleUpdate();
       }
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [toggle, handleOverlayTrigger, overlayOpen, handleReset, handleUpdate]);
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+
+      if (e.code === 'Space' && triggerOnRelease) {
+        if (overlayOpen) {
+          handleOverlayTrigger(performance.timeOrigin + performance.now());
+        } else {
+          toggle();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [toggle, handleOverlayTrigger, overlayOpen, handleReset, handleUpdate, triggerOnRelease]);
 
   // Update status on run complete
   const prevRunning = useRef(running);

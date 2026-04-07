@@ -86,6 +86,7 @@ export interface TimerSettings {
   refreshInterval: number;
   minimumLength: number; // in seconds
   overlayMode: boolean;
+  triggerOnRelease: boolean;
 }
 
 export interface SettingsState {
@@ -125,6 +126,7 @@ export const DEFAULT_TIMER: TimerSettings = {
   refreshInterval: 8,
   minimumLength: 14,
   overlayMode: false,
+  triggerOnRelease: false,
 };
 
 export const DEFAULT_GEN5: Gen5Settings = {
