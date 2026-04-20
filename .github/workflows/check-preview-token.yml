@@ -53,7 +53,7 @@ jobs:
 
       - name: Open or update issue
         if: steps.check.outputs.status == 'expired' || steps.check.outputs.status == 'expiring_soon'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const status   = '${{ steps.check.outputs.status }}';
@@ -106,7 +106,7 @@ jobs:
 
       - name: Close resolved issue
         if: steps.check.outputs.status == 'ok'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const { data: existing } = await github.rest.issues.listForRepo({
