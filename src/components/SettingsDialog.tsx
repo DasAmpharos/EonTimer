@@ -1,12 +1,14 @@
 import { useState, useCallback } from 'react';
-import { useSettingsStore, type ActionSettings, type TimerSettings } from '../store';
+import { DEFAULT_TIMER, useSettingsStore, type ActionSettings, type TimerSettings } from '../store';
 import { ActionMode, ActionSound, Console, Theme } from '../utils/types';
 import { INT_MAX } from '../utils/constants';
 import { FormField } from './common/FormField';
 import { IntInput } from './common/IntInput';
 import { FloatInput } from './common/FloatInput';
 import { EnumSelect } from './common/EnumSelect';
+import { AudioTriggerMeter } from './AudioTriggerMeter';
 import { getSoundPlayer, resumeAudioSync } from '../audio/sounds';
+import { AUDIO_TRIGGER_MAX_DB, AUDIO_TRIGGER_MIN_DB } from '../audio/audioTrigger';
 
 const ACTION_MODES = Object.values(ActionMode) as ActionMode[];
 const ACTION_SOUNDS = Object.values(ActionSound) as ActionSound[];
@@ -218,6 +220,23 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
                   />
                 </label>
               </FormField>
+              <FormField
+                label="Audio Trigger Threshold (dB)"
+                tooltip="How loud a sound must be (in dBFS, -60 to 0) to start the timer when the microphone button is armed; closer to 0 needs a louder sound"
+              >
+                <IntInput
+                  value={timer.audioTriggerThreshold}
+                  onChange={(v) =>
+                    setTimer({
+                      ...timer,
+                      audioTriggerThreshold: v ?? DEFAULT_TIMER.audioTriggerThreshold,
+                    })
+                  }
+                  min={AUDIO_TRIGGER_MIN_DB}
+                  max={AUDIO_TRIGGER_MAX_DB}
+                />
+              </FormField>
+              <AudioTriggerMeter thresholdDb={timer.audioTriggerThreshold} />
             </div>
           )}
         </div>

@@ -106,6 +106,23 @@
   background: var(--color-settings-hover-bg);
 }
 
+/* Audio trigger waiting for the microphone */
+.timer-settings-btn--pending {
+  animation: timer-btn-pulse 1s ease-in-out infinite;
+}
+
+@keyframes timer-btn-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timer-settings-btn--pending {
+    animation: none;
+  }
+}
+
 /* ─── Easy-tap overlay dialog ─── */
 .timer-overlay-dialog {
   position: fixed;
@@ -781,6 +798,66 @@ input[type='checkbox'] {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Audio trigger level meter */
+.audio-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.audio-meter-bar {
+  position: relative;
+  height: 10px;
+  border: 1px solid var(--color-input-border);
+  border-radius: 3px;
+  background: var(--color-input-bg);
+  overflow: hidden;
+}
+
+.audio-meter-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent-bg);
+  transform-origin: left;
+}
+
+.audio-meter-fill--above {
+  background: var(--color-accent);
+}
+
+.audio-meter-threshold {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--color-text);
+}
+
+.audio-meter-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  min-height: 1.5em;
+}
+
+.audio-meter-hit {
+  margin-left: auto;
+  font-weight: 600;
+  visibility: hidden;
+}
+
+.audio-meter-hit--on {
+  visibility: visible;
+  color: var(--color-accent);
+}
+
+.audio-meter-error {
+  color: var(--color-text);
 }
 
 .dialog-buttons {

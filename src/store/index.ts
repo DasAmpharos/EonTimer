@@ -94,6 +94,7 @@ export interface TimerSettings {
   minimumLength: number; // in seconds
   overlayMode: boolean;
   triggerOnRelease: boolean;
+  audioTriggerThreshold: number; // in dBFS
 }
 
 export interface SettingsState {
@@ -134,6 +135,7 @@ export const DEFAULT_TIMER: TimerSettings = {
   minimumLength: 14,
   overlayMode: false,
   triggerOnRelease: false,
+  audioTriggerThreshold: -20,
 };
 
 export const DEFAULT_GEN5: Gen5Settings = {
