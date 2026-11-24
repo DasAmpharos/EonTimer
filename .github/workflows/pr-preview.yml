@@ -1,102 +1,229 @@
 name: PR Preview
 
+# Publishes the preview built by pr-build.yml to the EonTimer-dev Pages site,
+# and removes previews of closed PRs.
+#
+# Security model:
+# - The preview artifact is built from the PR's own code (possibly a fork), so
+#   nothing in it is trusted. The PR number comes from the GitHub API, matched
+#   against the exact commit that was built.
+# - Previews are served from the same origin as production
+#   (dasampharos.github.io), so preview code can read production's
+#   localStorage and Cache Storage. Fork PRs are therefore only published after
+#   a maintainer adds the `preview` label, and the label is removed again on
+#   every new push to the fork.
+# - Moving the preview repo to another owner gives previews their own origin;
+#   update PREVIEW_REPO and PREVIEW_URL below if that happens.
+
 on:
   workflow_run:
-    workflows: ["PR Build"]
+    workflows: ['PR Build']
     types: [completed]
   pull_request_target:
     branches: [main]
-    types: [closed]
+    types: [closed, synchronize]
+  workflow_dispatch: # manual sweep of previews for closed PRs
 
-concurrency:
-  group: pr-preview-${{ github.event.pull_request.number || github.event.workflow_run.head_sha }}
-  cancel-in-progress: true
+env:
+  PREVIEW_REPO: DasAmpharos/EonTimer-dev
+  PREVIEW_URL: https://dasampharos.github.io/EonTimer-dev
+  PREVIEW_LABEL: preview
+  COMMENT_MARKER: <!-- pr-preview -->
 
-permissions:
-  contents: read
-  pull-requests: write
+permissions: {}
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: read # download the PR Build artifact
+      contents: read
+      pull-requests: write # post the preview comment
+    concurrency:
+      # One deploy per PR branch; a newer build replaces an older one.
+      group: pr-preview-deploy-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+      cancel-in-progress: true
     steps:
+      - name: Find the PR for this build
+        id: pr
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const { owner, repo } = context.repo;
+            // Never trust the artifact for this: ask GitHub which open PR has
+            // exactly the commit that was built as its head.
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: 'open', per_page: 100,
+            });
+            const pr = prs.find(
+              (p) => p.head.sha === run.head_sha &&
+                p.head.repo?.full_name === run.head_repository?.full_name,
+            );
+            if (!pr) {
+              core.notice(`No open PR has head ${run.head_sha}; it was closed or updated since this build.`);
+              core.setOutput('deploy', 'false');
+              return;
+            }
+            const isFork = pr.head.repo.full_name !== `${owner}/${repo}`;
+            const labeled = pr.labels.some((l) => l.name === process.env.PREVIEW_LABEL);
+            core.setOutput('number', String(pr.number));
+            core.setOutput('fork', String(isFork));
+            core.setOutput('deploy', String(!isFork || labeled));
+
+      - name: Explain the fork gate
+        if: steps.pr.outputs.fork == 'true' && steps.pr.outputs.deploy == 'false'
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        with:
+          script: |
+            const issue_number = Number(process.env.PR_NUMBER);
+            const marker = process.env.COMMENT_MARKER;
+            const body = `${marker}\n## Preview deployment\n\nPreviews for PRs from forks are published after a maintainer reviews the changes and adds the \`${process.env.PREVIEW_LABEL}\` label. The label is removed on every new push, so each update is reviewed before it is published.`;
+            const { owner, repo } = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+
       - uses: actions/checkout@v7
+        if: steps.pr.outputs.deploy == 'true'
         with:
           persist-credentials: false
 
       - uses: actions/download-artifact@v8
+        if: steps.pr.outputs.deploy == 'true'
         with:
           name: pr-preview
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ github.token }}
           path: dist/
 
-      - name: Read PR number
-        id: pr
-        run: echo "number=$(cat dist/.pr-number)" >> $GITHUB_OUTPUT
+      - name: Drop legacy metadata from the artifact
+        if: steps.pr.outputs.deploy == 'true'
+        run: rm -f dist/.pr-number
 
       - name: Deploy to EonTimer-dev
-        uses: JamesIves/github-pages-deploy-action@v4
+        if: steps.pr.outputs.deploy == 'true'
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
         with:
           token: ${{ secrets.PREVIEW_DEPLOY_TOKEN }}
-          repository-name: DasAmpharos/EonTimer-dev
+          repository-name: ${{ env.PREVIEW_REPO }}
           branch: gh-pages
           folder: dist
           target-folder: pr-${{ steps.pr.outputs.number }}
           clean: true
 
       - name: Post preview URL comment
+        if: steps.pr.outputs.deploy == 'true'
         uses: actions/github-script@v9
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
         with:
           script: |
-            const fs = require('fs');
-            const prNumber = parseInt(fs.readFileSync('dist/.pr-number', 'utf8').trim());
-            const url = `https://dasampharos.github.io/EonTimer-dev/pr-${prNumber}/`;
-            const marker = '<!-- pr-preview -->';
+            const issue_number = Number(process.env.PR_NUMBER);
+            const marker = process.env.COMMENT_MARKER;
+            const url = `${process.env.PREVIEW_URL}/pr-${issue_number}/`;
             const body = `${marker}\n## 🚀 Preview deployment\n\n**${url}**\n\nUpdated on every push to this PR.`;
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-            });
-
-            const existing = comments.find(c => c.body.includes(marker));
+            const { owner, repo } = context.repo;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((c) => c.body?.includes(marker));
             if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
             } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body,
-              });
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
 
-  cleanup:
-    if: github.event_name == 'pull_request_target' && github.event.action == 'closed'
+  # A maintainer's `preview` label approves one specific version of a fork PR.
+  # Remove it when the fork pushes new commits so they aren't published unreviewed.
+  unlabel-fork-on-push:
+    if: >-
+      github.event_name == 'pull_request_target' &&
+      github.event.action == 'synchronize' &&
+      github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const name = process.env.PREVIEW_LABEL;
+            if (!pr.labels.some((l) => l.name === name)) return;
+            await github.rest.issues.removeLabel({
+              owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, name,
+            });
+            core.notice(`Removed '${name}' from #${pr.number} after a new push.`);
+
+  # Removes the preview of every closed PR, not just the one that triggered the
+  # run, so previews left behind by an earlier failed cleanup are swept too.
+  cleanup:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request_target' && github.event.action == 'closed')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pull-requests: read # look up PR states
+    concurrency:
+      # Each run sweeps everything, so a queued run replacing another is fine.
+      group: pr-preview-cleanup
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
         with:
-          repository: DasAmpharos/EonTimer-dev
+          repository: ${{ env.PREVIEW_REPO }}
           ref: gh-pages
           token: ${{ secrets.PREVIEW_DEPLOY_TOKEN }}
 
-      - name: Remove PR preview
+      - name: Remove previews of closed PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git rm -rf pr-${{ github.event.pull_request.number }} --ignore-unmatch
-          if git diff --staged --quiet; then
-            echo "Nothing to remove"
-          else
-            git commit -m "chore: remove preview for PR #${{ github.event.pull_request.number }}"
-            git push
-          fi
+
+          # Deploys can push to gh-pages at the same time, so start from the
+          # latest commit on each attempt and retry if the push is rejected.
+          for attempt in 1 2 3 4 5; do
+            git fetch --depth=1 origin gh-pages
+            git reset --hard origin/gh-pages
+            removed=()
+            for dir in pr-*/; do
+              dir="${dir%/}"
+              number="${dir#pr-}"
+              [[ "$number" =~ ^[0-9]+$ ]] || continue
+              state=$(gh pr view "$number" --repo "$GITHUB_REPOSITORY" --json state --jq .state 2>/dev/null || echo UNKNOWN)
+              if [ "$state" = CLOSED ] || [ "$state" = MERGED ]; then
+                git rm -rq -- "$dir"
+                removed+=("$dir")
+              fi
+            done
+
+            if [ ${#removed[@]} -eq 0 ]; then
+              echo "Nothing to remove"
+              exit 0
+            fi
+
+            git commit -qm "chore: remove previews for closed PRs (${removed[*]})"
+            if git push origin HEAD:gh-pages; then
+              echo "Removed: ${removed[*]}"
+              exit 0
+            fi
+            echo "Push rejected (gh-pages changed); retrying ($attempt/5)"
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not push after 5 attempts"
+          exit 1

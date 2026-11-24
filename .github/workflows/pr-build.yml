@@ -1,20 +1,28 @@
 name: PR Build
 
+# Builds the preview for a PR. This runs the PR's own code (including code from
+# forks), so it gets no secrets and a read-only token. Publishing happens in
+# pr-preview.yml, which never runs PR code.
+
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
+    # `labeled`: rebuild when a maintainer adds the `preview` label to a fork PR
+    # (see pr-preview.yml).
+    types: [opened, synchronize, reopened, labeled]
 
 permissions:
   contents: read
 
-concurrency:
-  group: pr-build-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
 jobs:
   build:
     name: Build Preview
+    if: github.event.action != 'labeled' || github.event.label.name == 'preview'
+    # Job-level (not workflow-level) so that skipped runs, such as other labels
+    # being added, don't cancel a build that is in progress.
+    concurrency:
+      group: pr-build-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -32,6 +40,10 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
 
+      # Legacy: only read by the pre-hardening pr-preview.yml, which still runs
+      # (from main) for PRs opened before it was replaced. The current
+      # pr-preview.yml ignores this file and deletes it before publishing.
+      # Safe to remove once no such PRs remain.
       - name: Save PR number
         run: echo "${{ github.event.pull_request.number }}" > dist/.pr-number
 
