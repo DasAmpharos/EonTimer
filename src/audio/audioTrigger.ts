@@ -11,6 +11,8 @@ export const AUDIO_TRIGGER_MAX_DB = 0;
 // Ignore the start of the stream so the click that armed the trigger (or a
 // pop from the mic opening) doesn't fire it.
 const SETTLE_SECONDS = 0.3;
+// How long the audio may stay suspended (e.g. an iOS interruption) before giving up.
+const STALL_TIMEOUT_MS = 1000;
 
 export interface MicListenerOptions {
   thresholdDb: number;
@@ -18,9 +20,12 @@ export interface MicListenerOptions {
   onOnset?: (onsetAt: number) => void;
   /** Called ~30×/s with the peak level in dBFS. */
   onLevel?: (peakDb: number) => void;
-  /** Called if the mic stops on its own (unplugged, permission revoked). */
-  onEnded?: () => void;
+  /** Called if listening stops on its own; the listener is already closed. */
+  onEnded?: (reason: MicEndReason) => void;
 }
+
+/** `disconnected`: the mic track ended. `interrupted`: the browser stopped the audio. */
+export type MicEndReason = 'disconnected' | 'interrupted';
 
 export interface MicListener {
   setThreshold: (thresholdDb: number) => void;
@@ -75,6 +80,25 @@ export class ContextClock {
   }
 }
 
+// ─── iOS audio session ───
+
+type AudioSessionLike = { type: string };
+
+/**
+ * Safari 17+ picks the audio session from `navigator.audioSession.type`; the
+ * app sets "playback" for its action sounds, which isn't meant for capture.
+ * Switch to "play-and-record" while the mic is open and return a restore function.
+ */
+function enterCaptureAudioSession(): () => void {
+  const session = (navigator as unknown as { audioSession?: AudioSessionLike }).audioSession;
+  if (!session) return () => {};
+  const previous = session.type;
+  session.type = 'play-and-record';
+  return () => {
+    session.type = previous;
+  };
+}
+
 /** User-facing message for a failure to open the mic. */
 export function describeMicError(err: unknown): string {
   if (!window.isSecureContext) {
@@ -108,16 +132,26 @@ export async function openMicListener(options: MicListenerOptions): Promise<MicL
     throw new Error('This browser does not support the audio trigger (no AudioWorklet).');
   }
 
+  const restoreAudioSession = enterCaptureAudioSession();
   const ctx = new AudioContext({ latencyHint: 'interactive' });
   void ctx.resume();
   let stream: MediaStream | null = null;
+  let stallTimeout = 0;
   let closed = false;
 
   const close = () => {
     if (closed) return;
     closed = true;
+    clearTimeout(stallTimeout);
     stream?.getTracks().forEach((track) => track.stop());
     void ctx.close();
+    restoreAudioSession();
+  };
+
+  const end = (reason: MicEndReason) => {
+    if (closed) return;
+    close();
+    options.onEnded?.(reason);
   };
 
   let clock: ContextClock;
@@ -157,10 +191,18 @@ export async function openMicListener(options: MicListenerOptions): Promise<MicL
   const track = stream.getAudioTracks()[0];
   // Chrome reports capture latency; others leave it undefined.
   const inputLatency = (track?.getSettings() as { latency?: number } | undefined)?.latency ?? 0;
-  track?.addEventListener('ended', () => {
+  track?.addEventListener('ended', () => end('disconnected'));
+
+  // If the browser suspends the context (e.g. an iOS interruption), try to
+  // resume; if it stays down, stop rather than silently never triggering.
+  ctx.addEventListener('statechange', () => {
     if (closed) return;
-    close();
-    options.onEnded?.();
+    clearTimeout(stallTimeout);
+    if (ctx.state === 'running') return;
+    void ctx.resume().catch(() => {});
+    stallTimeout = window.setTimeout(() => {
+      if (ctx.state !== 'running') end('interrupted');
+    }, STALL_TIMEOUT_MS);
   });
 
   detector.port.onmessage = (e: MessageEvent<OnsetDetectorMessage>) => {

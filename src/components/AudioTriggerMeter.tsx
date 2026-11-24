@@ -68,9 +68,11 @@ export function AudioTriggerMeter({ thresholdDb }: AudioTriggerMeterProps) {
           clearTimeout(flashTimeoutRef.current);
           flashTimeoutRef.current = window.setTimeout(() => setTriggered(false), TRIGGER_FLASH_MS);
         },
-        onEnded: () => {
+        onEnded: (reason) => {
           stopTest();
-          setError('Microphone disconnected.');
+          setError(
+            reason === 'interrupted' ? 'Audio was interrupted.' : 'Microphone disconnected.',
+          );
         },
       });
       if (generationRef.current !== generation) {

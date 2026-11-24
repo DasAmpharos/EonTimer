@@ -31,7 +31,6 @@ export default function App() {
   const setPhases = useAppStore((s) => s.setPhases);
 
   const { start, toggle, registerFlash } = usePhaseRunner();
-  useWakeLock();
   useUrlParams();
   useTheme();
 
@@ -84,6 +83,8 @@ export default function App() {
     onError: handleAudioTriggerError,
   });
   const { arm: armAudioTrigger, disarm: disarmAudioTrigger } = audioTrigger;
+  // Keep the screen on while waiting for the sound, not just once the run starts.
+  useWakeLock(audioTrigger.state !== 'off');
   const audioTriggerThreshold = useSettingsStore((s) => s.timer.audioTriggerThreshold);
 
   // Update phases when tab or settings change

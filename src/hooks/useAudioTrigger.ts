@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSettingsStore } from '../store';
-import { describeMicError, openMicListener, type MicListener } from '../audio/audioTrigger';
+import {
+  describeMicError,
+  openMicListener,
+  type MicEndReason,
+  type MicListener,
+} from '../audio/audioTrigger';
+
+function describeMicEnd(reason: MicEndReason): string {
+  return reason === 'interrupted'
+    ? 'Audio was interrupted — audio trigger off.'
+    : 'Microphone disconnected — audio trigger off.';
+}
 
 export type AudioTriggerState = 'off' | 'arming' | 'armed';
 
@@ -52,10 +63,10 @@ export function useAudioTrigger({ onTrigger, onError }: UseAudioTriggerOptions) 
           disarm();
           callbacksRef.current.onTrigger(onsetAt);
         },
-        onEnded: () => {
+        onEnded: (reason) => {
           if (generationRef.current !== generation) return;
           disarm();
-          callbacksRef.current.onError('Microphone disconnected — audio trigger off.');
+          callbacksRef.current.onError(describeMicEnd(reason));
         },
       });
       if (generationRef.current !== generation) {
