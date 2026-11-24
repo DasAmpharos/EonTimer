@@ -10,13 +10,24 @@ export function toMinimumLength(value: number, minimumLength: number = MINIMUM_L
   return value;
 }
 
-export function getMinutesBeforeTarget(phases: number[]): number {
+function sumFinite(phases: number[]): number {
   let total = 0;
   for (const phase of phases) {
     if (phase === INFINITY) continue;
     total += phase;
   }
-  return Math.floor(total / 60000);
+  return total;
+}
+
+/**
+ * Whole minutes that minimum-length padding adds to a run: the console clock
+ * must be set this many minutes before the target. `phases` must be the
+ * calibrated phases the timer actually runs, since calibration can push a
+ * phase under the minimum and add a minute (#287); `unpaddedPhases` are the
+ * same phases built with no minimum length.
+ */
+export function getMinutesBeforeTarget(phases: number[], unpaddedPhases: number[]): number {
+  return Math.round((sumFinite(phases) - sumFinite(unpaddedPhases)) / 60000);
 }
 
 // Console framerates

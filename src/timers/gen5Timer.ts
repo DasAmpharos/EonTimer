@@ -51,24 +51,10 @@ export function createGen5Phases(settings: CalibratorSettings, model: Gen5Model)
 }
 
 export function getGen5MinutesBeforeTarget(settings: CalibratorSettings, model: Gen5Model): number {
-  switch (model.mode) {
-    case Gen5Mode.STANDARD:
-      return getMinutesBeforeTarget(
-        createSecondPhases(model.targetSecond, 0, settings.minimumLength),
-      );
-    case Gen5Mode.C_GEAR:
-      return getMinutesBeforeTarget(
-        createDelayPhases(settings, model.targetDelay, model.targetSecond, 0),
-      );
-    case Gen5Mode.ENTRALINK:
-    case Gen5Mode.ENTRALINK_PLUS:
-      return getMinutesBeforeTarget(
-        createEntralinkPhases(settings, model.targetDelay, model.targetSecond, 0, 0),
-      );
-    default:
-      model.mode satisfies never;
-      return 0;
-  }
+  return getMinutesBeforeTarget(
+    createGen5Phases(settings, model),
+    createGen5Phases({ ...settings, minimumLength: -Infinity }, model),
+  );
 }
 
 export interface Gen5CalibrationInput {
