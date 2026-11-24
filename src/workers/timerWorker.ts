@@ -188,8 +188,13 @@ self.onmessage = (e: MessageEvent) => {
   const { type } = e.data;
   if (type === 'start') {
     running = true;
+    // Drop any update left over from a previous run on this worker.
+    pendingPhaseUpdate = null;
     const { phases, absoluteStart, actionInterval, actionCount, refreshInterval } = e.data;
     runPhases(phases, actionInterval, actionCount, refreshInterval, absoluteStart);
+  } else if (type === 'ping') {
+    // Clock sync: report this context's clock (see measureClockSkew).
+    self.postMessage({ type: 'pong', t0: e.data.t0, workerNow: now() });
   } else if (type === 'stop') {
     running = false;
   } else if (type === 'updatePhase') {
