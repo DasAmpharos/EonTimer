@@ -9,9 +9,47 @@ function createWorker(): Worker {
   });
 }
 
+function mainNow(): number {
+  return performance.timeOrigin + performance.now();
+}
+
+const CLOCK_SYNC_PINGS = 5;
+// Skew below this is treated as zero so normal runs keep exact timing.
+const CLOCK_SKEW_THRESHOLD_MS = 5;
+
+/**
+ * Estimate (main clock − worker clock) with a few ping round-trips, keeping
+ * the sample with the smallest round-trip time (error ≤ RTT / 2).
+ *
+ * Each context's clock is its own `timeOrigin + performance.now()`. They
+ * normally agree, but after the machine sleeps a worker created on wake can
+ * disagree with the page by about the sleep length. Start times are sent in
+ * the main thread's clock, so that skew made the countdown jump (#263).
+ */
+function measureClockSkew(worker: Worker, onResult: (skew: number) => void): void {
+  let best = { rtt: Infinity, skew: 0 };
+  let received = 0;
+  const listener = (e: MessageEvent) => {
+    if (e.data.type !== 'pong') return;
+    const t1 = mainNow();
+    const rtt = t1 - e.data.t0;
+    if (rtt < best.rtt) best = { rtt, skew: (e.data.t0 + t1) / 2 - e.data.workerNow };
+    if (++received < CLOCK_SYNC_PINGS) {
+      worker.postMessage({ type: 'ping', t0: mainNow() });
+    } else {
+      worker.removeEventListener('message', listener);
+      onResult(best.skew);
+    }
+  };
+  worker.addEventListener('message', listener);
+  worker.postMessage({ type: 'ping', t0: mainNow() });
+}
+
 export function usePhaseRunner() {
   const workerRef = useRef<Worker | null>(null);
   const flashRef = useRef<(() => void) | null>(null);
+  // Main clock − worker clock for the current worker; 0 when unmeasured or negligible.
+  const clockSkewRef = useRef(0);
 
   const running = useAppStore((s) => s.running);
   const setRunning = useAppStore((s) => s.setRunning);
@@ -21,14 +59,44 @@ export function usePhaseRunner() {
     flashRef.current = fn;
   }, []);
 
+  const syncClock = useCallback((worker: Worker) => {
+    measureClockSkew(worker, (skew) => {
+      if (workerRef.current !== worker) return; // replaced meanwhile
+      clockSkewRef.current = Math.abs(skew) > CLOCK_SKEW_THRESHOLD_MS ? skew : 0;
+      if (clockSkewRef.current !== 0) {
+        console.info(`[PhaseRunner] worker clock skew=${skew.toFixed(3)}ms, correcting`);
+      }
+    });
+  }, []);
+
+  const spawnWorker = useCallback(() => {
+    const worker = createWorker();
+    workerRef.current = worker;
+    clockSkewRef.current = 0;
+    syncClock(worker);
+    return worker;
+  }, [syncClock]);
+
   // Create the worker eagerly on mount so it's ready for the first start
   useEffect(() => {
-    workerRef.current = createWorker();
+    spawnWorker();
     return () => {
       workerRef.current?.terminate();
       workerRef.current = null;
     };
-  }, []);
+  }, [spawnWorker]);
+
+  // Re-check the clock when the page becomes visible again (e.g. after wake).
+  useEffect(() => {
+    const onVisible = () => {
+      const worker = workerRef.current;
+      if (document.visibilityState === 'visible' && worker && !useAppStore.getState().running) {
+        syncClock(worker);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [syncClock]);
 
   // Forward phase updates to the running worker (e.g. Gen3 Variable Target "Set Target Frame")
   useEffect(() => {
@@ -61,7 +129,9 @@ export function usePhaseRunner() {
       // Use the provided timestamp (e.g. from a touchstart event) if available,
       // otherwise fall back to capturing now. This avoids the ~300ms click delay
       // on mobile browsers.
-      const absoluteStart = providedAbsoluteStart ?? performance.timeOrigin + performance.now();
+      const absoluteStart = providedAbsoluteStart ?? mainNow();
+      // The worker measures time with its own clock; convert the start time.
+      const clockSkew = clockSkewRef.current;
 
       console.info('[PhaseRunner] Starting phase runner');
 
@@ -83,9 +153,9 @@ export function usePhaseRunner() {
             break;
           }
           case 'action': {
-            const receivedAt = performance.timeOrigin + performance.now();
+            const receivedAt = mainNow();
             console.debug(
-              `[PhaseRunner] received action, ipc latency=${(receivedAt - e.data.postedAt).toFixed(3)}ms`,
+              `[PhaseRunner] received action, ipc latency=${(receivedAt - (e.data.postedAt + clockSkew)).toFixed(3)}ms`,
             );
             if (useAudio) {
               soundPlayer!(receivedAt);
@@ -107,7 +177,7 @@ export function usePhaseRunner() {
       worker.postMessage({
         type: 'start',
         phases,
-        absoluteStart,
+        absoluteStart: absoluteStart - clockSkew,
         actionInterval: action.interval,
         actionCount: action.count,
         refreshInterval: timer.refreshInterval,
@@ -122,11 +192,11 @@ export function usePhaseRunner() {
       workerRef.current.postMessage({ type: 'stop' });
       workerRef.current.terminate();
       // Immediately create a fresh worker so it's ready for the next start
-      workerRef.current = createWorker();
+      spawnWorker();
     }
     setTimerRunning(false);
     setRunning(false);
-  }, [setRunning]);
+  }, [setRunning, spawnWorker]);
 
   const toggle = useCallback(
     async (providedAbsoluteStart?: number) => {
