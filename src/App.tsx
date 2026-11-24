@@ -50,6 +50,10 @@ export default function App() {
 
   // Update phases when tab or settings change
   const updatePhases = useCallback(() => {
+    // Phases are frozen while running; the only mid-run change is Gen3
+    // "Set Target Frame", which goes through setPhase. They're recomputed
+    // when the run ends (see the run-complete effect below).
+    if (useAppStore.getState().running) return;
     const tab = useSettingsStore.getState().tabIndex;
     const ref = refs[tab];
     const displayData = ref?.current?.createDisplayData();
@@ -131,12 +135,15 @@ export default function App() {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Shortcuts must not act on the timer behind the Settings dialog.
+      if (settingsOpen) return;
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
 
       if (e.code === 'Space') {
         e.preventDefault();
-        if (!triggerOnRelease) {
+        // Holding Space auto-repeats keydown; only the first press counts.
+        if (!triggerOnRelease && !e.repeat) {
           if (overlayOpen) {
             handleOverlayTrigger(performance.timeOrigin + performance.now());
           } else {
@@ -145,14 +152,15 @@ export default function App() {
         }
       } else if (e.code === 'F5') {
         e.preventDefault();
-        handleReset();
+        if (!e.repeat) handleReset();
       } else if (e.code === 'F6') {
         e.preventDefault();
-        handleUpdate();
+        if (!e.repeat) handleUpdate();
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
+      if (settingsOpen) return;
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
 
@@ -171,21 +179,32 @@ export default function App() {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [toggle, handleOverlayTrigger, overlayOpen, handleReset, handleUpdate, triggerOnRelease]);
+  }, [
+    toggle,
+    handleOverlayTrigger,
+    overlayOpen,
+    handleReset,
+    handleUpdate,
+    triggerOnRelease,
+    settingsOpen,
+  ]);
 
   // Update status on run complete
   const prevRunning = useRef(running);
   useEffect(() => {
-    if (prevRunning.current && !running) {
+    const wasRunning = prevRunning.current;
+    prevRunning.current = running;
+    if (wasRunning && !running) {
       setTimeout(() => {
         setOverlayOpen(false);
         setStatusMessage('Run complete — enter values hit and press Update to calibrate.');
+        // Restore the panel's phases (e.g. Gen3 Variable Target back to ∞).
+        updatePhases();
       }, 0);
       const t = setTimeout(() => setStatusMessage('Ready'), 8000);
       return () => clearTimeout(t);
     }
-    prevRunning.current = running;
-  }, [running]);
+  }, [running, updatePhases]);
 
   return (
     <div className="app">

@@ -15,6 +15,7 @@ export interface AppState {
   setPhase: (index: number, value: number) => void;
   setCurrentPhaseIndex: (index: number) => void;
   setCurrentPhaseElapsed: (elapsed: number) => void;
+  setProgress: (index: number, elapsed: number) => void;
   setRunning: (running: boolean) => void;
   reset: () => void;
 }
@@ -27,7 +28,12 @@ export const useAppStore = create<AppState>((set, get) => ({
   running: false,
 
   setPhases: (phases, minutesBeforeTarget = null) =>
-    set({ phases, minutesBeforeTarget, currentPhaseIndex: 0, currentPhaseElapsed: 0 }),
+    // Don't reset progress mid-run — the worker owns the phase index then.
+    set(
+      get().running
+        ? { phases, minutesBeforeTarget }
+        : { phases, minutesBeforeTarget, currentPhaseIndex: 0, currentPhaseElapsed: 0 },
+    ),
   setPhase: (index, value) => {
     const phases = [...get().phases];
     phases[index] = value;
@@ -35,6 +41,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
   setCurrentPhaseIndex: (index) => set({ currentPhaseIndex: index }),
   setCurrentPhaseElapsed: (elapsed) => set({ currentPhaseElapsed: elapsed }),
+  setProgress: (index, elapsed) => set({ currentPhaseIndex: index, currentPhaseElapsed: elapsed }),
   setRunning: (running) => {
     if (running && !get().running) {
       set({ running: true, currentPhaseIndex: 0, currentPhaseElapsed: 0 });
