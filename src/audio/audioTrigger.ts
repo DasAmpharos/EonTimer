@@ -40,7 +40,7 @@ export function amplitudeToDb(amplitude: number): number {
 }
 
 // How far back the context↔main clock offset samples are kept.
-const CLOCK_WINDOW_MS = 2000;
+const CLOCK_WINDOW_MS = 1000;
 
 /**
  * Maps AudioContext time to main-thread absolute time with a measured offset.
@@ -120,6 +120,8 @@ export async function openMicListener(options: MicListenerOptions): Promise<MicL
     void ctx.close();
   };
 
+  let clock: ContextClock;
+  let detector: AudioWorkletNode;
   try {
     stream = await navigator.mediaDevices.getUserMedia({
       audio: {
@@ -131,6 +133,22 @@ export async function openMicListener(options: MicListenerOptions): Promise<MicL
     });
     await ctx.audioWorklet.addModule(onsetDetectorUrl);
     await ctx.resume();
+
+    clock = new ContextClock(ctx);
+    clock.sample();
+    const source = ctx.createMediaStreamSource(stream);
+    detector = new AudioWorkletNode(ctx, 'onset-detector', {
+      numberOfInputs: 1,
+      numberOfOutputs: 1,
+      outputChannelCount: [1],
+      processorOptions: {
+        threshold: dbToAmplitude(options.thresholdDb),
+        settleSeconds: SETTLE_SECONDS,
+      } satisfies OnsetDetectorOptions,
+    });
+    source.connect(detector);
+    // The output is silent; connecting it keeps the node rendering in every browser.
+    detector.connect(ctx.destination);
   } catch (err) {
     close();
     throw err;
@@ -145,18 +163,6 @@ export async function openMicListener(options: MicListenerOptions): Promise<MicL
     options.onEnded?.();
   });
 
-  const clock = new ContextClock(ctx);
-  clock.sample();
-  const source = ctx.createMediaStreamSource(stream);
-  const detector = new AudioWorkletNode(ctx, 'onset-detector', {
-    numberOfInputs: 1,
-    numberOfOutputs: 1,
-    outputChannelCount: [1],
-    processorOptions: {
-      threshold: dbToAmplitude(options.thresholdDb),
-      settleSeconds: SETTLE_SECONDS,
-    } satisfies OnsetDetectorOptions,
-  });
   detector.port.onmessage = (e: MessageEvent<OnsetDetectorMessage>) => {
     if (closed) return;
     const msg = e.data;
@@ -174,9 +180,6 @@ export async function openMicListener(options: MicListenerOptions): Promise<MicL
       options.onOnset?.(onsetAt);
     }
   };
-  source.connect(detector);
-  // The output is silent; connecting it keeps the node rendering in every browser.
-  detector.connect(ctx.destination);
 
   console.info(
     `[AudioTrigger] listening at ${options.thresholdDb} dBFS ` +

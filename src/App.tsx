@@ -61,10 +61,14 @@ export default function App() {
   const handleAudioTrigger = useCallback(
     (onsetAt: number) => {
       if (useAppStore.getState().running) return;
-      // Audio was resumed when the trigger was armed; this just waits for it.
-      void resumeAudio().then(() => {
-        if (!useAppStore.getState().running) start(onsetAt);
-      });
+      // Start right away: audio was resumed when the trigger was armed, and
+      // action sounds wait for the context anyway. Awaiting resume here could
+      // stall if the browser suspended it outside a user gesture.
+      void resumeAudio();
+      start(onsetAt);
+      if (!useAppStore.getState().running) return;
+      // The run is under way; an open easy-tap overlay would stop it on the next tap.
+      setOverlayOpen(false);
       showStatus('Sound detected — timer started.');
     },
     [start, showStatus],
