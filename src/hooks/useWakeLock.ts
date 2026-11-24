@@ -2,17 +2,19 @@ import { useEffect, useRef } from 'react';
 import { useAppStore, useSettingsStore } from '../store';
 
 /**
- * Acquires a Screen Wake Lock while the timer is running and the
- * "Keep Screen Awake" setting is enabled. Automatically releases
- * the lock when the timer stops or the component unmounts.
+ * Acquires a Screen Wake Lock while the timer is running (or `armed`, e.g.
+ * the audio trigger is waiting for a sound) and the "Keep Screen Awake"
+ * setting is enabled. Automatically releases the lock when both stop or the
+ * component unmounts.
  */
-export function useWakeLock(): void {
+export function useWakeLock(armed = false): void {
   const running = useAppStore((s) => s.running);
+  const active = running || armed;
   const keepAwake = useSettingsStore((s) => s.timer.keepAwake);
   const lockRef = useRef<WakeLockSentinel | null>(null);
 
   useEffect(() => {
-    if (!running || !keepAwake || !('wakeLock' in navigator)) return;
+    if (!active || !keepAwake || !('wakeLock' in navigator)) return;
 
     let released = false;
     navigator.wakeLock
@@ -33,5 +35,5 @@ export function useWakeLock(): void {
       lockRef.current?.release();
       lockRef.current = null;
     };
-  }, [running, keepAwake]);
+  }, [active, keepAwake]);
 }

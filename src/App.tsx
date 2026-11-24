@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { useAppStore, useSettingsStore } from './store';
 import { usePhaseRunner } from './hooks/usePhaseRunner';
+import { useAudioTrigger } from './hooks/useAudioTrigger';
 import { useWakeLock } from './hooks/useWakeLock';
 import { useTheme } from './hooks/useTheme';
 import { useUrlParams } from './hooks/useUrlParams';
@@ -12,6 +13,7 @@ import { Gen4Panel } from './components/Gen4Panel';
 import { Gen3Panel } from './components/Gen3Panel';
 import { CustomPanel } from './components/CustomPanel';
 import { SettingsDialog } from './components/SettingsDialog';
+import { resumeAudio } from './audio/sounds';
 import './App.css';
 
 const TAB_LABELS = ['Gen 5', 'Gen 4', 'Gen 3', 'Custom'];
@@ -28,8 +30,7 @@ export default function App() {
   const running = useAppStore((s) => s.running);
   const setPhases = useAppStore((s) => s.setPhases);
 
-  const { toggle, registerFlash } = usePhaseRunner();
-  useWakeLock();
+  const { start, toggle, registerFlash } = usePhaseRunner();
   useUrlParams();
   useTheme();
 
@@ -47,6 +48,44 @@ export default function App() {
   const overlayMode = useSettingsStore((s) => s.timer.overlayMode);
   const triggerOnRelease = useSettingsStore((s) => s.timer.triggerOnRelease);
   const updateTimer = useSettingsStore((s) => s.updateTimer);
+
+  // Status messages that revert to "Ready" after a while.
+  const statusTimeoutRef = useRef(0);
+  const showStatus = useCallback((message: string, durationMs = 4000) => {
+    clearTimeout(statusTimeoutRef.current);
+    setStatusMessage(message);
+    statusTimeoutRef.current = window.setTimeout(() => setStatusMessage('Ready'), durationMs);
+  }, []);
+
+  const handleAudioTrigger = useCallback(
+    (onsetAt: number) => {
+      if (useAppStore.getState().running) return;
+      // Start right away: audio was resumed when the trigger was armed, and
+      // action sounds wait for the context anyway. Awaiting resume here could
+      // stall if the browser suspended it outside a user gesture.
+      void resumeAudio();
+      start(onsetAt);
+      if (!useAppStore.getState().running) return;
+      // The run is under way; an open easy-tap overlay would stop it on the next tap.
+      setOverlayOpen(false);
+      showStatus('Sound detected — timer started.');
+    },
+    [start, showStatus],
+  );
+
+  const handleAudioTriggerError = useCallback(
+    (message: string) => showStatus(message, 8000),
+    [showStatus],
+  );
+
+  const audioTrigger = useAudioTrigger({
+    onTrigger: handleAudioTrigger,
+    onError: handleAudioTriggerError,
+  });
+  const { arm: armAudioTrigger, disarm: disarmAudioTrigger } = audioTrigger;
+  // Keep the screen on while waiting for the sound, not just once the run starts.
+  useWakeLock(audioTrigger.state !== 'off');
+  const audioTriggerThreshold = useSettingsStore((s) => s.timer.audioTriggerThreshold);
 
   // Update phases when tab or settings change
   const updatePhases = useCallback(() => {
@@ -85,10 +124,9 @@ export default function App() {
     if (ref && ref.canCalibrate()) {
       ref.calibrate();
       setTimeout(updatePhases, 0);
-      setStatusMessage('Calibration applied.');
-      setTimeout(() => setStatusMessage('Ready'), 4000);
+      showStatus('Calibration applied.');
     }
-  }, [running, currentRef, updatePhases]);
+  }, [running, currentRef, updatePhases, showStatus]);
 
   const handleReset = useCallback(() => {
     if (running) return;
@@ -97,6 +135,24 @@ export default function App() {
     ref?.reset();
     setTimeout(updatePhases, 0);
   }, [running, currentRef, updatePhases]);
+
+  const handleAudioTriggerToggle = useCallback(() => {
+    if (running) return;
+    if (audioTrigger.state !== 'off') {
+      disarmAudioTrigger();
+      showStatus('Audio trigger off.');
+      return;
+    }
+    // Resume in the click handler so action sounds play when the mic starts the run.
+    void resumeAudio();
+    void armAudioTrigger();
+  }, [running, audioTrigger.state, armAudioTrigger, disarmAudioTrigger, showStatus]);
+
+  const handleOpenSettings = useCallback(() => {
+    // Don't let a sound start the timer behind the dialog (or fight its mic test).
+    disarmAudioTrigger();
+    setSettingsOpen(true);
+  }, [disarmAudioTrigger]);
 
   const handleToggle = useCallback(() => {
     if (overlayMode && !running) {
@@ -189,6 +245,11 @@ export default function App() {
     settingsOpen,
   ]);
 
+  // Release the mic once a run starts, however it was started.
+  useEffect(() => {
+    if (running) disarmAudioTrigger();
+  }, [running, disarmAudioTrigger]);
+
   // Update status on run complete
   const prevRunning = useRef(running);
   useEffect(() => {
@@ -197,14 +258,12 @@ export default function App() {
     if (wasRunning && !running) {
       setTimeout(() => {
         setOverlayOpen(false);
-        setStatusMessage('Run complete — enter values hit and press Update to calibrate.');
+        showStatus('Run complete — enter values hit and press Update to calibrate.', 8000);
         // Restore the panel's phases (e.g. Gen3 Variable Target back to ∞).
         updatePhases();
       }, 0);
-      const t = setTimeout(() => setStatusMessage('Ready'), 8000);
-      return () => clearTimeout(t);
     }
-  }, [running, updatePhases]);
+  }, [running, updatePhases, showStatus]);
 
   return (
     <div className="app">
@@ -213,8 +272,10 @@ export default function App() {
         <TimerDisplay
           registerFlash={registerFlash}
           onToggle={handleToggle}
-          onSettings={() => setSettingsOpen(true)}
+          onSettings={handleOpenSettings}
           settingsDisabled={running}
+          audioTriggerState={audioTrigger.state}
+          onAudioTriggerToggle={handleAudioTriggerToggle}
           overlayMode={overlayMode}
           onOverlayModeToggle={handleOverlayModeToggle}
         />
@@ -298,7 +359,13 @@ export default function App() {
 
         {/* Status bar */}
         <div className="app-status-bar">
-          <span>{statusMessage}</span>
+          <span>
+            {audioTrigger.state === 'arming'
+              ? 'Waiting for microphone…'
+              : audioTrigger.state === 'armed'
+                ? `Listening — the timer starts on a sound above ${audioTriggerThreshold} dB.`
+                : statusMessage}
+          </span>
         </div>
 
         {/* Version footer */}
