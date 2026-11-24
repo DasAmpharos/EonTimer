@@ -144,7 +144,9 @@ export function usePhaseRunner() {
         const { type } = e.data;
         switch (type) {
           case 'tick':
-            useAppStore.getState().setCurrentPhaseElapsed(e.data.elapsed);
+            // Ticks carry the worker's phase index; trust it so the display
+            // can't drift from the phase actually running.
+            useAppStore.getState().setProgress(e.data.phaseIndex, e.data.elapsed);
             break;
           case 'phaseAdvance': {
             const phaseIndex = e.data.phaseIndex;

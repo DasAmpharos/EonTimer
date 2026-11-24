@@ -188,6 +188,8 @@ self.onmessage = (e: MessageEvent) => {
   const { type } = e.data;
   if (type === 'start') {
     running = true;
+    // Drop any update left over from a previous run on this worker.
+    pendingPhaseUpdate = null;
     const { phases, absoluteStart, actionInterval, actionCount, refreshInterval } = e.data;
     runPhases(phases, actionInterval, actionCount, refreshInterval, absoluteStart);
   } else if (type === 'ping') {
