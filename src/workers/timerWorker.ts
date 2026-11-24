@@ -192,6 +192,9 @@ self.onmessage = (e: MessageEvent) => {
     pendingPhaseUpdate = null;
     const { phases, absoluteStart, actionInterval, actionCount, refreshInterval } = e.data;
     runPhases(phases, actionInterval, actionCount, refreshInterval, absoluteStart);
+  } else if (type === 'ping') {
+    // Clock sync: report this context's clock (see measureClockSkew).
+    self.postMessage({ type: 'pong', t0: e.data.t0, workerNow: now() });
   } else if (type === 'stop') {
     running = false;
   } else if (type === 'updatePhase') {
