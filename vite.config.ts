@@ -42,7 +42,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg}'],
+        // Include the action sounds (src/audio/*.wav) so audio works offline.
+        globPatterns: ['**/*.{js,css,html,svg,wav}'],
       },
     }),
   ],
