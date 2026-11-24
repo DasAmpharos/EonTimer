@@ -1,9 +1,22 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { execSync } from 'child_process';
 const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
 const commitDate = execSync('git log -1 --format=%cs').toString().trim().replaceAll('-', '.');
+
+// PR preview builds (pr-build.yml sets PR_NUMBER) are throwaway deployments.
+const isPreviewBuild = Boolean(process.env.PR_NUMBER);
+
+/** Keep PR previews out of search results. */
+function noIndex(): Plugin {
+  return {
+    name: 'eontimer-noindex',
+    transformIndexHtml: () => [
+      { tag: 'meta', attrs: { name: 'robots', content: 'noindex, nofollow' }, injectTo: 'head' },
+    ],
+  };
+}
 
 export default defineConfig({
   base: '/EonTimer/',
@@ -14,7 +27,12 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    ...(isPreviewBuild ? [noIndex()] : []),
     VitePWA({
+      // No service worker for previews, so they don't linger offline after the
+      // preview is removed. (Not `selfDestroying`: its worker deletes every
+      // cache on the origin, and previews share an origin with production.)
+      disable: isPreviewBuild,
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icon-192.svg', 'icon-512.svg'],
       manifest: {
