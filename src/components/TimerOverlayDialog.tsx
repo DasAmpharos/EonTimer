@@ -67,7 +67,7 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          if (!triggerOnRelease) {
+          if (!triggerOnRelease && !e.repeat) {
             onTrigger(performance.timeOrigin + performance.now());
           }
         }
@@ -123,6 +123,12 @@ export function TimerOverlayDialog({ open, onTrigger, onClose }: TimerOverlayDia
 
       <button
         className="timer-overlay-close"
+        // Keep every input event on the close button from reaching the
+        // overlay's trigger handlers (pointerup / touchstart / keys).
+        onPointerUp={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        onKeyUp={(e) => e.stopPropagation()}
         onClick={(e) => {
           e.stopPropagation();
           onClose();
